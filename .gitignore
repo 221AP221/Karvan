@@ -7,3 +7,4 @@ src/generated/
 *.tsbuildinfo
 next-env.d.ts
 e2e/output/
+*.bak

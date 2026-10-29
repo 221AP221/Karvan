@@ -4,6 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "setup": "node scripts/setup.mjs",
+    "predev": "node scripts/local-db.mjs",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
