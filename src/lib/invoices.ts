@@ -72,7 +72,7 @@ export function getPublicInvoice(publicId: string) {
     where: { publicId },
     include: {
       items: { orderBy: { position: "asc" } },
-      profile: { include: { user: { include: { subscription: true } } } },
+      profile: { include: { user: { select: { subscription: { select: { plan: true } } } } } },
     },
   });
 }

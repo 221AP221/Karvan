@@ -8,7 +8,7 @@ export default function Home() {
         Sosial linklər, xidmətlər, sifariş formu və avtomatik PDF faktura. Ödənişləri bir paneldən izləyin.
       </p>
       <Link
-        href="/dashboard"
+        href="/signup"
         className="mt-8 inline-block rounded-full bg-[var(--brand)] px-6 py-3 font-medium text-white"
       >
         Pulsuz başla

@@ -61,13 +61,22 @@ enum SocialPlatform {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  phone     String?  @unique
-  email     String?  @unique
-  createdAt DateTime @default(now())
+  id           String   @id @default(cuid())
+  phone        String?  @unique
+  email        String?  @unique
+  passwordHash String?
+  createdAt    DateTime @default(now())
 
   profile      Profile?
   subscription Subscription?
+  sessions     Session[]
+}
+
+model Session {
+  id        String   @id // cookie tokeninin sha256 heşi
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
 }
 
 model Subscription {

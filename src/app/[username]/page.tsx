@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { formatAzn } from "@/lib/money";
+import { PLAN_LIMITS } from "@/lib/plans";
 import { OrderForm } from "./OrderForm";
 
 type Props = { params: Promise<{ username: string }> };
@@ -12,6 +13,7 @@ async function getProfile(username: string) {
     include: {
       socialLinks: { orderBy: { position: "asc" } },
       services: { where: { isActive: true }, orderBy: { position: "asc" } },
+      user: { select: { subscription: { select: { plan: true } } } },
     },
   });
 }
@@ -45,7 +47,7 @@ export default async function ProfilePage({ params }: Props) {
             href={link.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-xl border bg-white px-4 py-3 text-center font-medium"
+            className="rounded-xl border border-gray-200 bg-white px-4 py-3 text-center font-medium"
           >
             {link.label ?? link.platform}
           </a>
@@ -57,7 +59,7 @@ export default async function ProfilePage({ params }: Props) {
           <h2 className="mb-3 text-lg font-semibold">Xidmətlər</h2>
           <ul className="flex flex-col gap-3">
             {profile.services.map((service) => (
-              <li key={service.id} className="rounded-xl border bg-white p-4">
+              <li key={service.id} className="rounded-xl border border-gray-200 bg-white p-4">
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <h3 className="font-medium">{service.title}</h3>
@@ -75,6 +77,12 @@ export default async function ProfilePage({ params }: Props) {
             ))}
           </ul>
         </section>
+      )}
+
+      {PLAN_LIMITS[profile.user.subscription?.plan ?? "FREE"].branding && (
+        <a href="/" className="mt-12 block text-center text-xs text-gray-400 hover:text-gray-600">
+          BioFaktura ilə yaradılıb
+        </a>
       )}
     </main>
   );

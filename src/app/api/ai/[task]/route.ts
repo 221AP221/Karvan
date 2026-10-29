@@ -1,3 +1,4 @@
+import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import {
@@ -80,6 +81,13 @@ export async function POST(request: Request, { params }: { params: Promise<{ tas
       return NextResponse.json({ error: "Məlumatlar düzgün deyil" }, { status: 400 });
     }
     if (error instanceof AiError) return NextResponse.json({ error: error.message }, { status: 422 });
+    if (error instanceof Anthropic.RateLimitError) {
+      return NextResponse.json({ error: "AI hazırda məşğuldur, bir az sonra yenidən cəhd edin." }, { status: 503 });
+    }
+    if (error instanceof Anthropic.APIError) {
+      console.error("Anthropic API error", error.status, error.message);
+      return NextResponse.json({ error: "AI xidməti cavab vermədi." }, { status: 502 });
+    }
     throw error;
   }
 }

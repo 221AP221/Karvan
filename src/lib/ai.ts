@@ -4,7 +4,12 @@ import { z } from "zod";
 
 const MODEL = "claude-opus-5-5";
 
-const client = new Anthropic();
+let client: Anthropic | undefined;
+
+function getClient() {
+  if (!process.env.ANTHROPIC_API_KEY) throw new AiError("AI qoşulmayıb: ANTHROPIC_API_KEY təyin edilməyib.");
+  return (client ??= new Anthropic());
+}
 
 // Bütün AI çıxışları satıcının təsdiqindən keçir, heç biri avtomatik göndərilmir.
 async function generate<T extends z.ZodType>(
@@ -13,7 +18,7 @@ async function generate<T extends z.ZodType>(
   prompt: string,
   effort: "low" | "medium",
 ): Promise<z.infer<T>> {
-  const response = await client.beta.messages.parse({
+  const response = await getClient().beta.messages.parse({
     model: MODEL,
     max_tokens: 4000,
     // Təhlükəsizlik klassifikatoru sorğunu rədd etsə, API onu avtomatik başqa modelə yönləndirir.

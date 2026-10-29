@@ -1,9 +1,14 @@
+import { hashPassword } from "../src/lib/auth";
 import { db } from "../src/lib/db";
 
 const user = await db.user.upsert({
   where: { email: "demo@biofaktura.az" },
   update: {},
-  create: { email: "demo@biofaktura.az", subscription: { create: { plan: "FREE" } } },
+  create: {
+    email: "demo@biofaktura.az",
+    passwordHash: await hashPassword("demo12345"),
+    subscription: { create: { plan: "FREE" } },
+  },
 });
 
 await db.profile.upsert({
@@ -34,4 +39,4 @@ await db.profile.upsert({
   },
 });
 
-console.log("Demo profil hazırdır: /demo");
+console.log("Demo profil: /demo · giriş: demo@biofaktura.az / demo12345");
