@@ -28,13 +28,17 @@ Məhsul spesifikasiyası: [docs/PRD.md](docs/PRD.md)
 
 ## Başlamaq
 
+Lazım olan yeganə şey [Node.js](https://nodejs.org) (LTS). Heç bir xidmətdə qeydiyyat tələb olunmur: verilənlər bazası kompüterinizdə işləyir (`prisma dev`).
+
 ```bash
-cp .env.example .env   # DATABASE_URL, istəyə görə ANTHROPIC_API_KEY
 npm install
-npm run db:migrate
-npx prisma db seed     # demo: /demo, giriş demo@biofaktura.az / demo12345
-npm run dev
+npm run setup   # lokal baza + cədvəllər + demo məlumat
+npm run dev     # http://localhost:3000/login
 ```
+
+Demo giriş: `demo@biofaktura.az` / `demo12345` · demo səhifə: http://localhost:3000/demo
+
+Öz PostgreSQL bazanızı istifadə etmək üçün `.env` faylında `DATABASE_URL` yazın (bax: `.env.example`). AI funksiyaları üçün `ANTHROPIC_API_KEY` lazımdır; onsuz da tətbiq işləyir, sadəcə AI düymələri xəbərdarlıq göstərir.
 
 Tam axın testi (Playwright quraşdırılmış olmalıdır):
 
