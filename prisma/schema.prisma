@@ -1,0 +1,215 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Plan {
+  FREE
+  PRO
+}
+
+enum PriceType {
+  FIXED // sabit qiymət: sifariş anında faktura yaranır
+  NEGOTIABLE // razılaşma ilə: satıcı təsdiqləyir
+}
+
+enum OrderStatus {
+  PENDING_APPROVAL
+  APPROVED
+  REJECTED
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  VIEWED
+  CLAIMED_PAID // müştəri "ödədim" dedi, satıcı təsdiqi gözlənilir
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum PaymentMethod {
+  MANUAL // rekvizit (kart / IBAN)
+  ONLINE // payment gateway
+  BOTH
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+}
+
+enum Channel {
+  WHATSAPP
+  EMAIL
+  SMS
+}
+
+enum SocialPlatform {
+  INSTAGRAM
+  TIKTOK
+  WHATSAPP
+  TELEGRAM
+  YOUTUBE
+  CUSTOM
+}
+
+model User {
+  id        String   @id @default(cuid())
+  phone     String?  @unique
+  email     String?  @unique
+  createdAt DateTime @default(now())
+
+  profile      Profile?
+  subscription Subscription?
+}
+
+model Subscription {
+  id               String    @id @default(cuid())
+  userId           String    @unique
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan             Plan      @default(FREE)
+  currentPeriodEnd DateTime?
+}
+
+model Profile {
+  id            String  @id @default(cuid())
+  userId        String  @unique
+  user          User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  username      String  @unique
+  displayName   String
+  bio           String?
+  city          String?
+  avatarUrl     String?
+  invoicePrefix String  @default("INV")
+  invoiceSeq    Int     @default(0)
+  // Tema: { primary, background, text, font, buttonStyle }
+  theme         Json?
+
+  // Manual ödəniş rekvizitləri
+  cardNumber  String?
+  iban        String?
+  bankName    String?
+  accountName String?
+
+  socialLinks SocialLink[]
+  services    Service[]
+  orders      Order[]
+  invoices    Invoice[]
+}
+
+model SocialLink {
+  id        String         @id @default(cuid())
+  profileId String
+  profile   Profile        @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  platform  SocialPlatform
+  label     String?
+  url       String
+  position  Int            @default(0)
+}
+
+model Service {
+  id          String    @id @default(cuid())
+  profileId   String
+  profile     Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  priceType   PriceType @default(FIXED)
+  amountQepik Int? // NEGOTIABLE üçün boş ola bilər
+  duration    String? // "60 dəq", "3 dərs" və s.
+  isActive    Boolean   @default(true)
+  position    Int       @default(0)
+
+  orders Order[]
+}
+
+model Order {
+  id            String      @id @default(cuid())
+  profileId     String
+  profile       Profile     @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  serviceId     String?
+  service       Service?    @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+  customerName  String
+  customerPhone String
+  customerEmail String?
+  note          String?
+  quantity      Int         @default(1)
+  status        OrderStatus @default(PENDING_APPROVAL)
+  createdAt     DateTime    @default(now())
+
+  invoice Invoice?
+
+  @@index([profileId, status])
+}
+
+model Invoice {
+  id            String        @id @default(cuid())
+  publicId      String        @unique // /i/<publicId>, təxmin edilə bilməz
+  number        String // AYG-2026-0042
+  profileId     String
+  profile       Profile       @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  orderId       String?       @unique
+  order         Order?        @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  customerName  String
+  customerPhone String?
+  customerEmail String?
+  status        InvoiceStatus @default(DRAFT)
+  paymentMethod PaymentMethod @default(MANUAL)
+  totalQepik    Int
+  currency      String        @default("AZN")
+  note          String?
+  issuedAt      DateTime      @default(now())
+  dueAt         DateTime?
+  paidAt        DateTime?
+  createdAt     DateTime      @default(now())
+
+  items     InvoiceItem[]
+  payments  Payment[]
+  reminders Reminder[]
+
+  @@unique([profileId, number])
+  @@index([profileId, status])
+  @@index([profileId, issuedAt])
+}
+
+model InvoiceItem {
+  id         String  @id @default(cuid())
+  invoiceId  String
+  invoice    Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  title      String
+  quantity   Int     @default(1)
+  unitQepik  Int
+  position   Int     @default(0)
+}
+
+model Payment {
+  id          String        @id @default(cuid())
+  invoiceId   String
+  invoice     Invoice       @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  provider    String // "manual" | gateway adı
+  externalId  String?
+  amountQepik Int
+  status      PaymentStatus @default(PENDING)
+  receiptUrl  String? // manual ödənişdə müştərinin yüklədiyi qəbz
+  createdAt   DateTime      @default(now())
+
+  @@unique([provider, externalId])
+}
+
+model Reminder {
+  id        String    @id @default(cuid())
+  invoiceId String
+  invoice   Invoice   @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  channel   Channel
+  message   String
+  sendAt    DateTime
+  sentAt    DateTime?
+
+  @@index([sendAt, sentAt])
+}
