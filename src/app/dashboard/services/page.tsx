@@ -68,7 +68,7 @@ export default async function Services({ searchParams }: { searchParams: SearchP
             <ul className="flex flex-col gap-3">
               {services.map((s) => {
                 const duration = formatDuration(s);
-                const label = categoryLabel(s.category);
+                const label = s.category === "other" && s.customCategory ? s.customCategory : categoryLabel(s.category);
                 return (
                   <li key={s.id} className={`rounded-2xl border border-gray-200 bg-white p-4 ${s.isActive ? "" : "bg-gray-50"}`}>
                     <div className="flex flex-wrap items-start justify-between gap-3">

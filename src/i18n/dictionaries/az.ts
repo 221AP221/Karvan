@@ -200,7 +200,7 @@ export const az = {
   },
 
   footer: {
-    tagline: "Instagram, TikTok və WhatsApp-da xidmət satanlar üçün link-in-bio, sifariş və onlayn faktura platforması.",
+    tagline: "Sosial şəbəkələrdə aktiv olan ustalar və mütəxəssislər üçün xidmət satışını bir yerdə quran platforma: səhifə, sifariş, faktura və ödəniş izləmə.",
     product: "Məhsul",
     explore: "Kəşf et",
     account: "Hesab",
@@ -220,7 +220,6 @@ export const az = {
     city: "Bakı, Azərbaycan",
     regions: "Azərbaycan · Türkiyə · Gürcüstan · Qazaxıstan",
     rights: "Bütün hüquqlar qorunur.",
-    made: "Bakıda hazırlanıb",
   },
 
   catalog: {
@@ -265,6 +264,8 @@ export const az = {
   },
 
   auth: {
+    planChosen: "Seçdiyiniz paket",
+    planNext: "Qeydiyyatdan və ya girişdən sonra ödəniş səhifəsi açılacaq.",
     headline: ["Profilinizi", "satış səhifəsinə", "çevirin"],
     points: ["Bir link: sosial hesablar, xidmətlər, gördüyünüz işlər", "Hər sifarişə avtomatik PDF faktura", "Kim ödəyib, kim gecikir — bir paneldə"],
     secure: "Məlumatlarınız qorunur, şifrələr şifrələnmiş saxlanılır",

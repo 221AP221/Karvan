@@ -1,10 +1,18 @@
 import { CheckCircle2 } from "lucide-react";
+import { redirect } from "next/navigation";
+import { PlanBanner } from "@/components/auth/PlanBanner";
+import { getCurrentProfile } from "@/lib/auth";
+import { isPaidPlan } from "@/lib/billing";
+import { checkoutPath } from "@/lib/plan-intent";
 import { getDictionary, getLocale } from "@/i18n/server";
 import { type SearchParams, param } from "@/lib/search-params";
 import { LoginForm } from "./LoginForm";
 
 export default async function LoginPage({ searchParams }: { searchParams: SearchParams }) {
-  const reset = param(await searchParams, "reset") === "1";
+  const sp = await searchParams;
+  const reset = param(sp, "reset") === "1";
+  const plan = param(sp, "plan");
+  if (checkoutPath(plan) && (await getCurrentProfile())) redirect(checkoutPath(plan)!);
   const a = getDictionary(await getLocale()).auth;
   return (
     <>
@@ -15,7 +23,8 @@ export default async function LoginPage({ searchParams }: { searchParams: Search
           <CheckCircle2 size={17} aria-hidden /> {a.login.resetDone}
         </p>
       )}
-      <LoginForm t={a.login} password={a.password} />
+      {isPaidPlan(plan) && <PlanBanner plan={plan} title={a.planChosen} text={a.planNext} />}
+      <LoginForm t={a.login} password={a.password} plan={isPaidPlan(plan) ? plan : undefined} />
     </>
   );
 }

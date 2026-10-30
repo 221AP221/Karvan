@@ -32,7 +32,7 @@ function suggestUsername(text: string) {
     .slice(0, 30);
 }
 
-export function SignupForm({ t, password: pw }: { t: Dict["auth"]["signup"]; password: Dict["auth"]["password"] }) {
+export function SignupForm({ t, password: pw, plan }: { t: Dict["auth"]["signup"]; password: Dict["auth"]["password"]; plan?: string }) {
   const { state, pending, onSubmit } = useAuthForm(signup);
   const form = useRef<HTMLFormElement>(null);
   const [step, setStep] = useState<1 | 2>(1);
@@ -122,6 +122,7 @@ export function SignupForm({ t, password: pw }: { t: Dict["auth"]["signup"]; pas
       </ol>
 
       <form ref={form} onSubmit={submit} noValidate className="mt-6">
+        {plan && <input type="hidden" name="plan" value={plan} />}
         {/* 1-ci addım */}
         <div className={step === 1 ? "flex flex-col gap-4" : "hidden"}>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -245,7 +246,7 @@ export function SignupForm({ t, password: pw }: { t: Dict["auth"]["signup"]; pas
 
       <p className="mt-8 text-center text-sm text-gray-500">
         {t.hasAccount}{" "}
-        <Link href="/login" className="font-semibold text-violet-600 hover:text-violet-800 dark:text-violet-300 dark:hover:text-violet-200">
+        <Link href={plan ? `/login?plan=${plan}` : "/login"} className="font-semibold text-violet-600 hover:text-violet-800 dark:text-violet-300 dark:hover:text-violet-200">
           {t.login}
         </Link>
       </p>

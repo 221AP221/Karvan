@@ -210,7 +210,8 @@ export default async function ProfilePage({ params }: Props) {
                 <SectionHeading id="xidmetler" icon={ShoppingBag} title="Xidmətlər" />
                 <ul className="grid gap-3 md:grid-cols-2">
                   {profile.services.map((service) => (
-                    <li key={service.id} className="flex flex-col rounded-2xl border border-gray-200 bg-white p-5 transition hover:shadow-lg hover:shadow-gray-900/5">
+                    <li key={service.id} className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 transition hover:shadow-lg hover:shadow-gray-900/5">
+                      {service.imageUrl && <img src={service.imageUrl} alt={service.title} loading="lazy" className="-mx-5 -mt-5 mb-4 aspect-[16/9] w-[calc(100%+2.5rem)] max-w-none object-cover" />}
                       <div className="flex items-start justify-between gap-4">
                         <h3 className="font-semibold">{service.title}</h3>
                         <span className="shrink-0 rounded-full bg-[var(--brand)]/10 px-3 py-1 text-sm font-semibold text-[var(--brand)]">

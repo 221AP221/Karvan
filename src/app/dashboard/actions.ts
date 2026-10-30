@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { requireProfile } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { deleteMediaByUrl, ownedMediaUrl } from "@/lib/media";
 import { PLAN_LIMITS } from "@/lib/plans";
 import { InvoiceLimitError, createInvoice } from "@/lib/invoices";
 import { aznToQepik, isCurrency } from "@/lib/money";
@@ -30,6 +31,8 @@ const ServiceInput = z
   .object({
     title: z.string().trim().min(2, "Xidmətin adını yazın").max(100),
     category: z.string().refine((v) => SERVICE_CATEGORIES.some((c) => c.key === v), "Xidmətin növünü seçin"),
+    customCategory: z.string().trim().max(40).optional().transform((v) => v || null),
+    imageUrl: z.string().optional().transform((v) => v || null),
     description: z.string().trim().max(600).transform((v) => v || null),
     priceType: z.enum(["FIXED", "NEGOTIABLE"]),
     amount: z.string().trim(),
@@ -39,6 +42,11 @@ const ServiceInput = z
     durationMonths: durationPart(36, "Ay"),
   })
   .transform(({ amount, ...rest }, ctx) => {
+    if (rest.category === "other" && !rest.customCategory) {
+      ctx.addIssue({ code: "custom", message: "“Digər” üçün xidmətin növünü yazın" });
+      return z.NEVER;
+    }
+    if (rest.category !== "other") rest.customCategory = null;
     const value = Number(amount.replace(",", "."));
     if (rest.priceType === "FIXED" && !(value > 0)) {
       ctx.addIssue({ code: "custom", message: "Sabit qiymətli xidmət üçün məbləğ yazın" });
@@ -54,15 +62,19 @@ export async function saveService(_: FormState, form: FormData): Promise<FormSta
   const parsed = ServiceInput.safeParse(Object.fromEntries(form));
   if (!parsed.success) return { error: firstError(parsed.error) };
 
+  // Şəkil yalnız bu satıcının yüklədiyi fayl ola bilər; dəyişəndə köhnəsi silinir
+  const data = { ...parsed.data, imageUrl: await ownedMediaUrl(profile.id, parsed.data.imageUrl) };
   const id = form.get("id");
   if (typeof id === "string" && id) {
-    await db.service.updateMany({ where: { id, profileId: profile.id }, data: parsed.data });
+    const before = await db.service.findFirst({ where: { id, profileId: profile.id }, select: { imageUrl: true } });
+    if (before && before.imageUrl !== data.imageUrl) await deleteMediaByUrl(profile.id, before.imageUrl);
+    await db.service.updateMany({ where: { id, profileId: profile.id }, data });
     await logActivity({ userId: profile.userId, email: profile.user.email, action: "service_update", details: parsed.data.title });
   } else {
     const count = await db.service.count({ where: { profileId: profile.id } });
     const limit = PLAN_LIMITS[profile.user.subscription?.plan ?? "FREE"].services;
     if (count >= limit) return { error: `Planınızda ən çox ${limit} xidmət əlavə etmək olar. Daha çoxu üçün yuxarı plana keçin.` };
-    await db.service.create({ data: { ...parsed.data, profileId: profile.id, position: count } });
+    await db.service.create({ data: { ...data, profileId: profile.id, position: count } });
     await logActivity({ userId: profile.userId, email: profile.user.email, action: "service_create", details: parsed.data.title });
   }
   revalidatePath(`/${profile.username}`);
@@ -81,8 +93,9 @@ export async function toggleService(id: string) {
 
 export async function deleteService(id: string) {
   const profile = await requireProfile();
-  const removed = await db.service.findFirst({ where: { id, profileId: profile.id }, select: { title: true } });
+  const removed = await db.service.findFirst({ where: { id, profileId: profile.id }, select: { title: true, imageUrl: true } });
   await db.service.deleteMany({ where: { id, profileId: profile.id } });
+  if (removed?.imageUrl) await deleteMediaByUrl(profile.id, removed.imageUrl);
   if (removed) await logActivity({ userId: profile.userId, email: profile.user.email, action: "service_delete", details: removed.title });
   revalidatePath("/dashboard/services");
   revalidatePath(`/${profile.username}`);

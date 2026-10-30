@@ -48,7 +48,7 @@ export default async function Settings() {
               </div>
             </div>
             <a href="/dashboard/billing" className="rounded-full bg-gradient-to-r from-violet-600 to-pink-600 px-3 py-1 text-xs font-semibold text-white">
-              {plan === "PRO_MAX" ? "Müddəti uzat" : "Tarifi yüksəlt"}
+              {plan === "FREE" ? "Tarifi yüksəlt" : "Planı idarə et"}
             </a>
           </div>
           {limits.invoicesPerMonth === Infinity ? (

@@ -73,7 +73,7 @@ export default async function Billing() {
               </ul>
               {key !== "FREE" && (
                 <Link href={`/dashboard/billing/checkout?plan=${key}`} className={`mt-5 rounded-full py-2.5 text-center text-sm font-semibold ${current ? "border border-gray-300 hover:bg-gray-50" : "bg-[var(--brand)] text-white hover:opacity-90"}`}>
-                  {current ? "Müddəti uzat" : `${PLAN_NAMES[key]}-a keç`}
+                  {current ? "Planı idarə et" : `${PLAN_NAMES[key]}-a keç`}
                 </Link>
               )}
             </div>

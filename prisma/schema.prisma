@@ -199,6 +199,8 @@ model Service {
   title       String
   description String?
   category       String? // SERVICE_CATEGORIES-dən açar
+  customCategory String? // "Digər" seçiləndə satıcının yazdığı növ
+  imageUrl       String? // könüllü şəkil (/api/media/...)
   priceType      PriceType @default(FIXED)
   amountQepik    Int? // NEGOTIABLE üçün boş ola bilər; qəpik/sent
   currency       String    @default("AZN")

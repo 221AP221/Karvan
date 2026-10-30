@@ -200,7 +200,7 @@ export const tr: typeof az = {
   },
 
   footer: {
-    tagline: "Instagram, TikTok ve WhatsApp'ta hizmet satanlar için link-in-bio, sipariş ve online fatura platformu.",
+    tagline: "Sosyal medyada aktif uzmanlar ve profesyoneller için hizmet satışını tek yerde toplayan platform: sayfa, sipariş, fatura ve ödeme takibi.",
     product: "Ürün",
     explore: "Keşfet",
     account: "Hesap",
@@ -220,7 +220,6 @@ export const tr: typeof az = {
     city: "Bakü, Azerbaycan",
     regions: "Azerbaycan · Türkiye · Gürcistan · Kazakistan",
     rights: "Tüm hakları saklıdır.",
-    made: "Bakü'de geliştirildi",
   },
 
   catalog: {
@@ -265,6 +264,8 @@ export const tr: typeof az = {
   },
 
   auth: {
+    planChosen: "Seçtiğiniz paket",
+    planNext: "Kayıt veya girişten sonra ödeme sayfası açılacak.",
     headline: ["Profilinizi", "satış sayfasına", "dönüştürün"],
     points: ["Tek link: sosyal hesaplar, hizmetler, çalışmalarınız", "Her siparişe otomatik PDF fatura", "Kim ödedi, kim gecikti — tek panelde"],
     secure: "Verileriniz korunur, şifreler şifrelenmiş olarak saklanır",

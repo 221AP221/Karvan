@@ -16,6 +16,8 @@ export default async function EditService({ params }: { params: Promise<{ id: st
           id: service.id,
           title: service.title,
           category: service.category ?? "",
+          customCategory: service.customCategory ?? "",
+          imageUrl: service.imageUrl ?? "",
           description: service.description ?? "",
           priceType: service.priceType,
           amount: service.amountQepik === null ? "" : String(service.amountQepik / 100),

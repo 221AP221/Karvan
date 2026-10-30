@@ -405,7 +405,7 @@ export function LandingPage({ locale, t }: { locale: Locale; t: Dict }) {
                       ))}
                     </ul>
                     <Link
-                      href={i === 0 ? "/signup" : `/dashboard/billing/checkout?plan=${PLAN_KEYS[i]}`}
+                      href={i === 0 ? "/signup" : `/signup?plan=${PLAN_KEYS[i]}`}
                       className={`mt-8 rounded-full py-3 text-center font-semibold transition duration-500 ${
                         popular
                           ? "bg-gradient-to-r from-violet-600 to-pink-600 text-white shadow-lg shadow-violet-500/30 group-hover:bg-none group-hover:bg-white group-hover:text-violet-700"

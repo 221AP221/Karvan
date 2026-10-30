@@ -3,6 +3,7 @@
 import { ChevronDown, LoaderCircle, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { ActionForm } from "@/components/ActionForm";
+import { ImageUpload } from "@/components/ImageUpload";
 import { Card, Field, inputClass } from "@/components/ui";
 import { callAi } from "@/lib/ai-client";
 import { CURRENCIES } from "@/lib/money";
@@ -13,6 +14,8 @@ export type ServiceValues = {
   id?: string;
   title: string;
   category: string;
+  customCategory: string;
+  imageUrl: string;
   description: string;
   priceType: "FIXED" | "NEGOTIABLE";
   amount: string;
@@ -39,6 +42,8 @@ function Select({ children, ...props }: React.ComponentProps<"select">) {
 export function ServiceForm({ service }: { service: ServiceValues }) {
   const [title, setTitle] = useState(service.title);
   const [category, setCategory] = useState(service.category);
+  const [customCategory, setCustomCategory] = useState(service.customCategory);
+  const [image, setImage] = useState(service.imageUrl);
   const [description, setDescription] = useState(service.description);
   const [priceType, setPriceType] = useState(service.priceType);
   const [variants, setVariants] = useState<string[]>([]);
@@ -48,7 +53,7 @@ export function ServiceForm({ service }: { service: ServiceValues }) {
     if (title.trim().length < 2) return setAi({ error: "Əvvəlcə xidmətin adını yazın" });
     setAi({ busy: true });
     try {
-      const niche = SERVICE_CATEGORIES.find((c) => c.key === category)?.label;
+      const niche = category === "other" ? customCategory || undefined : SERVICE_CATEGORIES.find((c) => c.key === category)?.label;
       const res = await callAi<{ variants: string[] }>("describe-service", { title, keywords: description, niche });
       setVariants(res.variants);
       setAi({});
@@ -77,7 +82,27 @@ export function ServiceForm({ service }: { service: ServiceValues }) {
                   </option>
                 ))}
               </Select>
+              {/* "Digər" seçiləndə növü satıcı özü yazır */}
+              {category === "other" && (
+                <input
+                  name="customCategory"
+                  value={customCategory}
+                  onChange={(e) => setCustomCategory(e.target.value)}
+                  required
+                  maxLength={40}
+                  placeholder="Növü yazın, məs. Tort sifarişi"
+                  aria-label="Xidmətin növü (sərbəst)"
+                  className={`${inputClass} mt-2`}
+                />
+              )}
             </label>
+          </div>
+
+          <div>
+            <p className="mb-1.5 text-sm font-medium text-gray-700">
+              Şəkil <span className="font-normal text-gray-400">(könüllü)</span>
+            </p>
+            <ImageUpload name="imageUrl" value={image} onChange={setImage} maxSize={1200} shape="wide" label="Xidmət şəkli yüklə" hint="İşinizdən nümunə: kataloqda və səhifənizdə kartın üstündə görünür" />
           </div>
 
           <div>

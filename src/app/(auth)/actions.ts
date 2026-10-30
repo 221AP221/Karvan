@@ -10,6 +10,7 @@ import { type Dict, getDictionary, getLocale } from "@/i18n/server";
 import type { FormState } from "@/lib/forms";
 import { sendEmail } from "@/lib/notify";
 import { normalizePhone } from "@/lib/phone";
+import { checkoutPath } from "@/lib/plan-intent";
 import { findValidReset, hashResetToken as sha256 } from "@/lib/password-reset";
 import { RESERVED_USERNAMES, USERNAME_RE } from "@/lib/username";
 
@@ -99,7 +100,7 @@ export async function signup(_: AuthState, form: FormData): Promise<AuthState> {
   });
   await startSession(user.id);
   await logActivity({ userId: user.id, email, action: "signup", details: `@${username}` });
-  redirect("/dashboard/profile");
+  redirect(checkoutPath(form.get("plan")) ?? "/dashboard/profile");
 }
 
 export async function login(_: AuthState, form: FormData): Promise<AuthState> {
@@ -124,7 +125,7 @@ export async function login(_: AuthState, form: FormData): Promise<AuthState> {
   if (!user.profile) return fail((await errors()).noProfile);
   await startSession(user.id);
   await logActivity({ userId: user.id, email, action: "login" });
-  redirect("/dashboard");
+  redirect(checkoutPath(form.get("plan")) ?? "/dashboard");
 }
 
 export async function logout() {

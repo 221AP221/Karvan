@@ -1,4 +1,4 @@
-import { Globe2, Mail, MapPin } from "lucide-react";
+import { Globe2, Mail, MapPin, Phone } from "lucide-react";
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
 import { CATALOG_PATH, HOME_PATH, type Locale } from "@/i18n/config";
@@ -72,6 +72,11 @@ export function SiteFooter({ locale, t, paths }: { locale: Locale; t: Dict; path
           <p className="font-semibold text-gray-900 dark:text-white">{f.contact}</p>
           <ul className="mt-4 space-y-3 text-gray-600 dark:text-gray-400">
             <li>
+              <a href="tel:*0221" className="inline-flex items-center gap-2 font-semibold text-gray-900 transition hover:text-[var(--brand)] dark:text-white">
+                <Phone size={15} strokeWidth={1.8} aria-hidden /> *0221
+              </a>
+            </li>
+            <li>
               <a href="mailto:hello@karvan.az" className="inline-flex items-center gap-2 transition hover:text-gray-900 dark:hover:text-white">
                 <Mail size={15} strokeWidth={1.8} aria-hidden /> hello@karvan.az
               </a>
@@ -89,7 +94,7 @@ export function SiteFooter({ locale, t, paths }: { locale: Locale; t: Dict; path
       <div className="border-t border-gray-200 dark:border-white/10">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-6 text-gray-500 sm:flex-row dark:text-gray-400">
           <p>
-            © 2026 Karvan. {f.rights} <span className="mx-1.5 text-gray-300 dark:text-white/20">·</span> {f.made}
+            © 2026 Karvan. {f.rights}
           </p>
           <div className="flex items-center gap-1">
             <LanguageSwitcher locale={locale} paths={paths} label={t.common.language} />

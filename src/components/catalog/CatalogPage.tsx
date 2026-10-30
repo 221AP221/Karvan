@@ -70,6 +70,7 @@ export async function CatalogPage({ locale, searchParams }: { locale: Locale; se
       OR: [
         { title: { contains: q, mode: "insensitive" } },
         { description: { contains: q, mode: "insensitive" } },
+        { customCategory: { contains: q, mode: "insensitive" } },
         { profile: { displayName: { contains: q, mode: "insensitive" } } },
         { profile: { profession: { contains: q, mode: "insensitive" } } },
       ],
@@ -246,7 +247,7 @@ export async function CatalogPage({ locale, searchParams }: { locale: Locale; se
               const limits = PLAN_LIMITS[plan];
               const brand = (s.profile.theme as { primary?: string } | null)?.primary ?? "#D6127E";
               const time = duration(s, t);
-              const cat = localizedCategory(s.category, locale);
+              const cat = s.category === "other" && s.customCategory ? s.customCategory : localizedCategory(s.category, locale);
               return (
                 <li key={s.id}>
                   <Link
@@ -256,6 +257,7 @@ export async function CatalogPage({ locale, searchParams }: { locale: Locale; se
                     }`}
                     style={{ "--brand": brand } as React.CSSProperties}
                   >
+                    {s.imageUrl && <img src={s.imageUrl} alt="" loading="lazy" className="-mx-5 -mt-5 mb-4 aspect-[16/9] w-[calc(100%+2.5rem)] max-w-none rounded-t-3xl object-cover" />}
                     <div className="flex items-center gap-3">
                       {s.profile.avatarUrl ? (
                         <img src={s.profile.avatarUrl} alt="" loading="lazy" className="h-11 w-11 shrink-0 rounded-full object-cover" />
