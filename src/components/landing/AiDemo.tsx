@@ -1,5 +1,6 @@
 "use client";
 
+import { Sparkles } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 const PROMPT = "Aygün Məmmədova, 0501234567, 3 fərdi dərs hər biri 50 manat, cümə gününə qədər";
@@ -74,7 +75,7 @@ export function AiDemo() {
             {phase === "thinking" ? (
               <span className="h-3 w-3 animate-spin rounded-full border-2 border-white/40 border-t-white" />
             ) : (
-              <span>✨</span>
+              <Sparkles size={16} strokeWidth={1.75} aria-hidden />
             )}
             <span>{phase === "thinking" ? "AI oxuyur..." : "Fakturaya çevir"}</span>
           </span>

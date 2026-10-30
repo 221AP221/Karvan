@@ -1,24 +1,69 @@
+import {
+  ArrowRight,
+  BadgeCheck,
+  Brain,
+  Briefcase,
+  Brush,
+  Camera,
+  ChartColumn,
+  Check,
+  Clapperboard,
+  CreditCard,
+  Dumbbell,
+  FileText,
+  GraduationCap,
+  Hand,
+  Languages,
+  Link2,
+  Megaphone,
+  MessageCircle,
+  Palette,
+  PenTool,
+  Plus,
+  Receipt,
+  Send,
+  ShoppingBag,
+  Smartphone,
+  Sparkles,
+  TrendingUp,
+  WandSparkles,
+  X,
+} from "lucide-react";
 import Link from "next/link";
 import { AiDemo } from "@/components/landing/AiDemo";
 import { Appear } from "@/components/landing/Appear";
 import { Header, Logo } from "@/components/landing/Header";
+import { HeroHeadline } from "@/components/landing/HeroHeadline";
 import { HeroPhone } from "@/components/landing/HeroPhone";
+import { IconBadge } from "@/components/landing/IconBadge";
 import { Marquee } from "@/components/landing/Marquee";
 import { SmoothScroll } from "@/components/landing/SmoothScroll";
 import { StepsTimeline } from "@/components/landing/StepsTimeline";
-import { WordRotator } from "@/components/landing/WordRotator";
 import GradientText from "@/components/reactbits/GradientText";
 import Magnet from "@/components/reactbits/Magnet";
 import ScrollReveal from "@/components/reactbits/ScrollReveal";
 import ShinyText from "@/components/reactbits/ShinyText";
-import SplitText from "@/components/reactbits/SplitText";
 import SpotlightCard from "@/components/reactbits/SpotlightCard";
 
 const BRAND_GRADIENT = ["#7c3aed", "#db2777", "#f59e0b", "#7c3aed"];
 
 const NICHES = [
-  ["💄 Makiyaj ustaları", "📚 Repetitorlar", "🎨 Dizaynerlər", "📣 SMM mütəxəssisləri", "📸 Fotoqraflar", "💅 Dırnaq ustaları"],
-  ["🏋️ Fitness məşqçiləri", "🧠 Psixoloqlar", "💼 Konsultantlar", "📢 Reklam bloqerləri", "🎬 Video montajçılar", "🌐 Tərcüməçilər"],
+  [
+    { icon: Brush, label: "Makiyaj ustaları" },
+    { icon: GraduationCap, label: "Repetitorlar" },
+    { icon: PenTool, label: "Dizaynerlər" },
+    { icon: Megaphone, label: "SMM mütəxəssisləri" },
+    { icon: Camera, label: "Fotoqraflar" },
+    { icon: Hand, label: "Dırnaq ustaları" },
+  ],
+  [
+    { icon: Dumbbell, label: "Fitness məşqçiləri" },
+    { icon: Brain, label: "Psixoloqlar" },
+    { icon: Briefcase, label: "Konsultantlar" },
+    { icon: Send, label: "Reklam bloqerləri" },
+    { icon: Clapperboard, label: "Video montajçılar" },
+    { icon: Languages, label: "Tərcüməçilər" },
+  ],
 ];
 
 const STATS = [
@@ -29,26 +74,26 @@ const STATS = [
 ];
 
 const STEPS = [
-  { icon: "🎨", title: "Səhifənizi qurun", text: "Ad, bio, sosial linklər və xidmətlərinizi əlavə edin. biofaktura.az/adiniz bir neçə dəqiqəyə hazırdır." },
-  { icon: "🔗", title: "Linki bio-ya qoyun", text: "Instagram və TikTok profilinizə əlavə edin. Müştəri xidməti seçib bir kliklə sifariş verir." },
-  { icon: "📄", title: "Faktura avtomatik gedir", text: "Sabit qiymətdə dərhal, “razılaşma ilə” xidmətdə siz təsdiqləyəndə. Rekvizitlər, QR kod, PDF — hamısı içində." },
-  { icon: "📈", title: "Ödənişi izləyin", text: "Müştəri “Ödədim” basır, siz bir kliklə təsdiqləyirsiniz. Kim ödəyib, kim gecikir — bir ekranda." },
+  { icon: <IconBadge icon={Palette} size="lg" />, title: "Səhifənizi qurun", text: "Ad, bio, sosial linklər və xidmətlərinizi əlavə edin. biofaktura.az/adiniz bir neçə dəqiqəyə hazırdır." },
+  { icon: <IconBadge icon={Link2} size="lg" />, title: "Linki bio-ya qoyun", text: "Instagram və TikTok profilinizə əlavə edin. Müştəri xidməti seçib bir kliklə sifariş verir." },
+  { icon: <IconBadge icon={Receipt} size="lg" />, title: "Faktura avtomatik gedir", text: "Sabit qiymətdə dərhal, “razılaşma ilə” xidmətdə siz təsdiqləyəndə. Rekvizitlər, QR kod, PDF — hamısı içində." },
+  { icon: <IconBadge icon={TrendingUp} size="lg" />, title: "Ödənişi izləyin", text: "Müştəri “Ödədim” basır, siz bir kliklə təsdiqləyirsiniz. Kim ödəyib, kim gecikir — bir ekranda." },
 ];
 
 const FEATURES = [
-  { icon: "📱", title: "Link-in-bio səhifə", text: "Sosial linklər və xidmətlər bir yerdə, brend rənginizlə, telefona uyğun." },
-  { icon: "🛒", title: "Sifariş formu", text: "Sabit qiymətdə faktura dərhal yaranır, “razılaşma ilə” xidmətdə siz təsdiqləyirsiniz." },
-  { icon: "📄", title: "PDF faktura", text: "Nömrələnmiş, QR kodlu, peşəkar faktura. Müştəri onlayn baxır və ya yükləyir." },
-  { icon: "💳", title: "Rekvizitlər", text: "Kart və IBAN fakturada görünür, müştəri bir kliklə kopyalayır və “Ödədim” basır." },
-  { icon: "💬", title: "WhatsApp ilə göndər", text: "Faktura linki hazır mətnlə WhatsApp-a gedir. Kopyala-yapışdır yoxdur." },
-  { icon: "📊", title: "Ödəniş paneli", text: "Bu ay nə qədər qazandınız, kim gecikir, nə gözlənilir: hamısı bir ekranda." },
+  { icon: Smartphone, title: "Link-in-bio səhifə", text: "Sosial linklər və xidmətlər bir yerdə, brend rənginizlə, telefona uyğun." },
+  { icon: ShoppingBag, title: "Sifariş formu", text: "Sabit qiymətdə faktura dərhal yaranır, “razılaşma ilə” xidmətdə siz təsdiqləyirsiniz." },
+  { icon: FileText, title: "PDF faktura", text: "Nömrələnmiş, QR kodlu, peşəkar faktura. Müştəri onlayn baxır və ya yükləyir." },
+  { icon: CreditCard, title: "Rekvizitlər", text: "Kart və IBAN fakturada görünür, müştəri bir kliklə kopyalayır və “Ödədim” basır." },
+  { icon: MessageCircle, title: "WhatsApp ilə göndər", text: "Faktura linki hazır mətnlə WhatsApp-a gedir. Kopyala-yapışdır yoxdur." },
+  { icon: ChartColumn, title: "Ödəniş paneli", text: "Bu ay nə qədər qazandınız, kim gecikir, nə gözlənilir: hamısı bir ekranda." },
 ];
 
 const AI_FEATURES = [
-  { title: "Mətndən faktura", text: "Necə danışırsınızsa, elə yazın. AI müştərini, xidməti və məbləği tapır." },
-  { title: "Xidmət təsviri", text: "Bir neçə açar söz yazın, AI 3 satış mətni təklif etsin." },
-  { title: "Brend rəngi", text: "Sahənizə uyğun rəng palitrasını AI seçir." },
-  { title: "Nəzakətli xatırlatma", text: "Ödəniş gecikəndə AI uyğun tonda WhatsApp mesajı yazır." },
+  { icon: WandSparkles, title: "Mətndən faktura", text: "Necə danışırsınızsa, elə yazın. AI müştərini, xidməti və məbləği tapır." },
+  { icon: PenTool, title: "Xidmət təsviri", text: "Bir neçə açar söz yazın, AI 3 satış mətni təklif etsin." },
+  { icon: Palette, title: "Brend rəngi", text: "Sahənizə uyğun rəng palitrasını AI seçir." },
+  { icon: MessageCircle, title: "Nəzakətli xatırlatma", text: "Ödəniş gecikəndə AI uyğun tonda WhatsApp mesajı yazır." },
 ];
 
 const FAQ = [
@@ -59,11 +104,11 @@ const FAQ = [
   { q: "Ödənişin gəldiyini necə bilirəm?", a: "Müştəri “Ödədim” basanda paneldə görünür. Hesabınızı yoxlayıb bir kliklə təsdiqləyirsiniz." },
 ];
 
-function SectionTitle({ eyebrow, title, text, dark = false }: { eyebrow: string; title: string; text?: string; dark?: boolean }) {
+function SectionTitle({ eyebrow, title, text, dark = false }: { eyebrow: React.ReactNode; title: string; text?: string; dark?: boolean }) {
   return (
     <Appear stagger={0.08} className="mx-auto max-w-3xl text-center">
-      <p className={`text-sm font-semibold uppercase tracking-[0.2em] ${dark ? "text-violet-300" : "text-violet-600"}`}>{eyebrow}</p>
-      <h2 className="mt-4 text-balance text-3xl font-bold leading-tight tracking-tight sm:text-5xl sm:leading-[1.1]">{title}</h2>
+      <p className={`inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.2em] ${dark ? "text-violet-300" : "text-violet-600"}`}>{eyebrow}</p>
+      <h2 className="mt-4 text-balance text-3xl font-bold leading-tight sm:text-5xl sm:leading-[1.1]">{title}</h2>
       {text && <p className={`mt-5 text-pretty text-lg ${dark ? "text-gray-400" : "text-gray-600"}`}>{text}</p>}
     </Appear>
   );
@@ -102,20 +147,7 @@ export default function Home() {
                 </span>
               </Appear>
 
-              <h1 className="mt-6 text-[2.6rem] font-extrabold leading-[1.1] tracking-tight sm:text-6xl lg:text-7xl">
-                <SplitText
-                  text="Profil linkiniz"
-                  tag="span"
-                  trigger="load"
-                  splitType="chars"
-                  effect="rise"
-                  delay={22}
-                  duration={0.7}
-                  textAlign="inherit"
-                  className="block pb-1"
-                />
-                <WordRotator words={["satış edir", "faktura yazır", "ödənişi izləyir"]} className="mt-1" />
-              </h1>
+              <HeroHeadline className="mt-6 text-[2.6rem] leading-[1.08] sm:text-6xl lg:text-7xl" />
 
               <Appear trigger="mount" delay={0.15}>
                 <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-gray-600 lg:mx-0">
@@ -136,7 +168,7 @@ export default function Home() {
                     className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-violet-600 to-pink-600 px-8 py-4 font-semibold text-white shadow-xl shadow-violet-500/30 transition-shadow hover:shadow-2xl hover:shadow-violet-500/40 sm:w-auto"
                   >
                     Pulsuz başla
-                    <span className="transition-transform group-hover:translate-x-1">→</span>
+                    <ArrowRight size={18} strokeWidth={2} className="transition-transform group-hover:translate-x-1" aria-hidden />
                   </Link>
                 </Magnet>
                 <Magnet padding={40} magnetStrength={4} wrapperClassName="w-full sm:w-auto">
@@ -204,7 +236,9 @@ export default function Home() {
                   "Kim ödəyib, kim yox: dəftərdə və ya yaddaşda",
                 ].map((t) => (
                   <li key={t} className="flex gap-3">
-                    <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-red-100 text-xs text-red-600">✕</span>
+                    <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-red-100 text-red-600 ring-1 ring-red-200/70">
+                      <X size={12} strokeWidth={2.5} aria-hidden />
+                    </span>
                     {t}
                   </li>
                 ))}
@@ -220,7 +254,9 @@ export default function Home() {
                   "Panel: qazanılan, gözlənilən və gecikən məbləğlər",
                 ].map((t) => (
                   <li key={t} className="flex gap-3">
-                    <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-emerald-100 text-xs text-emerald-700">✓</span>
+                    <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-emerald-100 text-emerald-700 ring-1 ring-emerald-200/70">
+                      <Check size={12} strokeWidth={2.75} aria-hidden />
+                    </span>
                     {t}
                   </li>
                 ))}
@@ -249,7 +285,7 @@ export default function Home() {
           <Appear stagger={0.08} className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {FEATURES.map((f) => (
               <SpotlightCard key={f.title} theme="light" spotlightColor="rgba(124, 58, 237, 0.18)" className="h-full rounded-3xl p-7">
-                <span className="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-violet-50 to-pink-50 text-2xl">{f.icon}</span>
+                <IconBadge icon={f.icon} tone="solid" />
                 <h3 className="mt-5 text-lg font-semibold">{f.title}</h3>
                 <p className="mt-2 text-gray-600">{f.text}</p>
               </SpotlightCard>
@@ -266,7 +302,7 @@ export default function Home() {
           <div className="relative mx-auto max-w-6xl px-4">
             <SectionTitle
               dark
-              eyebrow="✨ Süni intellekt"
+              eyebrow={<><Sparkles size={16} strokeWidth={1.75} aria-hidden /> Süni intellekt</>}
               title="Yazın, AI fakturanı hazırlasın"
               text="Formaları doldurmaq lazım deyil. Razılaşdığınızı adi dillə yazın, qalanını AI edir. Göndərməzdən əvvəl hər şeyi siz yoxlayırsınız."
             />
@@ -276,7 +312,8 @@ export default function Home() {
             <Appear stagger={0.1} className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {AI_FEATURES.map((f) => (
                 <SpotlightCard key={f.title} theme="dark" spotlightColor="rgba(167, 139, 250, 0.25)" className="h-full rounded-2xl p-6">
-                  <h3 className="font-semibold">{f.title}</h3>
+                  <IconBadge icon={f.icon} size="sm" tone="dark" />
+                  <h3 className="mt-4 font-semibold">{f.title}</h3>
                   <p className="mt-2 text-sm text-gray-400">{f.text}</p>
                 </SpotlightCard>
               ))}
@@ -298,7 +335,7 @@ export default function Home() {
               <ul className="mt-8 flex-1 space-y-3 text-gray-700">
                 {["Link-in-bio səhifə", "Limitsiz sifariş", "Ayda 5 faktura", "PDF faktura və QR kod", "WhatsApp ilə göndərmə", "AI köməkçisi"].map((t) => (
                   <li key={t} className="flex gap-3">
-                    <span className="text-violet-600">✓</span>
+                    <Check size={18} strokeWidth={2.25} className="mt-0.5 shrink-0 text-violet-600" aria-hidden />
                     {t}
                   </li>
                 ))}
@@ -324,7 +361,7 @@ export default function Home() {
                 <ul className="mt-8 flex-1 space-y-3 text-gray-700">
                   {["Pulsuz plandakı hər şey", "Limitsiz faktura", "Öz loqonuz, BioFaktura yazısı yoxdur", "Onlayn kartla ödəniş", "SMS və avtomatik xatırlatmalar", "Genişləndirilmiş AI"].map((t) => (
                     <li key={t} className="flex gap-3">
-                      <span className="text-pink-600">✓</span>
+                      <BadgeCheck size={18} strokeWidth={2} className="mt-0.5 shrink-0 text-pink-600" aria-hidden />
                       {t}
                     </li>
                   ))}
@@ -349,8 +386,8 @@ export default function Home() {
                 <details key={item.q} className="group rounded-2xl border border-gray-200 bg-white px-6 py-5 transition open:shadow-lg open:shadow-violet-500/5">
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold [&::-webkit-details-marker]:hidden">
                     {item.q}
-                    <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-gray-100 text-gray-600 transition-transform duration-300 group-open:rotate-45">
-                      +
+                    <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-gray-100 text-gray-600 ring-1 ring-gray-200 transition duration-300 group-open:rotate-45 group-open:bg-violet-600 group-open:text-white group-open:ring-violet-600">
+                      <Plus size={16} strokeWidth={2} aria-hidden />
                     </span>
                   </summary>
                   <p className="mt-3 text-gray-600">{item.a}</p>

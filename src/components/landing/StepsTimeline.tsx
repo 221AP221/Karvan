@@ -7,7 +7,7 @@ import { useRef } from "react";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-export type Step = { title: string; text: string; icon: string };
+export type Step = { title: string; text: string; icon: React.ReactNode };
 
 // Scroll etdikcə xətt dolur, hər addım növbə ilə "yanır".
 export function StepsTimeline({ steps }: { steps: Step[] }) {
@@ -51,7 +51,7 @@ export function StepsTimeline({ steps }: { steps: Step[] }) {
       {steps.map((step, i) => (
         <li key={step.title} data-step className="relative flex gap-6 pb-14 last:pb-0">
           <span className="relative z-10 flex flex-col items-center">
-            <span data-icon className="grid h-14 w-14 place-items-center rounded-2xl bg-white text-2xl shadow-lg shadow-violet-500/10 ring-1 ring-gray-200">
+            <span data-icon className="block rounded-2xl bg-gray-50/80 p-0.5">
               {step.icon}
             </span>
             <span data-dot className="absolute -right-1 -top-1 grid h-6 w-6 place-items-center rounded-full bg-gray-900 text-xs font-bold text-white ring-4 ring-white">

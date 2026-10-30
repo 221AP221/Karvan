@@ -3,7 +3,9 @@
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Check, FileText, ShoppingBag } from "lucide-react";
 import { useRef } from "react";
+import { IconBadge } from "./IconBadge";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -12,8 +14,7 @@ const CARDS = [
     position: "-left-4 -top-6 sm:-left-28 sm:top-24",
     speed: -60,
     className: "border border-gray-200 bg-white/95",
-    icon: "🛍️",
-    iconClass: "bg-violet-100",
+    icon: <IconBadge icon={ShoppingBag} size="sm" />,
     label: "Yeni sifariş",
     value: "Nərmin · 40 AZN",
   },
@@ -21,8 +22,7 @@ const CARDS = [
     position: "-right-28 top-[42%] hidden sm:block",
     speed: -110,
     className: "border border-gray-200 bg-white/95",
-    icon: "📄",
-    iconClass: "bg-sky-100",
+    icon: <IconBadge icon={FileText} size="sm" tone="info" />,
     label: "Faktura göndərildi",
     value: "LEY-2026-0042",
     mono: true,
@@ -31,8 +31,11 @@ const CARDS = [
     position: "-bottom-6 left-4 sm:-left-8",
     speed: -30,
     className: "bg-emerald-600 text-white shadow-emerald-600/30",
-    icon: "✓",
-    iconClass: "bg-white/20",
+    icon: (
+      <span className="grid h-9 w-9 place-items-center rounded-xl bg-white/20 ring-1 ring-white/30">
+        <Check size={18} strokeWidth={2.5} aria-hidden />
+      </span>
+    ),
     label: "Ödənildi",
     labelClass: "text-emerald-100",
     value: "+40,00 AZN",
@@ -150,7 +153,7 @@ export function HeroPhone() {
       {CARDS.map((card) => (
         <div key={card.label} data-card data-speed={card.speed} className={`invisible absolute ${card.position}`}>
           <div className={`flex items-center gap-3 rounded-2xl px-4 py-3 shadow-xl backdrop-blur ${card.className}`}>
-            <span className={`grid h-9 w-9 place-items-center rounded-full text-lg ${card.iconClass}`}>{card.icon}</span>
+            {card.icon}
             <span className="text-left">
               <span className={`block text-xs ${card.labelClass ?? "text-gray-500"}`}>{card.label}</span>
               <span className={`block text-sm font-semibold ${card.mono ? "font-mono" : ""}`}>{card.value}</span>

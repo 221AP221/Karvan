@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 
 const NAV = [
   { href: "#nece-isleyir", label: "Necə işləyir" },
@@ -12,12 +12,26 @@ const NAV = [
 ];
 
 export function Logo() {
+  const gradient = useId();
   return (
-    <span className="flex items-center gap-2 font-bold">
-      <span className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-violet-600 to-pink-600 text-sm text-white shadow-md shadow-violet-500/30">
-        B
+    <span className="flex items-center gap-2.5 font-display text-[17px] font-bold tracking-tight">
+      <svg viewBox="0 0 32 32" className="h-8 w-8 drop-shadow-[0_4px_10px_rgba(124,58,237,0.35)]" aria-hidden>
+        <defs>
+          <linearGradient id={gradient} x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="#7c3aed" />
+            <stop offset="1" stopColor="#db2777" />
+          </linearGradient>
+        </defs>
+        <rect width="32" height="32" rx="9" fill={`url(#${gradient})`} />
+        {/* Qatlanmış küncü olan faktura vərəqi */}
+        <path d="M10 8.5h8.5l4 4V23a1.5 1.5 0 0 1-1.5 1.5H10A1.5 1.5 0 0 1 8.5 23V10A1.5 1.5 0 0 1 10 8.5Z" fill="white" />
+        <path d="M18.5 8.5v4h4" fill="#f5d0fe" />
+        <rect x="11.5" y="15" width="8" height="1.6" rx="0.8" fill="#c4b5fd" />
+        <rect x="11.5" y="18.5" width="5" height="1.6" rx="0.8" fill="#c4b5fd" />
+      </svg>
+      <span>
+        Bio<span className="text-violet-600">Faktura</span>
       </span>
-      BioFaktura
     </span>
   );
 }
