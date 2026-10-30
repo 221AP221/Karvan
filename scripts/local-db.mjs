@@ -9,4 +9,9 @@ if (!process.env.DATABASE_URL) {
 }
 execSync("npx prisma migrate deploy", { stdio: ["ignore", "ignore", "inherit"] });
 // Demo hesab və onun analitika məlumatları (yalnız çatışmayanlar əlavə olunur)
-execSync("npx tsx prisma/seed.ts", { stdio: ["ignore", "ignore", "inherit"] });
+try {
+  execSync("npx tsx prisma/seed.ts", { stdio: ["ignore", "ignore", "pipe"] });
+} catch (error) {
+  // Demo məlumatı yaradılmasa da sayt işə düşməlidir
+  console.warn("Demo məlumatlar yenilənmədi:", String(error.stderr ?? error).split("\n").find((l) => l.trim()) ?? error);
+}

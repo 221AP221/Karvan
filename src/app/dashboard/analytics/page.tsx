@@ -1,5 +1,7 @@
 import {
   AlertTriangle,
+  Download,
+  Lock,
   Clock,
   Eye,
   Lightbulb,
@@ -24,6 +26,7 @@ import { Card } from "@/components/ui";
 import { requireProfile } from "@/lib/auth";
 import { PERIODS, buildReport, change, niceTop, type Period, type Report, type Totals } from "@/lib/analytics-report";
 import { formatMoney } from "@/lib/money";
+import { PLAN_LIMITS } from "@/lib/plans";
 import { param, type SearchParams } from "@/lib/search-params";
 import { PLATFORM_BY_KEY } from "@/lib/social";
 import { CopyLink } from "../invoices/[id]/client";
@@ -167,6 +170,7 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Se
   const raw = Number(param(await searchParams, "p"));
   const period: Period = (PERIODS as readonly number[]).includes(raw) ? (raw as Period) : 30;
   const r = await buildReport(profile.id, period);
+  const reports = PLAN_LIMITS[profile.user.subscription?.plan ?? "FREE"].reports;
   const s = r.sales;
   const a = r.audience;
   const pageUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/${profile.username}`;
@@ -184,6 +188,16 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Se
           <h1 className="text-2xl font-bold">Analitika</h1>
           <p className="text-sm text-gray-500">Satışlarınız və səhifənizə gələn auditoriya. Faizlər əvvəlki {period} günlə müqayisədir.</p>
         </div>
+        <div className="flex flex-wrap items-center gap-2">
+        {reports ? (
+          <a href={`/api/analytics/export?p=${period}`} className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:border-gray-400">
+            <Download size={15} aria-hidden /> Hesabatı yüklə (Excel)
+          </a>
+        ) : (
+          <span title="Pro Max planında" className="inline-flex items-center gap-2 rounded-full border border-dashed border-gray-300 px-4 py-2 text-sm text-gray-400">
+            <Lock size={14} aria-hidden /> Hesabat ixracı · Pro Max
+          </span>
+        )}
         <nav className="inline-flex rounded-full border border-gray-200 bg-white p-1 text-sm" aria-label="Dövr">
           {PERIODS.map((p) => (
             <Link
@@ -197,6 +211,7 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Se
             </Link>
           ))}
         </nav>
+        </div>
       </div>
 
       {!r.hasEvents && (

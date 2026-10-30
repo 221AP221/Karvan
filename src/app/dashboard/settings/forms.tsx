@@ -3,7 +3,7 @@
 import { useActionState, useState } from "react";
 import { ActionForm } from "@/components/ActionForm";
 import { Field, secondaryButtonClass } from "@/components/ui";
-import { changeEmail, changePassword, deleteAccount, signOutOtherDevices, updatePaymentSettings } from "./actions";
+import { changeEmail, changePassword, deleteAccount, setCatalogVisibility, signOutOtherDevices, updatePaymentSettings } from "./actions";
 
 export function EmailForm({ email }: { email: string }) {
   return (
@@ -40,6 +40,23 @@ export function PaymentForm({ values }: { values: Record<"invoicePrefix" | "acco
           <Field label="IBAN" name="iban" defaultValue={values.iban} placeholder="AZ00 XXXX 0000 0000 0000 0000 0000" />
         </div>
       </div>
+    </ActionForm>
+  );
+}
+
+export function CatalogForm({ visible, featured }: { visible: boolean; featured: boolean }) {
+  return (
+    <ActionForm action={setCatalogVisibility} submitLabel="Yadda saxla" successMessage="Yadda saxlanıldı">
+      <label className="flex cursor-pointer items-start gap-3">
+        <input type="checkbox" name="showInCatalog" defaultChecked={visible} className="mt-1 h-4 w-4 accent-[var(--brand)]" />
+        <span>
+          <span className="block text-sm font-medium text-gray-800">Xidmətlərimi kataloqda göstər</span>
+          <span className="block text-sm text-gray-500">
+            Aktiv xidmətləriniz karvan.az/xidmetler səhifəsində axtarışda çıxır, müştəri sizi bio linkiniz olmadan da tapır.
+            {featured ? " Pro Max planında xidmətləriniz yuxarıda “Seçilmiş” nişanı ilə göstərilir." : ""}
+          </span>
+        </span>
+      </label>
     </ActionForm>
   );
 }

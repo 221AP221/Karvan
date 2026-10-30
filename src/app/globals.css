@@ -1,6 +1,9 @@
 @import "tailwindcss";
 
-/* Şriftlər layihənin içindədir (@fontsource-variable), Azərbaycan hərflərinin hamısını dəstəkləyir. */
+/* Qaranlıq rejim: <html class="dark"> (seçim yadda saxlanılır, ilk dəfə sistem ayarına baxılır) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Şriftlər layihənin içindədir (@fontsource-variable). */
 @theme {
   /* Karvan rəngləri: köhnə violet/fuchsia sinifləri avtomatik brend palitrasını alır */
   --color-violet-50: #fff0f7;
@@ -18,8 +21,9 @@
   --color-fuchsia-500: #f0306f;
   --color-fuchsia-600: #e11d63;
   --color-charcoal: #3d3f46;
-  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Plus Jakarta Sans Variable", "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  /* Onest (mətn) və Geologica (başlıq): Azərbaycan, türk və kiril hərflərinin, ₼ işarəsinin hamısı var */
+  --font-sans: "Onest Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Geologica Variable", "Onest Variable", ui-sans-serif, system-ui, sans-serif;
 }
 
 :root {
@@ -30,16 +34,14 @@ body {
   background: #fafafa;
   color: #111827;
   font-family: var(--font-sans);
-  font-feature-settings: "cv11", "ss03";
   text-rendering: optimizeLegibility;
 }
 
 h1, h2, h3 {
   font-family: var(--font-display);
 }
-/* Plus Jakarta Sans özü sıx çəkilib: böyük başlıqlarda yüngül, kiçiklərdə minimal sıxma */
-h1, h2 { letter-spacing: -0.02em; }
-h3 { letter-spacing: -0.005em; }
+h1, h2 { letter-spacing: -0.025em; }
+h3 { letter-spacing: -0.01em; }
 
 html {
   scroll-padding-top: 80px;

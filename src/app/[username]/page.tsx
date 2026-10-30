@@ -1,4 +1,4 @@
-import { ArrowUpRight, Briefcase, Clock, ExternalLink, MapPin, Phone, ShoppingBag, UserRound } from "lucide-react";
+import { ArrowUpRight, BadgeCheck, Briefcase, Clock, ExternalLink, MapPin, Phone, ShoppingBag, UserRound } from "lucide-react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Logo } from "@/components/Logo";
@@ -83,7 +83,8 @@ export default async function ProfilePage({ params }: Props) {
   const brand = (profile.theme as { primary?: string } | null)?.primary ?? "#D6127E";
   const socials = profile.socialLinks.filter((l) => l.platform !== "CUSTOM");
   const links = profile.socialLinks.filter((l) => l.platform === "CUSTOM");
-  const branding = PLAN_LIMITS[profile.user.subscription?.plan ?? "FREE"].branding;
+  const limits = PLAN_LIMITS[profile.user.subscription?.plan ?? "FREE"];
+  const branding = limits.branding;
 
   const sections = [
     profile.services.length > 0 && { id: "xidmetler", label: "Xidmətlər" },
@@ -118,7 +119,14 @@ export default async function ProfilePage({ params }: Props) {
                 {initials(profile.displayName)}
               </span>
             )}
-            <h1 className="mt-4 text-2xl font-bold">{profile.displayName}</h1>
+            <h1 className="mt-4 inline-flex items-center gap-1.5 text-2xl font-bold">
+              {profile.displayName}
+              {limits.verified && (
+                <BadgeCheck size={22} strokeWidth={2.25} className="shrink-0 fill-sky-500 text-white" aria-label="Təsdiqlənmiş hesab">
+                  <title>Təsdiqlənmiş hesab</title>
+                </BadgeCheck>
+              )}
+            </h1>
             {(profile.profession || profile.city) && (
               <p className="mt-1 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm text-gray-500 lg:justify-start">
                 {profile.profession && <span className="font-medium text-[var(--brand)]">{profile.profession}</span>}

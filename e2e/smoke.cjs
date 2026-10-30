@@ -158,7 +158,7 @@ const BASE = process.env.BASE_URL ?? "http://localhost:3000";
     await seller.click("button:has-text('Faktura yarat')");
     const r = await Promise.race([
       seller.waitForURL("**/dashboard/invoices/c*").then(() => "ok"),
-      seller.waitForSelector("text=Pulsuz planda").then(() => "limit"),
+      seller.waitForSelector("text=Planınızda ayda").then(() => "limit"),
     ]);
     step(`faktura ${i + 4}: ${r}`);
   }

@@ -20,7 +20,7 @@ export function useAuthForm(action: Action) {
 export function AuthError({ message }: { message?: string }) {
   if (!message) return null;
   return (
-    <p role="alert" className="flex items-start gap-2 rounded-xl border border-red-100 bg-red-50 p-3 text-sm text-red-700">
+    <p role="alert" className="flex items-start gap-2 rounded-xl border border-red-100 bg-red-50 p-3 text-sm text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-300">
       <AlertCircle size={17} className="mt-px shrink-0" aria-hidden /> {message}
     </p>
   );
@@ -40,31 +40,35 @@ export function SubmitButton({ pending, children }: { pending: boolean; children
   );
 }
 
-const LEVELS = [
-  { label: "Çox zəif", color: "bg-red-500" },
-  { label: "Zəif", color: "bg-orange-500" },
-  { label: "Orta", color: "bg-amber-500" },
-  { label: "Yaxşı", color: "bg-lime-500" },
-  { label: "Güclü", color: "bg-emerald-500" },
-];
+const LEVEL_COLORS = ["bg-red-500", "bg-orange-500", "bg-amber-500", "bg-lime-500", "bg-emerald-500"];
 
-export function PasswordStrength({ value }: { value: string }) {
-  if (!value) return <span className="mt-1.5 block text-xs text-gray-500">Ən azı 8 simvol; hərf, rəqəm və işarə qarışığı daha güclüdür</span>;
+export type StrengthText = { hint: string; strength: string; levels: string[] };
+
+const DEFAULT_STRENGTH: StrengthText = {
+  hint: "Ən azı 8 simvol; hərf, rəqəm və işarə qarışığı daha güclüdür",
+  strength: "Şifrənin gücü",
+  levels: ["Çox zəif", "Zəif", "Orta", "Yaxşı", "Güclü"],
+};
+
+export function PasswordStrength({ value, t = DEFAULT_STRENGTH }: { value: string; t?: StrengthText }) {
+  if (!value) return <span className="mt-1.5 block text-xs text-gray-500">{t.hint}</span>;
   const score =
     (value.length >= 8 ? 1 : 0) +
     (value.length >= 12 ? 1 : 0) +
-    (/[a-zəğışçöü]/.test(value) && /[A-ZƏĞIŞÇÖÜ]/.test(value) ? 1 : 0) +
+    (/[a-zəğışçöüа-яё]/.test(value) && /[A-ZƏĞIŞÇÖÜА-ЯЁ]/.test(value) ? 1 : 0) +
     (/\d/.test(value) ? 1 : 0) +
-    (/[^A-Za-z0-9əğışçöüƏĞIŞÇÖÜİ]/.test(value) ? 1 : 0);
-  const level = LEVELS[Math.max(0, Math.min(4, score - 1))];
+    (/[^A-Za-z0-9əğışçöüƏĞIŞÇÖÜİа-яёА-ЯЁ]/.test(value) ? 1 : 0);
+  const level = Math.max(0, Math.min(4, score - 1));
   return (
     <span className="mt-2 block">
       <span className="flex gap-1">
-        {LEVELS.map((_, i) => (
-          <span key={i} className={`h-1 flex-1 rounded-full transition ${i < score ? level.color : "bg-gray-200"}`} />
+        {LEVEL_COLORS.map((_, i) => (
+          <span key={i} className={`h-1 flex-1 rounded-full transition ${i < score ? LEVEL_COLORS[level] : "bg-gray-200 dark:bg-white/10"}`} />
         ))}
       </span>
-      <span className="mt-1 block text-xs text-gray-500">Şifrənin gücü: {level.label}</span>
+      <span className="mt-1 block text-xs text-gray-500">
+        {t.strength}: {t.levels[level]}
+      </span>
     </span>
   );
 }

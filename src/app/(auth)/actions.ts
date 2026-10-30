@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { endSession, hashPassword, startSession, verifyPassword } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { type Dict, getDictionary, getLocale } from "@/i18n/server";
 import type { FormState } from "@/lib/forms";
 import { sendEmail } from "@/lib/notify";
 import { normalizePhone } from "@/lib/phone";
@@ -15,42 +16,49 @@ export type AuthState = (FormState & { field?: string; devLink?: string }) | und
 
 const fail = (error: string, field?: string): AuthState => ({ error, field });
 
-const SignupInput = z
-  .object({
-    firstName: z.string().trim().min(2, "Adınızı yazın").max(40),
-    lastName: z.string().trim().min(2, "Soyadınızı yazın").max(40),
-    brand: z.string().trim().max(80).transform((v) => v || null),
-    phone: z
-      .string()
-      .transform((v) => normalizePhone(v))
-      .refine((v) => v !== null, "Əlaqə nömrəsi düzgün deyil (məs. +994 50 123 45 67)"),
-    citizenship: z.enum(["AZ", "FOREIGN"], "Vətəndaşlığı seçin"),
-    document: z.string().trim().toUpperCase().transform((v) => v.replace(/\s/g, "")),
-    username: z
-      .string()
-      .trim()
-      .toLowerCase()
-      .regex(USERNAME_RE, "Səhifə ünvanı 3-30 simvol: a-z, 0-9, _ və .")
-      .refine((u) => !RESERVED_USERNAMES.has(u), "Bu ünvan istifadə edilə bilməz"),
-    email: z.email("E-poçt düzgün deyil").trim().toLowerCase(),
-    password: z.string().min(8, "Şifrə ən azı 8 simvol olmalıdır").max(128),
-    confirm: z.string(),
-  })
-  .superRefine((v, ctx) => {
-    if (v.citizenship === "AZ" && !/^[A-Z0-9]{7}$/.test(v.document)) {
-      ctx.addIssue({ code: "custom", path: ["document"], message: "FİN kod 7 simvol olmalıdır (hərf və rəqəm)" });
-    }
-    if (v.citizenship === "FOREIGN" && !/^[A-Z0-9]{5,20}$/.test(v.document)) {
-      ctx.addIssue({ code: "custom", path: ["document"], message: "Pasport nömrəsi 5-20 hərf/rəqəm olmalıdır" });
-    }
-    if (v.password !== v.confirm) ctx.addIssue({ code: "custom", path: ["confirm"], message: "Şifrələr eyni deyil" });
-  });
+type Errors = Dict["auth"]["errors"];
+
+// Xəta mətnləri seçilmiş dildə (giriş/qeydiyyat səhifələrinin dili cookie-dən gəlir)
+const errors = async (): Promise<Errors> => getDictionary(await getLocale()).auth.errors;
+
+const signupSchema = (e: Errors) =>
+  z
+    .object({
+      firstName: z.string().trim().min(2, e.firstName).max(40),
+      lastName: z.string().trim().min(2, e.lastName).max(40),
+      brand: z.string().trim().max(80).transform((v) => v || null),
+      phone: z
+        .string()
+        .transform((v) => normalizePhone(v))
+        .refine((v) => v !== null, e.phone),
+      citizenship: z.enum(["AZ", "FOREIGN"], e.citizenship),
+      document: z.string().trim().toUpperCase().transform((v) => v.replace(/\s/g, "")),
+      username: z
+        .string()
+        .trim()
+        .toLowerCase()
+        .regex(USERNAME_RE, e.username)
+        .refine((u) => !RESERVED_USERNAMES.has(u), e.usernameReserved),
+      email: z.email(e.email).trim().toLowerCase(),
+      password: z.string().min(8, e.passwordShort).max(128),
+      confirm: z.string(),
+    })
+    .superRefine((v, ctx) => {
+      if (v.citizenship === "AZ" && !/^[A-Z0-9]{7}$/.test(v.document)) {
+        ctx.addIssue({ code: "custom", path: ["document"], message: e.fin });
+      }
+      if (v.citizenship === "FOREIGN" && !/^[A-Z0-9]{5,20}$/.test(v.document)) {
+        ctx.addIssue({ code: "custom", path: ["document"], message: e.passport });
+      }
+      if (v.password !== v.confirm) ctx.addIssue({ code: "custom", path: ["confirm"], message: e.mismatch });
+    });
 
 export async function signup(_: AuthState, form: FormData): Promise<AuthState> {
-  const parsed = SignupInput.safeParse(Object.fromEntries(form));
+  const e = await errors();
+  const parsed = signupSchema(e).safeParse(Object.fromEntries(form));
   if (!parsed.success) {
     const issue = parsed.error.issues[0];
-    return fail(issue?.message ?? "Məlumatlar düzgün deyil", issue?.path[0]?.toString());
+    return fail(issue?.message ?? e.invalid, issue?.path[0]?.toString());
   }
   const { firstName, lastName, brand, phone, citizenship, document, username, email, password } = parsed.data;
 
@@ -60,10 +68,10 @@ export async function signup(_: AuthState, form: FormData): Promise<AuthState> {
     db.user.findUnique({ where: { phone: phone! }, select: { id: true } }),
     citizenship === "AZ" ? db.user.findUnique({ where: { finCode: document }, select: { id: true } }) : null,
   ]);
-  if (emailTaken) return fail("Bu e-poçt artıq qeydiyyatdan keçib", "email");
-  if (usernameTaken) return fail("Bu səhifə ünvanı tutulub", "username");
-  if (phoneTaken) return fail("Bu nömrə ilə artıq hesab var", "phone");
-  if (finTaken) return fail("Bu FİN kod ilə artıq hesab var", "document");
+  if (emailTaken) return fail(e.emailTaken, "email");
+  if (usernameTaken) return fail(e.usernameTaken, "username");
+  if (phoneTaken) return fail(e.phoneTaken, "phone");
+  if (finTaken) return fail(e.finTaken, "document");
 
   const user = await db.user.create({
     data: {
@@ -97,10 +105,10 @@ export async function login(_: AuthState, form: FormData): Promise<AuthState> {
   const password = String(form.get("password") ?? "");
   const user = await db.user.findUnique({ where: { email }, include: { profile: { select: { id: true } } } });
   if (!user?.passwordHash || !(await verifyPassword(password, user.passwordHash))) {
-    return fail("E-poçt və ya şifrə yanlışdır");
+    return fail((await errors()).wrongLogin);
   }
   // Profilsiz hesab panelə daxil ola bilməz: səssizcə girişə qaytarmaq əvəzinə səbəbi deyirik
-  if (!user.profile) return fail("Bu hesabın səhifəsi tapılmadı. Dəstəklə əlaqə saxlayın.");
+  if (!user.profile) return fail((await errors()).noProfile);
   await startSession(user.id);
   redirect("/dashboard");
 }
@@ -116,7 +124,7 @@ const RESET_MINUTES = 30;
 
 export async function requestPasswordReset(_: AuthState, form: FormData): Promise<AuthState> {
   const email = String(form.get("email") ?? "").trim().toLowerCase();
-  if (!z.email().safeParse(email).success) return fail("E-poçt düzgün deyil");
+  if (!z.email().safeParse(email).success) return fail((await errors()).email);
 
   // Hesabın olub-olmadığını bildirmirik: cavab həmişə eynidir
   const done: AuthState = { ok: true };
@@ -144,11 +152,12 @@ export async function requestPasswordReset(_: AuthState, form: FormData): Promis
 export async function resetPassword(_: AuthState, form: FormData): Promise<AuthState> {
   const token = String(form.get("token") ?? "");
   const password = String(form.get("password") ?? "");
-  if (password.length < 8) return fail("Şifrə ən azı 8 simvol olmalıdır", "password");
-  if (password !== String(form.get("confirm") ?? "")) return fail("Şifrələr eyni deyil", "confirm");
+  const e = await errors();
+  if (password.length < 8) return fail(e.passwordShort, "password");
+  if (password !== String(form.get("confirm") ?? "")) return fail(e.mismatch, "confirm");
 
   const reset = await findValidReset(token);
-  if (!reset) return fail("Link etibarsızdır və ya vaxtı keçib. Yenidən sorğu göndərin.");
+  if (!reset) return fail(e.badLink);
 
   // Bütün açıq sessiyalar bağlanır, istifadə olunmamış digər linklər də etibarsız olur
   await db.$transaction([

@@ -69,17 +69,21 @@ if (!existed) {
   });
 }
 
+// Əvvəlki versiyada demo Pro-ya keçirilmişdisə, indi bütün imkanları göstərmək üçün Pro Max
+await db.subscription.updateMany({ where: { userId: user.id, plan: "PRO" }, data: { plan: "PRO_MAX" } });
+
 await seedAnalytics(profile.id);
+await seedCatalogSellers();
 
 console.log("Demo profil: /demo · giriş: demo@karvan.az / demo12345");
 
 // Demo analitika: son 90 gündə ziyarətlər, sifarişlər və fakturalar (yalnız bir dəfə, hadisə yoxdursa).
-// Demo hesab Pro plana keçirilir: 90 günlük nümunə fakturalar pulsuz planın aylıq limitinə sığmır.
+// Demo hesab Pro Max plana keçirilir: 90 günlük nümunə fakturalar pulsuz planın aylıq limitinə sığmır.
 async function seedAnalytics(profileId: string) {
   if (await db.profileEvent.count({ where: { profileId } })) return;
   const current = await db.profile.findUniqueOrThrow({ where: { id: profileId }, select: { phone: true } });
   if (!current.phone) await db.profile.update({ where: { id: profileId }, data: { phone: "+994501234567" } });
-  await db.subscription.updateMany({ where: { user: { profile: { id: profileId } } }, data: { plan: "PRO" } });
+  await db.subscription.updateMany({ where: { user: { profile: { id: profileId } } }, data: { plan: "PRO_MAX" } });
 
   let seed = 20261030;
   const rnd = () => {
@@ -173,4 +177,85 @@ async function seedAnalytics(profileId: string) {
   }
   await db.profileEvent.createMany({ data: events });
   await db.profile.update({ where: { id: profileId }, data: { invoiceSeq: seq } });
+}
+
+// Kataloq boş görünməsin deyə nümunə satıcılar — YALNIZ lokal bazada (DATABASE_URL yoxdursa).
+// Real bazada saxta elan olmamalıdır.
+async function seedCatalogSellers() {
+  if (process.env.DATABASE_URL) return;
+  if (await db.user.count({ where: { email: { endsWith: "@demo.karvan.az" } } })) return;
+
+  type S = { title: string; category: string; amount?: number; currency?: string; days?: number; weeks?: number; months?: number; description: string };
+  const SELLERS: { username: string; name: string; profession: string; city: string; color: string; plan: "FREE" | "PRO" | "PRO_MAX"; services: S[] }[] = [
+    { username: "leyla.makeup", name: "Leyla Həsənova", profession: "Makiyaj ustası", city: "Bakı", color: "#db2777", plan: "PRO_MAX", services: [
+      { title: "Gəlin makiyajı", category: "beauty", description: "Sınaq makiyajı daxil, toy günü evə gəlirəm." },
+      { title: "Gündəlik makiyaj", category: "beauty", amount: 40, description: "Yüngül, təbii görünüş, 45 dəqiqə." },
+    ] },
+    { username: "aygun.english", name: "Aygün Quliyeva", profession: "İngilis dili müəllimi", city: "Bakı", color: "#7c3aed", plan: "PRO", services: [
+      { title: "IELTS hazırlıq kursu", category: "education", amount: 320, weeks: 8, description: "Həftədə 3 dərs, sınaq imtahanları ilə." },
+      { title: "Fərdi danışıq dərsi", category: "education", amount: 25, description: "60 dəqiqə onlayn, istənilən səviyyə." },
+    ] },
+    { username: "studio.nur", name: "Studio Nur", profession: "Fotoqraf", city: "Gəncə", color: "#0284c7", plan: "PRO", services: [
+      { title: "Portret fotosessiya", category: "photo_video", amount: 150, description: "1 saat çəkiliş, 20 işlənmiş şəkil." },
+      { title: "Toy çəkilişi", category: "photo_video", description: "Foto və video, tam gün." },
+    ] },
+    { username: "rauf.fit", name: "Rauf Əliyev", profession: "Fitness məşqçisi", city: "Sumqayıt", color: "#059669", plan: "FREE", services: [
+      { title: "Aylıq məşq proqramı", category: "fitness", amount: 90, months: 1, description: "Fərdi plan və həftəlik yoxlama." },
+      { title: "Qidalanma planı", category: "fitness", amount: 35, description: "Hədəfinizə uyğun menyu." },
+    ] },
+    { username: "pixel.lab", name: "Pixel Lab", profession: "Dizayn studiyası", city: "Bakı", color: "#ea580c", plan: "PRO_MAX", services: [
+      { title: "Loqo dizaynı", category: "design", amount: 250, days: 7, description: "3 konsepsiya, limitsiz düzəliş." },
+      { title: "Brendbuk", category: "design", amount: 900, weeks: 3, description: "Loqo, rənglər, şriftlər, sosial şablonlar." },
+    ] },
+    { username: "nigar.smm", name: "Nigar Məmmədli", profession: "SMM mütəxəssisi", city: "Bakı", color: "#e11d48", plan: "PRO", services: [
+      { title: "Instagram idarəetməsi", category: "marketing", amount: 400, months: 1, description: "12 post, 30 story, hədəfli reklam." },
+      { title: "Reels paketi", category: "marketing", amount: 120, description: "5 reels: ssenari, çəkiliş, montaj." },
+    ] },
+    { username: "dr.sebine", name: "Dr. Səbinə Kərimova", profession: "Psixoloq", city: "Bakı", color: "#4f46e5", plan: "FREE", services: [
+      { title: "Onlayn psixoloji seans", category: "psychology", amount: 60, description: "50 dəqiqə, məxfi." },
+    ] },
+    { username: "nail.art.baku", name: "Nail Art Bakı", profession: "Dırnaq ustası", city: "Bakı", color: "#c026d3", plan: "FREE", services: [
+      { title: "Manikür + gel lak", category: "beauty", amount: 35, description: "Steril alətlər, 1 saat." },
+      { title: "Dırnaq dizaynı", category: "beauty", amount: 15, description: "Hər dırnaq üçün fərdi dizayn." },
+    ] },
+    { username: "translate.pro", name: "Tural Nəsirov", profession: "Tərcüməçi", city: "Gəncə", color: "#0f766e", plan: "FREE", services: [
+      { title: "Sənəd tərcüməsi (EN/RU/TR)", category: "translation", amount: 10, currency: "USD", description: "1 səhifə, 24 saata hazır." },
+    ] },
+  ];
+
+  const password = await hashPassword(Math.random().toString(36) + Date.now());
+  for (const [i, s] of SELLERS.entries()) {
+    if (await db.profile.findUnique({ where: { username: s.username }, select: { id: true } })) continue;
+    await db.user.create({
+      data: {
+        email: `${s.username}@demo.karvan.az`,
+        passwordHash: password,
+        subscription: { create: { plan: s.plan } },
+        profile: {
+          create: {
+            username: s.username,
+            displayName: s.name,
+            profession: s.profession,
+            city: s.city,
+            theme: { primary: s.color },
+            services: {
+              create: s.services.map((x, position) => ({
+                title: x.title,
+                description: x.description,
+                category: x.category,
+                priceType: x.amount ? "FIXED" : "NEGOTIABLE",
+                amountQepik: x.amount ? x.amount * 100 : null,
+                currency: x.currency ?? "AZN",
+                durationDays: x.days,
+                durationWeeks: x.weeks,
+                durationMonths: x.months,
+                position,
+                createdAt: new Date(Date.now() - (i * 2 + position) * 86_400_000),
+              })),
+            },
+          },
+        },
+      },
+    });
+  }
 }

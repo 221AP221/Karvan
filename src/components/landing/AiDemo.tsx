@@ -3,20 +3,23 @@
 import { Sparkles } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-const PROMPT = "Aygün Məmmədova, 0501234567, 3 fərdi dərs hər biri 50 manat, cümə gününə qədər";
-
-const RESULT = [
-  { label: "Müştəri", value: "Aygün Məmmədova" },
-  { label: "Telefon", value: "+994 50 123 45 67" },
-  { label: "Xidmət", value: "Fərdi dərs × 3" },
-  { label: "Qiymət", value: "50,00 AZN" },
-  { label: "Son ödəniş", value: "Cümə, 6 noyabr" },
-];
+export type AiDemoText = {
+  prompt: string;
+  you: string;
+  reading: string;
+  convert: string;
+  ready: string;
+  check: string;
+  total: string;
+  rows: { label: string; value: string }[];
+};
 
 type Phase = "typing" | "thinking" | "result";
 
 // Sərbəst mətnin fakturaya çevrilməsini göstərən dövri animasiya. Ekrana daxil olanda başlayır.
-export function AiDemo() {
+export function AiDemo({ t }: { t: AiDemoText }) {
+  const PROMPT = t.prompt;
+  const RESULT = t.rows;
   const ref = useRef<HTMLDivElement>(null);
   const [started, setStarted] = useState(false);
   const [typed, setTyped] = useState(0);
@@ -33,7 +36,7 @@ export function AiDemo() {
     const observer = new IntersectionObserver(([entry]) => entry?.isIntersecting && setStarted(true), { threshold: 0.4 });
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
-  }, []);
+  }, [PROMPT.length, RESULT.length]);
 
   useEffect(() => {
     if (!started) return;
@@ -56,12 +59,12 @@ export function AiDemo() {
             }, 4500);
     }
     return () => clearTimeout(timer);
-  }, [started, phase, typed, rows]);
+  }, [started, phase, typed, rows, PROMPT.length, RESULT.length]);
 
   return (
     <div ref={ref} className="grid gap-4 md:grid-cols-2">
       <div className="rounded-3xl border border-white/10 bg-white/5 p-5">
-        <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-violet-300">Siz yazırsınız</p>
+        <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-violet-300">{t.you}</p>
         <p className="min-h-[96px] font-mono text-sm leading-relaxed text-white sm:text-base">
           {PROMPT.slice(0, typed)}
           {phase === "typing" && <span className="animate-caret ml-0.5 inline-block h-4 w-0.5 translate-y-0.5 bg-violet-300" />}
@@ -77,16 +80,16 @@ export function AiDemo() {
             ) : (
               <Sparkles size={16} strokeWidth={1.75} aria-hidden />
             )}
-            <span>{phase === "thinking" ? "AI oxuyur..." : "Fakturaya çevir"}</span>
+            <span>{phase === "thinking" ? t.reading : t.convert}</span>
           </span>
         </div>
       </div>
 
       <div className="rounded-3xl bg-white p-5 text-gray-900 shadow-2xl shadow-violet-950/40">
         <div className="mb-3 flex items-center justify-between">
-          <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">AI hazırladı</p>
+          <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">{t.ready}</p>
           <span className={`rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700 transition-opacity ${rows === RESULT.length ? "opacity-100" : "opacity-0"}`}>
-            Yoxlayın və göndərin
+            {t.check}
           </span>
         </div>
         <dl className="divide-y divide-gray-100">
@@ -103,7 +106,7 @@ export function AiDemo() {
           ))}
         </dl>
         <div className={`mt-3 flex items-center justify-between rounded-2xl bg-gray-900 px-4 py-3 text-white transition-all duration-500 ${rows === RESULT.length ? "opacity-100" : "opacity-0"}`}>
-          <span className="text-sm text-gray-300">Ümumi</span>
+          <span className="text-sm text-gray-300">{t.total}</span>
           <span className="text-lg font-semibold">150,00 AZN</span>
         </div>
       </div>

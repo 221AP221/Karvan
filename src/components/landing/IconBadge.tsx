@@ -19,7 +19,7 @@ export function IconBadge({
   const s = SIZES[size];
   const tones = {
     brand:
-      "bg-gradient-to-b from-white to-violet-50 text-violet-600 ring-1 ring-violet-200/70 shadow-[0_1px_0_0_rgba(255,255,255,0.9)_inset,0_8px_20px_-8px_rgba(214,18,126,0.32)]",
+      "bg-gradient-to-b from-white to-violet-50 text-violet-600 ring-1 ring-violet-200/70 shadow-[0_1px_0_0_rgba(255,255,255,0.9)_inset,0_8px_20px_-8px_rgba(214,18,126,0.32)] dark:from-white/10 dark:to-white/[0.03] dark:text-violet-300 dark:ring-white/10 dark:shadow-none",
     solid:
       "bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white ring-1 ring-white/20 shadow-[0_1px_0_0_rgba(255,255,255,0.35)_inset,0_10px_24px_-8px_rgba(214,18,126,0.55)]",
     success:

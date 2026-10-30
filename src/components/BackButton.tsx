@@ -16,7 +16,7 @@ export function NavigationTracker() {
 }
 
 // Əvvəlki səhifəyə qayıdır; sayt daxilində əvvəlki səhifə yoxdursa (link birbaşa açılıbsa) bir üst bölməyə keçir.
-export function BackButton({ fallback, hideOn = [], className = "" }: { fallback?: string; hideOn?: string[]; className?: string }) {
+export function BackButton({ fallback, hideOn = [], className = "", label = "Geri" }: { fallback?: string; hideOn?: string[]; className?: string; label?: string }) {
   const router = useRouter();
   const pathname = usePathname();
   if (hideOn.includes(pathname)) return null;
@@ -29,7 +29,7 @@ export function BackButton({ fallback, hideOn = [], className = "" }: { fallback
       className={`group inline-flex items-center gap-1.5 rounded-full py-1.5 pl-2 pr-3 text-sm font-medium text-gray-500 transition hover:bg-gray-100 hover:text-gray-900 ${className}`}
     >
       <ArrowLeft size={16} strokeWidth={2} className="transition-transform group-hover:-translate-x-0.5" aria-hidden />
-      Geri
+      {label}
     </button>
   );
 }

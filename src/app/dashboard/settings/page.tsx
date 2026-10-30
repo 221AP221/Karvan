@@ -1,9 +1,9 @@
-import { CreditCard, Crown, KeyRound, Mail, MonitorSmartphone, ShieldAlert } from "lucide-react";
+import { CreditCard, Crown, KeyRound, LayoutGrid, Mail, MonitorSmartphone, ShieldAlert } from "lucide-react";
 import { IconBadge } from "@/components/landing/IconBadge";
 import { requireProfile } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { PLAN_LIMITS, startOfMonth } from "@/lib/plans";
-import { DangerZone, EmailForm, PasswordForm, PaymentForm, SessionsButton } from "./forms";
+import { PLAN_LIMITS, PLAN_NAMES, startOfMonth } from "@/lib/plans";
+import { CatalogForm, DangerZone, EmailForm, PasswordForm, PaymentForm, SessionsButton } from "./forms";
 
 function Section({ icon, title, text, children }: { icon: Parameters<typeof IconBadge>[0]["icon"]; title: string; text: string; children: React.ReactNode }) {
   return (
@@ -44,11 +44,13 @@ export default async function Settings() {
               <IconBadge icon={Crown} size="sm" />
               <div>
                 <p className="text-xs text-gray-500">Plan</p>
-                <p className="font-semibold">{plan === "PRO" ? "Pro" : "Pulsuz"}</p>
+                <p className="font-semibold">{PLAN_NAMES[plan]}</p>
               </div>
             </div>
-            {plan === "FREE" && (
-              <span className="rounded-full bg-gradient-to-r from-violet-600 to-pink-600 px-3 py-1 text-xs font-semibold text-white">Pro tezliklə</span>
+            {plan !== "PRO_MAX" && (
+              <span className="rounded-full bg-gradient-to-r from-violet-600 to-pink-600 px-3 py-1 text-xs font-semibold text-white">
+                {plan === "FREE" ? "Pro 9,99 AZN · tezliklə" : "Pro Max tezliklə"}
+              </span>
             )}
           </div>
           {limits.invoicesPerMonth === Infinity ? (
@@ -88,6 +90,10 @@ export default async function Settings() {
               iban: profile.iban ?? "",
             }}
           />
+        </Section>
+
+        <Section icon={LayoutGrid} title="Xidmətlər kataloqu" text="Yeni müştərilər sizi axtarışda tapsın">
+          <CatalogForm visible={profile.showInCatalog} featured={limits.featured} />
         </Section>
 
         <Section icon={MonitorSmartphone} title="Sessiyalar" text="Hesabınıza daxil olunmuş cihazlar">

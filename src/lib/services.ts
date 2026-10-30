@@ -13,6 +13,44 @@ export const SERVICE_CATEGORIES = [
   { key: "other", label: "Digər" },
 ] as const;
 
+// Kataloq türk və rus dillərində də göstərilir
+export const CATEGORY_LABELS: Record<"tr" | "ru", Record<ServiceCategory, string>> = {
+  tr: {
+    beauty: "Güzellik ve bakım",
+    education: "Eğitim ve özel ders",
+    design: "Tasarım",
+    marketing: "Sosyal medya ve reklam",
+    photo_video: "Fotoğraf ve video",
+    fitness: "Fitness ve sağlık",
+    consulting: "Danışmanlık",
+    psychology: "Psikoloji",
+    it: "BT ve yazılım",
+    events: "Etkinlikler",
+    translation: "Çeviri",
+    other: "Diğer",
+  },
+  ru: {
+    beauty: "Красота и уход",
+    education: "Образование и репетиторство",
+    design: "Дизайн",
+    marketing: "SMM и реклама",
+    photo_video: "Фото и видео",
+    fitness: "Фитнес и здоровье",
+    consulting: "Консалтинг",
+    psychology: "Психология",
+    it: "IT и программирование",
+    events: "Мероприятия",
+    translation: "Переводы",
+    other: "Другое",
+  },
+};
+
+export function localizedCategory(key: string | null | undefined, locale: "az" | "tr" | "ru"): string | null {
+  if (!key) return null;
+  if (locale === "az") return categoryLabel(key);
+  return CATEGORY_LABELS[locale][key as ServiceCategory] ?? null;
+}
+
 export type ServiceCategory = (typeof SERVICE_CATEGORIES)[number]["key"];
 
 export const categoryLabel = (key: string | null | undefined) =>

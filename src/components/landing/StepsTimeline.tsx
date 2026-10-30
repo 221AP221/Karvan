@@ -42,7 +42,7 @@ export function StepsTimeline({ steps }: { steps: Step[] }) {
 
   return (
     <ol ref={root} className="relative mx-auto max-w-2xl">
-      <span aria-hidden className="absolute bottom-6 left-[27px] top-6 w-0.5 bg-gray-200" />
+      <span aria-hidden className="absolute bottom-6 left-[27px] top-6 w-0.5 bg-gray-200 dark:bg-white/10" />
       <span
         aria-hidden
         data-line
@@ -51,16 +51,16 @@ export function StepsTimeline({ steps }: { steps: Step[] }) {
       {steps.map((step, i) => (
         <li key={step.title} data-step className="relative flex gap-6 pb-14 last:pb-0">
           <span className="relative z-10 flex flex-col items-center">
-            <span data-icon className="block rounded-2xl bg-gray-50/80 p-0.5">
+            <span data-icon className="block rounded-2xl bg-gray-50/80 p-0.5 dark:bg-transparent">
               {step.icon}
             </span>
-            <span data-dot className="absolute -right-1 -top-1 grid h-6 w-6 place-items-center rounded-full bg-gray-900 text-xs font-bold text-white ring-4 ring-white">
+            <span data-dot className="absolute -right-1 -top-1 grid h-6 w-6 place-items-center rounded-full bg-gray-900 text-xs font-bold text-white ring-4 ring-white dark:ring-[#111215]">
               {i + 1}
             </span>
           </span>
           <div data-body className="pt-2">
             <h3 className="text-xl font-semibold sm:text-2xl">{step.title}</h3>
-            <p className="mt-2 text-gray-600 sm:text-lg">{step.text}</p>
+            <p className="mt-2 text-gray-600 sm:text-lg dark:text-gray-400">{step.text}</p>
           </div>
         </li>
       ))}

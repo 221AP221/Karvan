@@ -15,9 +15,9 @@ export function Marquee({ rows }: { rows: { label: string; icon: LucideIcon }[][
               {items.map(({ label, icon: Icon }) => (
                 <li
                   key={label}
-                  className="flex items-center gap-2.5 whitespace-nowrap rounded-full border border-gray-200 bg-white py-2 pl-2 pr-5 text-sm font-medium text-gray-700 shadow-sm sm:text-[15px]"
+                  className="flex items-center gap-2.5 whitespace-nowrap rounded-full border border-gray-200 bg-white py-2 pl-2 pr-5 text-sm font-medium text-gray-700 shadow-sm sm:text-[15px] dark:border-white/10 dark:bg-white/[0.04] dark:text-gray-200"
                 >
-                  <span className="grid h-7 w-7 place-items-center rounded-full bg-violet-50 text-violet-600 ring-1 ring-violet-100">
+                  <span className="grid h-7 w-7 place-items-center rounded-full bg-violet-50 text-violet-600 ring-1 ring-violet-100 dark:bg-violet-500/15 dark:text-violet-300 dark:ring-violet-400/20">
                     <Icon size={15} strokeWidth={1.75} aria-hidden />
                   </span>
                   {label}

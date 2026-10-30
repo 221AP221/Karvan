@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { requireProfile } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { PLAN_LIMITS } from "@/lib/plans";
 import { InvoiceLimitError, createInvoice } from "@/lib/invoices";
 import { aznToQepik, isCurrency } from "@/lib/money";
 import { SERVICE_CATEGORIES } from "@/lib/services";
@@ -56,6 +57,8 @@ export async function saveService(_: FormState, form: FormData): Promise<FormSta
     await db.service.updateMany({ where: { id, profileId: profile.id }, data: parsed.data });
   } else {
     const count = await db.service.count({ where: { profileId: profile.id } });
+    const limit = PLAN_LIMITS[profile.user.subscription?.plan ?? "FREE"].services;
+    if (count >= limit) return { error: `Planınızda ən çox ${limit} xidmət əlavə etmək olar. Daha çoxu üçün yuxarı plana keçin.` };
     await db.service.create({ data: { ...parsed.data, profileId: profile.id, position: count } });
   }
   revalidatePath(`/${profile.username}`);

@@ -6,17 +6,24 @@ import { useEffect, useRef, useState } from "react";
 import { AuthField } from "@/components/AuthField";
 import { AuthError, PasswordStrength, SubmitButton, useAuthForm } from "@/components/auth/AuthForm";
 import { PasswordField } from "@/components/PasswordField";
+import type { Dict } from "@/i18n/server";
 import { signup } from "../actions";
 
 const STEP1_FIELDS = ["firstName", "lastName", "brand", "phone", "citizenship", "document"];
 
 const TRANSLIT: Record<string, string> = { ə: "e", ı: "i", ö: "o", ü: "u", ş: "s", ç: "c", ğ: "g", i̇: "i" };
+// Rus dilində qeydiyyat: kiril ad-soyaddan latın ünvan
+const CYRILLIC: Record<string, string> = {
+  а: "a", б: "b", в: "v", г: "g", д: "d", е: "e", ё: "e", ж: "zh", з: "z", и: "i", й: "y", к: "k", л: "l", м: "m", н: "n", о: "o", п: "p",
+  р: "r", с: "s", т: "t", у: "u", ф: "f", х: "h", ц: "ts", ч: "ch", ш: "sh", щ: "sch", ъ: "", ы: "y", ь: "", э: "e", ю: "yu", я: "ya",
+};
 
 // "Leyla Həsənova" → "leyla.hesenova"
 function suggestUsername(text: string) {
   return text
     .toLocaleLowerCase("az")
     .replace(/[əıöüşçğ]/g, (c) => TRANSLIT[c] ?? c)
+    .replace(/[а-яё]/g, (c) => CYRILLIC[c] ?? c)
     .normalize("NFD")
     .replace(/[̀-ͯ]/g, "")
     .replace(/[^a-z0-9]+/g, ".")
@@ -24,7 +31,7 @@ function suggestUsername(text: string) {
     .slice(0, 30);
 }
 
-export function SignupForm() {
+export function SignupForm({ t, password: pw }: { t: Dict["auth"]["signup"]; password: Dict["auth"]["password"] }) {
   const { state, pending, onSubmit } = useAuthForm(signup);
   const form = useRef<HTMLFormElement>(null);
   const [step, setStep] = useState<1 | 2>(1);
@@ -87,8 +94,8 @@ export function SignupForm() {
   return (
     <>
       {/* Addım göstəricisi */}
-      <ol className="mt-6 grid grid-cols-2 gap-3" aria-label="Qeydiyyat addımları">
-        {["Şəxsi məlumat", "Hesab"].map((label, i) => {
+      <ol className="mt-6 grid grid-cols-2 gap-3" aria-label={t.steps.join(" / ")}>
+        {t.steps.map((label, i) => {
           const n = (i + 1) as 1 | 2;
           const done = step > n;
           const current = step === n;
@@ -100,9 +107,9 @@ export function SignupForm() {
                 className="flex w-full flex-col gap-2 text-left"
                 aria-current={current ? "step" : undefined}
               >
-                <span className={`h-1.5 rounded-full transition ${current || done ? "bg-gradient-to-r from-violet-600 to-pink-600" : "bg-gray-200"}`} />
-                <span className={`flex items-center gap-1.5 text-xs font-semibold ${current ? "text-gray-900" : "text-gray-400"}`}>
-                  <span className={`grid h-5 w-5 place-items-center rounded-full text-[10px] ${done ? "bg-emerald-500 text-white" : current ? "bg-gray-900 text-white" : "bg-gray-200 text-gray-500"}`}>
+                <span className={`h-1.5 rounded-full transition ${current || done ? "bg-gradient-to-r from-violet-600 to-pink-600" : "bg-gray-200 dark:bg-white/10"}`} />
+                <span className={`flex items-center gap-1.5 text-xs font-semibold ${current ? "text-gray-900 dark:text-white" : "text-gray-400"}`}>
+                  <span className={`grid h-5 w-5 place-items-center rounded-full text-[10px] ${done ? "bg-emerald-500 text-white" : current ? "bg-gray-900 text-white dark:bg-white dark:text-gray-900" : "bg-gray-200 text-gray-500 dark:bg-white/10 dark:text-gray-400"}`}>
                     {done ? <Check size={11} strokeWidth={3} aria-hidden /> : n}
                   </span>
                   {label}
@@ -117,25 +124,25 @@ export function SignupForm() {
         {/* 1-ci addım */}
         <div className={step === 1 ? "flex flex-col gap-4" : "hidden"}>
           <div className="grid gap-4 sm:grid-cols-2">
-            <AuthField label="Ad" icon={UserRound} required minLength={2} maxLength={40} autoComplete="given-name" placeholder="Leyla" {...name("firstName")} />
-            <AuthField label="Soyad" icon={UserRound} required minLength={2} maxLength={40} autoComplete="family-name" placeholder="Həsənova" {...name("lastName")} />
+            <AuthField label={t.firstName} icon={UserRound} required minLength={2} maxLength={40} autoComplete="given-name" placeholder="Leyla" {...name("firstName")} />
+            <AuthField label={t.lastName} icon={UserRound} required minLength={2} maxLength={40} autoComplete="family-name" placeholder="Həsənova" {...name("lastName")} />
           </div>
-          <AuthField label="Brend (könüllü)" icon={Building2} maxLength={80} autoComplete="organization" placeholder="Leyla Makeup Studio" hint="Səhifədə adınız əvəzinə brend göstəriləcək" {...name("brand")} />
-          <AuthField label="Əlaqə nömrəsi" name="phone" type="tel" icon={Phone} required autoComplete="tel" placeholder="+994 50 123 45 67" pattern="^[+0-9 ()-]{9,20}$" />
+          <AuthField label={t.brand} icon={Building2} maxLength={80} autoComplete="organization" placeholder="Leyla Makeup Studio" hint={t.brandHint} {...name("brand")} />
+          <AuthField label={t.phone} name="phone" type="tel" icon={Phone} required autoComplete="tel" placeholder="+994 50 123 45 67" pattern="^[+0-9 ()-]{9,20}$" />
 
           <fieldset>
-            <legend className="mb-1.5 text-sm font-medium text-gray-700">Vətəndaşlıq</legend>
-            <div className="grid grid-cols-2 gap-2 rounded-xl bg-gray-100 p-1">
+            <legend className="mb-1.5 text-sm font-medium text-gray-700 dark:text-gray-300">{t.citizenship}</legend>
+            <div className="grid grid-cols-2 gap-2 rounded-xl bg-gray-100 p-1 dark:bg-white/[0.06]">
               {(
                 [
-                  ["AZ", "Azərbaycan", " vətəndaşı", ShieldCheck],
-                  ["FOREIGN", "Xarici", " vətəndaş", Globe2],
+                  ["AZ", t.az, t.azSuffix, ShieldCheck],
+                  ["FOREIGN", t.foreign, t.foreignSuffix, Globe2],
                 ] as const
               ).map(([value, label, suffix, Icon]) => (
                 <label
                   key={value}
                   className={`flex cursor-pointer items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium transition ${
-                    citizenship === value ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-800"
+                    citizenship === value ? "bg-white text-gray-900 shadow-sm dark:bg-white/15 dark:text-white" : "text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200"
                   }`}
                 >
                   <input type="radio" name="citizenship" value={value} checked={citizenship === value} onChange={() => setCitizenship(value)} className="sr-only" />
@@ -152,7 +159,7 @@ export function SignupForm() {
           {citizenship === "AZ" ? (
             <AuthField
               key="fin"
-              label="FİN kod"
+              label={t.fin}
               name="document"
               icon={CreditCard}
               required
@@ -162,12 +169,12 @@ export function SignupForm() {
               autoComplete="off"
               placeholder="5ABCDE1"
               className="font-mono uppercase tracking-[0.2em]"
-              hint="Şəxsiyyət vəsiqəsindəki 7 simvollu kod"
+              hint={t.finHint}
             />
           ) : (
             <AuthField
               key="passport"
-              label="Pasport nömrəsi"
+              label={t.passport}
               name="document"
               icon={CreditCard}
               required
@@ -184,18 +191,18 @@ export function SignupForm() {
           <button
             type="button"
             onClick={next}
-            className="mt-1 flex h-12 w-full items-center justify-center rounded-xl bg-gray-900 text-[15px] font-semibold text-white transition hover:bg-gray-800"
+            className="mt-1 flex h-12 w-full items-center justify-center rounded-xl bg-gray-900 text-[15px] font-semibold text-white transition hover:bg-gray-800 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100"
           >
-            Davam et
+            {t.next}
           </button>
         </div>
 
         {/* 2-ci addım */}
         <div className={step === 2 ? "flex flex-col gap-4" : "hidden"}>
           <label className="block">
-            <span className="mb-1.5 block text-sm font-medium text-gray-700">Səhifə ünvanı</span>
-            <span className="flex h-12 items-center rounded-xl border border-gray-200 bg-white transition focus-within:border-violet-500 focus-within:ring-4 focus-within:ring-violet-500/10">
-              <span className="flex items-center gap-1.5 border-r border-gray-200 pl-3.5 pr-2 text-sm text-gray-400">
+            <span className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">{t.username}</span>
+            <span className="flex h-12 items-center rounded-xl border border-gray-200 bg-white transition dark:border-white/10 dark:bg-white/[0.04] focus-within:border-violet-500 focus-within:ring-4 focus-within:ring-violet-500/10">
+              <span className="flex items-center gap-1.5 border-r border-gray-200 pl-3.5 dark:border-white/10 pr-2 text-sm text-gray-400">
                 <AtSign size={15} aria-hidden /> karvan.az/
               </span>
               <input
@@ -212,30 +219,30 @@ export function SignupForm() {
                 className="min-w-0 flex-1 bg-transparent px-2 text-[15px] outline-none"
               />
             </span>
-            <span className="mt-1 block text-xs text-gray-500">Instagram bio-nuza qoyacağınız link</span>
+            <span className="mt-1 block text-xs text-gray-500">{t.usernameHint}</span>
           </label>
-          <AuthField label="E-poçt" name="email" type="email" icon={Mail} required autoComplete="email" placeholder="ad@nümunə.az" />
-          <PasswordField label="Şifrə" name="password" autoComplete="new-password" minLength={8} value={password} onChange={setPassword} hint={<PasswordStrength value={password} />} />
-          <PasswordField label="Şifrəni təsdiqləyin" name="confirm" autoComplete="new-password" minLength={8} />
+          <AuthField label={t.email} name="email" type="email" icon={Mail} required autoComplete="email" placeholder={t.emailPlaceholder} />
+          <PasswordField label={t.password} name="password" autoComplete="new-password" minLength={8} value={password} onChange={setPassword} labels={pw} hint={<PasswordStrength value={password} t={pw} />} />
+          <PasswordField label={t.confirm} name="confirm" autoComplete="new-password" minLength={8} labels={pw} />
 
-          <p className="flex gap-2 rounded-xl bg-gray-50 p-3 text-xs text-gray-500">
+          <p className="flex gap-2 rounded-xl bg-gray-50 p-3 text-xs text-gray-500 dark:bg-white/[0.04] dark:text-gray-400">
             <ShieldCheck size={15} className="mt-px shrink-0 text-emerald-600" aria-hidden />
-            FİN kod və ya pasport nömrəsi yalnız hesabın təsdiqi üçündür, səhifənizdə heç kimə göstərilmir.
+            {t.privacy}
           </p>
           <AuthError message={state?.field && STEP1_FIELDS.includes(state.field) ? undefined : state?.error} />
           <div className="flex gap-3">
-            <button type="button" onClick={() => setStep(1)} aria-label="Əvvəlki addım" className="grid h-12 w-12 shrink-0 place-items-center rounded-xl border border-gray-200 text-gray-600 transition hover:bg-gray-50">
+            <button type="button" onClick={() => setStep(1)} aria-label={t.prevStep} className="grid h-12 w-12 shrink-0 place-items-center rounded-xl border border-gray-200 text-gray-600 transition hover:bg-gray-50 dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/10">
               <ArrowLeft size={18} aria-hidden />
             </button>
-            <SubmitButton pending={pending}>Hesab yarat</SubmitButton>
+            <SubmitButton pending={pending}>{t.submit}</SubmitButton>
           </div>
         </div>
       </form>
 
       <p className="mt-8 text-center text-sm text-gray-500">
-        Hesabınız var?{" "}
-        <Link href="/login" className="font-semibold text-violet-600 hover:text-violet-800">
-          Daxil olun
+        {t.hasAccount}{" "}
+        <Link href="/login" className="font-semibold text-violet-600 hover:text-violet-800 dark:text-violet-300 dark:hover:text-violet-200">
+          {t.login}
         </Link>
       </p>
     </>

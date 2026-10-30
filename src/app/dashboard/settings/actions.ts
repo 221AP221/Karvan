@@ -73,6 +73,13 @@ export async function updatePaymentSettings(_: FormState, form: FormData): Promi
   return { ok: true };
 }
 
+export async function setCatalogVisibility(_: FormState, form: FormData): Promise<FormState> {
+  const profile = await requireProfile();
+  await db.profile.update({ where: { id: profile.id }, data: { showInCatalog: form.get("showInCatalog") === "on" } });
+  revalidatePath("/dashboard/settings");
+  return { ok: true };
+}
+
 export async function signOutOtherDevices(): Promise<FormState> {
   const profile = await requireProfile();
   await db.session.deleteMany({ where: { userId: profile.userId, id: { not: profile.sessionId } } });

@@ -13,7 +13,16 @@ Məhsul spesifikasiyası: [docs/PRD.md](docs/PRD.md)
 - Sifarişlər: razılaşma sorğularını qiymət yazıb təsdiqləmək (faktura avtomatik yaranır) və ya imtina etmək
 - Fakturalar: əl ilə yaratmaq, WhatsApp ilə göndərmək, linki kopyalamaq, PDF, "ödənildi" / ləğv
 - Müştəri "Ödədim" basanda təsdiq: "Pul gəlib" və ya "Gəlməyib"
-- Panel: bu ay ödənilən, gözləyən məbləğ, təsdiq gözləyən sorğular, aylıq limit (pulsuz: 5 faktura)
+- Panel: bu ay ödənilən, gözləyən məbləğ, təsdiq gözləyən sorğular, aylıq limit
+- Analitika (`/dashboard/analytics`): satış və auditoriya KPI-ları, mənbələr, qıf; Pro Max-da Excel (CSV) hesabat
+- Planlar: Pulsuz (5 faktura/ay, 5 xidmət), Pro 9,99 AZN (100 faktura, 30 xidmət, təsdiqlənmiş nişanı),
+  Pro Max 29,99 AZN (limitsiz, kataloqda önə çıxma, hesabat). Ödəniş qəbulu hələ qoşulmayıb.
+
+**Sayt** (`/`, `/tr`, `/ru`)
+- Ana səhifə və kataloq Azərbaycan, türk və rus dillərində (hər dilin öz URL-i, hreflang, sitemap.xml)
+- İşıqlı və qaranlıq rejim (seçim yadda qalır, ilk dəfə sistem ayarı)
+- Xidmətlər kataloqu (`/xidmetler`, `/tr/hizmetler`, `/ru/uslugi`): axtarış, sahə, şəhər, qiymət, valyuta, təsdiqlənmiş, sıralama.
+  Satıcı Parametrlərdən kataloqda görünməməyi seçə bilər. Lokal bazada nümunə satıcılar əlavə olunur.
 
 **Müştəri** (`/<username>`, `/i/<id>`)
 - Mobil link-in-bio səhifə, satıcının rəngi ilə

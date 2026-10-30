@@ -10,6 +10,7 @@ datasource db {
 enum Plan {
   FREE
   PRO
+  PRO_MAX
 }
 
 enum PriceType {
@@ -129,6 +130,7 @@ model Profile {
   about         String? // "Haqqımda" bölməsinin uzun mətni
   city          String?
   phone         String? // səhifədə göstərilən əlaqə nömrəsi (zəng et)
+  showInCatalog Boolean @default(true) // xidmətlər kataloqunda görünür
   avatarUrl     String? // şəkil və ya loqo
   coverUrl      String?
   invoicePrefix String  @default("INV")
@@ -202,8 +204,11 @@ model Service {
   durationMonths Int?
   isActive    Boolean   @default(true)
   position    Int       @default(0)
+  createdAt   DateTime  @default(now())
 
   orders Order[]
+
+  @@index([isActive, category])
 }
 
 model Order {

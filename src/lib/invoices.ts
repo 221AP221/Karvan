@@ -40,7 +40,7 @@ export async function createInvoice(input: NewInvoice) {
     });
     if (usedThisMonth >= limits.invoicesPerMonth) {
       throw new InvoiceLimitError(
-        `Pulsuz planda ayda ${limits.invoicesPerMonth} faktura yaratmaq olar. Pro plana keçin.`,
+        `Planınızda ayda ${limits.invoicesPerMonth} faktura yaratmaq olar. Daha çoxu üçün yuxarı plana keçin.`,
       );
     }
 
