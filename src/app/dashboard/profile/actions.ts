@@ -1,5 +1,6 @@
 "use server";
 
+import { logActivity } from "@/lib/activity";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireProfile } from "@/lib/auth";
@@ -59,6 +60,7 @@ export async function updateProfile(_: FormState, form: FormData): Promise<FormS
     where: { id: profile.id },
     data: { ...data, avatarUrl: avatar, coverUrl: cover, theme },
   });
+  await logActivity({ userId: profile.userId, email: profile.user.email, action: "profile_update", details: data.username !== profile.username ? `ünvan: @${profile.username} → @${data.username}` : null });
   if (data.username !== profile.username) revalidatePath(`/${profile.username}`);
   refresh(data.username);
   return { ok: true };

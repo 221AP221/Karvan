@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { logActivity } from "@/lib/activity";
 import { db } from "@/lib/db";
 import { InvoiceLimitError, createInvoice, invoiceUrl } from "@/lib/invoices";
 
@@ -54,6 +55,9 @@ export async function POST(request: Request) {
       status: autoInvoice ? "APPROVED" : "PENDING_APPROVAL",
     },
   });
+
+  const seller = await db.profile.findUnique({ where: { id: service.profileId }, select: { userId: true, user: { select: { email: true } } } });
+  await logActivity({ userId: seller?.userId, email: seller?.user.email, action: "order_received", details: `${service.title} · ${input.customerName}` });
 
   if (!autoInvoice) {
     // TODO(M2): satıcıya bildiriş

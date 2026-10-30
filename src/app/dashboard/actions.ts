@@ -1,5 +1,6 @@
 "use server";
 
+import { logActivity } from "@/lib/activity";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
@@ -55,11 +56,13 @@ export async function saveService(_: FormState, form: FormData): Promise<FormSta
   const id = form.get("id");
   if (typeof id === "string" && id) {
     await db.service.updateMany({ where: { id, profileId: profile.id }, data: parsed.data });
+    await logActivity({ userId: profile.userId, email: profile.user.email, action: "service_update", details: parsed.data.title });
   } else {
     const count = await db.service.count({ where: { profileId: profile.id } });
     const limit = PLAN_LIMITS[profile.user.subscription?.plan ?? "FREE"].services;
     if (count >= limit) return { error: `Planınızda ən çox ${limit} xidmət əlavə etmək olar. Daha çoxu üçün yuxarı plana keçin.` };
     await db.service.create({ data: { ...parsed.data, profileId: profile.id, position: count } });
+    await logActivity({ userId: profile.userId, email: profile.user.email, action: "service_create", details: parsed.data.title });
   }
   revalidatePath(`/${profile.username}`);
   redirect("/dashboard/services");
@@ -70,13 +73,16 @@ export async function toggleService(id: string) {
   const service = await db.service.findFirst({ where: { id, profileId: profile.id } });
   if (!service) return;
   await db.service.update({ where: { id }, data: { isActive: !service.isActive } });
+  await logActivity({ userId: profile.userId, email: profile.user.email, action: "service_toggle", details: `${service.title}: ${service.isActive ? "gizlədildi" : "göstərildi"}` });
   revalidatePath("/dashboard/services");
   revalidatePath(`/${profile.username}`);
 }
 
 export async function deleteService(id: string) {
   const profile = await requireProfile();
+  const removed = await db.service.findFirst({ where: { id, profileId: profile.id }, select: { title: true } });
   await db.service.deleteMany({ where: { id, profileId: profile.id } });
+  if (removed) await logActivity({ userId: profile.userId, email: profile.user.email, action: "service_delete", details: removed.title });
   revalidatePath("/dashboard/services");
   revalidatePath(`/${profile.username}`);
 }
@@ -116,6 +122,7 @@ export async function approveOrder(_: FormState, form: FormData): Promise<FormSt
     throw error;
   }
   await db.order.update({ where: { id: order.id }, data: { status: "APPROVED" } });
+  await logActivity({ userId: profile.userId, email: profile.user.email, action: "order_approve", details: `${order.customerName} · ${amount} ${order.service?.currency ?? "AZN"}` });
   redirect(`/dashboard/invoices/${invoiceId}`);
 }
 
@@ -125,6 +132,7 @@ export async function rejectOrder(id: string) {
     where: { id, profileId: profile.id, status: "PENDING_APPROVAL" },
     data: { status: "REJECTED" },
   });
+  await logActivity({ userId: profile.userId, email: profile.user.email, action: "order_reject" });
   revalidatePath("/dashboard", "layout");
 }
 
@@ -174,6 +182,7 @@ export async function createInvoiceAction(_: FormState, form: FormData): Promise
       items: items.map((i) => ({ title: i.title, quantity: i.quantity, unitQepik: aznToQepik(i.unitPrice) })),
     });
     invoiceId = invoice.id;
+    await logActivity({ userId: profile.userId, email: profile.user.email, action: "invoice_create", details: `${invoice.number} · ${rest.customerName}` });
   } catch (error) {
     if (error instanceof InvoiceLimitError) return { error: error.message };
     throw error;
@@ -191,6 +200,7 @@ export async function markInvoicePaid(id: string) {
       data: { invoiceId: id, provider: "manual", amountQepik: invoice.totalQepik, status: "SUCCEEDED" },
     }),
   ]);
+  await logActivity({ userId: profile.userId, email: profile.user.email, action: "invoice_paid", details: invoice.number });
   revalidatePath(`/dashboard/invoices/${id}`);
 }
 
@@ -200,6 +210,7 @@ export async function cancelInvoice(id: string) {
     where: { id, profileId: profile.id, status: { notIn: ["PAID", "CANCELLED"] } },
     data: { status: "CANCELLED" },
   });
+  await logActivity({ userId: profile.userId, email: profile.user.email, action: "invoice_cancel", details: id });
   revalidatePath(`/dashboard/invoices/${id}`);
 }
 
@@ -209,5 +220,6 @@ export async function reopenInvoice(id: string) {
     where: { id, profileId: profile.id, status: "CLAIMED_PAID" },
     data: { status: "SENT" },
   });
+  await logActivity({ userId: profile.userId, email: profile.user.email, action: "invoice_reopen", details: id });
   revalidatePath(`/dashboard/invoices/${id}`);
 }

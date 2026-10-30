@@ -3,15 +3,17 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { secondaryButtonClass } from "@/components/ui";
+import { ACTIVITY_LABELS } from "@/lib/activity";
 import { maskDocument, requireAdmin } from "@/lib/admin";
 import { db } from "@/lib/db";
 import { STATUS_LABEL, STATUS_STYLE } from "@/lib/invoice-status";
 import { formatMoney } from "@/lib/money";
 import { formatPhone } from "@/lib/phone";
 import { categoryLabel } from "@/lib/services";
-import { endUserSessions, setServiceBlocked, unblockUser } from "../../actions";
+import { setServiceBlocked, unblockUser } from "../../actions";
 import { ACTION_LABELS, PageTitle, PlanBadge, StatusBadge, card, date, dateTime, td, th } from "../../ui";
-import { BlockForm, DeleteForm, PlanForm } from "./forms";
+import { BlockForm, DeleteForm, EditForm, PlanForm } from "./forms";
+import { QuickActions } from "./QuickActions";
 
 export const metadata: Metadata = { title: "İstifadəçi" };
 
@@ -43,10 +45,18 @@ export default async function AdminUser({ params }: { params: Promise<{ id: stri
   });
   if (!user) notFound();
 
-  const [paid, logs] = await Promise.all([
+  const [paid, logs, activity] = await Promise.all([
     user.profile ? db.invoice.groupBy({ by: ["currency"], where: { profileId: user.profile.id, status: "PAID" }, _sum: { totalQepik: true } }) : [],
-    db.adminLog.findMany({ where: { targetId: id }, orderBy: { createdAt: "desc" }, take: 10 }),
+    db.adminLog.findMany({ where: { targetId: id }, orderBy: { createdAt: "desc" }, take: 20 }),
+    db.activityLog.findMany({ where: { userId: id }, orderBy: { createdAt: "desc" }, take: 40 }),
   ]);
+  // İstifadəçinin öz fəaliyyəti və adminlərin ona etdiyi dəyişikliklər bir zaman xəttində
+  const timeline = [
+    ...activity.map((a) => ({ id: a.id, at: a.createdAt, admin: false, label: ACTIVITY_LABELS[a.action] ?? a.action, details: a.details, meta: a.ip, warn: a.action === "login_failed" || a.action === "login_blocked" })),
+    ...logs.map((l) => ({ id: l.id, at: l.createdAt, admin: true, label: ACTION_LABELS[l.action] ?? l.action, details: l.details, meta: l.adminEmail, warn: false })),
+  ]
+    .sort((x, y) => y.at.getTime() - x.at.getTime())
+    .slice(0, 40);
   const p = user.profile;
   const name = [user.firstName, user.lastName].filter(Boolean).join(" ") || p?.displayName || user.email;
   const isSelf = user.id === admin.id;
@@ -80,6 +90,8 @@ export default async function AdminUser({ params }: { params: Promise<{ id: stri
         </div>
       )}
 
+      <QuickActions userId={user.id} plan={user.subscription?.plan ?? "FREE"} blocked={Boolean(user.blockedAt)} protectedUser={isAdmin || isSelf} sessions={user._count.sessions} />
+
       <div className="grid gap-4 lg:grid-cols-[1fr_360px] [&>*]:min-w-0">
         <div className="flex flex-col gap-4">
           <section className={`${card} p-5`}>
@@ -98,9 +110,27 @@ export default async function AdminUser({ params }: { params: Promise<{ id: stri
             </dl>
           </section>
 
+          <section id="duzelis" className={`${card} scroll-mt-6 p-5`}>
+            <h2 className="mb-3 font-semibold">Məlumatları dəyiş</h2>
+            <EditForm
+              userId={user.id}
+              hasProfile={Boolean(p)}
+              values={{
+                firstName: user.firstName ?? "",
+                lastName: user.lastName ?? "",
+                email: user.email ?? "",
+                phone: user.phone ? formatPhone(user.phone) : "",
+                username: p?.username ?? "",
+                displayName: p?.displayName ?? "",
+                profession: p?.profession ?? "",
+                city: p?.city ?? "",
+              }}
+            />
+          </section>
+
           {p && (
             <section className={`${card} p-5`}>
-              <h2 className="mb-2 font-semibold">Fəaliyyət</h2>
+              <h2 className="mb-2 font-semibold">Statistika</h2>
               <dl>
                 <Row label="Sifarişlər">{p._count.orders}</Row>
                 <Row label="Fakturalar">{p._count.invoices}</Row>
@@ -178,27 +208,49 @@ export default async function AdminUser({ params }: { params: Promise<{ id: stri
               {!p.invoices.length && <p className="p-5 text-sm text-gray-500">Faktura yoxdur.</p>}
             </section>
           )}
+          <section id="fealiyyet" className={`${card} scroll-mt-6`}>
+            <div className="flex items-center justify-between px-5 pt-5">
+              <h2 className="font-semibold">Fəaliyyət və jurnal</h2>
+              <Link href={`/admin/logs?tab=activity&user=${user.id}`} className="text-sm text-gray-500 hover:text-gray-900">
+                Hamısı →
+              </Link>
+            </div>
+            {timeline.length ? (
+              <ol className="mt-3">
+                {timeline.map((e) => (
+                  <li key={e.id} className="flex gap-3 border-t border-gray-100 px-5 py-2.5 text-sm">
+                    <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${e.admin ? "bg-gray-900" : e.warn ? "bg-red-500" : "bg-violet-500"}`} aria-hidden />
+                    <div className="min-w-0 flex-1">
+                      <p>
+                        <span className="font-medium">{e.label}</span>
+                        {e.admin && <span className="ml-1.5 rounded bg-gray-900 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-white">admin</span>}
+                        {e.details && <span className="text-gray-600"> · {e.details}</span>}
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        {dateTime(e.at)}
+                        {e.meta && ` · ${e.meta}`}
+                      </p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            ) : (
+              <p className="p-5 text-sm text-gray-500">Hələ qeyd yoxdur.</p>
+            )}
+          </section>
         </div>
 
         <div className="flex flex-col gap-4">
           <section className={`${card} p-5`}>
-            <h2 className="mb-3 font-semibold">Plan</h2>
+            <h2 className="mb-1 font-semibold">Tarifi seç</h2>
+            <p className="mb-3 text-xs text-gray-500">İstənilən tarifə birbaşa keçirmək üçün</p>
             <PlanForm userId={user.id} plan={user.subscription?.plan ?? "FREE"} />
           </section>
 
           {!isAdmin && !isSelf && (
             <>
-              <section className={`${card} p-5`}>
-                <h2 className="mb-1 font-semibold">Sessiyalar</h2>
-                <p className="mb-3 text-sm text-gray-500">{user._count.sessions} cihazda daxil olub</p>
-                <form action={endUserSessions.bind(null, user.id)}>
-                  <button disabled={!user._count.sessions} className={secondaryButtonClass}>
-                    Bütün cihazlardan çıxart
-                  </button>
-                </form>
-              </section>
               {!user.blockedAt && (
-                <section className={`${card} p-5`}>
+                <section id="bloklama" className={`${card} scroll-mt-6 p-5`}>
                   <h2 className="mb-3 font-semibold">Bloklama</h2>
                   <BlockForm userId={user.id} />
                 </section>
@@ -210,23 +262,6 @@ export default async function AdminUser({ params }: { params: Promise<{ id: stri
             </>
           )}
 
-          <section className={`${card} p-5`}>
-            <h2 className="mb-3 font-semibold">Admin jurnalı</h2>
-            {logs.length ? (
-              <ul className="flex flex-col gap-2 text-sm">
-                {logs.map((l) => (
-                  <li key={l.id} className="border-t border-gray-100 pt-2 first:border-0 first:pt-0">
-                    <span className="font-medium">{ACTION_LABELS[l.action] ?? l.action}</span> {l.details && <span className="text-gray-600">· {l.details}</span>}
-                    <span className="block text-xs text-gray-400">
-                      {dateTime(l.createdAt)} · {l.adminEmail}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-sm text-gray-500">Dəyişiklik yoxdur.</p>
-            )}
-          </section>
         </div>
       </div>
     </div>

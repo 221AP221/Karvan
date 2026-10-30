@@ -1,5 +1,6 @@
 "use server";
 
+import { logActivity } from "@/lib/activity";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
@@ -22,6 +23,7 @@ export async function changeEmail(_: FormState, form: FormData): Promise<FormSta
   if (parsed.data.email === profile.user.email) return { error: "Bu, hazırkı e-poçtunuzdur" };
   if (await db.user.findUnique({ where: { email: parsed.data.email } })) return { error: "Bu e-poçt artıq istifadə olunur" };
   await db.user.update({ where: { id: profile.userId }, data: { email: parsed.data.email } });
+  await logActivity({ userId: profile.userId, email: parsed.data.email, action: "email_change", details: `${profile.user.email} → ${parsed.data.email}` });
   revalidatePath("/dashboard/settings");
   return { ok: true };
 }
@@ -44,6 +46,7 @@ export async function changePassword(_: FormState, form: FormData): Promise<Form
     db.user.update({ where: { id: profile.userId }, data: { passwordHash: await hashPassword(parsed.data.next) } }),
     db.session.deleteMany({ where: { userId: profile.userId, id: { not: profile.sessionId } } }),
   ]);
+  await logActivity({ userId: profile.userId, email: profile.user.email, action: "password_change" });
   return { ok: true };
 }
 
@@ -69,6 +72,7 @@ export async function updatePaymentSettings(_: FormState, form: FormData): Promi
   const parsed = PaymentInput.safeParse(Object.fromEntries(form));
   if (!parsed.success) return { error: firstError(parsed.error) };
   await db.profile.update({ where: { id: profile.id }, data: parsed.data });
+  await logActivity({ userId: profile.userId, email: profile.user.email, action: "payment_settings" });
   revalidatePath("/dashboard", "layout");
   return { ok: true };
 }
@@ -76,6 +80,7 @@ export async function updatePaymentSettings(_: FormState, form: FormData): Promi
 export async function setCatalogVisibility(_: FormState, form: FormData): Promise<FormState> {
   const profile = await requireProfile();
   await db.profile.update({ where: { id: profile.id }, data: { showInCatalog: form.get("showInCatalog") === "on" } });
+  await logActivity({ userId: profile.userId, email: profile.user.email, action: "catalog_visibility", details: form.get("showInCatalog") === "on" ? "görünür" : "gizli" });
   revalidatePath("/dashboard/settings");
   return { ok: true };
 }
@@ -83,6 +88,7 @@ export async function setCatalogVisibility(_: FormState, form: FormData): Promis
 export async function signOutOtherDevices(): Promise<FormState> {
   const profile = await requireProfile();
   await db.session.deleteMany({ where: { userId: profile.userId, id: { not: profile.sessionId } } });
+  await logActivity({ userId: profile.userId, email: profile.user.email, action: "sessions_end" });
   revalidatePath("/dashboard/settings");
   return { ok: true };
 }
@@ -96,5 +102,6 @@ export async function deleteAccount(_: FormState, form: FormData): Promise<FormS
   await endSession();
   // Profil, xidmətlər, fakturalar, şəkillər və sessiyalar cascade ilə silinir
   await db.user.delete({ where: { id: profile.userId } });
+  await logActivity({ userId: profile.userId, email: profile.user.email, action: "account_delete", details: `@${profile.username}` });
   redirect("/");
 }

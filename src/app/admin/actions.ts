@@ -5,7 +5,9 @@ import { redirect } from "next/navigation";
 import { logAdmin, requireAdmin } from "@/lib/admin";
 import { db } from "@/lib/db";
 import type { FormState } from "@/lib/forms";
+import { normalizePhone } from "@/lib/phone";
 import { PLAN_NAMES } from "@/lib/plans";
+import { RESERVED_USERNAMES, USERNAME_RE } from "@/lib/username";
 
 const PLANS = ["FREE", "PRO", "PRO_MAX"] as const;
 
@@ -98,4 +100,132 @@ export async function setServiceBlocked(serviceId: string, blocked: boolean) {
   await logAdmin(admin, blocked ? "service_block" : "service_unblock", "service", serviceId, `${service.title} (@${service.profile.username})`);
   refresh(service.profile.userId, service.profile.username);
   revalidatePath("/admin/services");
+}
+
+// Siyahıdan sürətli və toplu əməliyyatlar
+
+export type BulkResult = { ok?: boolean; error?: string; done?: number; skipped?: number };
+
+const clean = (ids: unknown) => (Array.isArray(ids) ? ids.filter((x): x is string => typeof x === "string").slice(0, 200) : []);
+
+// Tarifi bir pillə qaldırır (+1) və ya salır (-1)
+export async function stepPlan(userId: string, direction: 1 | -1): Promise<BulkResult> {
+  const admin = await requireAdmin();
+  const sub = await db.subscription.findUnique({ where: { userId } });
+  const current = sub?.plan ?? "FREE";
+  const next = PLANS[PLANS.indexOf(current) + direction];
+  if (!next) return { error: direction > 0 ? "Artıq ən yüksək tarifdədir" : "Artıq pulsuz tarifdədir" };
+  const user = await target(userId);
+  await db.subscription.upsert({ where: { userId }, update: { plan: next }, create: { userId, plan: next } });
+  await logAdmin(admin, "plan_change", "user", userId, `${PLAN_NAMES[current]} → ${PLAN_NAMES[next]}`);
+  refresh(userId, user.profile?.username);
+  return { ok: true, done: 1 };
+}
+
+export async function bulkSetPlan(ids: string[], plan: string): Promise<BulkResult> {
+  const admin = await requireAdmin();
+  if (!PLANS.includes(plan as (typeof PLANS)[number])) return { error: "Plan düzgün deyil" };
+  const list = clean(ids);
+  let done = 0;
+  for (const userId of list) {
+    const before = await db.subscription.findUnique({ where: { userId } });
+    if (before?.plan === plan) continue;
+    await db.subscription.upsert({ where: { userId }, update: { plan: plan as (typeof PLANS)[number] }, create: { userId, plan: plan as (typeof PLANS)[number] } });
+    await logAdmin(admin, "plan_change", "user", userId, `${PLAN_NAMES[before?.plan ?? "FREE"]} → ${PLAN_NAMES[plan as (typeof PLANS)[number]]}`);
+    done++;
+  }
+  refresh();
+  return { ok: true, done, skipped: list.length - done };
+}
+
+export async function bulkBlock(ids: string[], reason: string): Promise<BulkResult> {
+  const admin = await requireAdmin();
+  const why = reason.trim().slice(0, 300);
+  if (why.length < 3) return { error: "Bloklama səbəbini yazın" };
+  const list = clean(ids);
+  // Adminlər və artıq bloklananlar ötürülür
+  const users = await db.user.findMany({ where: { id: { in: list }, role: "USER", blockedAt: null }, select: { id: true } });
+  for (const { id } of users) {
+    await db.$transaction([
+      db.user.update({ where: { id }, data: { blockedAt: new Date(), blockReason: why } }),
+      db.session.deleteMany({ where: { userId: id } }),
+    ]);
+    await logAdmin(admin, "block", "user", id, why);
+  }
+  refresh();
+  return { ok: true, done: users.length, skipped: list.length - users.length };
+}
+
+export async function bulkUnblock(ids: string[]): Promise<BulkResult> {
+  const admin = await requireAdmin();
+  const list = clean(ids);
+  const users = await db.user.findMany({ where: { id: { in: list }, blockedAt: { not: null } }, select: { id: true } });
+  for (const { id } of users) {
+    await db.user.update({ where: { id }, data: { blockedAt: null, blockReason: null } });
+    await logAdmin(admin, "unblock", "user", id);
+  }
+  refresh();
+  return { ok: true, done: users.length, skipped: list.length - users.length };
+}
+
+export async function bulkEndSessions(ids: string[]): Promise<BulkResult> {
+  const admin = await requireAdmin();
+  const list = clean(ids).filter((id) => id !== admin.id);
+  let done = 0;
+  for (const id of list) {
+    const { count } = await db.session.deleteMany({ where: { userId: id } });
+    if (count) {
+      await logAdmin(admin, "logout_sessions", "user", id, `${count} sessiya`);
+      done++;
+    }
+  }
+  refresh();
+  return { ok: true, done, skipped: list.length - done };
+}
+
+// İstifadəçi məlumatlarının düzəlişi
+export async function updateUser(_: FormState, form: FormData): Promise<FormState> {
+  const admin = await requireAdmin();
+  const userId = String(form.get("userId") ?? "");
+  const user = await db.user.findUnique({ where: { id: userId }, include: { profile: true } });
+  if (!user) return { error: "İstifadəçi tapılmadı" };
+
+  const str = (k: string) => String(form.get(k) ?? "").trim();
+  const email = str("email").toLowerCase();
+  const phoneRaw = str("phone");
+  const phone = phoneRaw ? normalizePhone(phoneRaw) : null;
+  const username = str("username").toLowerCase();
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return { error: "E-poçt düzgün deyil" };
+  if (phoneRaw && !phone) return { error: "Telefon nömrəsi düzgün deyil" };
+  if (user.profile && (!USERNAME_RE.test(username) || RESERVED_USERNAMES.has(username))) return { error: "Səhifə ünvanı düzgün deyil (3-30 simvol: a-z, 0-9, _ və .)" };
+
+  const [emailTaken, phoneTaken, usernameTaken] = await Promise.all([
+    email !== user.email ? db.user.findUnique({ where: { email }, select: { id: true } }) : null,
+    phone && phone !== user.phone ? db.user.findUnique({ where: { phone }, select: { id: true } }) : null,
+    user.profile && username !== user.profile.username ? db.profile.findUnique({ where: { username }, select: { id: true } }) : null,
+  ]);
+  if (emailTaken) return { error: "Bu e-poçt başqa hesabdadır" };
+  if (phoneTaken) return { error: "Bu nömrə başqa hesabdadır" };
+  if (usernameTaken) return { error: "Bu səhifə ünvanı tutulub" };
+
+  const changes: string[] = [];
+  const track = (label: string, a: unknown, b: unknown) => a !== b && changes.push(`${label}: ${a ?? "—"} → ${b ?? "—"}`);
+  track("ad", user.firstName, str("firstName") || null);
+  track("soyad", user.lastName, str("lastName") || null);
+  track("e-poçt", user.email, email);
+  track("telefon", user.phone, phone);
+
+  await db.user.update({ where: { id: userId }, data: { firstName: str("firstName") || null, lastName: str("lastName") || null, email, phone } });
+  if (user.profile) {
+    const displayName = str("displayName") || user.profile.displayName;
+    track("səhifə", user.profile.username, username);
+    track("göstərilən ad", user.profile.displayName, displayName);
+    track("peşə", user.profile.profession, str("profession") || null);
+    track("şəhər", user.profile.city, str("city") || null);
+    await db.profile.update({ where: { id: user.profile.id }, data: { username, displayName, profession: str("profession") || null, city: str("city") || null } });
+    revalidatePath(`/${user.profile.username}`);
+  }
+  if (changes.length) await logAdmin(admin, "user_edit", "user", userId, changes.join("; ").slice(0, 500));
+  refresh(userId, username);
+  return { ok: true };
 }

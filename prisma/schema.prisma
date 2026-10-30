@@ -341,3 +341,18 @@ model AdminLog {
 
   @@index([createdAt])
 }
+
+// İstifadəçi fəaliyyəti: giriş, xidmət, faktura və s. Hesab silinsə də qeyd qalır (əlaqə yoxdur, e-poçt saxlanılır)
+model ActivityLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  email     String?
+  action    String // login | login_failed | signup | service_create | invoice_paid ...
+  details   String?
+  ip        String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([userId, createdAt])
+  @@index([action])
+}

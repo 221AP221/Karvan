@@ -2,11 +2,12 @@ import { Ban, CircleDollarSign, Eye, Receipt, ScrollText, ShoppingBag, UserPlus,
 import Link from "next/link";
 import { BarChart } from "@/app/dashboard/analytics/charts";
 import { niceTop } from "@/lib/analytics-report";
+import { ACTIVITY_LABELS } from "@/lib/activity";
 import { requireAdmin } from "@/lib/admin";
 import { db } from "@/lib/db";
 import { formatMoney } from "@/lib/money";
 import { PLAN_NAMES, PLAN_PRICES } from "@/lib/plans";
-import { Kpi, PageTitle, PlanBadge, card, date, td, th } from "./ui";
+import { Kpi, PageTitle, PlanBadge, card, date, dateTime, td, th } from "./ui";
 
 const DAY = 86_400_000;
 const PLANS = ["FREE", "PRO", "PRO_MAX"] as const;
@@ -63,6 +64,11 @@ export default async function AdminOverview() {
     if (b) b.value++;
   }
   const signupTop = niceTop(Math.max(1, ...buckets.map((b) => b.value)));
+
+  const [feed, failed24] = await Promise.all([
+    db.activityLog.findMany({ orderBy: { createdAt: "desc" }, take: 8 }),
+    db.activityLog.count({ where: { action: "login_failed", createdAt: { gte: new Date(Date.now() - DAY) } } }),
+  ]);
 
   const topProfiles = await db.profile.findMany({ where: { id: { in: top.map((t) => t.profileId) } }, select: { id: true, username: true, displayName: true, userId: true } });
   const topRows = top.map((t) => ({ ...t, profile: topProfiles.find((p) => p.id === t.profileId) }));
@@ -174,6 +180,35 @@ export default async function AdminOverview() {
           )}
         </section>
       </div>
+
+      <section className={`${card} mt-4`}>
+        <div className="flex items-center justify-between px-5 pt-5">
+          <h2 className="font-semibold">
+            Son fəaliyyət
+            {failed24 > 0 && (
+              <Link href="/admin/logs?action=login_failed" className="ml-2 rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-800">
+                24 saatda {failed24} uğursuz giriş
+              </Link>
+            )}
+          </h2>
+          <Link href="/admin/logs" className="text-sm text-gray-500 hover:text-gray-900">
+            Jurnal →
+          </Link>
+        </div>
+        <ul className="mt-3">
+          {feed.map((a) => (
+            <li key={a.id} className="flex flex-wrap items-baseline justify-between gap-x-4 border-t border-gray-100 px-5 py-2.5 text-sm">
+              <span>
+                <span className="font-medium">{ACTIVITY_LABELS[a.action] ?? a.action}</span>
+                <span className="text-gray-500"> · {a.email ?? "—"}</span>
+                {a.details && <span className="text-gray-400"> · {a.details}</span>}
+              </span>
+              <span className="text-xs tabular-nums text-gray-400">{dateTime(a.createdAt)}</span>
+            </li>
+          ))}
+          {!feed.length && <li className="border-t border-gray-100 px-5 py-4 text-sm text-gray-500">Hələ fəaliyyət yoxdur.</li>}
+        </ul>
+      </section>
 
       <p className="mt-6 flex items-center gap-2 text-xs text-gray-400">
         <ScrollText size={13} aria-hidden /> Admin əməliyyatlarının hamısı Jurnal bölməsində qeyd olunur.

@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { Download } from "lucide-react";
 import { FilterBar } from "@/components/FilterBar";
-import type { Prisma } from "@/generated/prisma/client";
 import { requireAdmin } from "@/lib/admin";
+import { flat, usersWhere } from "@/lib/admin-queries";
 import { db } from "@/lib/db";
 import { type SearchParams, param } from "@/lib/search-params";
-import { Pager, PageTitle, PlanBadge, StatusBadge, card, date, hrefWith, td, th } from "../ui";
+import { Pager, PageTitle, date, hrefWith } from "../ui";
+import { UsersTable } from "./UsersTable";
 
 export const metadata: Metadata = { title: "İstifadəçilər" };
 
@@ -14,27 +15,10 @@ const PAGE = 30;
 export default async function AdminUsers({ searchParams }: { searchParams: SearchParams }) {
   await requireAdmin();
   const sp = await searchParams;
-  const q = param(sp, "q");
-  const plan = param(sp, "plan");
-  const status = param(sp, "status");
   const page = Math.max(1, Number(param(sp, "page")) || 1);
 
-  const where: Prisma.UserWhereInput = {
-    ...(q && {
-      OR: [
-        { email: { contains: q, mode: "insensitive" } },
-        { firstName: { contains: q, mode: "insensitive" } },
-        { lastName: { contains: q, mode: "insensitive" } },
-        { phone: { contains: q.replace(/\s/g, "") } },
-        { profile: { username: { contains: q.toLowerCase() } } },
-        { profile: { displayName: { contains: q, mode: "insensitive" } } },
-      ],
-    }),
-    ...(["FREE", "PRO", "PRO_MAX"].includes(plan) && { subscription: { plan: plan as "FREE" | "PRO" | "PRO_MAX" } }),
-    ...(status === "blocked" && { blockedAt: { not: null } }),
-    ...(status === "active" && { blockedAt: null, role: "USER" }),
-    ...(status === "admin" && { role: "ADMIN" }),
-  };
+  const where = usersWhere(flat(sp));
+
 
   const [total, users] = await Promise.all([
     db.user.count({ where }),
@@ -60,7 +44,11 @@ export default async function AdminUsers({ searchParams }: { searchParams: Searc
 
   return (
     <div>
-      <PageTitle title="İstifadəçilər" text="Hesablar, planlar və moderasiya" />
+      <PageTitle title="İstifadəçilər" text="Sətirdəki düymələrlə tarifi qaldırın/salın, bloklayın və ya dəyişin; bir neçəsini seçib toplu əməliyyat edin">
+        <a href={hrefWith("/api/admin/export", { ...sp, type: "users" }, { page: null })} className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-medium hover:border-gray-500">
+          <Download size={15} aria-hidden /> Excel-ə ixrac
+        </a>
+      </PageTitle>
       {param(sp, "deleted") === "1" && <p className="mb-4 rounded-xl bg-emerald-50 p-3 text-sm text-emerald-800">Hesab silindi.</p>}
       <FilterBar
         total={total}
@@ -70,54 +58,21 @@ export default async function AdminUsers({ searchParams }: { searchParams: Searc
           { type: "select", name: "status", label: "Status", options: [{ value: "", label: "Status: hamısı" }, { value: "active", label: "Aktiv" }, { value: "blocked", label: "Bloklanıb" }, { value: "admin", label: "Admin" }] },
         ]}
       />
-      <div className={`${card} overflow-x-auto`}>
-        <table className="w-full min-w-[760px] text-sm">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className={th}>İstifadəçi</th>
-              <th className={th}>Səhifə</th>
-              <th className={th}>Plan</th>
-              <th className={`${th} text-right`}>Xidmət</th>
-              <th className={`${th} text-right`}>Sifariş</th>
-              <th className={`${th} text-right`}>Faktura</th>
-              <th className={th}>Status</th>
-              <th className={`${th} text-right`}>Qeydiyyat</th>
-            </tr>
-          </thead>
-          <tbody className="tabular-nums">
-            {users.map((u) => (
-              <tr key={u.id} className="border-t border-gray-100 hover:bg-gray-50">
-                <td className={td}>
-                  <Link href={`/admin/users/${u.id}`} className="font-medium text-gray-900 hover:underline">
-                    {[u.firstName, u.lastName].filter(Boolean).join(" ") || u.profile?.displayName || "—"}
-                  </Link>
-                  <span className="block text-xs text-gray-500">{u.email}</span>
-                </td>
-                <td className={td}>
-                  {u.profile ? (
-                    <Link href={`/${u.profile.username}`} target="_blank" className="text-gray-600 hover:underline">
-                      @{u.profile.username}
-                    </Link>
-                  ) : (
-                    <span className="text-gray-400">—</span>
-                  )}
-                </td>
-                <td className={td}>
-                  <PlanBadge plan={u.subscription?.plan ?? "FREE"} />
-                </td>
-                <td className={`${td} text-right`}>{u.profile?._count.services ?? 0}</td>
-                <td className={`${td} text-right`}>{u.profile?._count.orders ?? 0}</td>
-                <td className={`${td} text-right`}>{u.profile?._count.invoices ?? 0}</td>
-                <td className={td}>
-                  <StatusBadge blocked={Boolean(u.blockedAt)} admin={u.role === "ADMIN"} />
-                </td>
-                <td className={`${td} text-right text-xs text-gray-500`}>{date(u.createdAt)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {!users.length && <p className="p-8 text-center text-sm text-gray-500">Heç nə tapılmadı.</p>}
-      </div>
+      <UsersTable
+        rows={users.map((u) => ({
+          id: u.id,
+          name: [u.firstName, u.lastName].filter(Boolean).join(" ") || u.profile?.displayName || "—",
+          email: u.email ?? "",
+          username: u.profile?.username ?? null,
+          plan: u.subscription?.plan ?? "FREE",
+          services: u.profile?._count.services ?? 0,
+          orders: u.profile?._count.orders ?? 0,
+          invoices: u.profile?._count.invoices ?? 0,
+          blocked: Boolean(u.blockedAt),
+          admin: u.role === "ADMIN",
+          created: date(u.createdAt),
+        }))}
+      />
       <Pager page={page} pages={Math.ceil(total / PAGE)} href={(n) => hrefWith("/admin/users", sp, { page: n > 1 ? String(n) : null })} />
     </div>
   );

@@ -22,7 +22,11 @@ Məhsul spesifikasiyası: [docs/PRD.md](docs/PRD.md)
 - İcmal: istifadəçilər, yeni qeydiyyatlar, planlar, təxmini MRR, platforma dövriyyəsi, sifariş/faktura/baxış sayları
 - İstifadəçilər: axtarış və filtr, plan dəyişmək, bloklamaq (səbəb ilə; hesab dərhal çıxış edir, səhifə gizlənir),
   bütün cihazlardan çıxartmaq, silmək (e-poçtla təsdiq). FİN/pasport maskalanmış göstərilir
-- Xidmətlər: moderasiya (bloklanan xidmət səhifədə və kataloqda görünmür), fakturalar, admin jurnalı
+- Sürətli əməliyyatlar: hər sətirdə tarifi qaldır/sal, blokla/bloku götür, dəyiş; bir neçə hesabı seçib toplu
+  tarif, bloklama, bloku götürmə, çıxış etdirmə. İstifadəçi səhifəsində əməliyyat kartları və məlumat düzəlişi
+- Jurnal: istifadəçi fəaliyyəti (giriş, uğursuz giriş, xidmət, sifariş, faktura, parametrlər; IP ilə) və admin
+  əməliyyatları, filtrlər; istifadəçilər və jurnallar Excel-ə (CSV) ixrac olunur
+- Xidmətlər: moderasiya (bloklanan xidmət səhifədə və kataloqda görünmür), fakturalar
 - Lokal: `admin@karvan.az` / `admin12345` (seed yaradır). Real serverdə: `npm run admin -- e-poçt şifrə`
 
 **Sayt** (`/`, `/tr`, `/ru`)

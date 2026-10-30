@@ -3,7 +3,8 @@
 import { randomBytes } from "node:crypto";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { endSession, hashPassword, startSession, verifyPassword } from "@/lib/auth";
+import { logActivity } from "@/lib/activity";
+import { endSession, getCurrentUser, hashPassword, startSession, verifyPassword } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { type Dict, getDictionary, getLocale } from "@/i18n/server";
 import type { FormState } from "@/lib/forms";
@@ -97,6 +98,7 @@ export async function signup(_: AuthState, form: FormData): Promise<AuthState> {
     },
   });
   await startSession(user.id);
+  await logActivity({ userId: user.id, email, action: "signup", details: `@${username}` });
   redirect("/dashboard/profile");
 }
 
@@ -105,20 +107,29 @@ export async function login(_: AuthState, form: FormData): Promise<AuthState> {
   const password = String(form.get("password") ?? "");
   const user = await db.user.findUnique({ where: { email }, include: { profile: { select: { id: true } } } });
   if (!user?.passwordHash || !(await verifyPassword(password, user.passwordHash))) {
+    // Uğursuz cəhdlər: şifrə seçmə hücumlarını görmək üçün (mövcud olmayan e-poçt da qeyd olunur)
+    await logActivity({ userId: user?.id, email: email.slice(0, 120), action: "login_failed" });
     return fail((await errors()).wrongLogin);
   }
-  if (user.blockedAt) return fail((await errors()).blocked);
+  if (user.blockedAt) {
+    await logActivity({ userId: user.id, email, action: "login_blocked" });
+    return fail((await errors()).blocked);
+  }
   if (user.role === "ADMIN") {
     await startSession(user.id);
+    await logActivity({ userId: user.id, email, action: "login", details: "admin" });
     redirect(user.profile ? "/dashboard" : "/admin");
   }
   // Profilsiz hesab panelə daxil ola bilməz: səssizcə girişə qaytarmaq əvəzinə səbəbi deyirik
   if (!user.profile) return fail((await errors()).noProfile);
   await startSession(user.id);
+  await logActivity({ userId: user.id, email, action: "login" });
   redirect("/dashboard");
 }
 
 export async function logout() {
+  const current = await getCurrentUser();
+  if (current) await logActivity({ userId: current.id, email: current.email, action: "logout" });
   await endSession();
   redirect("/login");
 }
@@ -139,6 +150,7 @@ export async function requestPasswordReset(_: AuthState, form: FormData): Promis
   const recent = await db.passwordReset.count({ where: { userId: user.id, createdAt: { gt: new Date(Date.now() - 3_600_000) } } });
   if (recent >= 3) return done;
 
+  await logActivity({ userId: user.id, email, action: "password_reset_request" });
   const token = randomBytes(32).toString("base64url");
   await db.passwordReset.create({
     data: { id: sha256(token), userId: user.id, expiresAt: new Date(Date.now() + RESET_MINUTES * 60_000) },
@@ -170,5 +182,6 @@ export async function resetPassword(_: AuthState, form: FormData): Promise<AuthS
     db.passwordReset.updateMany({ where: { userId: reset.userId, usedAt: null }, data: { usedAt: new Date() } }),
     db.session.deleteMany({ where: { userId: reset.userId } }),
   ]);
+  await logActivity({ userId: reset.userId, action: "password_reset" });
   redirect("/login?reset=1");
 }
