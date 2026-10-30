@@ -1,5 +1,5 @@
-// Tam satıcı + müştəri axını. Boş bazada işlədin: npm run build && npm start, sonra node e2e/smoke.cjs
-// (leyla" + RUN + "@example.az istifadəçisi yaradır; təkrar üçün əvvəlcə onu silin).
+// Tam satıcı + müştəri axını. npm run build && npm start, sonra node e2e/smoke.cjs
+// Hər işə salınmada yeni satıcı yaradır, ona görə təkrar işlətmək olar.
 const { chromium } = require("playwright");
 const RUN = String(Date.now()).slice(-6);
 const S = process.argv[2] ?? "e2e/output";
