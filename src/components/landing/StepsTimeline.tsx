@@ -29,11 +29,11 @@ export function StepsTimeline({ steps }: { steps: Step[] }) {
 
         gsap.utils.toArray<HTMLElement>("[data-step]").forEach((step) => {
           const tl = gsap.timeline({
-            scrollTrigger: { trigger: step, start: "top 70%", toggleActions: "play none none reverse" },
+            scrollTrigger: { trigger: step, start: "top 85%", toggleActions: "play none none reverse" },
           });
-          tl.fromTo(step.querySelector("[data-dot]"), { scale: 0.6, backgroundColor: "#ffffff" }, { scale: 1, backgroundColor: "#111827", duration: 0.4, ease: "back.out(2)" })
-            .fromTo(step.querySelector("[data-icon]"), { rotate: -20, scale: 0.7, autoAlpha: 0 }, { rotate: 0, scale: 1, autoAlpha: 1, duration: 0.6, ease: "back.out(1.7)" }, 0)
-            .fromTo(step.querySelector("[data-body]"), { x: 40, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 0.7, ease: "power3.out" }, 0.1);
+          tl.fromTo(step.querySelector("[data-dot]"), { scale: 0.6, backgroundColor: "#ffffff" }, { scale: 1, backgroundColor: "#111827", duration: 0.3, ease: "back.out(2)" })
+            .fromTo(step.querySelector("[data-icon]"), { rotate: -20, scale: 0.7, autoAlpha: 0 }, { rotate: 0, scale: 1, autoAlpha: 1, duration: 0.45, ease: "back.out(1.7)" }, 0)
+            .fromTo(step.querySelector("[data-body]"), { x: 24, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 0.5, ease: "power3.out" }, 0.05);
         });
       });
     },

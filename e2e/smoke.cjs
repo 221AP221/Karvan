@@ -1,6 +1,7 @@
 // Tam satıcı + müştəri axını. Boş bazada işlədin: npm run build && npm start, sonra node e2e/smoke.cjs
-// (leyla@example.az istifadəçisi yaradır; təkrar üçün əvvəlcə onu silin).
+// (leyla" + RUN + "@example.az istifadəçisi yaradır; təkrar üçün əvvəlcə onu silin).
 const { chromium } = require("playwright");
+const RUN = String(Date.now()).slice(-6);
 const S = process.argv[2] ?? "e2e/output";
 require("fs").mkdirSync(`${S}/shots`, { recursive: true });
 const BASE = process.env.BASE_URL ?? "http://localhost:3000";
@@ -15,8 +16,8 @@ const BASE = process.env.BASE_URL ?? "http://localhost:3000";
   // 1. Qeydiyyat
   await seller.goto(BASE + "/signup");
   await seller.fill('[name=displayName]', "Leyla Həsənova");
-  await seller.fill('[name=username]', "leyla.makeup");
-  await seller.fill('[name=email]', "leyla@example.az");
+  await seller.fill('[name=username]', "leyla" + RUN);
+  await seller.fill('[name=email]', "leyla" + RUN + "@example.az");
   await seller.fill('[name=password]', "sifre12345");
   await seller.click("button:has-text('Hesab yarat')");
   await seller.waitForURL("**/dashboard/profile");
@@ -71,7 +72,7 @@ const BASE = process.env.BASE_URL ?? "http://localhost:3000";
   const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2 });
   const customer = await ctx.newPage();
   customer.on("pageerror", (e) => errors.push(e.message));
-  await customer.goto(BASE + "/leyla.makeup");
+  await customer.goto(BASE + "/leyla" + RUN);
   await shot(customer, "03-public-page");
   await customer.click("button:has-text('Sifariş et')");
   await customer.fill('[name=customerName]', "Nərmin Quliyeva");
@@ -88,7 +89,7 @@ const BASE = process.env.BASE_URL ?? "http://localhost:3000";
   step("müştəri 'Ödədim' basdı");
 
   // Razılaşma ilə xidmət
-  await customer.goto(BASE + "/leyla.makeup");
+  await customer.goto(BASE + "/leyla" + RUN);
   await customer.click("button:has-text('Qiymət soruş')");
   await customer.fill('[name=customerName]', "Aysel Məmmədli");
   await customer.fill('[name=customerPhone]', "+994 55 765 43 21");
@@ -164,7 +165,7 @@ const BASE = process.env.BASE_URL ?? "http://localhost:3000";
   await seller.waitForURL("**/login");
   await seller.goto(BASE + "/dashboard");
   step("çıxışdan sonra /dashboard → " + seller.url());
-  await seller.fill('[name=email]', "leyla@example.az");
+  await seller.fill('[name=email]', "leyla" + RUN + "@example.az");
   await seller.fill('[name=password]', "yanlis");
   await seller.click("button:has-text('Daxil ol')");
   await seller.waitForSelector("text=E-poçt və ya şifrə yanlışdır");

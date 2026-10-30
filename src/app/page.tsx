@@ -1,30 +1,31 @@
 import Link from "next/link";
 import { AiDemo } from "@/components/landing/AiDemo";
+import { Appear } from "@/components/landing/Appear";
 import { Header, Logo } from "@/components/landing/Header";
 import { HeroPhone } from "@/components/landing/HeroPhone";
+import { Marquee } from "@/components/landing/Marquee";
 import { SmoothScroll } from "@/components/landing/SmoothScroll";
 import { StepsTimeline } from "@/components/landing/StepsTimeline";
-import AnimatedContent from "@/components/reactbits/AnimatedContent";
-import CountUp from "@/components/reactbits/CountUp";
+import { WordRotator } from "@/components/landing/WordRotator";
 import GradientText from "@/components/reactbits/GradientText";
 import Magnet from "@/components/reactbits/Magnet";
-import RotatingText from "@/components/reactbits/RotatingText";
 import ScrollReveal from "@/components/reactbits/ScrollReveal";
-import ScrollVelocity from "@/components/reactbits/ScrollVelocity";
 import ShinyText from "@/components/reactbits/ShinyText";
 import SplitText from "@/components/reactbits/SplitText";
 import SpotlightCard from "@/components/reactbits/SpotlightCard";
 
 const BRAND_GRADIENT = ["#7c3aed", "#db2777", "#f59e0b", "#7c3aed"];
 
-const NICHES = "Makiyaj ustaları ✦ Repetitorlar ✦ Dizaynerlər ✦ SMM mütəxəssisləri ✦ Fotoqraflar ✦ ";
-const NICHES_2 = "Fitness məşqçiləri ✦ Psixoloqlar ✦ Konsultantlar ✦ Dırnaq ustaları ✦ Reklam bloqerləri ✦ ";
+const NICHES = [
+  ["💄 Makiyaj ustaları", "📚 Repetitorlar", "🎨 Dizaynerlər", "📣 SMM mütəxəssisləri", "📸 Fotoqraflar", "💅 Dırnaq ustaları"],
+  ["🏋️ Fitness məşqçiləri", "🧠 Psixoloqlar", "💼 Konsultantlar", "📢 Reklam bloqerləri", "🎬 Video montajçılar", "🌐 Tərcüməçilər"],
+];
 
 const STATS = [
-  { to: 3, suffix: " dəq", label: "səhifəni qurmaq üçün" },
-  { to: 5, suffix: "", label: "pulsuz faktura hər ay" },
-  { to: 0, suffix: " AZN", label: "başlamaq üçün" },
-  { to: 24, suffix: "/7", label: "sifariş qəbulu" },
+  { value: "3 dəq", label: "səhifəni qurmaq üçün" },
+  { value: "5", label: "pulsuz faktura hər ay" },
+  { value: "0 AZN", label: "başlamaq üçün" },
+  { value: "24/7", label: "sifariş qəbulu" },
 ];
 
 const STEPS = [
@@ -60,26 +61,11 @@ const FAQ = [
 
 function SectionTitle({ eyebrow, title, text, dark = false }: { eyebrow: string; title: string; text?: string; dark?: boolean }) {
   return (
-    <div className="mx-auto max-w-3xl text-center">
-      <AnimatedContent distance={30} duration={0.7}>
-        <p className={`text-sm font-semibold uppercase tracking-[0.2em] ${dark ? "text-violet-300" : "text-violet-600"}`}>{eyebrow}</p>
-      </AnimatedContent>
-      <SplitText
-        text={title}
-        tag="h2"
-        splitType="words"
-        effect="rise"
-        mask
-        delay={60}
-        duration={1}
-        className="mt-4 text-3xl font-bold tracking-tight sm:text-5xl"
-      />
-      {text && (
-        <AnimatedContent distance={30} delay={0.25}>
-          <p className={`mt-5 text-lg ${dark ? "text-gray-400" : "text-gray-600"}`}>{text}</p>
-        </AnimatedContent>
-      )}
-    </div>
+    <Appear stagger={0.08} className="mx-auto max-w-3xl text-center">
+      <p className={`text-sm font-semibold uppercase tracking-[0.2em] ${dark ? "text-violet-300" : "text-violet-600"}`}>{eyebrow}</p>
+      <h2 className="mt-4 text-balance text-3xl font-bold leading-tight tracking-tight sm:text-5xl sm:leading-[1.1]">{title}</h2>
+      {text && <p className={`mt-5 text-pretty text-lg ${dark ? "text-gray-400" : "text-gray-600"}`}>{text}</p>}
+    </Appear>
   );
 }
 
@@ -106,7 +92,7 @@ export default function Home() {
 
           <div className="relative mx-auto grid max-w-6xl items-center gap-16 px-4 pb-24 lg:grid-cols-[1.1fr_1fr]">
             <div className="text-center lg:text-left">
-              <AnimatedContent trigger="mount" distance={20} duration={0.8}>
+              <Appear trigger="mount" distance={12} duration={0.5}>
                 <span className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-white/80 px-4 py-1.5 text-sm shadow-sm backdrop-blur">
                   <span className="relative flex h-2 w-2">
                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-violet-500 opacity-75" />
@@ -114,52 +100,34 @@ export default function Home() {
                   </span>
                   <ShinyText text="Azərbaycanda xidmət satanlar üçün" color="#6d28d9" shineColor="#f0abfc" speed={3} />
                 </span>
-              </AnimatedContent>
+              </Appear>
 
-              <h1 className="mt-6 text-[2.6rem] font-extrabold leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl">
+              <h1 className="mt-6 text-[2.6rem] font-extrabold leading-[1.1] tracking-tight sm:text-6xl lg:text-7xl">
                 <SplitText
                   text="Profil linkiniz"
                   tag="span"
                   trigger="load"
                   splitType="chars"
                   effect="rise"
-                  mask
-                  delay={35}
-                  duration={1.1}
+                  delay={22}
+                  duration={0.7}
                   textAlign="inherit"
-                  className="block"
+                  className="block pb-1"
                 />
-                <span className="mt-1 flex justify-center lg:justify-start">
-                  <GradientText colors={BRAND_GRADIENT} animationSpeed={6}>
-                    <RotatingText
-                      texts={["satış edir", "faktura yazır", "ödənişi izləyir"]}
-                      rotationInterval={2600}
-                      staggerDuration={0.025}
-                      staggerFrom="last"
-                      splitBy="characters"
-                      mainClassName="overflow-hidden pb-2"
-                      splitLevelClassName="overflow-hidden"
-                      transition={{ type: "spring", damping: 28, stiffness: 380 }}
-                      initial={{ y: "100%" }}
-                      animate={{ y: 0 }}
-                      exit={{ y: "-120%" }}
-                    />
-                  </GradientText>
-                </span>
+                <WordRotator words={["satış edir", "faktura yazır", "ödənişi izləyir"]} className="mt-1" />
               </h1>
 
-              <AnimatedContent trigger="mount" delay={0.6} distance={30} duration={0.9}>
+              <Appear trigger="mount" delay={0.15}>
                 <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-gray-600 lg:mx-0">
                   Instagram bio-nuz üçün bir link: xidmətləriniz, sifariş düyməsi, avtomatik PDF faktura və ödəniş izləmə.
                   DM-də kart nömrəsi yazmağa son.
                 </p>
-              </AnimatedContent>
+              </Appear>
 
-              <AnimatedContent
+              <Appear
                 trigger="mount"
-                delay={0.8}
-                distance={30}
-                stagger={0.12}
+                delay={0.25}
+                stagger={0.08}
                 className="mt-9 flex flex-col items-center gap-3 sm:flex-row sm:justify-center lg:justify-start"
               >
                 <Magnet padding={60} magnetStrength={3} wrapperClassName="w-full sm:w-auto">
@@ -179,11 +147,11 @@ export default function Home() {
                     Demo səhifəyə bax
                   </Link>
                 </Magnet>
-              </AnimatedContent>
+              </Appear>
 
-              <AnimatedContent trigger="mount" delay={1.1} distance={10}>
+              <Appear trigger="mount" delay={0.35} distance={8}>
                 <p className="mt-5 text-sm text-gray-500">Kart tələb olunmur · Ayda 5 faktura pulsuz · 3 dəqiqəyə hazır</p>
-              </AnimatedContent>
+              </Appear>
             </div>
 
             <div className="px-8 sm:px-0">
@@ -194,39 +162,30 @@ export default function Home() {
 
         {/* Kimlər üçün: scroll sürətinə reaksiya verən zolaq */}
         <section aria-label="Kimlər üçün" className="border-y border-gray-100 bg-gray-50/80 py-8">
-          <ScrollVelocity
-            texts={[NICHES, NICHES_2]}
-            velocity={40}
-            numCopies={4}
-            fadeEdges
-            skewWithVelocity={6}
-            className="px-4 text-2xl font-semibold tracking-tight text-gray-300 sm:text-4xl"
-          />
+          <Marquee rows={NICHES} />
         </section>
 
         {/* Rəqəmlər */}
         <section className="mx-auto max-w-6xl px-4 py-20">
-          <AnimatedContent stagger={0.12} distance={40} className="grid grid-cols-2 gap-y-10 md:grid-cols-4">
+          <Appear stagger={0.08} className="grid grid-cols-2 gap-y-10 md:grid-cols-4">
             {STATS.map((s) => (
               <div key={s.label} className="text-center">
-                <p className="text-4xl font-extrabold tracking-tight sm:text-6xl">
-                  <CountUp to={s.to} duration={1.6} suffix={s.suffix} />
-                </p>
+                <p className="text-4xl font-extrabold tracking-tight sm:text-6xl">{s.value}</p>
                 <p className="mt-2 text-sm text-gray-500 sm:text-base">{s.label}</p>
               </div>
             ))}
-          </AnimatedContent>
+          </Appear>
         </section>
 
         {/* Böyük bəyanat: söz-söz açılır */}
         <section className="mx-auto max-w-5xl px-4 pb-24">
           <ScrollReveal
-            baseOpacity={0.12}
-            enableBlur
-            blurStrength={6}
-            baseRotation={2}
+            baseOpacity={0.22}
+            enableBlur={false}
+            baseRotation={0}
+            wordAnimationEnd="center 55%"
             containerClassName="text-center"
-            textClassName="text-3xl font-bold leading-snug tracking-tight sm:text-5xl"
+            textClassName="text-balance text-3xl font-bold leading-snug tracking-tight sm:text-5xl sm:leading-tight"
           >
             Müştəriləriniz DM-də kart nömrəsi gözləmir. Onlar aydın qiymət, bir kliklə sifariş və peşəkar faktura gözləyir.
           </ScrollReveal>
@@ -235,7 +194,7 @@ export default function Home() {
         {/* Problem / həll */}
         <section className="mx-auto max-w-6xl px-4 pb-24">
           <div className="grid gap-6 md:grid-cols-2">
-            <AnimatedContent direction="horizontal" reverse distance={80} className="rounded-3xl border border-red-100 bg-gradient-to-b from-red-50/80 to-white p-8">
+            <Appear className="rounded-3xl border border-red-100 bg-gradient-to-b from-red-50/80 to-white p-8">
               <p className="text-sm font-semibold uppercase tracking-wider text-red-500">Əvvəl</p>
               <ul className="mt-6 space-y-4 text-gray-700">
                 {[
@@ -250,8 +209,8 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-            </AnimatedContent>
-            <AnimatedContent direction="horizontal" distance={80} delay={0.1} className="rounded-3xl border border-emerald-100 bg-gradient-to-b from-emerald-50/80 to-white p-8">
+            </Appear>
+            <Appear delay={0.08} className="rounded-3xl border border-emerald-100 bg-gradient-to-b from-emerald-50/80 to-white p-8">
               <p className="text-sm font-semibold uppercase tracking-wider text-emerald-600">BioFaktura ilə</p>
               <ul className="mt-6 space-y-4 text-gray-700">
                 {[
@@ -266,7 +225,7 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-            </AnimatedContent>
+            </Appear>
           </div>
         </section>
 
@@ -287,7 +246,7 @@ export default function Home() {
             title="Satış üçün lazım olan hər şey"
             text="Linktree, Excel və WhatsApp yazışmalarını bir alətlə əvəz edin."
           />
-          <AnimatedContent stagger={0.08} distance={50} scale={0.96} className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <Appear stagger={0.08} className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {FEATURES.map((f) => (
               <SpotlightCard key={f.title} theme="light" spotlightColor="rgba(124, 58, 237, 0.18)" className="h-full rounded-3xl p-7">
                 <span className="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-violet-50 to-pink-50 text-2xl">{f.icon}</span>
@@ -295,7 +254,7 @@ export default function Home() {
                 <p className="mt-2 text-gray-600">{f.text}</p>
               </SpotlightCard>
             ))}
-          </AnimatedContent>
+          </Appear>
         </section>
 
         {/* AI */}
@@ -311,24 +270,24 @@ export default function Home() {
               title="Yazın, AI fakturanı hazırlasın"
               text="Formaları doldurmaq lazım deyil. Razılaşdığınızı adi dillə yazın, qalanını AI edir. Göndərməzdən əvvəl hər şeyi siz yoxlayırsınız."
             />
-            <AnimatedContent distance={60} scale={0.95} delay={0.1} className="mt-14">
+            <Appear delay={0.1} className="mt-14">
               <AiDemo />
-            </AnimatedContent>
-            <AnimatedContent stagger={0.1} distance={40} className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            </Appear>
+            <Appear stagger={0.1} className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {AI_FEATURES.map((f) => (
                 <SpotlightCard key={f.title} theme="dark" spotlightColor="rgba(167, 139, 250, 0.25)" className="h-full rounded-2xl p-6">
                   <h3 className="font-semibold">{f.title}</h3>
                   <p className="mt-2 text-sm text-gray-400">{f.text}</p>
                 </SpotlightCard>
               ))}
-            </AnimatedContent>
+            </Appear>
           </div>
         </section>
 
         {/* Qiymətlər */}
         <section id="qiymetler" className="mx-auto max-w-6xl px-4 py-28">
           <SectionTitle eyebrow="Qiymətlər" title="Pulsuz başlayın, böyüdükcə keçin" />
-          <AnimatedContent stagger={0.15} distance={60} className="mx-auto mt-16 grid max-w-4xl gap-6 md:grid-cols-2">
+          <Appear stagger={0.15} className="mx-auto mt-16 grid max-w-4xl gap-6 md:grid-cols-2">
             <div className="flex flex-col rounded-3xl border border-gray-200 bg-white p-8">
               <h3 className="text-lg font-semibold">Pulsuz</h3>
               <p className="mt-4 flex items-baseline gap-1">
@@ -378,14 +337,14 @@ export default function Home() {
                 </Link>
               </div>
             </div>
-          </AnimatedContent>
+          </Appear>
         </section>
 
         {/* Suallar */}
         <section id="suallar" className="bg-gray-50/80 py-28">
           <div className="mx-auto max-w-3xl px-4">
             <SectionTitle eyebrow="Suallar" title="Tez-tez soruşulanlar" />
-            <AnimatedContent stagger={0.08} distance={30} className="mt-14 space-y-3">
+            <Appear stagger={0.08} distance={30} className="mt-14 space-y-3">
               {FAQ.map((item) => (
                 <details key={item.q} className="group rounded-2xl border border-gray-200 bg-white px-6 py-5 transition open:shadow-lg open:shadow-violet-500/5">
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold [&::-webkit-details-marker]:hidden">
@@ -397,24 +356,16 @@ export default function Home() {
                   <p className="mt-3 text-gray-600">{item.a}</p>
                 </details>
               ))}
-            </AnimatedContent>
+            </Appear>
           </div>
         </section>
 
         {/* Son çağırış */}
         <section className="px-4 py-24">
-          <AnimatedContent distance={80} scale={0.94} duration={1} className="relative mx-auto max-w-5xl overflow-hidden rounded-[2rem] bg-gradient-to-br from-violet-600 via-fuchsia-600 to-pink-600 px-6 py-20 text-center text-white shadow-2xl shadow-violet-500/30 sm:px-16">
+          <Appear className="relative mx-auto max-w-5xl overflow-hidden rounded-[2rem] bg-gradient-to-br from-violet-600 via-fuchsia-600 to-pink-600 px-6 py-20 text-center text-white shadow-2xl shadow-violet-500/30 sm:px-16">
             <div aria-hidden className="animate-blob absolute -right-16 -top-16 h-64 w-64 rounded-full bg-white/15 blur-2xl" />
             <div aria-hidden className="animate-blob absolute -bottom-20 -left-10 h-64 w-64 rounded-full bg-amber-300/20 blur-2xl" style={{ animationDelay: "-7s" }} />
-            <SplitText
-              text="Növbəti sifarişiniz fakturası ilə gəlsin"
-              tag="h2"
-              splitType="words"
-              effect="rise"
-              mask
-              delay={70}
-              className="relative text-3xl font-bold tracking-tight sm:text-5xl"
-            />
+            <h2 className="relative text-balance text-3xl font-bold leading-tight tracking-tight sm:text-5xl">Növbəti sifarişiniz fakturası ilə gəlsin</h2>
             <p className="relative mx-auto mt-5 max-w-xl text-lg text-violet-100">
               Səhifənizi indi qurun, linki bio-ya qoyun, ilk müştəriniz peşəkar faktura alsın.
             </p>
@@ -428,7 +379,7 @@ export default function Home() {
                 Demo səhifə
               </Link>
             </div>
-          </AnimatedContent>
+          </Appear>
         </section>
 
         <footer className="border-t border-gray-100">

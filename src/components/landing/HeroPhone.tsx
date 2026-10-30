@@ -60,14 +60,14 @@ export function HeroPhone() {
           .fromTo(
             phone,
             { autoAlpha: 0, y: 120, rotateX: 25, rotateZ: -6, scale: 0.9 },
-            { autoAlpha: 1, y: 0, rotateX: 0, rotateZ: 0, scale: 1, duration: 1.6 },
-            0.2,
+            { autoAlpha: 1, y: 0, rotateX: 0, rotateZ: 0, scale: 1, duration: 1.1 },
+            0,
           )
           .fromTo(
             cards,
             { autoAlpha: 0, scale: 0.6, y: 40 },
-            { autoAlpha: 1, scale: 1, y: 0, duration: 0.9, ease: "back.out(1.8)", stagger: 0.35 },
-            0.9,
+            { autoAlpha: 1, scale: 1, y: 0, duration: 0.6, ease: "back.out(1.6)", stagger: 0.18 },
+            0.5,
           );
 
         // Kartlar müstəqil şəkildə yüngülcə üzür
