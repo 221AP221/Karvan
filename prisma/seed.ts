@@ -77,7 +77,7 @@ await seedCatalogSellers();
 
 // Lokal admin hesabı (real bazada yaradılmır: orada `npm run admin -- e-poçt şifrə` istifadə olunur)
 if (!process.env.DATABASE_URL && !(await db.user.findUnique({ where: { email: "admin@karvan.az" }, select: { id: true } }))) {
-  await db.user.create({ data: { email: "admin@karvan.az", firstName: "Karvan", lastName: "Admin", role: "ADMIN", passwordHash: await hashPassword("admin12345") } });
+  await db.user.create({ data: { email: "admin@karvan.az", firstName: "Karvan", lastName: "Admin", role: "SUPER_ADMIN", passwordHash: await hashPassword("admin12345") } });
 }
 
 console.log("Demo profil: /demo · giriş: demo@karvan.az / demo12345");

@@ -10,9 +10,9 @@ import { STATUS_LABEL, STATUS_STYLE } from "@/lib/invoice-status";
 import { formatMoney } from "@/lib/money";
 import { formatPhone } from "@/lib/phone";
 import { categoryLabel } from "@/lib/services";
-import { setServiceBlocked, unblockUser } from "../../actions";
+import { impersonate, setRole, setServiceBlocked, unblockUser } from "../../actions";
 import { ACTION_LABELS, PageTitle, PlanBadge, StatusBadge, card, date, dateTime, td, th } from "../../ui";
-import { BlockForm, DeleteForm, EditForm, PlanForm } from "./forms";
+import { BlockForm, DeleteForm, EditForm, PasswordAdminForm, PlanForm } from "./forms";
 import { QuickActions } from "./QuickActions";
 
 export const metadata: Metadata = { title: "İstifadəçi" };
@@ -60,7 +60,7 @@ export default async function AdminUser({ params }: { params: Promise<{ id: stri
   const p = user.profile;
   const name = [user.firstName, user.lastName].filter(Boolean).join(" ") || p?.displayName || user.email;
   const isSelf = user.id === admin.id;
-  const isAdmin = user.role === "ADMIN";
+  const isAdmin = user.role !== "USER";
 
   return (
     <div>
@@ -246,6 +246,35 @@ export default async function AdminUser({ params }: { params: Promise<{ id: stri
             <p className="mb-3 text-xs text-gray-500">İstənilən tarifə birbaşa keçirmək üçün</p>
             <PlanForm userId={user.id} plan={user.subscription?.plan ?? "FREE"} />
           </section>
+
+          {(!isAdmin || admin.role === "SUPER_ADMIN") && !isSelf && (
+            <section className={`${card} p-5`}>
+              <h2 className="mb-3 font-semibold">Şifrə</h2>
+              <PasswordAdminForm userId={user.id} />
+            </section>
+          )}
+
+          {admin.role === "SUPER_ADMIN" && !isSelf && (
+            <section className={`${card} border-gray-900/20 p-5`}>
+              <h2 className="mb-1 font-semibold">Super admin</h2>
+              <p className="mb-3 text-xs text-gray-500">Rol dəyişəndə istifadəçi bütün cihazlardan çıxarılır.</p>
+              <div className="flex flex-wrap gap-2">
+                {(["USER", "ADMIN", "SUPER_ADMIN"] as const).map((r) => (
+                  <form key={r} action={setRole.bind(null, user.id, r)}>
+                    <button disabled={user.role === r} className={`rounded-full px-3 py-1.5 text-xs font-medium ${user.role === r ? "bg-gray-900 text-white" : "border border-gray-300 hover:border-gray-600"}`}>
+                      {r === "USER" ? "İstifadəçi" : r === "ADMIN" ? "Admin" : "Super admin"}
+                    </button>
+                  </form>
+                ))}
+              </div>
+              {p && !isAdmin && !user.blockedAt && (
+                <form action={impersonate.bind(null, user.id)} className="mt-4 border-t border-gray-100 pt-4">
+                  <button className="w-full rounded-full bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-700">İstifadəçi kimi daxil ol</button>
+                  <p className="mt-2 text-xs text-gray-500">Onun panelini onun gözü ilə görürsünüz (dəstək üçün). 2 saat etibarlıdır, jurnala yazılır.</p>
+                </form>
+              )}
+            </section>
+          )}
 
           {!isAdmin && !isSelf && (
             <>

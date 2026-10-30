@@ -2,7 +2,9 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { logAdmin, requireAdmin } from "@/lib/admin";
+import { randomBytes } from "node:crypto";
+import { logAdmin, requireAdmin, requireSuperAdmin } from "@/lib/admin";
+import { hashPassword, startImpersonation } from "@/lib/auth";
 import { db } from "@/lib/db";
 import type { FormState } from "@/lib/forms";
 import { normalizePhone } from "@/lib/phone";
@@ -47,7 +49,7 @@ export async function blockUser(_: FormState, form: FormData): Promise<FormState
   const reason = String(form.get("reason") ?? "").trim().slice(0, 300);
   if (reason.length < 3) return { error: "Bloklama səbəbini yazın" };
   const user = await target(userId);
-  if (user.role === "ADMIN") return { error: "Admin hesabı bloklana bilməz" };
+  if (user.role !== "USER") return { error: "Admin hesabı bloklana bilməz" };
   // Bloklananda bütün sessiyalar bağlanır: hesab dərhal çıxış edir
   await db.$transaction([
     db.user.update({ where: { id: userId }, data: { blockedAt: new Date(), blockReason: reason } }),
@@ -79,7 +81,7 @@ export async function deleteUser(_: FormState, form: FormData): Promise<FormStat
   const admin = await requireAdmin();
   const userId = String(form.get("userId") ?? "");
   const user = await target(userId);
-  if (user.role === "ADMIN") return { error: "Admin hesabı silinə bilməz" };
+  if (user.role !== "USER") return { error: "Admin hesabı silinə bilməz" };
   if (String(form.get("confirm") ?? "").trim().toLowerCase() !== (user.email ?? "").toLowerCase()) {
     return { error: `Təsdiq üçün e-poçtu yazın: ${user.email}` };
   }
@@ -228,4 +230,52 @@ export async function updateUser(_: FormState, form: FormData): Promise<FormStat
   if (changes.length) await logAdmin(admin, "user_edit", "user", userId, changes.join("; ").slice(0, 500));
   refresh(userId, username);
   return { ok: true };
+}
+
+// Şifrələr: hash kimi saxlanılır, heç kim (admin də) görə bilməz. Admin yenisini təyin edir.
+export type PasswordState = ({ error?: string; ok?: boolean; temp?: string }) | undefined;
+
+export async function setUserPassword(_: PasswordState, form: FormData): Promise<PasswordState> {
+  const admin = await requireAdmin();
+  const userId = String(form.get("userId") ?? "");
+  const user = await target(userId);
+  if (user.role !== "USER" && admin.role !== "SUPER_ADMIN") return { error: "Admin şifrəsini yalnız super admin dəyişə bilər" };
+  const generate = form.get("generate") === "1";
+  const password = generate ? tempPassword() : String(form.get("password") ?? "");
+  if (password.length < 8) return { error: "Şifrə ən azı 8 simvol olmalıdır" };
+  // Yeni şifrə ilə köhnə sessiyalar və bərpa linkləri etibarsız olur
+  await db.$transaction([
+    db.user.update({ where: { id: userId }, data: { passwordHash: await hashPassword(password) } }),
+    db.session.deleteMany({ where: { userId } }),
+    db.passwordReset.updateMany({ where: { userId, usedAt: null }, data: { usedAt: new Date() } }),
+  ]);
+  await logAdmin(admin, "password_set", "user", userId, generate ? "müvəqqəti şifrə yaradıldı" : "yeni şifrə təyin edildi");
+  refresh(userId);
+  return { ok: true, temp: generate ? password : undefined };
+}
+
+function tempPassword() {
+  const abc = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
+  const bytes = randomBytes(12);
+  return Array.from(bytes, (b) => abc[b % abc.length]).join("");
+}
+
+export async function setRole(userId: string, role: "USER" | "ADMIN" | "SUPER_ADMIN") {
+  const admin = await requireSuperAdmin();
+  if (userId === admin.id) return;
+  const user = await target(userId);
+  if (role === "USER" && user.role === "SUPER_ADMIN" && (await db.user.count({ where: { role: "SUPER_ADMIN" } })) <= 1) return;
+  await db.user.update({ where: { id: userId }, data: { role } });
+  await db.session.deleteMany({ where: { userId } });
+  await logAdmin(admin, "role_change", "user", userId, `${user.role} → ${role}`);
+  refresh(userId);
+}
+
+export async function impersonate(userId: string) {
+  const admin = await requireSuperAdmin();
+  const user = await db.user.findUnique({ where: { id: userId }, select: { role: true, blockedAt: true, profile: { select: { id: true } } } });
+  if (!user?.profile || user.role !== "USER" || user.blockedAt) return;
+  await logAdmin(admin, "impersonate", "user", userId);
+  await startImpersonation(userId);
+  redirect("/dashboard");
 }

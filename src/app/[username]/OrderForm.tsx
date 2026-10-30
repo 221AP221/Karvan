@@ -1,5 +1,6 @@
 "use client";
 
+import { PhoneInput } from "@/components/PhoneInput";
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { track, visitorId } from "@/lib/track";
@@ -84,7 +85,7 @@ export function OrderForm({ serviceId, serviceTitle, fixedPrice }: { serviceId: 
         </button>
       </div>
       <input name="customerName" required autoFocus placeholder="Adınız" className={input} />
-      <input name="customerPhone" required type="tel" placeholder="+994 50 123 45 67" className={input} />
+      <PhoneInput name="customerPhone" required label="Telefon nömrəniz" />
       <input name="customerEmail" type="email" placeholder="E-poçt (könüllü)" className={input} />
       <textarea name="note" placeholder="Qeyd" rows={2} className={input} />
       {result && "error" in result && <p className="text-sm text-red-600">{result.error}</p>}

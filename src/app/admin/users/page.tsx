@@ -69,7 +69,7 @@ export default async function AdminUsers({ searchParams }: { searchParams: Searc
           orders: u.profile?._count.orders ?? 0,
           invoices: u.profile?._count.invoices ?? 0,
           blocked: Boolean(u.blockedAt),
-          admin: u.role === "ADMIN",
+          admin: u.role !== "USER",
           created: date(u.createdAt),
         }))}
       />

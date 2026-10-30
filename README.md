@@ -27,7 +27,10 @@ Məhsul spesifikasiyası: [docs/PRD.md](docs/PRD.md)
 - Jurnal: istifadəçi fəaliyyəti (giriş, uğursuz giriş, xidmət, sifariş, faktura, parametrlər; IP ilə) və admin
   əməliyyatları, filtrlər; istifadəçilər və jurnallar Excel-ə (CSV) ixrac olunur
 - Xidmətlər: moderasiya (bloklanan xidmət səhifədə və kataloqda görünmür), fakturalar
-- Lokal: `admin@karvan.az` / `admin12345` (seed yaradır). Real serverdə: `npm run admin -- e-poçt şifrə`
+- Lokal: `admin@karvan.az` / `admin12345` (super admin, seed yaradır). Yeni admin: Windows-da `create-admin.bat`
+  faylını iki dəfə klikləyin, və ya `npm run admin -- e-poçt şifrə [--super]`
+- Super admin: adminləri təyin edir, istifadəçi kimi daxil olur (dəstək üçün). Şifrələr görünmür (hash), admin yenisini
+  və ya müvəqqəti şifrə təyin edir
 
 **Sayt** (`/`, `/tr`, `/ru`)
 - Ana səhifə və kataloq Azərbaycan, türk və rus dillərində (hər dilin öz URL-i, hreflang, sitemap.xml)

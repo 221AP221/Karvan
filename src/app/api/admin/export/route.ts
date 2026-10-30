@@ -24,7 +24,7 @@ function csv(name: string, rows: unknown[][]) {
 // Admin ixracı: ekrandakı filtrlərlə eyni nəticə. FİN/pasport ixraca daxil edilmir.
 export async function GET(request: Request) {
   const admin = await getCurrentUser();
-  if (!admin || admin.role !== "ADMIN") return new Response("Not found", { status: 404 });
+  if (!admin || admin.role === "USER") return new Response("Not found", { status: 404 });
   const p = flat(Object.fromEntries(new URL(request.url).searchParams));
 
   if (p.type === "users") {
@@ -42,7 +42,7 @@ export async function GET(request: Request) {
       ["E-poçt", "Ad", "Soyad", "Telefon", "Səhifə", "Görünən ad", "Şəhər", "Tarif", "Rol", "Status", "Blok səbəbi", "Xidmət", "Sifariş", "Faktura", "Qeydiyyat"],
       ...users.map((u) => [
         u.email, u.firstName, u.lastName, u.phone, u.profile?.username, u.profile?.displayName, u.profile?.city,
-        PLAN_NAMES[u.subscription?.plan ?? "FREE"], u.role === "ADMIN" ? "Admin" : "İstifadəçi", u.blockedAt ? "Bloklanıb" : "Aktiv", u.blockReason,
+        PLAN_NAMES[u.subscription?.plan ?? "FREE"], u.role === "SUPER_ADMIN" ? "Super admin" : u.role === "ADMIN" ? "Admin" : "İstifadəçi", u.blockedAt ? "Bloklanıb" : "Aktiv", u.blockReason,
         u.profile?._count.services ?? 0, u.profile?._count.orders ?? 0, u.profile?._count.invoices ?? 0, u.createdAt,
       ]),
     ]);

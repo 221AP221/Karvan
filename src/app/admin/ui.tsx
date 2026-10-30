@@ -103,4 +103,7 @@ export const ACTION_LABELS: Record<string, string> = {
   service_unblock: "Xidmət bərpa edildi",
   logout_sessions: "Sessiyalar bağlandı",
   user_edit: "Məlumatlar dəyişdi",
+  password_set: "Şifrə dəyişdirildi",
+  role_change: "Rol dəyişdi",
+  impersonate: "İstifadəçi kimi daxil oldu",
 };

@@ -77,3 +77,32 @@ export const getCurrentUser = cache(async () => {
   if (!session || session.expiresAt < new Date() || session.user.blockedAt) return null;
   return { ...session.user, sessionId: session.id };
 });
+
+// Super admin "istifadəçi kimi daxil olur": admin sessiyası ayrıca cookie-də saxlanılır, qayıdanda bərpa olunur.
+// İstifadəçinin öz sessiyalarına toxunulmur, admin sessiyası 2 saatdan sonra bərpa üçün yararsızdır.
+const ADMIN_COOKIE = "admin_sid";
+
+export async function startImpersonation(userId: string) {
+  const jar = await cookies();
+  const adminToken = jar.get(COOKIE)?.value;
+  if (!adminToken) throw new Error("Admin sessiyası yoxdur");
+  jar.set(ADMIN_COOKIE, adminToken, { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "lax", path: "/", maxAge: 2 * 3600 });
+  const token = randomBytes(32).toString("base64url");
+  const expiresAt = new Date(Date.now() + 2 * 3600_000);
+  await db.session.create({ data: { id: sha256(token), userId, expiresAt } });
+  jar.set(COOKIE, token, { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "lax", path: "/", expires: expiresAt });
+}
+
+export async function isImpersonating() {
+  return Boolean((await cookies()).get(ADMIN_COOKIE)?.value);
+}
+
+export async function stopImpersonation() {
+  const jar = await cookies();
+  const adminToken = jar.get(ADMIN_COOKIE)?.value;
+  const current = jar.get(COOKIE)?.value;
+  if (current) await db.session.deleteMany({ where: { id: sha256(current) } });
+  jar.delete(ADMIN_COOKIE);
+  if (adminToken) jar.set(COOKIE, adminToken, { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "lax", path: "/", maxAge: SESSION_DAYS * 86400 });
+  return Boolean(adminToken);
+}

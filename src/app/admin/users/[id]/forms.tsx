@@ -1,11 +1,13 @@
 "use client";
 
+import { PhoneInput } from "@/components/PhoneInput";
+import { useActionState, useState } from "react";
 import { ActionForm } from "@/components/ActionForm";
 import { inputClass } from "@/components/ui";
 
 const danger = "inline-flex items-center justify-center rounded-full bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-60";
 const dark = "inline-flex items-center justify-center rounded-full bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 disabled:opacity-60";
-import { blockUser, deleteUser, setPlan, updateUser } from "../../actions";
+import { blockUser, deleteUser, setPlan, setUserPassword, updateUser } from "../../actions";
 
 export function PlanForm({ userId, plan }: { userId: string; plan: string }) {
   return (
@@ -56,7 +58,10 @@ export function EditForm({ userId, values, hasProfile }: { userId: string; value
         {field("firstName", "Ad")}
         {field("lastName", "Soyad")}
         {field("email", "E-poçt", { type: "email", required: true })}
-        {field("phone", "Telefon", { type: "tel", placeholder: "+994 50 123 45 67" })}
+        <label className="block">
+          <span className="mb-1 block text-xs font-medium text-gray-600">Telefon</span>
+          <PhoneInput name="phone" defaultValue={values.phone} />
+        </label>
         {hasProfile && field("username", "Səhifə ünvanı", { required: true, pattern: "^[a-z0-9_.]{3,30}$" })}
         {hasProfile && field("displayName", "Səhifədə görünən ad", { required: true })}
         {hasProfile && field("profession", "Peşə")}
@@ -64,5 +69,37 @@ export function EditForm({ userId, values, hasProfile }: { userId: string; value
       </div>
       <p className="text-xs text-gray-500">Dəyişikliklər jurnalda köhnə və yeni dəyərlə qeyd olunur.</p>
     </ActionForm>
+  );
+}
+
+export function PasswordAdminForm({ userId }: { userId: string }) {
+  const [state, action, pending] = useActionState(setUserPassword, undefined);
+  const [copied, setCopied] = useState(false);
+  return (
+    <form action={action} className="flex flex-col gap-3">
+      <input type="hidden" name="userId" value={userId} />
+      <input name="password" type="text" minLength={8} autoComplete="off" placeholder="Yeni şifrə (ən azı 8 simvol)" className={inputClass} aria-label="Yeni şifrə" />
+      <div className="flex flex-wrap gap-2">
+        <button disabled={pending} className={dark}>Şifrəni təyin et</button>
+        <button disabled={pending} name="generate" value="1" formNoValidate className="inline-flex items-center justify-center rounded-full border border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-50">
+          Müvəqqəti şifrə yarat
+        </button>
+      </div>
+      {state?.error && <p className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{state.error}</p>}
+      {state?.ok && !state.temp && <p className="rounded-lg bg-green-50 p-3 text-sm text-green-700">Şifrə dəyişdirildi, istifadəçi bütün cihazlardan çıxarıldı.</p>}
+      {state?.temp && (
+        <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
+          <p className="font-medium">Müvəqqəti şifrə (yalnız indi görünür):</p>
+          <div className="mt-2 flex items-center gap-2">
+            <code className="rounded bg-white px-2 py-1 font-mono text-base">{state.temp}</code>
+            <button type="button" onClick={() => { navigator.clipboard.writeText(state.temp!); setCopied(true); }} className="text-xs font-medium underline">
+              {copied ? "Kopyalandı" : "Kopyala"}
+            </button>
+          </div>
+          <p className="mt-2 text-xs">İstifadəçiyə təhlükəsiz kanalla çatdırın və girişdən sonra Parametrlərdə dəyişməsini xahiş edin.</p>
+        </div>
+      )}
+      <p className="text-xs text-gray-500">Şifrələr şifrələnmiş (hash) saxlanılır: köhnə şifrəni heç kim, admin də görə bilməz. Ona görə yalnız yenisi təyin edilir.</p>
+    </form>
   );
 }

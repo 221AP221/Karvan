@@ -1,5 +1,6 @@
 "use server";
 
+import { normalizePhone } from "@/lib/phone";
 import { logActivity } from "@/lib/activity";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -142,8 +143,9 @@ const InvoiceInput = z.object({
   customerName: z.string().trim().min(2, "Müştərinin adını yazın").max(100),
   customerPhone: z
     .string()
-    .transform((v) => v.replace(/[\s()-]/g, "") || null)
-    .refine((v) => v === null || /^(\+994|0)\d{9}$/.test(v), "Telefon nömrəsi düzgün deyil"),
+    .transform((v) => (v.trim() ? normalizePhone(v) : ""))
+    .refine((v) => v !== null, "Telefon nömrəsi düzgün deyil")
+    .transform((v) => v || null),
   dueDate: z
     .string()
     .transform((v) => (v ? new Date(`${v}T23:59:59`) : null))

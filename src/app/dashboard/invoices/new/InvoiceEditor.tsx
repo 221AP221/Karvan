@@ -1,5 +1,6 @@
 "use client";
 
+import { PhoneInput } from "@/components/PhoneInput";
 import { useState } from "react";
 import { ActionForm } from "@/components/ActionForm";
 import { Card, Field, inputClass, secondaryButtonClass } from "@/components/ui";
@@ -78,7 +79,10 @@ export function InvoiceEditor() {
         <Card title="Müştəri">
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Ad" name="customerName" value={customer.name} onChange={(e) => setCustomerField("name", e.target.value)} required />
-            <Field label="Telefon" name="customerPhone" type="tel" value={customer.phone} onChange={(e) => setCustomerField("phone", e.target.value)} placeholder="+994 50 123 45 67" />
+            <label className="block">
+              <span className="mb-1 block text-sm font-medium text-gray-700">Telefon</span>
+              <PhoneInput name="customerPhone" value={customer.phone} onChange={(v) => setCustomerField("phone", v)} />
+            </label>
             <Field label="Son ödəniş tarixi" name="dueDate" type="date" value={customer.dueDate} onChange={(e) => setCustomerField("dueDate", e.target.value)} />
             <Field label="Qeyd" name="note" value={customer.note} onChange={(e) => setCustomerField("note", e.target.value)} />
           </div>

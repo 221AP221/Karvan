@@ -7,7 +7,16 @@ import { db } from "@/lib/db";
 export async function requireAdmin() {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
-  if (user.role !== "ADMIN") notFound();
+  if (!isAdminRole(user.role)) notFound();
+  return user;
+}
+
+export const isAdminRole = (role: string) => role === "ADMIN" || role === "SUPER_ADMIN";
+
+// Adminləri idarə etmək və istifadəçi kimi daxil olmaq yalnız super admindir
+export async function requireSuperAdmin() {
+  const user = await requireAdmin();
+  if (user.role !== "SUPER_ADMIN") notFound();
   return user;
 }
 

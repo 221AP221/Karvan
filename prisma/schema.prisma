@@ -327,6 +327,7 @@ model ProfileEvent {
 enum Role {
   USER
   ADMIN
+  SUPER_ADMIN // adminləri idarə edir, istifadəçi kimi daxil ola bilir
 }
 
 // Admin əməliyyatlarının jurnalı: kim, nə vaxt, nəyi dəyişib

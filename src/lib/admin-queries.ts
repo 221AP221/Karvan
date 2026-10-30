@@ -20,7 +20,7 @@ export function usersWhere(p: P): Prisma.UserWhereInput {
     ...(["FREE", "PRO", "PRO_MAX"].includes(p.plan ?? "") && { subscription: { plan: p.plan as "FREE" | "PRO" | "PRO_MAX" } }),
     ...(p.status === "blocked" && { blockedAt: { not: null } }),
     ...(p.status === "active" && { blockedAt: null, role: "USER" }),
-    ...(p.status === "admin" && { role: "ADMIN" }),
+    ...(p.status === "admin" && { role: { in: ["ADMIN", "SUPER_ADMIN"] } }),
   };
 }
 

@@ -2,7 +2,8 @@ import "@fontsource-variable/ibm-plex-sans";
 import "@fontsource/ibm-plex-mono/400.css";
 import "@fontsource/ibm-plex-mono/500.css";
 import Link from "next/link";
-import { requireProfile } from "@/lib/auth";
+import { isImpersonating, requireProfile } from "@/lib/auth";
+import { stopImpersonationAction } from "./impersonation";
 import { db } from "@/lib/db";
 import { BackButton } from "@/components/BackButton";
 import { Logo } from "@/components/Logo";
@@ -21,17 +22,26 @@ const NAV = [
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const profile = await requireProfile();
   const pending = await db.order.count({ where: { profileId: profile.id, status: "PENDING_APPROVAL" } });
+  const impersonating = await isImpersonating();
   const brand = (profile.theme as { primary?: string } | null)?.primary;
 
   return (
     <div className="panel" style={{ "--brand": brand } as React.CSSProperties}>
+      {impersonating && (
+        <div className="flex items-center justify-center gap-3 bg-violet-700 px-4 py-2 text-sm text-white">
+          Admin kimi <strong>@{profile.username}</strong> hesabına baxırsınız
+          <form action={stopImpersonationAction}>
+            <button className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-violet-700">Admin panelə qayıt</button>
+          </form>
+        </div>
+      )}
       <header className="border-b border-gray-200 bg-white">
         <div className="mx-auto flex max-w-4xl items-center justify-between gap-4 px-4 py-3">
           <Link href="/dashboard" aria-label="Panel">
             <Logo />
           </Link>
           <div className="flex items-center gap-3 text-sm">
-            {profile.user.role === "ADMIN" && (
+            {profile.user.role !== "USER" && (
               <Link href="/admin" className="rounded-full bg-gray-900 px-3 py-1 text-xs font-semibold text-white">
                 Admin
               </Link>

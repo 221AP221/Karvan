@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { normalizePhone } from "@/lib/phone";
 import { z } from "zod";
 import { logActivity } from "@/lib/activity";
 import { db } from "@/lib/db";
@@ -9,8 +10,8 @@ const OrderInput = z.object({
   customerName: z.string().trim().min(2).max(100),
   customerPhone: z
     .string()
-    .transform((v) => v.replace(/[\s()-]/g, ""))
-    .pipe(z.string().regex(/^(\+994|0)\d{9}$/, "Telefon nömrəsi düzgün deyil")),
+    .transform((v) => normalizePhone(v))
+    .refine((v): v is string => v !== null, "Telefon nömrəsi düzgün deyil"),
   customerEmail: z.union([z.literal(""), z.email()]).optional(),
   note: z.string().max(1000).optional(),
   quantity: z.coerce.number().int().min(1).max(100).default(1),

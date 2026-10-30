@@ -115,7 +115,7 @@ export async function login(_: AuthState, form: FormData): Promise<AuthState> {
     await logActivity({ userId: user.id, email, action: "login_blocked" });
     return fail((await errors()).blocked);
   }
-  if (user.role === "ADMIN") {
+  if (user.role !== "USER") {
     await startSession(user.id);
     await logActivity({ userId: user.id, email, action: "login", details: "admin" });
     redirect(user.profile ? "/dashboard" : "/admin");

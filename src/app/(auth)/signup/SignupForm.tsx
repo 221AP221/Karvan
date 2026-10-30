@@ -1,6 +1,7 @@
 "use client";
 
-import { ArrowLeft, AtSign, Building2, Check, CreditCard, Globe2, Mail, Phone, ShieldCheck, UserRound } from "lucide-react";
+import { PhoneInput } from "@/components/PhoneInput";
+import { ArrowLeft, AtSign, Building2, Check, CreditCard, Globe2, Mail, ShieldCheck, UserRound } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { AuthField } from "@/components/AuthField";
@@ -128,7 +129,10 @@ export function SignupForm({ t, password: pw }: { t: Dict["auth"]["signup"]; pas
             <AuthField label={t.lastName} icon={UserRound} required minLength={2} maxLength={40} autoComplete="family-name" placeholder="Həsənova" {...name("lastName")} />
           </div>
           <AuthField label={t.brand} icon={Building2} maxLength={80} autoComplete="organization" placeholder="Leyla Makeup Studio" hint={t.brandHint} {...name("brand")} />
-          <AuthField label={t.phone} name="phone" type="tel" icon={Phone} required autoComplete="tel" placeholder="+994 50 123 45 67" pattern="^[+0-9 ()-]{9,20}$" />
+          <label className="block">
+            <span className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">{t.phone}</span>
+            <PhoneInput name="phone" required tone="auth" label={t.phone} />
+          </label>
 
           <fieldset>
             <legend className="mb-1.5 text-sm font-medium text-gray-700 dark:text-gray-300">{t.citizenship}</legend>

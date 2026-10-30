@@ -1,5 +1,6 @@
 "use client";
 
+import { PhoneInput } from "@/components/PhoneInput";
 import { Sparkles } from "lucide-react";
 import { useState } from "react";
 import { ActionForm } from "@/components/ActionForm";
@@ -55,14 +56,11 @@ export function BasicsForm({ profile }: { profile: Values }) {
           <Field label="İstifadəçi adı" name="username" defaultValue={profile.username} required hint="Səhifə ünvanınız: karvan.az/istifadeci_adi" />
           <Field label="Peşə" name="profession" defaultValue={profile.profession} placeholder="Makiyaj ustası, SMM mütəxəssisi..." />
           <Field label="Şəhər" name="city" defaultValue={profile.city} placeholder="Bakı" />
-          <Field
-            label="Əlaqə nömrəsi"
-            name="phone"
-            type="tel"
-            defaultValue={profile.phone}
-            placeholder="+994 50 123 45 67"
-            hint="Səhifədə “Zəng et” düyməsi kimi görünür. Boş qoysanız, gizlənir."
-          />
+          <label className="block">
+            <span className="mb-1 block text-sm font-medium text-gray-700">Əlaqə nömrəsi</span>
+            <PhoneInput name="phone" defaultValue={profile.phone} label="Əlaqə nömrəsi" />
+            <span className="mt-1 block text-xs text-gray-500">Səhifədə “Zəng et” düyməsi kimi görünür. Boş qoysanız, gizlənir.</span>
+          </label>
           <label className="block sm:col-span-2">
             <span className="mb-1 flex justify-between text-sm font-medium text-gray-700">
               Qısa bio <span className="font-normal text-gray-400">{bio.length}/300</span>
