@@ -50,6 +50,34 @@ export function SignupForm() {
     setStep(2);
   }
 
+  // Yeni addım açılanda kursor dərhal ilk sahəyə keçir
+  const mounted = useRef(false);
+  useEffect(() => {
+    if (!mounted.current) {
+      mounted.current = true;
+      return;
+    }
+    form.current?.querySelector<HTMLInputElement>(step === 1 ? '[name="firstName"]' : '[name="username"]')?.focus();
+  }, [step]);
+
+  // Brauzer yoxlaması gizli addımdakı sahədə səssizcə ilişirdi (Enter heç nə etmirdi),
+  // ona görə hər addımı özümüz yoxlayırıq: 1-ci addımda Enter "Davam et" kimi işləyir
+  function submit(e: React.FormEvent<HTMLFormElement>) {
+    if (step === 1) {
+      e.preventDefault();
+      next();
+      return;
+    }
+    const inputs = Array.from(form.current!.querySelectorAll<HTMLInputElement>("input")).filter((i) => !STEP1_FIELDS.includes(i.name));
+    for (const input of inputs) {
+      if (!input.reportValidity()) {
+        e.preventDefault();
+        return;
+      }
+    }
+    onSubmit(e);
+  }
+
   const name = (key: keyof typeof names) => ({
     name: key,
     value: names[key],
@@ -85,7 +113,7 @@ export function SignupForm() {
         })}
       </ol>
 
-      <form ref={form} onSubmit={onSubmit} className="mt-6" noValidate={false}>
+      <form ref={form} onSubmit={submit} noValidate className="mt-6">
         {/* 1-ci addım */}
         <div className={step === 1 ? "flex flex-col gap-4" : "hidden"}>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -100,10 +128,10 @@ export function SignupForm() {
             <div className="grid grid-cols-2 gap-2 rounded-xl bg-gray-100 p-1">
               {(
                 [
-                  ["AZ", "Azərbaycan vətəndaşı", ShieldCheck],
-                  ["FOREIGN", "Xarici vətəndaş", Globe2],
+                  ["AZ", "Azərbaycan", " vətəndaşı", ShieldCheck],
+                  ["FOREIGN", "Xarici", " vətəndaş", Globe2],
                 ] as const
-              ).map(([value, label, Icon]) => (
+              ).map(([value, label, suffix, Icon]) => (
                 <label
                   key={value}
                   className={`flex cursor-pointer items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium transition ${
@@ -111,8 +139,11 @@ export function SignupForm() {
                   }`}
                 >
                   <input type="radio" name="citizenship" value={value} checked={citizenship === value} onChange={() => setCitizenship(value)} className="sr-only" />
-                  <Icon size={16} strokeWidth={1.75} aria-hidden />
-                  {label}
+                  <Icon size={16} strokeWidth={1.75} className="shrink-0" aria-hidden />
+                  <span className="whitespace-nowrap">
+                    {label}
+                    <span className="hidden sm:inline">{suffix}</span>
+                  </span>
                 </label>
               ))}
             </div>

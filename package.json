@@ -9,6 +9,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "prepreview": "node scripts/local-db.mjs",
+    "preview": "next build && next start",
     "typecheck": "tsc --noEmit",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",

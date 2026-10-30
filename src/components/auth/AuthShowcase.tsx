@@ -1,4 +1,4 @@
-import { BadgeCheck, Check, FileText, ShoppingBag, Star } from "lucide-react";
+import { BadgeCheck, Star } from "lucide-react";
 
 type Seller = { name: string; initials: string; profession: string; color: string; services: [string, string][]; rating: string };
 
@@ -9,16 +9,15 @@ const SELLERS: Seller[] = [
   { name: "Rauf Əliyev", initials: "RƏ", profession: "Fitness məşqçisi", color: "#059669", rating: "4.9", services: [["Aylıq proqram", "90 AZN"], ["Qidalanma planı", "35 AZN"]] },
   { name: "Pixel Lab", initials: "PL", profession: "Dizayn studiyası", color: "#ea580c", rating: "5.0", services: [["Loqo dizaynı", "250 AZN"], ["Brendbuk", "Razılaşma ilə"]] },
   { name: "Nigar SMM", initials: "NS", profession: "SMM mütəxəssisi", color: "#e11d48", rating: "4.7", services: [["Aylıq idarəetmə", "400 AZN"], ["Reels paketi", "120 AZN"]] },
-  { name: "Dr. Səbinə", initials: "DS", profession: "Psixoloq", color: "#4f46e5", rating: "5.0", services: [["Onlayn seans", "60 AZN"], ["Ailə konsultasiyası", "90 AZN"]] },
-  { name: "Nail Art Bakı", initials: "NA", profession: "Dırnaq ustası", color: "#c026d3", rating: "4.8", services: [["Manikür + gel", "35 AZN"], ["Dizayn", "15 AZN"]] },
 ];
 
+// Kartlarda backdrop-blur yoxdur: hərəkət edən onlarla blur qatı zəif cihazlarda səhifəni donudurdu
 function SellerCard({ seller }: { seller: Seller }) {
   return (
-    <div className="w-60 shrink-0 rounded-3xl border border-white/10 bg-white/[0.07] p-4 shadow-2xl shadow-black/20 backdrop-blur-md">
-      <div className="h-14 rounded-2xl" style={{ background: `linear-gradient(135deg, ${seller.color}, ${seller.color}55)` }} />
-      <div className="-mt-7 px-1">
-        <span className="grid h-12 w-12 place-items-center rounded-full border-2 border-[#1f2026] text-sm font-bold text-white" style={{ background: seller.color }}>
+    <div className="w-56 shrink-0 rounded-3xl border border-white/10 bg-[#24252b] p-4">
+      <div className="h-12 rounded-2xl" style={{ background: `linear-gradient(135deg, ${seller.color}, ${seller.color}55)` }} />
+      <div className="-mt-6 px-1">
+        <span className="grid h-11 w-11 place-items-center rounded-full border-2 border-[#24252b] text-sm font-bold text-white" style={{ background: seller.color }}>
           {seller.initials}
         </span>
         <div className="mt-2 flex items-center gap-1 text-sm font-semibold text-white">
@@ -34,9 +33,9 @@ function SellerCard({ seller }: { seller: Seller }) {
       </div>
       <div className="mt-3 flex flex-col gap-2">
         {seller.services.map(([title, price]) => (
-          <div key={title} className="rounded-xl bg-white/[0.06] p-2.5">
+          <div key={title} className="rounded-xl bg-white/[0.05] p-2.5">
             <div className="flex items-center justify-between text-xs">
-              <span className="text-white/80">{title}</span>
+              <span className="text-white/75">{title}</span>
               <span className="font-semibold text-white">{price}</span>
             </div>
             <div className="mt-2 rounded-full py-1 text-center text-[11px] font-semibold text-white" style={{ background: seller.color }}>
@@ -51,7 +50,10 @@ function SellerCard({ seller }: { seller: Seller }) {
 
 function Column({ sellers, direction, duration, className = "" }: { sellers: Seller[]; direction: "up" | "down"; duration: number; className?: string }) {
   return (
-    <div className={`flex flex-col gap-4 ${direction === "up" ? "animate-auth-up" : "animate-auth-down"} ${className}`} style={{ animationDuration: `${duration}s` }}>
+    <div
+      className={`flex flex-col gap-4 will-change-transform ${direction === "up" ? "animate-auth-up" : "animate-auth-down"} ${className}`}
+      style={{ animationDuration: `${duration}s` }}
+    >
       {[...sellers, ...sellers].map((s, i) => (
         <SellerCard key={i} seller={s} />
       ))}
@@ -59,42 +61,24 @@ function Column({ sellers, direction, duration, className = "" }: { sellers: Sel
   );
 }
 
-const TOASTS = [
-  { icon: ShoppingBag, title: "Yeni sifariş", text: "Gəlin makiyajı · 180 AZN", tone: "bg-white text-gray-900", iconTone: "bg-violet-100 text-violet-600", pos: "left-[30%] top-[12%]", delay: "0s" },
-  { icon: FileText, title: "Faktura göndərildi", text: "AYG-2026-0142", tone: "bg-white text-gray-900", iconTone: "bg-sky-100 text-sky-600", pos: "left-[40%] top-[72%]", delay: "-3s" },
-  { icon: Check, title: "Ödənildi", text: "+320,00 AZN", tone: "bg-emerald-500 text-white", iconTone: "bg-white/25 text-white", pos: "left-[26%] bottom-[10%]", delay: "-6s" },
-];
-
-// Giriş/qeydiyyat səhifəsinin animasiyalı fonu: müxtəlif satıcıların səhifələri və xidmətləri axır.
+// Giriş/qeydiyyat fonu. Böyük ekranda yalnız sol paneldə (formanın arxasında gizlənən hissə render olunmur),
+// mobildə isə statik qradiyent: forma dərhal görünür, telefon boş yerə animasiya hesablamır.
 export function AuthShowcase() {
   return (
-    <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden bg-[#17181c]">
-      <div className="absolute -left-32 top-0 h-[28rem] w-[28rem] rounded-full bg-violet-600/40 blur-[120px]" />
-      <div className="absolute -right-24 bottom-0 h-[26rem] w-[26rem] rounded-full bg-pink-600/30 blur-[120px]" />
-
-      <div className="absolute inset-0 flex -rotate-[8deg] scale-125 justify-center gap-4 opacity-90 [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]">
-        <Column sellers={SELLERS.slice(0, 4)} direction="up" duration={46} />
-        <Column sellers={SELLERS.slice(4)} direction="down" duration={54} className="-mt-40" />
-        <Column sellers={[...SELLERS.slice(2, 6)]} direction="up" duration={50} className="-mt-20" />
-        <Column sellers={[...SELLERS.slice(5), ...SELLERS.slice(0, 2)]} direction="down" duration={58} className="hidden -mt-56 xl:flex" />
+    <div
+      aria-hidden
+      className="pointer-events-none absolute inset-0 overflow-hidden bg-[#17181c] [contain:strict] lg:right-auto lg:w-[51.2%]"
+      style={{
+        backgroundImage:
+          "radial-gradient(40rem 30rem at 0% 0%, rgba(214,18,126,0.35), transparent 70%), radial-gradient(36rem 28rem at 100% 100%, rgba(236,28,140,0.22), transparent 70%)",
+      }}
+    >
+      <div className="absolute inset-y-0 right-0 hidden w-[56%] -rotate-[6deg] justify-end gap-4 opacity-80 [mask-image:linear-gradient(to_bottom,transparent,black_12%,black_88%,transparent)] lg:flex">
+        <Column sellers={SELLERS.slice(0, 3)} direction="up" duration={60} className="-mt-24" />
+        <Column sellers={SELLERS.slice(3)} direction="down" duration={70} className="-mt-56 -mr-16" />
       </div>
-
-      <div className="absolute inset-0 bg-gradient-to-t from-[#17181c] via-[#17181c]/30 to-[#17181c]/50" />
-      {/* Böyük ekranda sol mətnin oxunması üçün */}
-      <div className="absolute inset-y-0 left-0 hidden w-[55%] bg-gradient-to-r from-[#17181c] via-[#17181c]/90 to-transparent lg:block" />
-
-      {TOASTS.map(({ icon: Icon, title, text, tone, iconTone, pos, delay }) => (
-        <div key={title} className={`animate-auth-toast absolute ${pos} hidden items-center gap-3 rounded-2xl px-4 py-3 shadow-2xl shadow-black/30 sm:flex ${tone}`} style={{ animationDelay: delay }}>
-          <span className={`grid h-9 w-9 place-items-center rounded-xl ${iconTone}`}>
-            <Icon size={18} strokeWidth={2} />
-          </span>
-          <span>
-            <span className="block text-xs opacity-60">{title}</span>
-            <span className="block text-sm font-semibold">{text}</span>
-          </span>
-        </div>
-      ))}
-
+      {/* Sol mətnin oxunması üçün */}
+      <div className="absolute inset-0 hidden bg-[linear-gradient(to_right,#17181c_0%,#17181c_50%,rgba(23,24,28,0.8)_68%,rgba(23,24,28,0.15)_100%)] lg:block" />
     </div>
   );
 }

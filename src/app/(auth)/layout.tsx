@@ -30,7 +30,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
             <ul className="mt-8 space-y-4">
               {POINTS.map(({ icon: Icon, text }) => (
                 <li key={text} className="flex items-center gap-3 text-white/80">
-                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white/10 ring-1 ring-white/15 backdrop-blur">
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white/10 ring-1 ring-white/15">
                     <Icon size={17} strokeWidth={1.75} aria-hidden />
                   </span>
                   {text}
