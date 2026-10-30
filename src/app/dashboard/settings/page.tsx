@@ -31,34 +31,45 @@ export default async function Settings() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold">Parametrlər</h1>
-      <p className="text-sm text-gray-500">Hesab, təhlükəsizlik və ödəniş ayarları</p>
+      <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+        <div>
+          <h1 className="text-2xl font-bold">Parametrlər</h1>
+          <p className="text-sm text-gray-500">Hesab, təhlükəsizlik və ödəniş ayarları</p>
+        </div>
 
-      <div className="mt-4">
-        <Section icon={Crown} title="Plan" text="Hazırkı planınız və bu ayki istifadə">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div>
-              <p className="text-lg font-semibold">{plan === "PRO" ? "Pro" : "Pulsuz"}</p>
-              <p className="text-sm text-gray-500">
-                {limits.invoicesPerMonth === Infinity
-                  ? "Limitsiz faktura"
-                  : `Bu ay ${invoicesThisMonth} / ${limits.invoicesPerMonth} faktura istifadə olunub`}
-              </p>
+        {/* Plan: başlığın yanında, yığcam */}
+        <div className="w-full rounded-2xl border border-gray-200 bg-white p-4 md:w-96">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <IconBadge icon={Crown} size="sm" />
+              <div>
+                <p className="text-xs text-gray-500">Plan</p>
+                <p className="font-semibold">{plan === "PRO" ? "Pro" : "Pulsuz"}</p>
+              </div>
             </div>
             {plan === "FREE" && (
               <span className="rounded-full bg-gradient-to-r from-violet-600 to-pink-600 px-3 py-1 text-xs font-semibold text-white">Pro tezliklə</span>
             )}
           </div>
-          {limits.invoicesPerMonth !== Infinity && (
-            <div className="mt-4 h-2 overflow-hidden rounded-full bg-gray-100">
-              <div
-                className="h-full rounded-full bg-[var(--brand)]"
-                style={{ width: `${Math.min(100, (invoicesThisMonth / limits.invoicesPerMonth) * 100)}%` }}
-              />
-            </div>
+          {limits.invoicesPerMonth === Infinity ? (
+            <p className="mt-3 text-sm text-gray-500">Limitsiz faktura</p>
+          ) : (
+            <>
+              <div className="mt-3 flex justify-between text-xs text-gray-500">
+                <span>Bu ayki fakturalar</span>
+                <span className="font-medium text-gray-700">
+                  {invoicesThisMonth} / {limits.invoicesPerMonth}
+                </span>
+              </div>
+              <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-gray-100">
+                <div className="h-full rounded-full bg-[var(--brand)]" style={{ width: `${Math.min(100, (invoicesThisMonth / limits.invoicesPerMonth) * 100)}%` }} />
+              </div>
+            </>
           )}
-        </Section>
+        </div>
+      </div>
 
+      <div className="mt-2">
         <Section icon={Mail} title="E-poçt" text="Giriş üçün istifadə olunur">
           <EmailForm email={profile.user.email ?? ""} />
         </Section>

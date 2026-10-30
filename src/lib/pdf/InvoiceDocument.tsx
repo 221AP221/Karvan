@@ -1,7 +1,7 @@
 import path from "node:path";
 import { Document, Font, Image, Page, StyleSheet, Text, View, renderToBuffer } from "@react-pdf/renderer";
 import QRCode from "qrcode";
-import { formatAzn } from "@/lib/money";
+import { formatMoney } from "@/lib/money";
 
 export type InvoicePdfData = {
   number: string;
@@ -18,6 +18,7 @@ export type InvoicePdfData = {
   customer: { name: string; phone: string | null };
   items: { title: string; quantity: number; unitQepik: number }[];
   totalQepik: number;
+  currency: string;
   note: string | null;
   url: string;
   primaryColor: string;
@@ -89,12 +90,12 @@ function InvoiceDocument({ data, qr }: { data: InvoicePdfData; qr: string }) {
           <View key={i} style={s.row}>
             <Text style={s.c1}>{item.title}</Text>
             <Text style={s.c2}>{item.quantity}</Text>
-            <Text style={s.c3}>{formatAzn(item.unitQepik)}</Text>
-            <Text style={s.c3}>{formatAzn(item.quantity * item.unitQepik)}</Text>
+            <Text style={s.c3}>{formatMoney(item.unitQepik, data.currency)}</Text>
+            <Text style={s.c3}>{formatMoney(item.quantity * item.unitQepik, data.currency)}</Text>
           </View>
         ))}
         <View style={s.total}>
-          <Text>Ümumi: {formatAzn(data.totalQepik)}</Text>
+          <Text>Ümumi: {formatMoney(data.totalQepik, data.currency)}</Text>
         </View>
 
         <View style={s.box}>

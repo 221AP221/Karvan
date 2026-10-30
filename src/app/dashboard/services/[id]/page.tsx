@@ -15,10 +15,15 @@ export default async function EditService({ params }: { params: Promise<{ id: st
         service={{
           id: service.id,
           title: service.title,
+          category: service.category ?? "",
           description: service.description ?? "",
           priceType: service.priceType,
           amount: service.amountQepik === null ? "" : String(service.amountQepik / 100),
-          duration: service.duration ?? "",
+          currency: service.currency,
+          durationDays: service.durationDays ? String(service.durationDays) : "",
+          durationWeeks: service.durationWeeks ? String(service.durationWeeks) : "",
+          durationMonths: service.durationMonths ? String(service.durationMonths) : "",
+          legacyDuration: service.duration ?? undefined,
         }}
       />
     </div>

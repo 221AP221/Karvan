@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { getPublicInvoice } from "@/lib/invoices";
-import { formatAzn } from "@/lib/money";
+import { formatMoney } from "@/lib/money";
 import { ClaimPaidButton, CopyValue } from "./ClaimPaidButton";
 
 const STATUS_LABEL = {
@@ -45,13 +45,13 @@ export default async function InvoicePage({ params }: { params: Promise<{ public
               <span>
                 {item.title} × {item.quantity}
               </span>
-              <span>{formatAzn(item.quantity * item.unitQepik)}</span>
+              <span>{formatMoney(item.quantity * item.unitQepik, invoice.currency)}</span>
             </li>
           ))}
         </ul>
         <p className="mt-4 flex justify-between text-lg font-semibold">
           <span>Ümumi</span>
-          <span>{formatAzn(invoice.totalQepik)}</span>
+          <span>{formatMoney(invoice.totalQepik, invoice.currency)}</span>
         </p>
 
         {payable && invoice.paymentMethod !== "ONLINE" && (

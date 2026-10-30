@@ -4,7 +4,7 @@ import { Card, buttonClass } from "@/components/ui";
 import { requireProfile } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { OPEN_STATUSES } from "@/lib/invoice-status";
-import { formatAzn } from "@/lib/money";
+import { formatTotals } from "@/lib/money";
 import { PLAN_LIMITS, startOfMonth } from "@/lib/plans";
 import { CopyLink } from "./invoices/[id]/client";
 
@@ -17,8 +17,8 @@ export default async function Dashboard() {
     db.invoice.findMany({ where, orderBy: { issuedAt: "desc" }, take: 5 }),
     db.order.count({ where: { ...where, status: "PENDING_APPROVAL" } }),
     db.invoice.count({ where: { ...where, issuedAt: { gte: startOfMonth() } } }),
-    db.invoice.aggregate({ where: { ...where, status: "PAID", paidAt: { gte: startOfMonth() } }, _sum: { totalQepik: true } }),
-    db.invoice.aggregate({ where: { ...where, status: { in: OPEN_STATUSES } }, _sum: { totalQepik: true } }),
+    db.invoice.groupBy({ by: ["currency"], where: { ...where, status: "PAID", paidAt: { gte: startOfMonth() } }, _sum: { totalQepik: true } }),
+    db.invoice.groupBy({ by: ["currency"], where: { ...where, status: { in: OPEN_STATUSES } }, _sum: { totalQepik: true } }),
     db.service.count({ where }),
     db.socialLink.count({ where }),
     db.portfolioItem.count({ where }),
@@ -56,8 +56,8 @@ export default async function Dashboard() {
       )}
 
       <section className="grid grid-cols-2 gap-3 md:grid-cols-4">
-        <Stat label="Bu ay ödənilib" value={formatAzn(paidThisMonth._sum.totalQepik ?? 0)} />
-        <Stat label="Gözləyən məbləğ" value={formatAzn(outstanding._sum.totalQepik ?? 0)} />
+        <Stat label="Bu ay ödənilib" value={formatTotals(paidThisMonth)} />
+        <Stat label="Gözləyən məbləğ" value={formatTotals(outstanding)} />
         <Stat label="Təsdiq gözləyən sorğu" value={String(pendingOrders)} href={pendingOrders ? "/dashboard/orders" : undefined} />
         <Stat label="Faktura limiti" value={limit === Infinity ? "Limitsiz" : `${usedThisMonth} / ${limit}`} />
       </section>

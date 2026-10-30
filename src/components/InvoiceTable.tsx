@@ -2,23 +2,24 @@ import Link from "next/link";
 import { StatusBadge } from "@/components/StatusBadge";
 import type { InvoiceStatus } from "@/generated/prisma/enums";
 import { effectiveStatus } from "@/lib/invoice-status";
-import { formatAzn } from "@/lib/money";
+import { formatMoney } from "@/lib/money";
 
 type Row = {
   id: string;
   number: string;
   customerName: string;
   totalQepik: number;
+  currency: string;
   issuedAt: Date;
   dueAt: Date | null;
   status: InvoiceStatus;
 };
 
-export function InvoiceTable({ invoices }: { invoices: Row[] }) {
+export function InvoiceTable({ invoices, emptyText = "Hələ faktura yoxdur." }: { invoices: Row[]; emptyText?: string }) {
   if (invoices.length === 0) {
     return (
       <p className="rounded-2xl border border-dashed border-gray-300 p-10 text-center text-gray-500">
-        Hələ faktura yoxdur.
+        {emptyText}
       </p>
     );
   }
@@ -35,7 +36,7 @@ export function InvoiceTable({ invoices }: { invoices: Row[] }) {
                 </span>
               </span>
               <span className="flex flex-col items-end gap-1">
-                <span className="font-semibold">{formatAzn(invoice.totalQepik)}</span>
+                <span className="font-semibold">{formatMoney(invoice.totalQepik, invoice.currency)}</span>
                 <StatusBadge status={effectiveStatus(invoice)} />
               </span>
             </Link>

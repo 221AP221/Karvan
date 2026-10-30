@@ -6,7 +6,7 @@ import { requireProfile } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { effectiveStatus } from "@/lib/invoice-status";
 import { invoiceUrl } from "@/lib/invoices";
-import { formatAzn } from "@/lib/money";
+import { formatMoney } from "@/lib/money";
 import { invoiceShareText, whatsappShareLink } from "@/lib/notify";
 import { cancelInvoice, markInvoicePaid, reopenInvoice } from "../../actions";
 import { CopyLink, ReminderDraft } from "./client";
@@ -27,15 +27,14 @@ export default async function InvoiceDetail({ params }: { params: Promise<{ id: 
   const shareText = invoiceShareText({
     sellerName: profile.displayName,
     number: invoice.number,
-    amount: formatAzn(invoice.totalQepik),
+    amount: formatMoney(invoice.totalQepik, invoice.currency),
     url,
   });
 
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <Link href="/dashboard/invoices" className="text-sm text-gray-500 hover:underline">← Fakturalar</Link>
-        <div className="mt-2 flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <h1 className="font-mono text-2xl font-bold">{invoice.number}</h1>
           <StatusBadge status={status} />
         </div>
@@ -73,13 +72,13 @@ export default async function InvoiceDetail({ params }: { params: Promise<{ id: 
             {invoice.items.map((item) => (
               <li key={item.id} className="flex justify-between gap-3 py-2">
                 <span>{item.title} × {item.quantity}</span>
-                <span>{formatAzn(item.quantity * item.unitQepik)}</span>
+                <span>{formatMoney(item.quantity * item.unitQepik, invoice.currency)}</span>
               </li>
             ))}
           </ul>
           <p className="mt-3 flex justify-between text-lg font-semibold">
             <span>Ümumi</span>
-            <span>{formatAzn(invoice.totalQepik)}</span>
+            <span>{formatMoney(invoice.totalQepik, invoice.currency)}</span>
           </p>
           {invoice.note && <p className="mt-3 text-sm text-gray-600">{invoice.note}</p>}
           {invoice.paidAt && <p className="mt-3 text-sm text-green-700">Ödənilib: {date(invoice.paidAt)}</p>}

@@ -45,6 +45,11 @@ enum PaymentStatus {
   FAILED
 }
 
+enum Citizenship {
+  AZ // FİN kod
+  FOREIGN // pasport nömrəsi
+}
+
 enum Channel {
   WHATSAPP
   EMAIL
@@ -70,15 +75,32 @@ enum SocialPlatform {
 }
 
 model User {
-  id           String   @id @default(cuid())
-  phone        String?  @unique
-  email        String?  @unique
-  passwordHash String?
-  createdAt    DateTime @default(now())
+  id             String       @id @default(cuid())
+  firstName      String?
+  lastName       String?
+  phone          String?      @unique
+  email          String?      @unique
+  citizenship    Citizenship?
+  finCode        String?      @unique
+  passportNumber String?
+  passwordHash   String?
+  createdAt      DateTime     @default(now())
 
-  profile      Profile?
-  subscription Subscription?
-  sessions     Session[]
+  profile        Profile?
+  subscription   Subscription?
+  sessions       Session[]
+  passwordResets PasswordReset[]
+}
+
+model PasswordReset {
+  id        String    @id // tokenin sha256 heşi
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
 }
 
 model Session {
@@ -168,9 +190,14 @@ model Service {
   profile     Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
   title       String
   description String?
-  priceType   PriceType @default(FIXED)
-  amountQepik Int? // NEGOTIABLE üçün boş ola bilər
-  duration    String? // "60 dəq", "3 dərs" və s.
+  category       String? // SERVICE_CATEGORIES-dən açar
+  priceType      PriceType @default(FIXED)
+  amountQepik    Int? // NEGOTIABLE üçün boş ola bilər; qəpik/sent
+  currency       String    @default("AZN")
+  duration       String? // köhnə sərbəst mətn ("60 dəq")
+  durationDays   Int?
+  durationWeeks  Int?
+  durationMonths Int?
   isActive    Boolean   @default(true)
   position    Int       @default(0)
 

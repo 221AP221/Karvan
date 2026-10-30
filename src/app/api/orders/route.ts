@@ -56,6 +56,7 @@ export async function POST(request: Request) {
       customerPhone: order.customerPhone,
       customerEmail: order.customerEmail,
       items: [{ title: service.title, quantity: order.quantity, unitQepik: service.amountQepik! }],
+      currency: service.currency,
       dueAt: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
     });
     return NextResponse.json({ invoiceUrl: invoiceUrl(invoice.publicId) });

@@ -16,6 +16,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ publicId: 
     customer: { name: invoice.customerName, phone: invoice.customerPhone },
     items: invoice.items,
     totalQepik: invoice.totalQepik,
+    currency: invoice.currency,
     note: invoice.note,
     url: invoiceUrl(invoice.publicId),
     primaryColor: (profile.theme as { primary?: string } | null)?.primary ?? "#6d28d9",

@@ -5,7 +5,7 @@ import { ActionForm } from "@/components/ActionForm";
 import { Card, Field, inputClass, secondaryButtonClass } from "@/components/ui";
 import type { ParsedInvoice } from "@/lib/ai";
 import { callAi } from "@/lib/ai-client";
-import { formatAzn } from "@/lib/money";
+import { CURRENCIES, formatMoney } from "@/lib/money";
 import { createInvoiceAction } from "../../actions";
 
 type Item = { title: string; quantity: string; unitPrice: string };
@@ -16,6 +16,7 @@ export function InvoiceEditor() {
   const [ai, setAi] = useState<{ busy?: boolean; error?: string; warnings?: string[] }>({});
   const [customer, setCustomer] = useState({ name: "", phone: "", dueDate: "", note: "" });
   const [items, setItems] = useState<Item[]>([emptyItem]);
+  const [currency, setCurrency] = useState("AZN");
 
   const total = items.reduce((sum, i) => sum + (Number(i.quantity) || 0) * (Number(i.unitPrice.replace(",", ".")) || 0), 0);
 
@@ -89,7 +90,7 @@ export function InvoiceEditor() {
               <div key={index} className="grid grid-cols-[1fr_64px_96px_auto] items-center gap-2">
                 <input aria-label="Xidmət" value={item.title} onChange={(e) => updateItem(index, { title: e.target.value })} placeholder="Xidmət" className={inputClass} />
                 <input aria-label="Say" value={item.quantity} onChange={(e) => updateItem(index, { quantity: e.target.value })} inputMode="numeric" className={inputClass} />
-                <input aria-label="Qiymət" value={item.unitPrice} onChange={(e) => updateItem(index, { unitPrice: e.target.value })} inputMode="decimal" placeholder="AZN" className={inputClass} />
+                <input aria-label="Qiymət" value={item.unitPrice} onChange={(e) => updateItem(index, { unitPrice: e.target.value })} inputMode="decimal" placeholder={currency} className={inputClass} />
                 <button type="button" onClick={() => setItems((l) => (l.length > 1 ? l.filter((_, i) => i !== index) : l))} className="px-2 text-gray-400 hover:text-red-600" aria-label="Sətri sil">
                   ✕
                 </button>
@@ -100,7 +101,16 @@ export function InvoiceEditor() {
             <button type="button" onClick={() => setItems((l) => [...l, emptyItem])} className="text-sm text-[var(--brand)] hover:underline">
               + Sətir əlavə et
             </button>
-            <p className="font-semibold">Ümumi: {formatAzn(Math.round(total * 100))}</p>
+            <div className="flex items-center gap-3">
+              <select name="currency" value={currency} onChange={(e) => setCurrency(e.target.value)} aria-label="Valyuta" className={`${inputClass} !w-auto`}>
+                {CURRENCIES.map((c) => (
+                  <option key={c.code} value={c.code}>
+                    {c.label}
+                  </option>
+                ))}
+              </select>
+              <p className="font-semibold">Ümumi: {formatMoney(Math.round(total * 100), currency)}</p>
+            </div>
           </div>
         </Card>
       </ActionForm>

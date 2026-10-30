@@ -58,11 +58,27 @@ html.lenis body {
   to { transform: translateX(-100%); }
 }
 
+@keyframes auth-up {
+  from { transform: translateY(0); }
+  to { transform: translateY(-50%); }
+}
+
+@keyframes auth-toast {
+  0%, 100% { opacity: 0; transform: translateY(16px) scale(0.96); }
+  8%, 30% { opacity: 1; transform: translateY(0) scale(1); }
+  38% { opacity: 0; transform: translateY(-12px) scale(0.98); }
+}
+
+.animate-auth-up { animation: auth-up 50s linear infinite; }
+.animate-auth-down { animation: auth-up 50s linear infinite reverse; }
+.animate-auth-toast { opacity: 0; animation: auth-toast 9s ease-in-out infinite; }
+
 .animate-blob { animation: blob 18s ease-in-out infinite; }
 .animate-marquee { animation: marquee 40s linear infinite; }
 .animate-marquee-reverse { animation: marquee 40s linear infinite reverse; }
 .animate-caret { animation: blink 1s step-end infinite; }
 
 @media (prefers-reduced-motion: reduce) {
-  .animate-blob, .animate-caret, .animate-marquee, .animate-marquee-reverse { animation: none; }
+  .animate-blob, .animate-caret, .animate-marquee, .animate-marquee-reverse, .animate-auth-up, .animate-auth-down { animation: none; }
+  .animate-auth-toast { animation: none; opacity: 1; }
 }

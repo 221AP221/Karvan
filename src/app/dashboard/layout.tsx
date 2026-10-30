@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { requireProfile } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { BackButton } from "@/components/BackButton";
 import { Logo } from "@/components/landing/Header";
 import { logout } from "../(auth)/actions";
 
@@ -45,7 +46,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
           ))}
         </nav>
       </header>
-      <main className="mx-auto max-w-4xl px-4 py-6">{children}</main>
+      <main className="mx-auto max-w-4xl px-4 py-6">
+        <BackButton hideOn={["/dashboard"]} className="-ml-2 mb-3" />
+        {children}
+      </main>
     </div>
   );
 }

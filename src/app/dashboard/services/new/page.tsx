@@ -4,7 +4,9 @@ export default function NewService() {
   return (
     <div>
       <h1 className="mb-6 text-2xl font-bold">Yeni xidmət</h1>
-      <ServiceForm service={{ title: "", description: "", priceType: "FIXED", amount: "", duration: "" }} />
+      <ServiceForm
+        service={{ title: "", category: "", description: "", priceType: "FIXED", amount: "", currency: "AZN", durationDays: "", durationWeeks: "", durationMonths: "" }}
+      />
     </div>
   );
 }

@@ -6,21 +6,34 @@ import { z } from "zod";
 import { requireProfile } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { InvoiceLimitError, createInvoice } from "@/lib/invoices";
-import { aznToQepik } from "@/lib/money";
+import { aznToQepik, isCurrency } from "@/lib/money";
+import { SERVICE_CATEGORIES } from "@/lib/services";
 
-import { type FormState, firstError, optional } from "@/lib/forms";
+import { type FormState, firstError } from "@/lib/forms";
 
 export type { FormState };
 
 // Xidmətlər
 
+const durationPart = (max: number, label: string) =>
+  z
+    .string()
+    .trim()
+    .transform((v) => (v ? Number(v) : null))
+    .refine((v) => v === null || (Number.isInteger(v) && v >= 0 && v <= max), `${label} 0-${max} arası tam ədəd olmalıdır`)
+    .transform((v) => v || null);
+
 const ServiceInput = z
   .object({
     title: z.string().trim().min(2, "Xidmətin adını yazın").max(100),
+    category: z.string().refine((v) => SERVICE_CATEGORIES.some((c) => c.key === v), "Xidmətin növünü seçin"),
     description: z.string().trim().max(600).transform((v) => v || null),
     priceType: z.enum(["FIXED", "NEGOTIABLE"]),
     amount: z.string().trim(),
-    duration: optional,
+    currency: z.string().refine(isCurrency, "Valyuta düzgün deyil"),
+    durationDays: durationPart(31, "Gün"),
+    durationWeeks: durationPart(52, "Həftə"),
+    durationMonths: durationPart(36, "Ay"),
   })
   .transform(({ amount, ...rest }, ctx) => {
     const value = Number(amount.replace(",", "."));
@@ -28,7 +41,9 @@ const ServiceInput = z
       ctx.addIssue({ code: "custom", message: "Sabit qiymətli xidmət üçün məbləğ yazın" });
       return z.NEVER;
     }
-    return { ...rest, amountQepik: amount && value > 0 ? aznToQepik(value) : null };
+    // Strukturlu müddət yazılanda köhnə sərbəst mətn silinir
+    const structured = rest.durationDays || rest.durationWeeks || rest.durationMonths;
+    return { ...rest, amountQepik: amount && value > 0 ? aznToQepik(value) : null, ...(structured ? { duration: null } : {}) };
   });
 
 export async function saveService(_: FormState, form: FormData): Promise<FormState> {
@@ -88,6 +103,7 @@ export async function approveOrder(_: FormState, form: FormData): Promise<FormSt
       items: [
         { title: order.service?.title ?? "Xidmət", quantity: order.quantity, unitQepik: aznToQepik(amount) },
       ],
+      currency: order.service?.currency ?? "AZN",
       dueAt: new Date(Date.now() + dueDays * 86_400_000),
       note: order.note,
     });
@@ -122,6 +138,7 @@ const InvoiceInput = z.object({
     .transform((v) => (v ? new Date(`${v}T23:59:59`) : null))
     .refine((d) => d === null || !Number.isNaN(d.getTime()), "Tarix düzgün deyil"),
   note: z.string().trim().max(500).transform((v) => v || null),
+  currency: z.string().refine(isCurrency, "Valyuta düzgün deyil"),
   items: z
     .string()
     .transform((v) => JSON.parse(v) as unknown)
@@ -142,7 +159,7 @@ export async function createInvoiceAction(_: FormState, form: FormData): Promise
   const profile = await requireProfile();
   const parsed = InvoiceInput.safeParse(Object.fromEntries(form));
   if (!parsed.success) return { error: firstError(parsed.error) };
-  const { items, dueDate, ...rest } = parsed.data;
+  const { items, dueDate, currency, ...rest } = parsed.data;
 
   let invoiceId: string;
   try {
@@ -150,6 +167,7 @@ export async function createInvoiceAction(_: FormState, form: FormData): Promise
       ...rest,
       profileId: profile.id,
       dueAt: dueDate,
+      currency,
       items: items.map((i) => ({ title: i.title, quantity: i.quantity, unitQepik: aznToQepik(i.unitPrice) })),
     });
     invoiceId = invoice.id;

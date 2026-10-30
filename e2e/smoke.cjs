@@ -15,10 +15,15 @@ const BASE = process.env.BASE_URL ?? "http://localhost:3000";
 
   // 1. Qeydiyyat
   await seller.goto(BASE + "/signup");
-  await seller.fill('[name=displayName]', "Leyla Həsənova");
-  await seller.fill('[name=username]', "leyla" + RUN);
-  await seller.fill('[name=email]', "leyla" + RUN + "@example.az");
-  await seller.fill('[name=password]', "sifre12345");
+  await seller.fill("[name=firstName]", "Leyla");
+  await seller.fill("[name=lastName]", "Həsənova");
+  await seller.fill("[name=phone]", "+99450" + RUN.padStart(7, "0"));
+  await seller.fill("[name=document]", "T" + RUN);
+  await seller.click("button:has-text('Davam et')");
+  await seller.fill("[name=username]", "leyla" + RUN);
+  await seller.fill("[name=email]", "leyla" + RUN + "@example.az");
+  await seller.fill("[name=password]", "sifre12345");
+  await seller.fill("[name=confirm]", "sifre12345");
   await seller.click("button:has-text('Hesab yarat')");
   await seller.waitForURL("**/dashboard/profile");
   step("qeydiyyat → " + seller.url());
@@ -52,15 +57,16 @@ const BASE = process.env.BASE_URL ?? "http://localhost:3000";
 
   // 3. Xidmətlər
   for (const svc of [
-    { title: "Gündəlik makiyaj", desc: "Təbii görünüş, 1 saat, keyfiyyətli kosmetika ilə.", type: "FIXED", amount: "40", duration: "60 dəq" },
-    { title: "Gəlin makiyajı", desc: "Toy günü üçün sınaq makiyajı daxil, ünvana gəlmə mümkündür.", type: "NEGOTIABLE", amount: "", duration: "3 saat" },
+    { title: "Gündəlik makiyaj", desc: "Təbii görünüş, 1 saat, keyfiyyətli kosmetika ilə.", type: "FIXED", amount: "40", days: "1" },
+    { title: "Gəlin makiyajı", desc: "Toy günü üçün sınaq makiyajı daxil, ünvana gəlmə mümkündür.", type: "NEGOTIABLE", amount: "", days: "1" },
   ]) {
     await seller.goto(BASE + "/dashboard/services/new");
     await seller.fill('[name=title]', svc.title);
     await seller.fill('textarea[name=description]', svc.desc);
-    await seller.check(`input[value=${svc.type}]`);
+    await seller.locator(`input[value=${svc.type}]`).check({ force: true });
     if (svc.amount) await seller.fill('[name=amount]', svc.amount);
-    await seller.fill('[name=duration]', svc.duration);
+    await seller.selectOption('[name=category]', 'beauty');
+    await seller.fill('[name=durationDays]', svc.days);
     await seller.click("button:has-text('Yadda saxla')");
     await seller.waitForURL("**/dashboard/services");
   }

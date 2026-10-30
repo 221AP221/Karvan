@@ -11,7 +11,7 @@ import {
 import { getCurrentProfile } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { invoiceUrl } from "@/lib/invoices";
-import { formatAzn } from "@/lib/money";
+import { formatMoney } from "@/lib/money";
 
 const inputs = {
   "parse-invoice": z.object({ text: z.string().min(3).max(2000) }),
@@ -67,7 +67,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ tas
           sellerName: profile.displayName,
           customerName: invoice.customerName,
           invoiceNumber: invoice.number,
-          amount: formatAzn(invoice.totalQepik),
+          amount: formatMoney(invoice.totalQepik, invoice.currency),
           invoiceUrl: invoiceUrl(invoice.publicId),
           daysOverdue,
           channel,

@@ -4,8 +4,9 @@ import { notFound } from "next/navigation";
 import { Logo } from "@/components/landing/Header";
 import { SocialIcon } from "@/components/SocialIcon";
 import { db } from "@/lib/db";
-import { formatAzn } from "@/lib/money";
+import { formatMoney } from "@/lib/money";
 import { PLAN_LIMITS } from "@/lib/plans";
+import { formatDuration } from "@/lib/services";
 import { PLATFORM_BY_KEY } from "@/lib/social";
 import { OrderForm } from "./OrderForm";
 
@@ -169,12 +170,12 @@ export default async function ProfilePage({ params }: Props) {
                       <div className="flex items-start justify-between gap-4">
                         <h3 className="font-semibold">{service.title}</h3>
                         <span className="shrink-0 rounded-full bg-[var(--brand)]/10 px-3 py-1 text-sm font-semibold text-[var(--brand)]">
-                          {service.priceType === "FIXED" && service.amountQepik !== null ? formatAzn(service.amountQepik) : "Razılaşma ilə"}
+                          {service.priceType === "FIXED" && service.amountQepik !== null ? formatMoney(service.amountQepik, service.currency) : "Razılaşma ilə"}
                         </span>
                       </div>
-                      {service.duration && (
+                      {formatDuration(service) && (
                         <p className="mt-1 inline-flex items-center gap-1.5 text-sm text-gray-500">
-                          <Clock size={14} strokeWidth={1.75} aria-hidden /> {service.duration}
+                          <Clock size={14} strokeWidth={1.75} aria-hidden /> {formatDuration(service)}
                         </p>
                       )}
                       {service.description && <p className="mt-3 flex-1 text-sm text-gray-600">{service.description}</p>}

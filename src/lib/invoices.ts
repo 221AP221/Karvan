@@ -15,6 +15,7 @@ export type NewInvoice = {
   customerPhone?: string | null;
   customerEmail?: string | null;
   items: { title: string; quantity: number; unitQepik: number }[];
+  currency?: string;
   paymentMethod?: PaymentMethod;
   dueAt?: Date | null;
   note?: string | null;
@@ -58,6 +59,7 @@ export async function createInvoice(input: NewInvoice) {
         customerEmail: input.customerEmail,
         paymentMethod,
         totalQepik: input.items.reduce((sum, i) => sum + i.quantity * i.unitQepik, 0),
+        currency: input.currency ?? "AZN",
         dueAt: input.dueAt,
         note: input.note,
         status: "SENT",
