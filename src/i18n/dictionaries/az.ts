@@ -359,6 +359,7 @@ export const az = {
       phoneTaken: "Bu nömrə ilə artıq hesab var",
       finTaken: "Bu FİN kod ilə artıq hesab var",
       wrongLogin: "E-poçt və ya şifrə yanlışdır",
+      blocked: "Hesabınız bloklanıb. Ətraflı məlumat üçün dəstəklə əlaqə saxlayın.",
       noProfile: "Bu hesabın səhifəsi tapılmadı. Dəstəklə əlaqə saxlayın.",
       badLink: "Link etibarsızdır və ya vaxtı keçib. Yenidən sorğu göndərin.",
     },

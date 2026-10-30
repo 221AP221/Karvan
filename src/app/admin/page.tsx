@@ -1,0 +1,183 @@
+import { Ban, CircleDollarSign, Eye, Receipt, ScrollText, ShoppingBag, UserPlus, Users, Wallet } from "lucide-react";
+import Link from "next/link";
+import { BarChart } from "@/app/dashboard/analytics/charts";
+import { niceTop } from "@/lib/analytics-report";
+import { requireAdmin } from "@/lib/admin";
+import { db } from "@/lib/db";
+import { formatMoney } from "@/lib/money";
+import { PLAN_NAMES, PLAN_PRICES } from "@/lib/plans";
+import { Kpi, PageTitle, PlanBadge, card, date, td, th } from "./ui";
+
+const DAY = 86_400_000;
+const PLANS = ["FREE", "PRO", "PRO_MAX"] as const;
+
+function totals(rows: { currency: string; _sum: { totalQepik: number | null } }[]) {
+  const parts = rows.filter((r) => r._sum.totalQepik).map((r) => formatMoney(r._sum.totalQepik!, r.currency));
+  return parts.length ? parts.join(" + ") : formatMoney(0, "AZN");
+}
+
+const pct = (cur: number, prev: number) => (prev ? `${cur >= prev ? "+" : ""}${Math.round(((cur - prev) / prev) * 100)}% əvvəlki 30 günə görə` : "əvvəlki dövrdə məlumat yoxdur");
+
+export default async function AdminOverview() {
+  await requireAdmin();
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const d30 = new Date(today.getTime() - 29 * DAY);
+  const d60 = new Date(d30.getTime() - 30 * DAY);
+
+  const [users, newUsers, prevUsers, blocked, activeSellers, plans, gmv, orders30, invoices30, views30, blockedServices, claimed, signups, top, recent] = await Promise.all([
+    db.user.count({ where: { role: "USER" } }),
+    db.user.count({ where: { role: "USER", createdAt: { gte: d30 } } }),
+    db.user.count({ where: { role: "USER", createdAt: { gte: d60, lt: d30 } } }),
+    db.user.count({ where: { blockedAt: { not: null } } }),
+    db.profile.count({ where: { user: { blockedAt: null }, services: { some: { isActive: true, blocked: false } } } }),
+    db.subscription.groupBy({ by: ["plan"], where: { user: { role: "USER" } }, _count: true }),
+    db.invoice.groupBy({ by: ["currency"], where: { status: "PAID", paidAt: { gte: d30 } }, _sum: { totalQepik: true } }),
+    db.order.count({ where: { createdAt: { gte: d30 } } }),
+    db.invoice.count({ where: { issuedAt: { gte: d30 } } }),
+    db.profileEvent.count({ where: { type: "VIEW", createdAt: { gte: d30 } } }),
+    db.service.count({ where: { blocked: true } }),
+    db.invoice.count({ where: { status: "CLAIMED_PAID" } }),
+    db.user.findMany({ where: { role: "USER", createdAt: { gte: d30 } }, select: { createdAt: true } }),
+    db.invoice.groupBy({ by: ["profileId"], where: { status: "PAID", currency: "AZN", paidAt: { gte: d30 } }, _sum: { totalQepik: true }, orderBy: { _sum: { totalQepik: "desc" } }, take: 5 }),
+    db.user.findMany({
+      where: { role: "USER" },
+      orderBy: { createdAt: "desc" },
+      take: 6,
+      select: { id: true, firstName: true, lastName: true, email: true, createdAt: true, subscription: { select: { plan: true } }, profile: { select: { username: true, displayName: true } } },
+    }),
+  ]);
+
+  const planCount = Object.fromEntries(PLANS.map((p) => [p, plans.find((x) => x.plan === p)?._count ?? 0])) as Record<(typeof PLANS)[number], number>;
+  const paid = planCount.PRO + planCount.PRO_MAX;
+  const mrr = Math.round(planCount.PRO * 999 + planCount.PRO_MAX * 2999);
+
+  // Günlük qeydiyyatlar
+  const buckets = Array.from({ length: 30 }, (_, i) => {
+    const d = new Date(d30.getTime() + i * DAY);
+    return { key: d.toDateString(), label: `${d.getDate()}.${String(d.getMonth() + 1).padStart(2, "0")}`, value: 0 };
+  });
+  const byKey = new Map(buckets.map((b) => [b.key, b]));
+  for (const s of signups) {
+    const b = byKey.get(new Date(s.createdAt.getFullYear(), s.createdAt.getMonth(), s.createdAt.getDate()).toDateString());
+    if (b) b.value++;
+  }
+  const signupTop = niceTop(Math.max(1, ...buckets.map((b) => b.value)));
+
+  const topProfiles = await db.profile.findMany({ where: { id: { in: top.map((t) => t.profileId) } }, select: { id: true, username: true, displayName: true, userId: true } });
+  const topRows = top.map((t) => ({ ...t, profile: topProfiles.find((p) => p.id === t.profileId) }));
+
+  return (
+    <div>
+      <PageTitle title="İcmal" text="Platformanın son 30 günü" />
+
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <Kpi icon={Users} label="İstifadəçilər" value={String(users)} hint={`${activeSellers} aktiv satıcı (xidməti var)`} href="/admin/users" />
+        <Kpi icon={UserPlus} label="Yeni qeydiyyat" value={String(newUsers)} hint={pct(newUsers, prevUsers)} />
+        <Kpi icon={CircleDollarSign} label="Təxmini MRR" value={formatMoney(mrr, "AZN")} hint={`${paid} ödənişli abunə (ödəniş qəbulu qoşulandan sonra)`} />
+        <Kpi icon={Wallet} label="Ödənilmiş dövriyyə" value={totals(gmv)} hint="Satıcıların müştərilərdən aldığı" />
+        <Kpi icon={ShoppingBag} label="Sifarişlər" value={String(orders30)} />
+        <Kpi icon={Receipt} label="Fakturalar" value={String(invoices30)} hint={claimed ? `${claimed} “Ödədim” təsdiq gözləyir` : undefined} href="/admin/invoices" />
+        <Kpi icon={Eye} label="Səhifə baxışları" value={String(views30)} />
+        <Kpi icon={Ban} label="Moderasiya" value={`${blocked} hesab · ${blockedServices} xidmət`} hint="Bloklanmış" href="/admin/users?status=blocked" />
+      </div>
+
+      <div className="mt-4 grid gap-4 lg:grid-cols-[1.6fr_1fr] [&>*]:min-w-0">
+        <section className={`${card} p-5`}>
+          <h2 className="mb-4 font-semibold">Günlük qeydiyyatlar</h2>
+          <BarChart
+            ariaLabel="Günlük qeydiyyatlar"
+            data={buckets.map((b) => ({ label: b.label, value: b.value, display: `${b.value} qeydiyyat` }))}
+            top={signupTop}
+            ticks={[String(signupTop), signupTop >= 2 ? String(signupTop / 2) : "", "0"]}
+          />
+        </section>
+
+        <section className={`${card} p-5`}>
+          <h2 className="mb-4 font-semibold">Planlar</h2>
+          <ul className="flex flex-col gap-3">
+            {PLANS.map((p) => (
+              <li key={p}>
+                <div className="mb-1 flex items-baseline justify-between text-sm">
+                  <span className="font-medium">
+                    {PLAN_NAMES[p]} <span className="text-xs font-normal text-gray-400">{PLAN_PRICES[p]} AZN</span>
+                  </span>
+                  <span className="tabular-nums">
+                    {planCount[p]} <span className="text-xs text-gray-400">{users ? Math.round((planCount[p] / users) * 100) : 0}%</span>
+                  </span>
+                </div>
+                <div className="h-2 rounded-full bg-gray-100">
+                  <div className="h-2 rounded-full bg-gray-900" style={{ width: `${users ? (planCount[p] / users) * 100 : 0}%` }} />
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </div>
+
+      <div className="mt-4 grid gap-4 lg:grid-cols-2 [&>*]:min-w-0">
+        <section className={card}>
+          <div className="flex items-center justify-between px-5 pt-5">
+            <h2 className="font-semibold">Son qeydiyyatlar</h2>
+            <Link href="/admin/users" className="text-sm text-gray-500 hover:text-gray-900">
+              Hamısı →
+            </Link>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="mt-3 w-full text-sm">
+              <tbody>
+                {recent.map((u) => (
+                  <tr key={u.id} className="border-t border-gray-100">
+                    <td className={td}>
+                      <Link href={`/admin/users/${u.id}`} className="font-medium hover:underline">
+                        {u.profile?.displayName || [u.firstName, u.lastName].filter(Boolean).join(" ") || u.email}
+                      </Link>
+                      <span className="block text-xs text-gray-500">{u.email}</span>
+                    </td>
+                    <td className={td}>
+                      <PlanBadge plan={u.subscription?.plan ?? "FREE"} />
+                    </td>
+                    <td className={`${td} text-right text-xs text-gray-500`}>{date(u.createdAt)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section className={card}>
+          <h2 className="px-5 pt-5 font-semibold">Ən çox satan (30 gün, AZN)</h2>
+          {topRows.length ? (
+            <table className="mt-3 w-full text-sm">
+              <thead>
+                <tr className="border-t border-gray-100">
+                  <th className={th}>Satıcı</th>
+                  <th className={`${th} text-right`}>Ödənilib</th>
+                </tr>
+              </thead>
+              <tbody>
+                {topRows.map((r) => (
+                  <tr key={r.profileId} className="border-t border-gray-100">
+                    <td className={td}>
+                      <Link href={`/admin/users/${r.profile?.userId}`} className="font-medium hover:underline">
+                        {r.profile?.displayName}
+                      </Link>
+                      <span className="block text-xs text-gray-500">@{r.profile?.username}</span>
+                    </td>
+                    <td className={`${td} text-right font-semibold tabular-nums`}>{formatMoney(r._sum.totalQepik ?? 0, "AZN")}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p className="p-5 text-sm text-gray-500">Bu dövrdə ödəniş yoxdur.</p>
+          )}
+        </section>
+      </div>
+
+      <p className="mt-6 flex items-center gap-2 text-xs text-gray-400">
+        <ScrollText size={13} aria-hidden /> Admin əməliyyatlarının hamısı Jurnal bölməsində qeyd olunur.
+      </p>
+    </div>
+  );
+}

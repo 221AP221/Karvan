@@ -19,16 +19,16 @@ async function getProfile(username: string) {
     where: { username: username.toLowerCase() },
     include: {
       socialLinks: { orderBy: { position: "asc" } },
-      services: { where: { isActive: true }, orderBy: { position: "asc" } },
+      services: { where: { isActive: true, blocked: false }, orderBy: { position: "asc" } },
       portfolio: { orderBy: { position: "asc" } },
-      user: { select: { subscription: { select: { plan: true } } } },
+      user: { select: { blockedAt: true, subscription: { select: { plan: true } } } },
     },
   });
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const profile = await getProfile((await params).username);
-  if (!profile) return {};
+  if (!profile || profile.user.blockedAt) return {};
   const title = profile.profession ? `${profile.displayName} · ${profile.profession}` : profile.displayName;
   return {
     title,
@@ -78,7 +78,7 @@ function SectionHeading({ id, icon: Icon, title, count }: { id: string; icon: ty
 
 export default async function ProfilePage({ params }: Props) {
   const profile = await getProfile((await params).username);
-  if (!profile) notFound();
+  if (!profile || profile.user.blockedAt) notFound();
 
   const brand = (profile.theme as { primary?: string } | null)?.primary ?? "#D6127E";
   const socials = profile.socialLinks.filter((l) => l.platform !== "CUSTOM");

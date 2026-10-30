@@ -18,6 +18,13 @@ Məhsul spesifikasiyası: [docs/PRD.md](docs/PRD.md)
 - Planlar: Pulsuz (5 faktura/ay, 5 xidmət), Pro 9,99 AZN (100 faktura, 30 xidmət, təsdiqlənmiş nişanı),
   Pro Max 29,99 AZN (limitsiz, kataloqda önə çıxma, hesabat). Ödəniş qəbulu hələ qoşulmayıb.
 
+**Admin** (`/admin`)
+- İcmal: istifadəçilər, yeni qeydiyyatlar, planlar, təxmini MRR, platforma dövriyyəsi, sifariş/faktura/baxış sayları
+- İstifadəçilər: axtarış və filtr, plan dəyişmək, bloklamaq (səbəb ilə; hesab dərhal çıxış edir, səhifə gizlənir),
+  bütün cihazlardan çıxartmaq, silmək (e-poçtla təsdiq). FİN/pasport maskalanmış göstərilir
+- Xidmətlər: moderasiya (bloklanan xidmət səhifədə və kataloqda görünmür), fakturalar, admin jurnalı
+- Lokal: `admin@karvan.az` / `admin12345` (seed yaradır). Real serverdə: `npm run admin -- e-poçt şifrə`
+
 **Sayt** (`/`, `/tr`, `/ru`)
 - Ana səhifə və kataloq Azərbaycan, türk və rus dillərində (hər dilin öz URL-i, hreflang, sitemap.xml)
 - İşıqlı və qaranlıq rejim (seçim yadda qalır, ilk dəfə sistem ayarı)

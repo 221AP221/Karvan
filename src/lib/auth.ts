@@ -52,9 +52,10 @@ export const getCurrentProfile = cache(async () => {
   if (!token) return null;
   const session = await db.session.findUnique({
     where: { id: sha256(token) },
-    include: { user: { select: { id: true, email: true, subscription: true, profile: true } } },
+    include: { user: { select: { id: true, email: true, role: true, blockedAt: true, subscription: true, profile: true } } },
   });
-  if (!session || session.expiresAt < new Date() || !session.user.profile) return null;
+  // Bloklanmış hesabın sessiyası etibarsızdır
+  if (!session || session.expiresAt < new Date() || !session.user.profile || session.user.blockedAt) return null;
   const { profile, ...user } = session.user;
   return { ...profile, user, sessionId: session.id };
 });
@@ -64,3 +65,15 @@ export async function requireProfile() {
   if (!profile) redirect("/login");
   return profile;
 }
+
+// Profili olmayan hesablar (admin) daxil olmaqla cari istifadəçi
+export const getCurrentUser = cache(async () => {
+  const token = (await cookies()).get(COOKIE)?.value;
+  if (!token) return null;
+  const session = await db.session.findUnique({
+    where: { id: sha256(token) },
+    include: { user: { select: { id: true, email: true, firstName: true, lastName: true, role: true, blockedAt: true } } },
+  });
+  if (!session || session.expiresAt < new Date() || session.user.blockedAt) return null;
+  return { ...session.user, sessionId: session.id };
+});

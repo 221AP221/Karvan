@@ -359,6 +359,7 @@ export const tr: typeof az = {
       phoneTaken: "Bu numarayla zaten bir hesap var",
       finTaken: "Bu FİN koduyla zaten bir hesap var",
       wrongLogin: "E-posta veya şifre hatalı",
+      blocked: "Hesabınız engellendi. Ayrıntılı bilgi için destekle iletişime geçin.",
       noProfile: "Bu hesabın sayfası bulunamadı. Destekle iletişime geçin.",
       badLink: "Link geçersiz veya süresi dolmuş. Yeniden talep gönderin.",
     },

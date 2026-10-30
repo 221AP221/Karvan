@@ -16,7 +16,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }));
 
   const sellers = await db.profile.findMany({
-    where: { showInCatalog: true, services: { some: { isActive: true } } },
+    where: { showInCatalog: true, user: { blockedAt: null }, services: { some: { isActive: true, blocked: false } } },
     select: { username: true },
     take: 5000,
   });

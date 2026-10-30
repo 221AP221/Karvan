@@ -24,8 +24,8 @@ export async function POST(request: Request) {
   }
   const input = parsed.data;
 
-  const service = await db.service.findUnique({ where: { id: input.serviceId } });
-  if (!service || !service.isActive) {
+  const service = await db.service.findUnique({ where: { id: input.serviceId }, include: { profile: { select: { user: { select: { blockedAt: true } } } } } });
+  if (!service || !service.isActive || service.blocked || service.profile.user.blockedAt) {
     return NextResponse.json({ error: "Xidmət tapılmadı" }, { status: 404 });
   }
 

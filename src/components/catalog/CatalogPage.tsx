@@ -59,10 +59,12 @@ export async function CatalogPage({ locale, searchParams }: { locale: Locale; se
 
   const where: Prisma.ServiceWhereInput = {
     isActive: true,
+    blocked: false,
     profile: {
       showInCatalog: true,
+      user: { blockedAt: null },
       ...(city && { city: { equals: city, mode: "insensitive" } }),
-      ...(verified && { user: { subscription: { plan: { in: ["PRO", "PRO_MAX"] } } } }),
+      ...(verified && { user: { blockedAt: null, subscription: { plan: { in: ["PRO", "PRO_MAX"] } } } }),
     },
     ...(q && {
       OR: [
@@ -109,7 +111,7 @@ export async function CatalogPage({ locale, searchParams }: { locale: Locale; se
       },
     }),
     db.profile.findMany({
-      where: { showInCatalog: true, city: { not: null }, services: { some: { isActive: true } } },
+      where: { showInCatalog: true, user: { blockedAt: null }, city: { not: null }, services: { some: { isActive: true, blocked: false } } },
       select: { city: true },
       distinct: ["city"],
       orderBy: { city: "asc" },

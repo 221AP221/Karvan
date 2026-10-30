@@ -85,6 +85,9 @@ model User {
   finCode        String?      @unique
   passportNumber String?
   passwordHash   String?
+  role           Role         @default(USER)
+  blockedAt      DateTime? // admin tərəfindən bloklanıb: giriş, səhifə və kataloq bağlıdır
+  blockReason    String?
   createdAt      DateTime     @default(now())
 
   profile        Profile?
@@ -203,6 +206,7 @@ model Service {
   durationWeeks  Int?
   durationMonths Int?
   isActive    Boolean   @default(true)
+  blocked     Boolean   @default(false) // admin moderasiyası: səhifədə və kataloqda görünmür
   position    Int       @default(0)
   createdAt   DateTime  @default(now())
 
@@ -318,4 +322,22 @@ model ProfileEvent {
   createdAt DateTime  @default(now())
 
   @@index([profileId, createdAt])
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+// Admin əməliyyatlarının jurnalı: kim, nə vaxt, nəyi dəyişib
+model AdminLog {
+  id         String   @id @default(cuid())
+  adminEmail String
+  action     String // plan_change | block | unblock | delete_user | service_block | service_unblock | logout_sessions
+  targetType String // user | service
+  targetId   String
+  details    String?
+  createdAt  DateTime @default(now())
+
+  @@index([createdAt])
 }

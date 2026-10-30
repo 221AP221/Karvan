@@ -107,6 +107,11 @@ export async function login(_: AuthState, form: FormData): Promise<AuthState> {
   if (!user?.passwordHash || !(await verifyPassword(password, user.passwordHash))) {
     return fail((await errors()).wrongLogin);
   }
+  if (user.blockedAt) return fail((await errors()).blocked);
+  if (user.role === "ADMIN") {
+    await startSession(user.id);
+    redirect(user.profile ? "/dashboard" : "/admin");
+  }
   // Profilsiz hesab panelə daxil ola bilməz: səssizcə girişə qaytarmaq əvəzinə səbəbi deyirik
   if (!user.profile) return fail((await errors()).noProfile);
   await startSession(user.id);

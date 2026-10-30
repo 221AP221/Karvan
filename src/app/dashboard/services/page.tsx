@@ -89,6 +89,11 @@ export default async function Services({ searchParams }: { searchParams: SearchP
                             </span>
                           )}
                           {!s.isActive && <span className="rounded-full bg-amber-100 px-2.5 py-1 font-medium text-amber-800">Gizli</span>}
+                          {s.blocked && (
+                            <span title="Qaydalara uyğun olmadığı üçün səhifədə və kataloqda göstərilmir. Dəstəklə əlaqə saxlayın." className="rounded-full bg-red-100 px-2.5 py-1 font-medium text-red-800">
+                              Moderasiya tərəfindən gizlədilib
+                            </span>
+                          )}
                         </div>
                       </div>
                       <div className="flex gap-1">

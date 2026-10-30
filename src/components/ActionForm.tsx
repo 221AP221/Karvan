@@ -12,6 +12,7 @@ export function ActionForm({
   successMessage,
   resetOnSuccess = false,
   className = "flex flex-col gap-4",
+  buttonClassName = buttonClass,
   children,
 }: {
   action: (state: FormState, form: FormData) => Promise<FormState>;
@@ -19,6 +20,7 @@ export function ActionForm({
   successMessage?: string;
   resetOnSuccess?: boolean;
   className?: string;
+  buttonClassName?: string;
   children: React.ReactNode;
 }) {
   const [state, formAction, pending] = useActionState(action, undefined);
@@ -42,7 +44,7 @@ export function ActionForm({
       {state?.error && <p className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{state.error}</p>}
       {state?.ok && successMessage && <p className="rounded-lg bg-green-50 p-3 text-sm text-green-700">{successMessage}</p>}
       <div>
-        <button disabled={pending} className={buttonClass}>
+        <button disabled={pending} className={buttonClassName}>
           {pending ? "Gözləyin..." : submitLabel}
         </button>
       </div>

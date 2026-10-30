@@ -75,7 +75,13 @@ await db.subscription.updateMany({ where: { userId: user.id, plan: "PRO" }, data
 await seedAnalytics(profile.id);
 await seedCatalogSellers();
 
+// Lokal admin hesabı (real bazada yaradılmır: orada `npm run admin -- e-poçt şifrə` istifadə olunur)
+if (!process.env.DATABASE_URL && !(await db.user.findUnique({ where: { email: "admin@karvan.az" }, select: { id: true } }))) {
+  await db.user.create({ data: { email: "admin@karvan.az", firstName: "Karvan", lastName: "Admin", role: "ADMIN", passwordHash: await hashPassword("admin12345") } });
+}
+
 console.log("Demo profil: /demo · giriş: demo@karvan.az / demo12345");
+if (!process.env.DATABASE_URL) console.log("Admin panel: /admin · giriş: admin@karvan.az / admin12345");
 
 // Demo analitika: son 90 gündə ziyarətlər, sifarişlər və fakturalar (yalnız bir dəfə, hadisə yoxdursa).
 // Demo hesab Pro Max plana keçirilir: 90 günlük nümunə fakturalar pulsuz planın aylıq limitinə sığmır.

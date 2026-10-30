@@ -1,3 +1,6 @@
+import "@fontsource-variable/ibm-plex-sans";
+import "@fontsource/ibm-plex-mono/400.css";
+import "@fontsource/ibm-plex-mono/500.css";
 import Link from "next/link";
 import { requireProfile } from "@/lib/auth";
 import { db } from "@/lib/db";
@@ -21,13 +24,18 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const brand = (profile.theme as { primary?: string } | null)?.primary;
 
   return (
-    <div style={{ "--brand": brand } as React.CSSProperties}>
+    <div className="panel" style={{ "--brand": brand } as React.CSSProperties}>
       <header className="border-b border-gray-200 bg-white">
         <div className="mx-auto flex max-w-4xl items-center justify-between gap-4 px-4 py-3">
           <Link href="/dashboard" aria-label="Panel">
             <Logo />
           </Link>
           <div className="flex items-center gap-3 text-sm">
+            {profile.user.role === "ADMIN" && (
+              <Link href="/admin" className="rounded-full bg-gray-900 px-3 py-1 text-xs font-semibold text-white">
+                Admin
+              </Link>
+            )}
             <Link href={`/${profile.username}`} target="_blank" className="hidden text-gray-600 sm:inline">
               /{profile.username} ↗
             </Link>
