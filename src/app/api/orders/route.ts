@@ -13,6 +13,7 @@ const OrderInput = z.object({
   customerEmail: z.union([z.literal(""), z.email()]).optional(),
   note: z.string().max(1000).optional(),
   quantity: z.coerce.number().int().min(1).max(100).default(1),
+  visitorId: z.string().regex(/^[A-Za-z0-9_-]{8,64}$/).optional().catch(undefined),
 });
 
 // TODO(M2): IP üzrə rate limit
@@ -28,6 +29,15 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Xidmət tapılmadı" }, { status: 404 });
   }
 
+  // Sifarişi gətirən mənbə: bu ziyarətçinin səhifəyə son girişi
+  const lastView = input.visitorId
+    ? await db.profileEvent.findFirst({
+        where: { profileId: service.profileId, visitorId: input.visitorId, type: "VIEW" },
+        orderBy: { createdAt: "desc" },
+        select: { source: true },
+      })
+    : null;
+
   const autoInvoice = service.priceType === "FIXED" && service.amountQepik !== null;
 
   const order = await db.order.create({
@@ -39,6 +49,8 @@ export async function POST(request: Request) {
       customerEmail: input.customerEmail || null,
       note: input.note,
       quantity: input.quantity,
+      source: lastView?.source ?? null,
+      visitorId: input.visitorId ?? null,
       status: autoInvoice ? "APPROVED" : "PENDING_APPROVAL",
     },
   });

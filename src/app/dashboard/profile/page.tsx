@@ -1,3 +1,4 @@
+import { formatPhone } from "@/lib/phone";
 import { requireProfile } from "@/lib/auth";
 import { BasicsForm } from "./BasicsForm";
 
@@ -12,6 +13,7 @@ export default async function ProfileBasics() {
         bio: profile.bio ?? "",
         about: profile.about ?? "",
         city: profile.city ?? "",
+        phone: profile.phone ? formatPhone(profile.phone) : "",
         avatarUrl: profile.avatarUrl ?? "",
         coverUrl: profile.coverUrl ?? "",
         primaryColor: (profile.theme as { primary?: string } | null)?.primary ?? "#D6127E",

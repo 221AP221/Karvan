@@ -1,10 +1,12 @@
-import { ArrowUpRight, Briefcase, Clock, ExternalLink, MapPin, ShoppingBag, UserRound } from "lucide-react";
+import { ArrowUpRight, Briefcase, Clock, ExternalLink, MapPin, Phone, ShoppingBag, UserRound } from "lucide-react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Logo } from "@/components/Logo";
+import { PageTracker } from "@/components/PageTracker";
 import { SocialIcon } from "@/components/SocialIcon";
 import { db } from "@/lib/db";
 import { formatMoney } from "@/lib/money";
+import { formatPhone } from "@/lib/phone";
 import { PLAN_LIMITS } from "@/lib/plans";
 import { formatDuration } from "@/lib/services";
 import { PLATFORM_BY_KEY } from "@/lib/social";
@@ -43,6 +45,25 @@ function initials(name: string) {
     .join("");
 }
 
+function CallButton({ phone, className = "" }: { phone: string; className?: string }) {
+  return (
+    <a
+      href={`tel:${phone}`}
+      data-track="PHONE_CLICK"
+      aria-label={`Zəng et: ${formatPhone(phone)}`}
+      className={`group items-center gap-3 rounded-full bg-[var(--brand)] py-1.5 pl-1.5 pr-5 text-white shadow-lg shadow-[var(--brand)]/25 transition hover:-translate-y-0.5 hover:shadow-xl ${className}`}
+    >
+      <span className="grid h-9 w-9 place-items-center rounded-full bg-white/20">
+        <Phone size={17} strokeWidth={2} className="transition group-hover:rotate-12" aria-hidden />
+      </span>
+      <span className="leading-tight">
+        <span className="block text-[11px] font-medium uppercase tracking-wide text-white/75">Zəng et</span>
+        <span className="block whitespace-nowrap font-semibold tabular-nums">{formatPhone(phone)}</span>
+      </span>
+    </a>
+  );
+}
+
 function SectionHeading({ id, icon: Icon, title, count }: { id: string; icon: typeof Briefcase; title: string; count?: number }) {
   return (
     <h2 id={id} className="mb-4 flex scroll-mt-6 items-center gap-2.5 text-lg font-bold">
@@ -72,6 +93,7 @@ export default async function ProfilePage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-gray-50" style={{ "--brand": brand } as React.CSSProperties}>
+      <PageTracker username={profile.username} />
       {/* Üz qabığı */}
       <div className="relative h-40 overflow-hidden sm:h-56">
         {profile.coverUrl ? (
@@ -109,6 +131,9 @@ export default async function ProfilePage({ params }: Props) {
             )}
             {profile.bio && <p className="mt-3 text-pretty text-gray-600">{profile.bio}</p>}
 
+            {/* Böyük ekranda nömrə sağ yuxarıdadır, kiçikdə burada */}
+            {profile.phone && <CallButton phone={profile.phone} className="mt-5 inline-flex lg:hidden" />}
+
             {socials.length > 0 && (
               <ul className="mt-5 flex flex-wrap justify-center gap-2 lg:justify-start">
                 {socials.map((link) => (
@@ -117,6 +142,8 @@ export default async function ProfilePage({ params }: Props) {
                       href={link.url}
                       target="_blank"
                       rel="noopener noreferrer"
+                      data-track="LINK_CLICK"
+                      data-track-target={link.platform}
                       aria-label={PLATFORM_BY_KEY[link.platform as keyof typeof PLATFORM_BY_KEY]?.label ?? link.platform}
                       title={PLATFORM_BY_KEY[link.platform as keyof typeof PLATFORM_BY_KEY]?.label}
                       className="grid h-11 w-11 place-items-center rounded-full border border-gray-200 bg-white text-gray-700 transition hover:-translate-y-0.5 hover:border-gray-300 hover:shadow-md"
@@ -136,6 +163,8 @@ export default async function ProfilePage({ params }: Props) {
                       href={link.url}
                       target="_blank"
                       rel="noopener noreferrer"
+                      data-track="LINK_CLICK"
+                      data-track-target={link.label}
                       className="group flex items-center justify-between gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-3 text-left font-medium transition hover:border-[var(--brand)] hover:shadow-md"
                     >
                       {link.label}
@@ -150,14 +179,19 @@ export default async function ProfilePage({ params }: Props) {
 
         {/* Sağ: məzmun */}
         <main className="min-w-0 lg:pt-8">
-          {sections.length > 1 && (
-            <nav className="sticky top-0 z-10 -mx-4 mb-6 flex gap-2 overflow-x-auto bg-gray-50/90 px-4 py-3 backdrop-blur lg:mx-0 lg:px-0">
-              {sections.map((s) => (
-                <a key={s.id} href={`#${s.id}`} className="whitespace-nowrap rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:border-[var(--brand)] hover:text-[var(--brand)]">
-                  {s.label}
-                </a>
-              ))}
-            </nav>
+          {(sections.length > 1 || profile.phone) && (
+            <div className={`sticky top-0 z-10 -mx-4 mb-6 items-center gap-3 ${sections.length > 1 ? "flex" : "hidden lg:flex"} bg-gray-50/90 px-4 py-3 backdrop-blur lg:mx-0 lg:px-0`}>
+              {sections.length > 1 && (
+                <nav className="flex min-w-0 flex-1 gap-2 overflow-x-auto">
+                  {sections.map((s) => (
+                    <a key={s.id} href={`#${s.id}`} className="whitespace-nowrap rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:border-[var(--brand)] hover:text-[var(--brand)]">
+                      {s.label}
+                    </a>
+                  ))}
+                </nav>
+              )}
+              {profile.phone && <CallButton phone={profile.phone} className="ml-auto hidden shrink-0 lg:inline-flex" />}
+            </div>
           )}
 
           <div className="flex flex-col gap-10">
@@ -179,7 +213,7 @@ export default async function ProfilePage({ params }: Props) {
                         </p>
                       )}
                       {service.description && <p className="mt-3 flex-1 text-sm text-gray-600">{service.description}</p>}
-                      <OrderForm serviceId={service.id} fixedPrice={service.priceType === "FIXED"} />
+                      <OrderForm serviceId={service.id} serviceTitle={service.title} fixedPrice={service.priceType === "FIXED"} />
                     </li>
                   ))}
                 </ul>

@@ -7,22 +7,13 @@ import { endSession, hashPassword, startSession, verifyPassword } from "@/lib/au
 import { db } from "@/lib/db";
 import type { FormState } from "@/lib/forms";
 import { sendEmail } from "@/lib/notify";
+import { normalizePhone } from "@/lib/phone";
 import { findValidReset, hashResetToken as sha256 } from "@/lib/password-reset";
 import { RESERVED_USERNAMES, USERNAME_RE } from "@/lib/username";
 
 export type AuthState = (FormState & { field?: string; devLink?: string }) | undefined;
 
 const fail = (error: string, field?: string): AuthState => ({ error, field });
-
-// +994 50 123 45 67 / 050 123 45 67 → +994501234567; xarici nömrələr + ilə 8-15 rəqəm
-function normalizePhone(input: string): string | null {
-  const raw = input.replace(/[\s()-]/g, "");
-  if (/^0\d{9}$/.test(raw)) return `+994${raw.slice(1)}`;
-  if (/^\+994\d{9}$/.test(raw)) return raw;
-  if (/^994\d{9}$/.test(raw)) return `+${raw}`;
-  if (/^\+[1-9]\d{7,14}$/.test(raw)) return raw;
-  return null;
-}
 
 const SignupInput = z
   .object({
@@ -88,6 +79,7 @@ export async function signup(_: AuthState, form: FormData): Promise<AuthState> {
       profile: {
         create: {
           username,
+          phone,
           displayName: brand ?? `${firstName} ${lastName}`,
           invoicePrefix: username.replace(/[^a-z]/g, "").slice(0, 3).toUpperCase() || "INV",
           accountName: `${firstName} ${lastName}`,

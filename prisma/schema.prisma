@@ -128,6 +128,7 @@ model Profile {
   bio           String?
   about         String? // "Haqqımda" bölməsinin uzun mətni
   city          String?
+  phone         String? // səhifədə göstərilən əlaqə nömrəsi (zəng et)
   avatarUrl     String? // şəkil və ya loqo
   coverUrl      String?
   invoicePrefix String  @default("INV")
@@ -147,6 +148,7 @@ model Profile {
   services    Service[]
   orders      Order[]
   invoices    Invoice[]
+  events      ProfileEvent[]
 }
 
 model SocialLink {
@@ -216,6 +218,8 @@ model Order {
   note          String?
   quantity      Int         @default(1)
   status        OrderStatus @default(PENDING_APPROVAL)
+  source        String? // trafik mənbəyi: instagram, tiktok, direct...
+  visitorId     String?
   createdAt     DateTime    @default(now())
 
   invoice Invoice?
@@ -287,4 +291,26 @@ model Reminder {
   sentAt    DateTime?
 
   @@index([sendAt, sentAt])
+}
+
+enum EventType {
+  VIEW // səhifəyə baxış
+  ORDER_OPEN // sifariş formasını açdı
+  PHONE_CLICK // "Zəng et"
+  LINK_CLICK // sosial hesab və ya link
+}
+
+// Səhifə analitikası: anonim ziyarətçi id-si (brauzerdə saxlanılır), şəxsi məlumat yoxdur
+model ProfileEvent {
+  id        String    @id @default(cuid())
+  profileId String
+  profile   Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  type      EventType
+  visitorId String
+  source    String // instagram | tiktok | whatsapp | facebook | telegram | google | direct | other
+  device    String // mobile | desktop
+  target    String? // xidmət id-si, platforma və ya link
+  createdAt DateTime  @default(now())
+
+  @@index([profileId, createdAt])
 }

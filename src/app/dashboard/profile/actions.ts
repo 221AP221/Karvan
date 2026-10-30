@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireProfile } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { normalizePhone } from "@/lib/phone";
 import { type FormState, firstError, optional } from "@/lib/forms";
 import { deleteMediaByUrl, ownedMediaUrl } from "@/lib/media";
 import { PLATFORMS, safeUrl } from "@/lib/social";
@@ -23,6 +24,12 @@ const ProfileInput = z.object({
   bio: z.string().trim().max(300).transform((v) => v || null),
   about: z.string().trim().max(3000, "Haqqımda mətni 3000 simvoldan çox olmamalıdır").transform((v) => v || null),
   city: optional,
+  phone: z
+    .string()
+    .trim()
+    .transform((v) => (v ? normalizePhone(v) : ""))
+    .refine((v) => v !== null, "Əlaqə nömrəsi düzgün deyil (məs. +994 50 123 45 67)")
+    .transform((v) => v || null),
   avatarUrl: z.string().transform((v) => v || null),
   coverUrl: z.string().transform((v) => v || null),
   primaryColor: z.string().regex(/^#[0-9a-fA-F]{6}$/),

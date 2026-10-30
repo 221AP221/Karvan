@@ -10,6 +10,7 @@ const NAV = [
   { href: "/dashboard/orders", label: "Sifarişlər" },
   { href: "/dashboard/invoices", label: "Fakturalar" },
   { href: "/dashboard/services", label: "Xidmətlər" },
+  { href: "/dashboard/analytics", label: "Analitika" },
   { href: "/dashboard/profile", label: "Səhifəm" },
   { href: "/dashboard/settings", label: "Parametrlər" },
 ];

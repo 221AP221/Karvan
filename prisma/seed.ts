@@ -22,13 +22,12 @@ const user = await db.user.upsert({
   },
 });
 
+// Seed hər "npm run dev"-də işləyir: mövcud demo səhifədə istifadəçinin dəyişikliklərinə toxunmuruq
+const existed = await db.profile.findUnique({ where: { username: "demo" }, select: { id: true } });
+
 const profile = await db.profile.upsert({
   where: { username: "demo" },
-  update: {
-    profession: "İngilis dili müəllimi",
-    about:
-      "8 ildir ingilis dili tədris edirəm. Cambridge CELTA sertifikatım var, 300-dən çox tələbəm IELTS imtahanından 6.5+ bal alıb.\n\nDərslər fərdi və onlayn keçirilir. Hər tələbə üçün səviyyəsinə uyğun plan hazırlayıram.",
-  },
+  update: {},
   create: {
     userId: user.id,
     username: "demo",
@@ -60,7 +59,7 @@ const profile = await db.profile.upsert({
   },
 });
 
-if ((await db.portfolioItem.count({ where: { profileId: profile.id } })) === 0) {
+if (!existed) {
   await db.portfolioItem.createMany({
     data: [
       { profileId: profile.id, position: 0, title: "IELTS 7.5 — Nigar", description: "3 aylıq intensiv hazırlıq, Speaking 5.5-dən 7.5-ə." },
@@ -70,4 +69,108 @@ if ((await db.portfolioItem.count({ where: { profileId: profile.id } })) === 0) 
   });
 }
 
+await seedAnalytics(profile.id);
+
 console.log("Demo profil: /demo · giriş: demo@karvan.az / demo12345");
+
+// Demo analitika: son 90 gündə ziyarətlər, sifarişlər və fakturalar (yalnız bir dəfə, hadisə yoxdursa).
+// Demo hesab Pro plana keçirilir: 90 günlük nümunə fakturalar pulsuz planın aylıq limitinə sığmır.
+async function seedAnalytics(profileId: string) {
+  if (await db.profileEvent.count({ where: { profileId } })) return;
+  const current = await db.profile.findUniqueOrThrow({ where: { id: profileId }, select: { phone: true } });
+  if (!current.phone) await db.profile.update({ where: { id: profileId }, data: { phone: "+994501234567" } });
+  await db.subscription.updateMany({ where: { user: { profile: { id: profileId } } }, data: { plan: "PRO" } });
+
+  let seed = 20261030;
+  const rnd = () => {
+    seed = (seed + 0x6d2b79f5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+  const pick = <T,>(weights: [T, number][]) => {
+    let x = rnd() * weights.reduce((s, [, w]) => s + w, 0);
+    for (const [v, w] of weights) if ((x -= w) <= 0) return v;
+    return weights[0][0];
+  };
+
+  const services = await db.service.findMany({ where: { profileId, isActive: true } });
+  const fixed = services.filter((s) => s.priceType === "FIXED" && s.amountQepik !== null && s.amountQepik <= 100_000);
+  const negotiable = services.filter((s) => s.priceType === "NEGOTIABLE");
+  const profile = await db.profile.findUniqueOrThrow({ where: { id: profileId } });
+  let seq = profile.invoiceSeq;
+
+  const NAMES = ["Nigar Əliyeva", "Kamran Hüseynov", "Lalə Quliyeva", "Orxan Məmmədov", "Səbinə Rzayeva", "Elvin Babayev", "Günay İsmayılova", "Fərid Kərimov", "Aysel Nəsibova", "Tural Qasımov", "Ülviyyə Həsənli", "Rəşad Abbasov", "Nərmin Cəfərova", "Murad Əhmədov", "Zəhra Vəliyeva", "Emil Salahov"];
+  const customers = NAMES.map((name, i) => ({ name, phone: `+99450${String(3000000 + i * 7919).slice(0, 7)}` }));
+
+  const now = new Date();
+  const visitors: string[] = [];
+  const events: { profileId: string; type: "VIEW" | "ORDER_OPEN" | "PHONE_CLICK" | "LINK_CLICK"; visitorId: string; source: string; device: string; target: string | null; createdAt: Date }[] = [];
+
+  for (let d = 89; d >= 0; d--) {
+    const day = new Date(now.getFullYear(), now.getMonth(), now.getDate() - d);
+    const weekend = day.getDay() === 0 || day.getDay() === 6;
+    const views = Math.round((8 + (89 - d) * 0.22) * (weekend ? 1.3 : 1) * (0.7 + rnd() * 0.6));
+    for (let v = 0; v < views; v++) {
+      const at = new Date(day.getTime() + (9 + rnd() * 14) * 3_600_000);
+      if (at > now) continue;
+      const returning = visitors.length > 20 && rnd() < 0.22;
+      const visitorId = returning ? visitors[Math.floor(rnd() * visitors.length)] : `demo${Math.floor(rnd() * 1e12).toString(36)}`;
+      if (!returning) visitors.push(visitorId);
+      const source = pick<string>([["instagram", 46], ["tiktok", 21], ["whatsapp", 11], ["direct", 11], ["telegram", 5], ["search", 4], ["facebook", 2]]);
+      const device = rnd() < 0.83 ? "mobile" : "desktop";
+      const base = { profileId, visitorId, source, device };
+      events.push({ ...base, type: "VIEW", target: null, createdAt: at });
+      if (rnd() < 0.05) events.push({ ...base, type: "PHONE_CLICK", target: null, createdAt: new Date(at.getTime() + 40_000) });
+      if (rnd() < 0.09) events.push({ ...base, type: "LINK_CLICK", target: pick([["INSTAGRAM", 5], ["WHATSAPP", 4], ["TELEGRAM", 1]]), createdAt: new Date(at.getTime() + 30_000) });
+
+      const conv = source === "whatsapp" ? 0.24 : source === "instagram" ? 0.14 : 0.09;
+      if (!services.length || rnd() > conv) continue;
+      const service = negotiable.length && (!fixed.length || rnd() < 0.3) ? negotiable[Math.floor(rnd() * negotiable.length)] : fixed[Math.floor(rnd() * fixed.length)];
+      if (!service) continue;
+      const openedAt = new Date(at.getTime() + 60_000);
+      events.push({ ...base, type: "ORDER_OPEN", target: service.id, createdAt: openedAt });
+      if (rnd() > 0.45) continue;
+
+      const ageDays = (now.getTime() - at.getTime()) / 86_400_000;
+      const customer = rnd() < 0.3 ? customers[Math.floor(rnd() * 5)] : customers[Math.floor(rnd() * customers.length)];
+      const createdAt = new Date(openedAt.getTime() + 120_000);
+      const isFixed = service.priceType === "FIXED";
+      const wantsInvoice = isFixed || (ageDays > 3 && rnd() < 0.8);
+      const status = isFixed ? "APPROVED" : ageDays <= 3 ? "PENDING_APPROVAL" : wantsInvoice ? "APPROVED" : "REJECTED";
+
+      const order = await db.order.create({
+        data: { profileId, serviceId: service.id, customerName: customer.name, customerPhone: customer.phone, status, source, visitorId, createdAt },
+      });
+      if (status !== "APPROVED") continue;
+
+      const amount = isFixed ? service.amountQepik! : 32_000;
+      const issuedAt = new Date(createdAt.getTime() + (isFixed ? 0 : 3_600_000 * 5));
+      const dueAt = new Date(issuedAt.getTime() + 3 * 86_400_000);
+      const r = rnd();
+      const invStatus = ageDays > 5 ? (r < 0.78 ? "PAID" : r < 0.9 ? "OVERDUE" : "CANCELLED") : r < 0.4 ? "PAID" : r < 0.6 ? "CLAIMED_PAID" : "SENT";
+      const paidAt = invStatus === "PAID" ? new Date(Math.min(now.getTime(), issuedAt.getTime() + rnd() * 3 * 86_400_000)) : null;
+      seq++;
+      await db.invoice.create({
+        data: {
+          publicId: `demo${seq}${Math.floor(rnd() * 1e9).toString(36)}`,
+          number: `${profile.invoicePrefix}-${issuedAt.getFullYear()}-${String(seq).padStart(4, "0")}`,
+          profileId,
+          orderId: order.id,
+          customerName: customer.name,
+          customerPhone: customer.phone,
+          status: invStatus,
+          totalQepik: amount,
+          currency: service.currency,
+          issuedAt,
+          dueAt,
+          paidAt,
+          createdAt: issuedAt,
+          items: { create: [{ title: service.title, quantity: 1, unitQepik: amount }] },
+        },
+      });
+    }
+  }
+  await db.profileEvent.createMany({ data: events });
+  await db.profile.update({ where: { id: profileId }, data: { invoiceSeq: seq } });
+}
