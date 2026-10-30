@@ -16,6 +16,7 @@ const NAV = [
   { href: "/dashboard/services", label: "Xidmətlər" },
   { href: "/dashboard/analytics", label: "Analitika" },
   { href: "/dashboard/profile", label: "Səhifəm" },
+  { href: "/dashboard/billing", label: "Abunəlik" },
   { href: "/dashboard/settings", label: "Parametrlər" },
 ];
 

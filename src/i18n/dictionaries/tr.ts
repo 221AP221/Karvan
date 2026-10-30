@@ -155,7 +155,7 @@ export const tr: typeof az = {
     title: "Ücretsiz başlayın, satışlar arttıkça yükseltin",
     text: "Hiçbir planda satış komisyonu yok: müşteri parayı doğrudan sizin kartınıza gönderir.",
     popular: "En popüler",
-    soon: "Ücretli planlar yakında aktif olacak. Şimdi ücretsiz başlayın — geçiş tek tıkla olacak.",
+    soon: "Banka kartı veya havale ile ödeyin. Abonelik otomatik yenilenmez, istediğiniz zaman bırakın.",
     plans: [
       {
         name: "Ücretsiz",

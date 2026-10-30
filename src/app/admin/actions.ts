@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { randomBytes } from "node:crypto";
 import { logAdmin, requireAdmin, requireSuperAdmin } from "@/lib/admin";
 import { hashPassword, startImpersonation } from "@/lib/auth";
+import { activatePayment } from "@/lib/billing";
 import { db } from "@/lib/db";
 import type { FormState } from "@/lib/forms";
 import { normalizePhone } from "@/lib/phone";
@@ -278,4 +279,25 @@ export async function impersonate(userId: string) {
   await logAdmin(admin, "impersonate", "user", userId);
   await startImpersonation(userId);
   redirect("/dashboard");
+}
+
+// Abunəlik ödənişləri: bank köçürməsini təsdiq və ya rədd
+export async function confirmBillingPayment(paymentId: string) {
+  const admin = await requireAdmin();
+  const p = await db.subscriptionPayment.findUnique({ where: { id: paymentId } });
+  if (!p || (p.status !== "PENDING" && p.status !== "PAID")) return;
+  await db.subscriptionPayment.update({ where: { id: paymentId }, data: { status: "PAID", paidAt: p.paidAt ?? new Date() } });
+  await activatePayment(paymentId);
+  await logAdmin(admin, "billing_confirm", "user", p.userId, `${p.reference} · ${PLAN_NAMES[p.plan]} · ${p.months} ay`);
+  revalidatePath("/admin/payments");
+  refresh(p.userId);
+}
+
+export async function rejectBillingPayment(paymentId: string) {
+  const admin = await requireAdmin();
+  const p = await db.subscriptionPayment.findUnique({ where: { id: paymentId } });
+  if (!p || p.status !== "PENDING") return;
+  await db.subscriptionPayment.update({ where: { id: paymentId }, data: { status: "REJECTED" } });
+  await logAdmin(admin, "billing_reject", "user", p.userId, p.reference);
+  revalidatePath("/admin/payments");
 }

@@ -3,6 +3,7 @@ import { promisify } from "node:util";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { cache } from "react";
+import { expireIfNeeded } from "@/lib/billing";
 import { db } from "@/lib/db";
 
 // MVP: e-poçt + şifrə. PRD-dəki SMS OTP / Google girişi bu modulun üzərinə əlavə olunacaq.
@@ -56,6 +57,7 @@ export const getCurrentProfile = cache(async () => {
   });
   // Bloklanmış hesabın sessiyası etibarsızdır
   if (!session || session.expiresAt < new Date() || !session.user.profile || session.user.blockedAt) return null;
+  if (await expireIfNeeded(session.user.id, session.user.subscription)) session.user.subscription = { ...session.user.subscription!, plan: "FREE", currentPeriodEnd: null };
   const { profile, ...user } = session.user;
   return { ...profile, user, sessionId: session.id };
 });

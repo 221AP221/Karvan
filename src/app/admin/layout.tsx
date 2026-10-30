@@ -1,7 +1,7 @@
 import "@fontsource-variable/ibm-plex-sans";
 import "@fontsource/ibm-plex-mono/400.css";
 import "@fontsource/ibm-plex-mono/500.css";
-import { ExternalLink, FileText, LayoutDashboard, LayoutGrid, LogOut, ScrollText, Users } from "lucide-react";
+import { CreditCard, ExternalLink, FileText, LayoutDashboard, LayoutGrid, LogOut, ScrollText, Users } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { KarvanMark } from "@/components/Logo";
@@ -15,6 +15,7 @@ const NAV = [
   { href: "/admin", label: "İcmal", icon: LayoutDashboard },
   { href: "/admin/users", label: "İstifadəçilər", icon: Users },
   { href: "/admin/services", label: "Xidmətlər", icon: LayoutGrid },
+  { href: "/admin/payments", label: "Ödənişlər", icon: CreditCard },
   { href: "/admin/invoices", label: "Fakturalar", icon: FileText },
   { href: "/admin/logs", label: "Jurnal", icon: ScrollText },
 ];

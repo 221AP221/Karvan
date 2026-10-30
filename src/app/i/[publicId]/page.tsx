@@ -1,3 +1,4 @@
+import { HomeButton } from "@/components/HomeButton";
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { getPublicInvoice } from "@/lib/invoices";
@@ -31,6 +32,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ public
       className="mx-auto max-w-md px-4 py-10"
       style={{ "--brand": (profile.theme as { primary?: string } | null)?.primary } as React.CSSProperties}
     >
+      <HomeButton className="mb-6" />
       <div className="rounded-2xl border border-gray-200 bg-white p-6">
         <p className="text-sm text-gray-500">{profile.displayName}</p>
         <h1 className="text-xl font-bold">Faktura № {invoice.number}</h1>

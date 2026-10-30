@@ -94,6 +94,7 @@ model User {
   subscription   Subscription?
   sessions       Session[]
   passwordResets PasswordReset[]
+  billing        SubscriptionPayment[]
 }
 
 model PasswordReset {
@@ -356,4 +357,39 @@ model ActivityLog {
   @@index([createdAt])
   @@index([userId, createdAt])
   @@index([action])
+}
+
+enum BillingMethod {
+  CARD // bank kartı (gateway; açar yoxdursa test rejimi)
+  BANK_TRANSFER // Karvan hesabına köçürmə, admin təsdiqləyir
+}
+
+enum BillingStatus {
+  PENDING // köçürmə gözlənilir / yoxlanılır
+  PAID // ödəniş alındı, aktivləşdirmə növbədədir
+  ACTIVATED // tarif aktivdir
+  REJECTED // admin rədd etdi
+  FAILED // kart ödənişi alınmadı
+}
+
+// Satıcının Karvan abunəliyi üçün ödənişləri (müştəri fakturalarından ayrıdır)
+model SubscriptionPayment {
+  id          String        @id @default(cuid())
+  userId      String
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan        Plan
+  months      Int
+  amountQepik Int
+  method      BillingMethod
+  status      BillingStatus @default(PENDING)
+  reference   String        @unique // KRV-XXXXXX: köçürmədə təyinat
+  cardLast4   String?
+  externalId  String?
+  note        String?
+  createdAt   DateTime      @default(now())
+  paidAt      DateTime?
+  activatedAt DateTime?
+
+  @@index([status, createdAt])
+  @@index([userId, createdAt])
 }

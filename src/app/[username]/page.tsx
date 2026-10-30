@@ -1,6 +1,7 @@
 import { ArrowUpRight, BadgeCheck, Briefcase, Clock, ExternalLink, MapPin, Phone, ShoppingBag, UserRound } from "lucide-react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { HomeButton } from "@/components/HomeButton";
 import { Logo } from "@/components/Logo";
 import { PageTracker } from "@/components/PageTracker";
 import { SocialIcon } from "@/components/SocialIcon";
@@ -106,6 +107,7 @@ export default async function ProfilePage({ params }: Props) {
           />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/25 to-transparent" />
+        <HomeButton className="absolute left-4 top-4 sm:left-6 sm:top-6" />
       </div>
 
       <div className="mx-auto grid max-w-6xl gap-6 px-4 pb-16 lg:grid-cols-[340px_1fr] lg:gap-8">

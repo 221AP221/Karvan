@@ -47,11 +47,9 @@ export default async function Settings() {
                 <p className="font-semibold">{PLAN_NAMES[plan]}</p>
               </div>
             </div>
-            {plan !== "PRO_MAX" && (
-              <span className="rounded-full bg-gradient-to-r from-violet-600 to-pink-600 px-3 py-1 text-xs font-semibold text-white">
-                {plan === "FREE" ? "Pro 9,99 AZN · tezliklə" : "Pro Max tezliklə"}
-              </span>
-            )}
+            <a href="/dashboard/billing" className="rounded-full bg-gradient-to-r from-violet-600 to-pink-600 px-3 py-1 text-xs font-semibold text-white">
+              {plan === "PRO_MAX" ? "Müddəti uzat" : "Tarifi yüksəlt"}
+            </a>
           </div>
           {limits.invoicesPerMonth === Infinity ? (
             <p className="mt-3 text-sm text-gray-500">Limitsiz faktura</p>

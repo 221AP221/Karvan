@@ -155,7 +155,7 @@ export const az = {
     title: "Pulsuz başlayın, satış artdıqca keçin",
     text: "Heç bir planda satışdan komissiya yoxdur: müştəri pulu birbaşa sizin kartınıza köçürür.",
     popular: "Ən populyar",
-    soon: "Ödənişli planlar tezliklə aktiv olacaq. İndi pulsuz başlayın — keçid bir kliklə olacaq.",
+    soon: "Bank kartı və ya bank köçürməsi ilə ödəyin. Abunəlik avtomatik yenilənmir, istədiyiniz vaxt dayandırın.",
     plans: [
       {
         name: "Pulsuz",
@@ -167,7 +167,7 @@ export const az = {
         name: "Pro",
         tagline: "Aktiv satanlar üçün",
         cta: "Pro ilə başla",
-        features: ["Pulsuzdakı hər şey", "Təsdiqlənmiş hesab nişanı", "Ayda 100 faktura", "30 xidmət", "Karvan yazısı olmadan", "Onlayn kartla ödəniş (tezliklə)", "AI: ayda 200 sorğu"],
+        features: ["Pulsuzdakı hər şey", "Təsdiqlənmiş hesab nişanı", "Ayda 100 faktura", "30 xidmət", "Karvan yazısı olmadan", "Müştəridən onlayn kartla ödəniş (tezliklə)", "AI: ayda 200 sorğu"],
       },
       {
         name: "Pro Max",

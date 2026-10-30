@@ -29,12 +29,18 @@ export const ACTIVITY_LABELS: Record<string, string> = {
   invoice_claimed: "Müştəri “Ödədim” basdı",
   invoice_cancel: "Fakturanı ləğv etdi",
   invoice_reopen: "Fakturanı bərpa etdi",
+  billing_card: "Kartla abunə ödənişi",
+  billing_card_failed: "Kart ödənişi alınmadı",
+  billing_transfer: "Köçürmə ilə ödəniş bildirdi",
+  plan_activated: "Tarif aktivləşdi",
+  plan_expired: "Tarifin müddəti bitdi",
 };
 
 export const ACTIVITY_GROUPS: Record<string, string[]> = {
   "Giriş və təhlükəsizlik": ["signup", "login", "login_failed", "login_blocked", "logout", "password_reset_request", "password_reset", "password_change", "email_change", "sessions_end", "account_delete"],
   Profil: ["profile_update", "payment_settings", "catalog_visibility"],
   Xidmətlər: ["service_create", "service_update", "service_toggle", "service_delete"],
+  Abunəlik: ["billing_card", "billing_card_failed", "billing_transfer", "plan_activated", "plan_expired"],
   "Sifariş və faktura": ["order_received", "order_approve", "order_reject", "invoice_create", "invoice_paid", "invoice_claimed", "invoice_cancel", "invoice_reopen"],
 };
 
