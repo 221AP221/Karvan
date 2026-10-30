@@ -10,36 +10,22 @@ body {
 }
 
 html {
-  scroll-behavior: smooth;
   scroll-padding-top: 80px;
 }
 
-/* Ana səhifə animasiyaları */
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+/* Lenis (lenis/dist/lenis.css) */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
 }
 
-@keyframes pop-in {
-  0% { opacity: 0; transform: translateY(12px) scale(0.92); }
-  100% { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-@keyframes fade-up {
-  from { opacity: 0; transform: translateY(24px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-
-@keyframes gradient-shift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
+/* Ana səhifə: CSS ilə kifayət edən fon animasiyaları (qalanı GSAP və React Bits ilə) */
 
 @keyframes blob {
   0%, 100% { transform: translate(0, 0) scale(1); }
@@ -51,38 +37,9 @@ html {
   50% { opacity: 0; }
 }
 
-.animate-float { animation: float 6s ease-in-out infinite; }
-.animate-float-slow { animation: float 8s ease-in-out infinite; }
-.animate-pop { opacity: 0; animation: pop-in 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.2) forwards; }
-.animate-fade-up { opacity: 0; animation: fade-up 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) forwards; }
-.animate-marquee { animation: marquee 30s linear infinite; }
 .animate-blob { animation: blob 18s ease-in-out infinite; }
 .animate-caret { animation: blink 1s step-end infinite; }
 
-.text-gradient {
-  background: linear-gradient(90deg, #6d28d9, #db2777, #f59e0b, #6d28d9);
-  background-size: 300% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: gradient-shift 8s ease infinite;
-}
-
-/* Scroll ilə görünən bloklar (Reveal komponenti) */
-.reveal {
-  opacity: 0;
-  transform: translateY(28px);
-  transition: opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1), transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
-  transition-delay: var(--delay, 0ms);
-}
-.reveal[data-visible="true"] {
-  opacity: 1;
-  transform: none;
-}
-
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  .animate-float, .animate-float-slow, .animate-marquee, .animate-blob, .text-gradient, .animate-caret { animation: none; }
-  .animate-pop, .animate-fade-up { animation: none; opacity: 1; }
-  .reveal { opacity: 1; transform: none; transition: none; }
+  .animate-blob, .animate-caret { animation: none; }
 }

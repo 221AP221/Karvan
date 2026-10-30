@@ -1,14 +1,121 @@
-// Hero hissəsindəki telefon maketi: satıcının bio səhifəsi və üzərində "canlı" bildirişlər.
+"use client";
+
+import { useGSAP } from "@gsap/react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useRef } from "react";
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
+
+const CARDS = [
+  {
+    position: "-left-4 -top-6 sm:-left-28 sm:top-24",
+    speed: -60,
+    className: "border border-gray-200 bg-white/95",
+    icon: "🛍️",
+    iconClass: "bg-violet-100",
+    label: "Yeni sifariş",
+    value: "Nərmin · 40 AZN",
+  },
+  {
+    position: "-right-28 top-[42%] hidden sm:block",
+    speed: -110,
+    className: "border border-gray-200 bg-white/95",
+    icon: "📄",
+    iconClass: "bg-sky-100",
+    label: "Faktura göndərildi",
+    value: "LEY-2026-0042",
+    mono: true,
+  },
+  {
+    position: "-bottom-6 left-4 sm:-left-8",
+    speed: -30,
+    className: "bg-emerald-600 text-white shadow-emerald-600/30",
+    icon: "✓",
+    iconClass: "bg-white/20",
+    label: "Ödənildi",
+    labelClass: "text-emerald-100",
+    value: "+40,00 AZN",
+  },
+];
+
+// Hero telefonu: giriş animasiyası, siçana görə 3D əyilmə, scroll zamanı parallaks.
 export function HeroPhone() {
+  const root = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      const phone = root.current!.querySelector<HTMLElement>("[data-phone]")!;
+      const cards = gsap.utils.toArray<HTMLElement>("[data-card]");
+
+      const mm = gsap.matchMedia();
+
+      mm.add("(prefers-reduced-motion: reduce)", () => {
+        gsap.set([phone, ...cards], { autoAlpha: 1 });
+      });
+
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        const intro = gsap.timeline({ defaults: { ease: "expo.out" } });
+        intro
+          .fromTo(
+            phone,
+            { autoAlpha: 0, y: 120, rotateX: 25, rotateZ: -6, scale: 0.9 },
+            { autoAlpha: 1, y: 0, rotateX: 0, rotateZ: 0, scale: 1, duration: 1.6 },
+            0.2,
+          )
+          .fromTo(
+            cards,
+            { autoAlpha: 0, scale: 0.6, y: 40 },
+            { autoAlpha: 1, scale: 1, y: 0, duration: 0.9, ease: "back.out(1.8)", stagger: 0.35 },
+            0.9,
+          );
+
+        // Kartlar müstəqil şəkildə yüngülcə üzür
+        cards.forEach((card, i) => {
+          gsap.to(card.firstElementChild, {
+            y: -12,
+            duration: 2.4 + i * 0.6,
+            ease: "sine.inOut",
+            yoyo: true,
+            repeat: -1,
+            delay: i * 0.4,
+          });
+        });
+
+        // Scroll parallaksı: telefon və kartlar müxtəlif sürətlə hərəkət edir
+        const scroll = { trigger: root.current, start: "top 30%", end: "bottom top", scrub: 1 };
+        gsap.to(phone, { yPercent: 18, rotateZ: 4, ease: "none", scrollTrigger: scroll });
+        cards.forEach((card) => {
+          gsap.to(card, { y: Number(card.dataset.speed), ease: "none", scrollTrigger: scroll });
+        });
+      });
+
+      // Masaüstündə siçana görə 3D əyilmə
+      mm.add("(prefers-reduced-motion: no-preference) and (pointer: fine)", () => {
+        const rotX = gsap.quickTo(phone, "rotateX", { duration: 0.8, ease: "power3.out" });
+        const rotY = gsap.quickTo(phone, "rotateY", { duration: 0.8, ease: "power3.out" });
+        const onMove = (e: PointerEvent) => {
+          rotY((e.clientX / window.innerWidth - 0.5) * 16);
+          rotX(-(e.clientY / window.innerHeight - 0.5) * 12);
+        };
+        window.addEventListener("pointermove", onMove);
+        return () => window.removeEventListener("pointermove", onMove);
+      });
+    },
+    { scope: root },
+  );
+
   return (
-    <div className="relative mx-auto w-full max-w-[340px]">
+    <div ref={root} className="relative mx-auto w-full max-w-[340px] [perspective:1200px]">
       <div
         aria-hidden
         className="absolute -inset-10 -z-10 rounded-full bg-gradient-to-tr from-violet-400/40 via-pink-300/40 to-amber-200/40 blur-3xl"
       />
 
-      {/* Telefon */}
-      <div className="animate-float relative rounded-[2.6rem] border-[10px] border-gray-900 bg-white shadow-2xl shadow-violet-900/25">
+      <div
+        data-phone
+        className="invisible relative rounded-[2.6rem] border-[10px] border-gray-900 bg-white shadow-2xl shadow-violet-900/25 [transform-style:preserve-3d]"
+      >
         <div className="absolute left-1/2 top-2 h-5 w-24 -translate-x-1/2 rounded-full bg-gray-900" />
         <div className="overflow-hidden rounded-[2rem] bg-gradient-to-b from-pink-50 to-white px-5 pb-6 pt-10">
           <div className="text-center">
@@ -40,36 +147,17 @@ export function HeroPhone() {
         </div>
       </div>
 
-      {/* Bildirişlər */}
-      <div className="animate-pop absolute -left-4 -top-6 sm:-left-28 sm:top-24" style={{ animationDelay: "0.9s" }}>
-        <div className="animate-float-slow flex items-center gap-3 rounded-2xl border border-gray-200 bg-white/95 px-4 py-3 shadow-xl backdrop-blur">
-          <span className="grid h-9 w-9 place-items-center rounded-full bg-violet-100 text-lg">🛍️</span>
-          <span className="text-left">
-            <span className="block text-xs text-gray-500">Yeni sifariş</span>
-            <span className="block text-sm font-semibold">Nərmin · 40 AZN</span>
-          </span>
+      {CARDS.map((card) => (
+        <div key={card.label} data-card data-speed={card.speed} className={`invisible absolute ${card.position}`}>
+          <div className={`flex items-center gap-3 rounded-2xl px-4 py-3 shadow-xl backdrop-blur ${card.className}`}>
+            <span className={`grid h-9 w-9 place-items-center rounded-full text-lg ${card.iconClass}`}>{card.icon}</span>
+            <span className="text-left">
+              <span className={`block text-xs ${card.labelClass ?? "text-gray-500"}`}>{card.label}</span>
+              <span className={`block text-sm font-semibold ${card.mono ? "font-mono" : ""}`}>{card.value}</span>
+            </span>
+          </div>
         </div>
-      </div>
-
-      <div className="animate-pop absolute -right-28 top-[42%] hidden sm:block" style={{ animationDelay: "1.6s" }}>
-        <div className="animate-float flex items-center gap-3 rounded-2xl border border-gray-200 bg-white/95 px-4 py-3 shadow-xl backdrop-blur" style={{ animationDelay: "-2s" }}>
-          <span className="grid h-9 w-9 place-items-center rounded-full bg-sky-100 text-lg">📄</span>
-          <span className="text-left">
-            <span className="block text-xs text-gray-500">Faktura göndərildi</span>
-            <span className="block font-mono text-sm font-semibold">LEY-2026-0042</span>
-          </span>
-        </div>
-      </div>
-
-      <div className="animate-pop absolute -bottom-6 left-4 sm:-left-8" style={{ animationDelay: "2.3s" }}>
-        <div className="animate-float-slow flex items-center gap-3 rounded-2xl bg-emerald-600 px-4 py-3 text-white shadow-xl shadow-emerald-600/30" style={{ animationDelay: "-4s" }}>
-          <span className="grid h-9 w-9 place-items-center rounded-full bg-white/20 text-lg">✓</span>
-          <span className="text-left">
-            <span className="block text-xs text-emerald-100">Ödənildi</span>
-            <span className="block text-sm font-semibold">+40,00 AZN</span>
-          </span>
-        </div>
-      </div>
+      ))}
     </div>
   );
 }
