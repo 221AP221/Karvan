@@ -1,7 +1,7 @@
 import { ArrowUpRight, Briefcase, Clock, ExternalLink, MapPin, ShoppingBag, UserRound } from "lucide-react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Logo } from "@/components/landing/Header";
+import { Logo } from "@/components/Logo";
 import { SocialIcon } from "@/components/SocialIcon";
 import { db } from "@/lib/db";
 import { formatMoney } from "@/lib/money";
@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!profile) return {};
   const title = profile.profession ? `${profile.displayName} · ${profile.profession}` : profile.displayName;
   return {
-    title: `${title} | BioFaktura`,
+    title,
     description: profile.bio ?? undefined,
     openGraph: { title, description: profile.bio ?? undefined, images: profile.avatarUrl ? [profile.avatarUrl] : undefined },
   };
@@ -59,7 +59,7 @@ export default async function ProfilePage({ params }: Props) {
   const profile = await getProfile((await params).username);
   if (!profile) notFound();
 
-  const brand = (profile.theme as { primary?: string } | null)?.primary ?? "#6d28d9";
+  const brand = (profile.theme as { primary?: string } | null)?.primary ?? "#D6127E";
   const socials = profile.socialLinks.filter((l) => l.platform !== "CUSTOM");
   const links = profile.socialLinks.filter((l) => l.platform === "CUSTOM");
   const branding = PLAN_LIMITS[profile.user.subscription?.plan ?? "FREE"].branding;
@@ -79,7 +79,7 @@ export default async function ProfilePage({ params }: Props) {
         ) : (
           <div
             className="h-full w-full"
-            style={{ background: `radial-gradient(120% 140% at 0% 0%, ${brand} 0%, transparent 60%), radial-gradient(120% 140% at 100% 0%, #f0abfc 0%, transparent 55%), linear-gradient(135deg, ${brand}, #111827)` }}
+            style={{ background: `radial-gradient(120% 140% at 0% 0%, ${brand} 0%, transparent 60%), radial-gradient(120% 140% at 100% 0%, #ff94c8 0%, transparent 55%), linear-gradient(135deg, ${brand}, #111827)` }}
           />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/25 to-transparent" />
@@ -248,9 +248,7 @@ export default async function ProfilePage({ params }: Props) {
 
       {branding && (
         <a href="/" className="flex items-center justify-center gap-1.5 pb-10 text-xs text-gray-400 opacity-80 transition hover:opacity-100">
-          <span className="[&_svg]:h-5 [&_svg]:w-5 [&>span]:gap-1.5 [&>span]:text-[13px]">
-            <Logo />
-          </span>
+          <Logo size="sm" />
           ilə yaradılıb
         </a>
       )}

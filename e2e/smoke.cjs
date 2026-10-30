@@ -31,7 +31,7 @@ const BASE = process.env.BASE_URL ?? "http://localhost:3000";
   // 2. Profil, sosial hesablar və rekvizitlər
   await seller.fill('textarea[name=bio]', "Peşəkar makiyaj ustası · Bakı · Toy və gündəlik makiyaj");
   await seller.fill('[name=city]', "Bakı");
-  await seller.click("button[aria-label='Rəng #db2777']");
+  await seller.click("button[aria-label='Rəng #e11d48']");
   await seller.click("button:has-text('Yadda saxla')");
   await seller.waitForSelector("text=Yadda saxlanıldı");
   step("profil saxlanıldı");
@@ -177,7 +177,8 @@ const BASE = process.env.BASE_URL ?? "http://localhost:3000";
   await seller.fill('[name=password]', "sifre12345");
   await seller.click("button:has-text('Daxil ol')");
   await seller.waitForURL("**/dashboard");
-  step("yenidən giriş OK");
+  await seller.waitForSelector("h1:has-text('Salam')");
+  step("yenidən giriş OK: " + (await seller.locator("h1").textContent()));
 
   console.log("JS xətaları:", errors.length ? errors : "yoxdur");
   await browser.close();

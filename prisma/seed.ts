@@ -1,11 +1,22 @@
 import { hashPassword } from "../src/lib/auth";
 import { db } from "../src/lib/db";
 
+// Rebrenddən əvvəlki demo hesab (demo@biofaktura.az) varsa, e-poçtu yenilənir.
+// Arada profilsiz yeni demo hesab yaranıbsa, o silinir ki, köhnə hesab (profili ilə) köçə bilsin.
+const OLD_DEMO = "demo@biofaktura.az";
+const DEMO = "demo@karvan.az";
+const oldDemo = await db.user.findUnique({ where: { email: OLD_DEMO }, select: { id: true } });
+if (oldDemo) {
+  const newDemo = await db.user.findUnique({ where: { email: DEMO }, select: { id: true, profile: { select: { id: true } } } });
+  if (newDemo && !newDemo.profile) await db.user.delete({ where: { id: newDemo.id } });
+  if (!newDemo || !newDemo.profile) await db.user.update({ where: { id: oldDemo.id }, data: { email: DEMO } });
+}
+
 const user = await db.user.upsert({
-  where: { email: "demo@biofaktura.az" },
+  where: { email: DEMO },
   update: {},
   create: {
-    email: "demo@biofaktura.az",
+    email: DEMO,
     passwordHash: await hashPassword("demo12345"),
     subscription: { create: { plan: "FREE" } },
   },
@@ -28,7 +39,7 @@ const profile = await db.profile.upsert({
     about:
       "8 ildir ingilis dili tədris edirəm. Cambridge CELTA sertifikatım var, 300-dən çox tələbəm IELTS imtahanından 6.5+ bal alıb.\n\nDərslər fərdi və onlayn keçirilir. Hər tələbə üçün səviyyəsinə uyğun plan hazırlayıram.",
     invoicePrefix: "AYG",
-    theme: { primary: "#6d28d9" },
+    theme: { primary: "#D6127E" },
     cardNumber: "4169 0000 0000 1234",
     bankName: "Kapital Bank",
     accountName: "Aygün Məmmədova",
@@ -59,4 +70,4 @@ if ((await db.portfolioItem.count({ where: { profileId: profile.id } })) === 0) 
   });
 }
 
-console.log("Demo profil: /demo · giriş: demo@biofaktura.az / demo12345");
+console.log("Demo profil: /demo · giriş: demo@karvan.az / demo12345");

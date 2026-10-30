@@ -5,8 +5,9 @@ import "./globals.css";
 import { NavigationTracker } from "@/components/BackButton";
 
 export const metadata: Metadata = {
-  title: "BioFaktura",
-  description: "Link-in-bio səhifə, sifariş və faktura bir yerdə",
+  title: { default: "Karvan — profil linkiniz satış edir", template: "%s | Karvan" },
+  description: "Instagram və TikTok-da xidmət satanlar üçün link-in-bio səhifə, sifariş formu, avtomatik PDF faktura və ödəniş izləmə.",
+  applicationName: "Karvan",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

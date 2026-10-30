@@ -14,7 +14,7 @@ export default async function ProfileBasics() {
         city: profile.city ?? "",
         avatarUrl: profile.avatarUrl ?? "",
         coverUrl: profile.coverUrl ?? "",
-        primaryColor: (profile.theme as { primary?: string } | null)?.primary ?? "#6d28d9",
+        primaryColor: (profile.theme as { primary?: string } | null)?.primary ?? "#D6127E",
       }}
     />
   );

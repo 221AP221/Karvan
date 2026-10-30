@@ -91,7 +91,7 @@ export async function signup(_: AuthState, form: FormData): Promise<AuthState> {
           displayName: brand ?? `${firstName} ${lastName}`,
           invoicePrefix: username.replace(/[^a-z]/g, "").slice(0, 3).toUpperCase() || "INV",
           accountName: `${firstName} ${lastName}`,
-          theme: { primary: "#6d28d9" },
+          theme: { primary: "#D6127E" },
         },
       },
     },
@@ -103,10 +103,12 @@ export async function signup(_: AuthState, form: FormData): Promise<AuthState> {
 export async function login(_: AuthState, form: FormData): Promise<AuthState> {
   const email = String(form.get("email") ?? "").trim().toLowerCase();
   const password = String(form.get("password") ?? "");
-  const user = await db.user.findUnique({ where: { email } });
+  const user = await db.user.findUnique({ where: { email }, include: { profile: { select: { id: true } } } });
   if (!user?.passwordHash || !(await verifyPassword(password, user.passwordHash))) {
     return fail("E-poçt və ya şifrə yanlışdır");
   }
+  // Profilsiz hesab panelə daxil ola bilməz: səssizcə girişə qaytarmaq əvəzinə səbəbi deyirik
+  if (!user.profile) return fail("Bu hesabın səhifəsi tapılmadı. Dəstəklə əlaqə saxlayın.");
   await startSession(user.id);
   redirect("/dashboard");
 }
@@ -139,7 +141,7 @@ export async function requestPasswordReset(_: AuthState, form: FormData): Promis
   const link = `${process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/reset-password?token=${token}`;
   const sent = await sendEmail({
     to: email,
-    subject: "BioFaktura: şifrənin bərpası",
+    subject: "Karvan: şifrənin bərpası",
     text: `Salam!\n\nŞifrənizi yeniləmək üçün linkə keçin (${RESET_MINUTES} dəqiqə etibarlıdır):\n${link}\n\nBu sorğunu siz göndərməmisinizsə, məktubu nəzərə almayın.`,
   });
   // E-poçt xidməti qoşulmayıbsa, yalnız lokal işləmədə linki ekranda göstəririk

@@ -18,7 +18,7 @@ function SellerCard({ seller }: { seller: Seller }) {
     <div className="w-60 shrink-0 rounded-3xl border border-white/10 bg-white/[0.07] p-4 shadow-2xl shadow-black/20 backdrop-blur-md">
       <div className="h-14 rounded-2xl" style={{ background: `linear-gradient(135deg, ${seller.color}, ${seller.color}55)` }} />
       <div className="-mt-7 px-1">
-        <span className="grid h-12 w-12 place-items-center rounded-full border-2 border-[#1a1033] text-sm font-bold text-white" style={{ background: seller.color }}>
+        <span className="grid h-12 w-12 place-items-center rounded-full border-2 border-[#1f2026] text-sm font-bold text-white" style={{ background: seller.color }}>
           {seller.initials}
         </span>
         <div className="mt-2 flex items-center gap-1 text-sm font-semibold text-white">
@@ -68,7 +68,7 @@ const TOASTS = [
 // Giriş/qeydiyyat səhifəsinin animasiyalı fonu: müxtəlif satıcıların səhifələri və xidmətləri axır.
 export function AuthShowcase() {
   return (
-    <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden bg-[#140b2e]">
+    <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden bg-[#17181c]">
       <div className="absolute -left-32 top-0 h-[28rem] w-[28rem] rounded-full bg-violet-600/40 blur-[120px]" />
       <div className="absolute -right-24 bottom-0 h-[26rem] w-[26rem] rounded-full bg-pink-600/30 blur-[120px]" />
 
@@ -79,9 +79,9 @@ export function AuthShowcase() {
         <Column sellers={[...SELLERS.slice(5), ...SELLERS.slice(0, 2)]} direction="down" duration={58} className="hidden -mt-56 xl:flex" />
       </div>
 
-      <div className="absolute inset-0 bg-gradient-to-t from-[#140b2e] via-[#140b2e]/30 to-[#140b2e]/50" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#17181c] via-[#17181c]/30 to-[#17181c]/50" />
       {/* Böyük ekranda sol mətnin oxunması üçün */}
-      <div className="absolute inset-y-0 left-0 hidden w-[55%] bg-gradient-to-r from-[#140b2e] via-[#140b2e]/90 to-transparent lg:block" />
+      <div className="absolute inset-y-0 left-0 hidden w-[55%] bg-gradient-to-r from-[#17181c] via-[#17181c]/90 to-transparent lg:block" />
 
       {TOASTS.map(({ icon: Icon, title, text, tone, iconTone, pos, delay }) => (
         <div key={title} className={`animate-auth-toast absolute ${pos} hidden items-center gap-3 rounded-2xl px-4 py-3 shadow-2xl shadow-black/30 sm:flex ${tone}`} style={{ animationDelay: delay }}>

@@ -1,4 +1,4 @@
-# BioFaktura
+# Karvan
 
 Instagram/TikTok-da xidmət satanlar üçün link-in-bio səhifə, sifariş formu, avtomatik PDF faktura və ödəniş izləmə. AI sərbəst mətndən faktura yaradır, xidmət təsvirləri, tema və ödəniş xatırlatmaları yazır.
 
@@ -36,7 +36,7 @@ npm run setup   # lokal baza + cədvəllər + demo məlumat
 npm run dev     # http://localhost:3000/login
 ```
 
-Demo giriş: `demo@biofaktura.az` / `demo12345` · demo səhifə: http://localhost:3000/demo
+Demo giriş: `demo@karvan.az` / `demo12345` · demo səhifə: http://localhost:3000/demo
 
 Öz PostgreSQL bazanızı istifadə etmək üçün `.env` faylında `DATABASE_URL` yazın (bax: `.env.example`). AI funksiyaları üçün `ANTHROPIC_API_KEY` lazımdır; onsuz da tətbiq işləyir, sadəcə AI düymələri xəbərdarlıq göstərir.
 

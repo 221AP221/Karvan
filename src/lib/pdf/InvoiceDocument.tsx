@@ -111,7 +111,7 @@ function InvoiceDocument({ data, qr }: { data: InvoicePdfData; qr: string }) {
 
         <View style={s.footer}>
           <Text>Bu sənəd ödəniş sorğusudur, rəsmi vergi sənədi deyil.</Text>
-          {data.showBranding && <Text>BioFaktura ilə yaradılıb · biofaktura.az</Text>}
+          {data.showBranding && <Text>Karvan ilə yaradılıb · karvan.az</Text>}
         </View>
       </Page>
     </Document>

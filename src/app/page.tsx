@@ -45,7 +45,7 @@ import ScrollReveal from "@/components/reactbits/ScrollReveal";
 import ShinyText from "@/components/reactbits/ShinyText";
 import SpotlightCard from "@/components/reactbits/SpotlightCard";
 
-const BRAND_GRADIENT = ["#7c3aed", "#db2777", "#f59e0b", "#7c3aed"];
+const BRAND_GRADIENT = ["#D6127E", "#EC1C8C", "#F59E0B", "#D6127E"];
 
 const NICHES = [
   [
@@ -74,7 +74,7 @@ const STATS = [
 ];
 
 const STEPS = [
-  { icon: <IconBadge icon={Palette} size="lg" />, title: "Səhifənizi qurun", text: "Ad, bio, sosial linklər və xidmətlərinizi əlavə edin. biofaktura.az/adiniz bir neçə dəqiqəyə hazırdır." },
+  { icon: <IconBadge icon={Palette} size="lg" />, title: "Səhifənizi qurun", text: "Ad, bio, sosial linklər və xidmətlərinizi əlavə edin. karvan.az/adiniz bir neçə dəqiqəyə hazırdır." },
   { icon: <IconBadge icon={Link2} size="lg" />, title: "Linki bio-ya qoyun", text: "Instagram və TikTok profilinizə əlavə edin. Müştəri xidməti seçib bir kliklə sifariş verir." },
   { icon: <IconBadge icon={Receipt} size="lg" />, title: "Faktura avtomatik gedir", text: "Sabit qiymətdə dərhal, “razılaşma ilə” xidmətdə siz təsdiqləyəndə. Rekvizitlər, QR kod, PDF — hamısı içində." },
   { icon: <IconBadge icon={TrendingUp} size="lg" />, title: "Ödənişi izləyin", text: "Müştəri “Ödədim” basır, siz bir kliklə təsdiqləyirsiniz. Kim ödəyib, kim gecikir — bir ekranda." },
@@ -98,7 +98,7 @@ const AI_FEATURES = [
 
 const FAQ = [
   { q: "Pulsuzdurmu?", a: "Bəli. Pulsuz planda səhifəniz, limitsiz sifariş və ayda 5 faktura var. Kart məlumatı tələb olunmur." },
-  { q: "Müştəri pulu kimə ödəyir?", a: "Birbaşa sizə. Fakturada sizin kart və ya IBAN rekvizitləriniz göstərilir, BioFaktura pulunuza toxunmur." },
+  { q: "Müştəri pulu kimə ödəyir?", a: "Birbaşa sizə. Fakturada sizin kart və ya IBAN rekvizitləriniz göstərilir, Karvan pulunuza toxunmur." },
   { q: "Faktura rəsmi vergi sənədidirmi?", a: "Xeyr, bu peşəkar ödəniş sorğusudur. VOEN və e-qaimə dəstəyi gələcək versiyalarda planlaşdırılır." },
   { q: "Texniki bilik lazımdırmı?", a: "Yox. Səhifəni bir neçə dəqiqəyə forma dolduraraq qurursunuz, hər şey Azərbaycan dilindədir." },
   { q: "Ödənişin gəldiyini necə bilirəm?", a: "Müştəri “Ödədim” basanda paneldə görünür. Hesabınızı yoxlayıb bir kliklə təsdiqləyirsiniz." },
@@ -143,7 +143,7 @@ export default function Home() {
                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-violet-500 opacity-75" />
                     <span className="relative inline-flex h-2 w-2 rounded-full bg-violet-600" />
                   </span>
-                  <ShinyText text="Azərbaycanda xidmət satanlar üçün" color="#6d28d9" shineColor="#f0abfc" speed={3} />
+                  <ShinyText text="Azərbaycanda xidmət satanlar üçün" color="#D6127E" shineColor="#FFC3E0" speed={3} />
                 </span>
               </Appear>
 
@@ -245,7 +245,7 @@ export default function Home() {
               </ul>
             </Appear>
             <Appear delay={0.08} className="rounded-3xl border border-emerald-100 bg-gradient-to-b from-emerald-50/80 to-white p-8">
-              <p className="text-sm font-semibold uppercase tracking-wider text-emerald-600">BioFaktura ilə</p>
+              <p className="text-sm font-semibold uppercase tracking-wider text-emerald-600">Karvan ilə</p>
               <ul className="mt-6 space-y-4 text-gray-700">
                 {[
                   "Qiymətlər və xidmətlər səhifənizdə aydın görünür",
@@ -284,7 +284,7 @@ export default function Home() {
           />
           <Appear stagger={0.08} className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {FEATURES.map((f) => (
-              <SpotlightCard key={f.title} theme="light" spotlightColor="rgba(124, 58, 237, 0.18)" className="h-full rounded-3xl p-7">
+              <SpotlightCard key={f.title} theme="light" spotlightColor="rgba(236, 28, 140, 0.14)" className="h-full rounded-3xl p-7">
                 <IconBadge icon={f.icon} tone="solid" />
                 <h3 className="mt-5 text-lg font-semibold">{f.title}</h3>
                 <p className="mt-2 text-gray-600">{f.text}</p>
@@ -311,7 +311,7 @@ export default function Home() {
             </Appear>
             <Appear stagger={0.1} className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {AI_FEATURES.map((f) => (
-                <SpotlightCard key={f.title} theme="dark" spotlightColor="rgba(167, 139, 250, 0.25)" className="h-full rounded-2xl p-6">
+                <SpotlightCard key={f.title} theme="dark" spotlightColor="rgba(255, 148, 200, 0.22)" className="h-full rounded-2xl p-6">
                   <IconBadge icon={f.icon} size="sm" tone="dark" />
                   <h3 className="mt-4 font-semibold">{f.title}</h3>
                   <p className="mt-2 text-sm text-gray-400">{f.text}</p>
@@ -359,7 +359,7 @@ export default function Home() {
                 </p>
                 <p className="mt-2 text-gray-600">Aktiv satanlar üçün</p>
                 <ul className="mt-8 flex-1 space-y-3 text-gray-700">
-                  {["Pulsuz plandakı hər şey", "Limitsiz faktura", "Öz loqonuz, BioFaktura yazısı yoxdur", "Onlayn kartla ödəniş", "SMS və avtomatik xatırlatmalar", "Genişləndirilmiş AI"].map((t) => (
+                  {["Pulsuz plandakı hər şey", "Limitsiz faktura", "Öz loqonuz, Karvan yazısı yoxdur", "Onlayn kartla ödəniş", "SMS və avtomatik xatırlatmalar", "Genişləndirilmiş AI"].map((t) => (
                     <li key={t} className="flex gap-3">
                       <BadgeCheck size={18} strokeWidth={2} className="mt-0.5 shrink-0 text-pink-600" aria-hidden />
                       {t}
@@ -429,7 +429,7 @@ export default function Home() {
               <Link href="/login" className="hover:text-gray-900">Daxil ol</Link>
               <Link href="/signup" className="hover:text-gray-900">Qeydiyyat</Link>
             </nav>
-            <p>© 2026 BioFaktura</p>
+            <p>© 2026 Karvan</p>
           </div>
         </footer>
       </div>

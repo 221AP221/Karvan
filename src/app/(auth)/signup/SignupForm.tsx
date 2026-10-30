@@ -165,7 +165,7 @@ export function SignupForm() {
             <span className="mb-1.5 block text-sm font-medium text-gray-700">Səhifə ünvanı</span>
             <span className="flex h-12 items-center rounded-xl border border-gray-200 bg-white transition focus-within:border-violet-500 focus-within:ring-4 focus-within:ring-violet-500/10">
               <span className="flex items-center gap-1.5 border-r border-gray-200 pl-3.5 pr-2 text-sm text-gray-400">
-                <AtSign size={15} aria-hidden /> biofaktura.az/
+                <AtSign size={15} aria-hidden /> karvan.az/
               </span>
               <input
                 name="username"

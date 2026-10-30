@@ -2,7 +2,7 @@ import { FileText, Link2, ShieldCheck, Wallet } from "lucide-react";
 import Link from "next/link";
 import { AuthShowcase } from "@/components/auth/AuthShowcase";
 import { BackButton } from "@/components/BackButton";
-import { Logo } from "@/components/landing/Header";
+import { Logo } from "@/components/Logo";
 
 const POINTS = [
   { icon: Link2, text: "Bir link: sosial hesablar, xidmətlər, gördüyünüz işlər" },
@@ -18,8 +18,8 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       <div className="relative grid min-h-screen lg:grid-cols-[1.05fr_1fr]">
         {/* Sol: mesaj (yalnız böyük ekranda) */}
         <div className="hidden flex-col justify-between p-12 text-white lg:flex">
-          <Link href="/" className="w-fit [&_span]:text-white [&_.text-violet-600]:text-violet-300" aria-label="BioFaktura ana səhifə">
-            <Logo />
+          <Link href="/" className="w-fit" aria-label="Karvan ana səhifə">
+            <Logo tone="dark" />
           </Link>
           <div className="max-w-md">
             <h2 className="text-4xl font-bold leading-tight">
@@ -48,7 +48,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl shadow-black/30 sm:p-8 lg:rounded-none lg:p-0 lg:shadow-none">
             <div className="mb-8 flex items-center justify-between">
               <BackButton fallback="/" className="-ml-2" />
-              <Link href="/" className="lg:hidden" aria-label="BioFaktura ana səhifə">
+              <Link href="/" className="lg:hidden" aria-label="Karvan ana səhifə">
                 <Logo />
               </Link>
               <Link href="/" className="hidden text-sm font-medium text-gray-500 hover:text-gray-900 lg:inline">

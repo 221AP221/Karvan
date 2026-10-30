@@ -2,7 +2,7 @@ import Link from "next/link";
 import { requireProfile } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { BackButton } from "@/components/BackButton";
-import { Logo } from "@/components/landing/Header";
+import { Logo } from "@/components/Logo";
 import { logout } from "../(auth)/actions";
 
 const NAV = [

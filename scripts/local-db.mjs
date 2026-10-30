@@ -4,6 +4,7 @@ import "dotenv/config";
 import { execSync } from "node:child_process";
 
 if (!process.env.DATABASE_URL) {
+  // "biofaktura" lokal bazanın daxili adıdır: dəyişsə, mövcud məlumatlar olan baza tapılmaz
   execSync("npx prisma dev -d -n biofaktura", { stdio: "ignore" });
 }
 execSync("npx prisma migrate deploy", { stdio: ["ignore", "ignore", "inherit"] });

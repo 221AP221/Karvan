@@ -13,7 +13,7 @@ type Values = Record<
   string
 >;
 
-const SWATCHES = ["#6d28d9", "#db2777", "#e11d48", "#ea580c", "#059669", "#0284c7", "#111827"];
+const SWATCHES = ["#D6127E", "#7c3aed", "#e11d48", "#ea580c", "#059669", "#0284c7", "#111827"];
 
 export function BasicsForm({ profile }: { profile: Values }) {
   const [avatar, setAvatar] = useState(profile.avatarUrl);
@@ -52,7 +52,7 @@ export function BasicsForm({ profile }: { profile: Values }) {
       <Card title="Əsas məlumat">
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Ad və ya brend" name="displayName" defaultValue={profile.displayName} required />
-          <Field label="İstifadəçi adı" name="username" defaultValue={profile.username} required hint="Səhifə ünvanınız: biofaktura.az/istifadeci_adi" />
+          <Field label="İstifadəçi adı" name="username" defaultValue={profile.username} required hint="Səhifə ünvanınız: karvan.az/istifadeci_adi" />
           <Field label="Peşə" name="profession" defaultValue={profile.profession} placeholder="Makiyaj ustası, SMM mütəxəssisi..." />
           <Field label="Şəhər" name="city" defaultValue={profile.city} placeholder="Bakı" />
           <label className="block sm:col-span-2">

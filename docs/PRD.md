@@ -1,6 +1,6 @@
 # PRD: AI Link-in-Bio və Dinamik Faktura Generatoru
 
-> İşçi adı: **BioFaktura** (son ad hələ seçilməyib, bax: [Ad variantları](#13-ad-variantları))
+> Məhsulun adı: **Karvan** · domen: karvan.az
 > Versiya: 0.1 (MVP) · Bazar: Azərbaycan · Platforma: mobil-uyğun veb tətbiq (PWA)
 
 ---
@@ -15,7 +15,7 @@ Instagram və TikTok-da xidmət satan şəxslər (konsultantlar, təlimçilər, 
 
 ## 2. Həll
 
-Satıcı öz micro-page-ni yaradır: `biofaktura.az/<istifadəçi_adı>`. Səhifədə:
+Satıcı öz micro-page-ni yaradır: `karvan.az/<istifadəçi_adı>`. Səhifədə:
 
 - profil (avatar, bio), sosial linklər;
 - xidmətlər siyahısı və hər birinin yanında **"Sifariş et"** düyməsi;
@@ -52,7 +52,7 @@ MVP üçün faktura **qeyri-rəsmi ödəniş sorğusu** sayılır. VOEN və e-qa
 - F1. Satıcı unikal `username` seçir (`a-z`, `0-9`, `_`, `.`; 3–30 simvol, qadağan olunmuş sözlər siyahısı).
 - F2. Profil: ad, avatar, bio, şəhər, sosial linklər (Instagram, TikTok, WhatsApp, Telegram, YouTube, sərbəst link).
 - F3. Xidmətlər: ad, təsvir, qiymət növü (**sabit** və ya **razılaşma ilə**), məbləğ (AZN), müddət/həcm, aktiv/deaktiv.
-- F4. Tema: rəng palitrası, şrift, düymə forması. Pulsuz planda altda "BioFaktura ilə yaradılıb" yazısı görünür.
+- F4. Tema: rəng palitrası, şrift, düymə forması. Pulsuz planda altda "Karvan ilə yaradılıb" yazısı görünür.
 - F5. Səhifə ilk açılışda 2 saniyədən tez yüklənməlidir (mobil 4G); SEO və OG şəkli olmalıdır.
 
 ### 5.2 Sifariş axını (xidmətdən asılı)
@@ -186,7 +186,8 @@ Tam sxem: [`prisma/schema.prisma`](../prisma/schema.prisma).
 
 | Ad | İdeya |
 |---|---|
-| **BioFaktura** | Birbaşa nə etdiyini deyir |
+| **Karvan** ✅ seçildi | Qısa, yerli, yaddaqalan: xidmətlər karvanı kimi satıcıdan müştəriyə |
+| BioFaktura | İlkin işçi ad |
 | **Qaimə.link** | Yerli söz + link konsepti |
 | **Sifarişim** | Müştəri baxımından sadə |
 | **Hesabla** | "Hesab yaz" ifadəsindən, feil kimi yaddaqalan |

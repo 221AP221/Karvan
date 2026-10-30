@@ -19,7 +19,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ publicId: 
     currency: invoice.currency,
     note: invoice.note,
     url: invoiceUrl(invoice.publicId),
-    primaryColor: (profile.theme as { primary?: string } | null)?.primary ?? "#6d28d9",
+    primaryColor: (profile.theme as { primary?: string } | null)?.primary ?? "#D6127E",
     showBranding: PLAN_LIMITS[plan].branding,
   });
 

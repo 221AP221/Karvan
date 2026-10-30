@@ -2,12 +2,28 @@
 
 /* Şriftlər layihənin içindədir (@fontsource-variable), Azərbaycan hərflərinin hamısını dəstəkləyir. */
 @theme {
+  /* Karvan rəngləri: köhnə violet/fuchsia sinifləri avtomatik brend palitrasını alır */
+  --color-violet-50: #fff0f7;
+  --color-violet-100: #ffe1ef;
+  --color-violet-200: #ffc3e0;
+  --color-violet-300: #ff94c8;
+  --color-violet-400: #f95baa;
+  --color-violet-500: #ec1c8c;
+  --color-violet-600: #d6127e;
+  --color-violet-700: #b30d69;
+  --color-violet-800: #8f0f56;
+  --color-violet-900: #77114a;
+  --color-violet-950: #460326;
+  --color-fuchsia-300: #fda4c4;
+  --color-fuchsia-500: #f0306f;
+  --color-fuchsia-600: #e11d63;
+  --color-charcoal: #3d3f46;
   --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Plus Jakarta Sans Variable", "Inter Variable", ui-sans-serif, system-ui, sans-serif;
 }
 
 :root {
-  --brand: #6d28d9;
+  --brand: #d6127e;
 }
 
 body {
