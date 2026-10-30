@@ -13,7 +13,7 @@ export default async function Dashboard() {
   const plan = profile.user.subscription?.plan ?? "FREE";
   const where = { profileId: profile.id };
 
-  const [recent, pendingOrders, usedThisMonth, paidThisMonth, outstanding, serviceCount, linkCount] = await Promise.all([
+  const [recent, pendingOrders, usedThisMonth, paidThisMonth, outstanding, serviceCount, linkCount, workCount] = await Promise.all([
     db.invoice.findMany({ where, orderBy: { issuedAt: "desc" }, take: 5 }),
     db.order.count({ where: { ...where, status: "PENDING_APPROVAL" } }),
     db.invoice.count({ where: { ...where, issuedAt: { gte: startOfMonth() } } }),
@@ -21,14 +21,17 @@ export default async function Dashboard() {
     db.invoice.aggregate({ where: { ...where, status: { in: OPEN_STATUSES } }, _sum: { totalQepik: true } }),
     db.service.count({ where }),
     db.socialLink.count({ where }),
+    db.portfolioItem.count({ where }),
   ]);
   const limit = PLAN_LIMITS[plan].invoicesPerMonth;
   const pageUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/${profile.username}`;
 
   const steps = [
-    { done: Boolean(profile.cardNumber || profile.iban), label: "Ödəniş rekvizitlərini yazın", href: "/dashboard/profile" },
-    { done: linkCount > 0, label: "Sosial linklərinizi əlavə edin", href: "/dashboard/profile" },
+    { done: Boolean(profile.avatarUrl), label: "Şəkil və ya loqo yükləyin", href: "/dashboard/profile" },
+    { done: linkCount > 0, label: "Sosial hesablarınızı əlavə edin", href: "/dashboard/profile/social" },
+    { done: Boolean(profile.about) || workCount > 0, label: "Haqqınızda yazın və ya gördüyünüz işləri əlavə edin", href: "/dashboard/profile/portfolio" },
     { done: serviceCount > 0, label: "İlk xidmətinizi yaradın", href: "/dashboard/services/new" },
+    { done: Boolean(profile.cardNumber || profile.iban), label: "Ödəniş rekvizitlərini yazın", href: "/dashboard/settings" },
   ];
 
   return (

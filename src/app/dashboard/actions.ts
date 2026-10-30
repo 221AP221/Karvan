@@ -7,82 +7,10 @@ import { requireProfile } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { InvoiceLimitError, createInvoice } from "@/lib/invoices";
 import { aznToQepik } from "@/lib/money";
-import { RESERVED_USERNAMES, USERNAME_RE } from "@/lib/username";
 
-export type FormState = { error?: string; ok?: boolean } | undefined;
+import { type FormState, firstError, optional } from "@/lib/forms";
 
-const optional = z
-  .string()
-  .trim()
-  .max(200)
-  .transform((v) => v || null);
-
-function firstError(error: z.ZodError) {
-  return error.issues[0]?.message ?? "Məlumatlar düzgün deyil";
-}
-
-// Profil
-
-const ProfileInput = z.object({
-  displayName: z.string().trim().min(2, "Adınızı yazın").max(80),
-  username: z.string().trim().toLowerCase().regex(USERNAME_RE, "İstifadəçi adı 3-30 simvol: a-z, 0-9, _ və ."),
-  bio: z.string().trim().max(300).transform((v) => v || null),
-  city: optional,
-  avatarUrl: z.union([z.literal(""), z.url("Şəkil linki düzgün deyil")]).transform((v) => v || null),
-  primaryColor: z.string().regex(/^#[0-9a-fA-F]{6}$/),
-  invoicePrefix: z.string().trim().toUpperCase().regex(/^[A-Z0-9]{2,6}$/, "Prefiks 2-6 hərf/rəqəm olmalıdır"),
-  accountName: optional,
-  bankName: optional,
-  cardNumber: optional,
-  iban: z
-    .string()
-    .trim()
-    .toUpperCase()
-    .transform((v) => v.replace(/\s/g, "") || null)
-    .refine((v) => v === null || /^AZ\d{2}[A-Z0-9]{24}$/.test(v), "IBAN AZ ilə başlamalı və 28 simvol olmalıdır"),
-});
-
-export async function updateProfile(_: FormState, form: FormData): Promise<FormState> {
-  const profile = await requireProfile();
-  const parsed = ProfileInput.safeParse(Object.fromEntries(form));
-  if (!parsed.success) return { error: firstError(parsed.error) };
-  const { primaryColor, ...data } = parsed.data;
-
-  if (data.username !== profile.username) {
-    if (RESERVED_USERNAMES.has(data.username)) return { error: "Bu ad istifadə edilə bilməz" };
-    if (await db.profile.findUnique({ where: { username: data.username } })) {
-      return { error: "Bu istifadəçi adı tutulub" };
-    }
-  }
-
-  const theme = { ...((profile.theme as object | null) ?? {}), primary: primaryColor };
-  await db.profile.update({ where: { id: profile.id }, data: { ...data, theme } });
-  revalidatePath("/dashboard", "layout");
-  revalidatePath(`/${data.username}`);
-  return { ok: true };
-}
-
-const LinkInput = z.object({
-  platform: z.enum(["INSTAGRAM", "TIKTOK", "WHATSAPP", "TELEGRAM", "YOUTUBE", "CUSTOM"]),
-  label: optional,
-  url: z.url("Link düzgün deyil"),
-});
-
-export async function addSocialLink(_: FormState, form: FormData): Promise<FormState> {
-  const profile = await requireProfile();
-  const parsed = LinkInput.safeParse(Object.fromEntries(form));
-  if (!parsed.success) return { error: firstError(parsed.error) };
-  const count = await db.socialLink.count({ where: { profileId: profile.id } });
-  await db.socialLink.create({ data: { ...parsed.data, profileId: profile.id, position: count } });
-  revalidatePath("/dashboard/profile");
-  return { ok: true };
-}
-
-export async function deleteSocialLink(id: string) {
-  const profile = await requireProfile();
-  await db.socialLink.deleteMany({ where: { id, profileId: profile.id } });
-  revalidatePath("/dashboard/profile");
-}
+export type { FormState };
 
 // Xidmətlər
 

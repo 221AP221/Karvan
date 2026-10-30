@@ -56,7 +56,7 @@ export const getCurrentProfile = cache(async () => {
   });
   if (!session || session.expiresAt < new Date() || !session.user.profile) return null;
   const { profile, ...user } = session.user;
-  return { ...profile, user };
+  return { ...profile, user, sessionId: session.id };
 });
 
 export async function requireProfile() {

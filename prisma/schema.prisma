@@ -57,7 +57,16 @@ enum SocialPlatform {
   WHATSAPP
   TELEGRAM
   YOUTUBE
-  CUSTOM
+  FACEBOOK
+  LINKEDIN
+  BEHANCE
+  DRIBBBLE
+  X
+  THREADS
+  PINTEREST
+  EMAIL
+  WEBSITE
+  CUSTOM // ikon yox, düymə kimi göstərilən sərbəst link
 }
 
 model User {
@@ -93,9 +102,12 @@ model Profile {
   user          User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   username      String  @unique
   displayName   String
+  profession    String? // "Makiyaj ustası", "SMM mütəxəssisi"
   bio           String?
+  about         String? // "Haqqımda" bölməsinin uzun mətni
   city          String?
-  avatarUrl     String?
+  avatarUrl     String? // şəkil və ya loqo
+  coverUrl      String?
   invoicePrefix String  @default("INV")
   invoiceSeq    Int     @default(0)
   // Tema: { primary, background, text, font, buttonStyle }
@@ -108,6 +120,8 @@ model Profile {
   accountName String?
 
   socialLinks SocialLink[]
+  portfolio   PortfolioItem[]
+  media       Media[]
   services    Service[]
   orders      Order[]
   invoices    Invoice[]
@@ -121,6 +135,31 @@ model SocialLink {
   label     String?
   url       String
   position  Int            @default(0)
+}
+
+// "Gördüyüm işlər"
+model PortfolioItem {
+  id          String  @id @default(cuid())
+  profileId   String
+  profile     Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  imageUrl    String?
+  linkUrl     String?
+  position    Int     @default(0)
+}
+
+// Yüklənmiş şəkillər bazada saxlanılır: xarici fayl xidməti lazım deyil
+model Media {
+  id        String   @id @default(cuid())
+  profileId String
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  mime      String
+  size      Int
+  data      Bytes
+  createdAt DateTime @default(now())
+
+  @@index([profileId])
 }
 
 model Service {

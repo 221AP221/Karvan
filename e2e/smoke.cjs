@@ -23,32 +23,31 @@ const BASE = process.env.BASE_URL ?? "http://localhost:3000";
   await seller.waitForURL("**/dashboard/profile");
   step("qeydiyyat → " + seller.url());
 
-  // 2. Profil
+  // 2. Profil, sosial hesablar və rekvizitlər
   await seller.fill('textarea[name=bio]', "Peşəkar makiyaj ustası · Bakı · Toy və gündəlik makiyaj");
   await seller.fill('[name=city]', "Bakı");
-  await seller.fill('input[type=color]', "#db2777");
-  await seller.fill('[name=accountName]', "Leyla Həsənova");
-  await seller.fill('[name=bankName]', "Kapital Bank");
-  await seller.fill('[name=cardNumber]', "4169 7388 1234 5678");
-  await seller.fill('[name=iban]', "AZ12 XXXX"); // səhv IBAN
-  await seller.click("button:has-text('Yadda saxla')");
-  await seller.waitForSelector("text=IBAN AZ ilə başlamalı");
-  step("səhv IBAN xətası göründü; bio saxlanıb? " + (await seller.inputValue("textarea[name=bio]")).slice(0, 20));
-  await seller.fill('[name=iban]', "");
+  await seller.click("button[aria-label='Rəng #db2777']");
   await seller.click("button:has-text('Yadda saxla')");
   await seller.waitForSelector("text=Yadda saxlanıldı");
   step("profil saxlanıldı");
-  await seller.selectOption('select[name=platform]', "INSTAGRAM");
-  await seller.fill('input[name=label]', "Instagram");
-  await seller.fill('input[name=url]', "https://instagram.com/leyla.makeup");
-  await seller.click("button:has-text('Link əlavə et')");
-  await seller.waitForSelector("text=https://instagram.com/leyla.makeup");
-  await seller.selectOption('select[name=platform]', "WHATSAPP");
-  await seller.fill('input[name=label]', "WhatsApp ilə yazın");
-  await seller.fill('input[name=url]', "https://wa.me/994551112233");
-  await seller.click("button:has-text('Link əlavə et')");
-  await seller.waitForSelector("text=https://wa.me/994551112233");
-  step("2 link əlavə olundu");
+  await seller.goto(BASE + "/dashboard/profile/social");
+  await seller.fill("[name=INSTAGRAM]", "@leyla.makeup");
+  await seller.fill("[name=WHATSAPP]", "055 111 22 33");
+  await seller.click("button:has-text('Yadda saxla')");
+  await seller.waitForSelector("text=Sosial hesablar yadda saxlanıldı");
+  step("sosial hesablar saxlanıldı");
+  await seller.goto(BASE + "/dashboard/settings");
+  await seller.fill('[name=iban]', "AZ12 XXXX"); // səhv IBAN
+  await seller.click("form:has([name=iban]) button:has-text('Yadda saxla')");
+  await seller.waitForSelector("text=IBAN AZ ilə başlamalı");
+  step("səhv IBAN xətası göründü");
+  await seller.fill('[name=iban]', "");
+  await seller.fill('[name=accountName]', "Leyla Həsənova");
+  await seller.fill('[name=bankName]', "Kapital Bank");
+  await seller.fill('[name=cardNumber]', "4169 7388 1234 5678");
+  await seller.click("form:has([name=iban]) button:has-text('Yadda saxla')");
+  await seller.waitForSelector("form:has([name=iban]) >> text=Yadda saxlanıldı");
+  step("rekvizitlər saxlanıldı");
   await shot(seller, "01-profile");
 
   // 3. Xidmətlər
