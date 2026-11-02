@@ -29,8 +29,10 @@ export default async function Billing() {
   const profile = await requireProfile();
   const sub = profile.user.subscription;
   const plan = sub?.plan ?? "FREE";
+  // Gateway-də yarımçıq qalan kart ödənişləri 1 saatdan sonra bağlanır
+  await db.subscriptionPayment.updateMany({ where: { userId: profile.userId, method: "CARD", status: "PENDING", createdAt: { lt: new Date(Date.now() - 3_600_000) } }, data: { status: "FAILED", note: "Vaxt bitdi" } });
   const payments = await db.subscriptionPayment.findMany({ where: { userId: profile.userId }, orderBy: { createdAt: "desc" }, take: 20 });
-  const pending = payments.find((p) => p.status === "PENDING" || p.status === "PAID");
+  const pending = payments.find((p) => p.method === "BANK_TRANSFER" && (p.status === "PENDING" || p.status === "PAID"));
 
   return (
     <div className="flex flex-col gap-6">
@@ -93,7 +95,7 @@ export default async function Billing() {
                     <td className="px-3 py-3">
                       {PLAN_NAMES[p.plan]} · {p.months === 12 ? "illik" : "aylıq"}
                     </td>
-                    <td className="px-3 py-3">{p.method === "CARD" ? `Kart •••• ${p.cardLast4}` : "Bank köçürməsi"}</td>
+                    <td className="px-3 py-3">{p.method === "CARD" ? "Bank kartı" : "Bank köçürməsi"}</td>
                     <td className="px-3 py-3 text-right font-medium">{formatMoney(p.amountQepik, "AZN")}</td>
                     <td className="px-3 py-3">
                       <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS[p.status].cls}`}>{STATUS[p.status].label}</span>

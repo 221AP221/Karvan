@@ -3,7 +3,7 @@
 import { Building2, Check, Copy, CreditCard, Lock, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { startTransition, useActionState, useState } from "react";
-import { payByCard, payByTransfer } from "../actions";
+import { payByTransfer, startCardPayment } from "../actions";
 
 type Props = {
   plan: string;
@@ -11,7 +11,8 @@ type Props = {
   prices: { 1: string; 12: string; monthlyOfYear: string };
   reference: string;
   bank: { recipient: string; bank: string; iban: string; voen: string; sample: boolean };
-  testMode: boolean;
+  cardAvailable: boolean;
+  sandbox: boolean;
 };
 
 const input = "h-11 w-full rounded-lg border border-gray-300 bg-white px-3 text-sm outline-none focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/20";
@@ -31,13 +32,11 @@ function CopyRow({ label, value }: { label: string; value: string }) {
   );
 }
 
-export function CheckoutForm({ plan, planName, prices, reference, bank, testMode }: Props) {
+export function CheckoutForm({ plan, planName, prices, reference, bank, cardAvailable, sandbox }: Props) {
   const [months, setMonths] = useState<1 | 12>(1);
-  const [method, setMethod] = useState<"card" | "transfer">("card");
-  const [cardState, cardAction, cardPending] = useActionState(payByCard, undefined);
+  const [method, setMethod] = useState<"card" | "transfer">(cardAvailable ? "card" : "transfer");
+  const [cardState, cardAction, cardPending] = useActionState(startCardPayment, undefined);
   const [bankState, bankAction, bankPending] = useActionState(payByTransfer, undefined);
-  const [number, setNumber] = useState("");
-  const [expiry, setExpiry] = useState("");
   const total = prices[months];
 
   const submit = (action: (f: FormData) => void) => (e: React.FormEvent<HTMLFormElement>) => {
@@ -81,7 +80,7 @@ export function CheckoutForm({ plan, planName, prices, reference, bank, testMode
                 { key: "card" as const, label: "Bank kartı", icon: CreditCard },
                 { key: "transfer" as const, label: "Bank köçürməsi", icon: Building2 },
               ].map(({ key, label, icon: Icon }) => (
-                <button key={key} type="button" onClick={() => setMethod(key)} className={`flex items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-medium transition ${method === key ? "bg-white shadow-sm" : "text-gray-500 hover:text-gray-800"}`}>
+                <button key={key} type="button" disabled={key === "card" && !cardAvailable} title={key === "card" && !cardAvailable ? "Kart ödənişi tezliklə" : undefined} onClick={() => setMethod(key)} className={`flex items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-40 ${method === key ? "bg-white shadow-sm" : "text-gray-500 hover:text-gray-800"}`}>
                   <Icon size={16} aria-hidden /> {label}
                 </button>
               ))}
@@ -89,36 +88,17 @@ export function CheckoutForm({ plan, planName, prices, reference, bank, testMode
 
             {method === "card" ? (
               <form onSubmit={submit(cardAction)} className="flex flex-col gap-3">
-                {testMode && (
-                  <p className="rounded-lg border border-sky-200 bg-sky-50 p-3 text-xs text-sky-900">
-                    <strong>Test rejimi:</strong> ödəniş sistemi hələ qoşulmayıb, kartdan pul çıxılmır. Yoxlamaq üçün <span className="font-mono">4242 4242 4242 4242</span>, istənilən gələcək tarix və CVC yazın. Uğursuz ödəniş üçün: <span className="font-mono">4000 0000 0000 0002</span>.
-                  </p>
-                )}
-                <label className="block">
-                  <span className="mb-1 block text-xs font-medium text-gray-600">Kart nömrəsi</span>
-                  <input name="number" required inputMode="numeric" autoComplete="cc-number" placeholder="0000 0000 0000 0000" value={number} onChange={(e) => setNumber(e.target.value.replace(/\D/g, "").slice(0, 19).replace(/(\d{4})(?=\d)/g, "$1 "))} className={`${input} font-mono tracking-wider`} />
-                </label>
-                <div className="grid grid-cols-2 gap-3">
-                  <label className="block">
-                    <span className="mb-1 block text-xs font-medium text-gray-600">Bitmə tarixi</span>
-                    <input name="expiry" required inputMode="numeric" autoComplete="cc-exp" placeholder="AA/İİ" value={expiry} onChange={(e) => { const v = e.target.value.replace(/\D/g, "").slice(0, 4); setExpiry(v.length > 2 ? `${v.slice(0, 2)}/${v.slice(2)}` : v); }} className={`${input} font-mono`} />
-                  </label>
-                  <label className="block">
-                    <span className="mb-1 block text-xs font-medium text-gray-600">CVC</span>
-                    <input name="cvc" required inputMode="numeric" autoComplete="cc-csc" maxLength={4} placeholder="123" type="password" className={`${input} font-mono`} />
-                  </label>
-                </div>
-                <label className="block">
-                  <span className="mb-1 block text-xs font-medium text-gray-600">Kart sahibi</span>
-                  <input name="name" required autoComplete="cc-name" placeholder="AD SOYAD" className={`${input} uppercase`} />
-                </label>
-                {cardState?.error && <p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{cardState.error}</p>}
-                <button disabled={cardPending} className="mt-1 flex h-12 items-center justify-center gap-2 rounded-full bg-[var(--brand)] font-semibold text-white hover:opacity-90 disabled:opacity-60">
-                  <Lock size={16} aria-hidden /> {cardPending ? "Ödəniş emal olunur..." : `${total} ödə`}
-                </button>
-                <p className="flex items-center justify-center gap-1.5 text-xs text-gray-500">
-                  <ShieldCheck size={14} aria-hidden /> Kart məlumatları Karvan-da saxlanılmır
+                <p className="flex items-start gap-2 rounded-xl bg-gray-50 p-3 text-sm text-gray-700">
+                  <ShieldCheck size={18} className="mt-0.5 shrink-0 text-emerald-600" aria-hidden />
+                  <span>
+                    <strong>{total}</strong> ödəmək üçün bankın təhlükəsiz ödəniş səhifəsinə yönləndiriləcəksiniz. Kart məlumatlarınız Karvan-a daxil edilmir və saxlanılmır. Ödəniş bitəndə bura qayıdacaqsınız.
+                  </span>
                 </p>
+                {sandbox && <p className="rounded-lg border border-sky-200 bg-sky-50 p-3 text-xs text-sky-900">Test rejimi: real ödəniş sistemi qoşulmayıb, simulyasiya səhifəsi açılacaq (pul çıxılmır).</p>}
+                {cardState?.error && <p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{cardState.error}</p>}
+                <button disabled={cardPending} className="flex h-12 items-center justify-center gap-2 rounded-full bg-[var(--brand)] font-semibold text-white hover:opacity-90 disabled:opacity-60">
+                  <Lock size={16} aria-hidden /> {cardPending ? "Yönləndirilir..." : `${total} · Kartla ödə`}
+                </button>
               </form>
             ) : (
               <form onSubmit={submit(bankAction)} className="flex flex-col gap-3">

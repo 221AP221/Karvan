@@ -285,7 +285,7 @@ export async function impersonate(userId: string) {
 export async function confirmBillingPayment(paymentId: string) {
   const admin = await requireAdmin();
   const p = await db.subscriptionPayment.findUnique({ where: { id: paymentId } });
-  if (!p || (p.status !== "PENDING" && p.status !== "PAID")) return;
+  if (!p || p.method !== "BANK_TRANSFER" || (p.status !== "PENDING" && p.status !== "PAID")) return;
   await db.subscriptionPayment.update({ where: { id: paymentId }, data: { status: "PAID", paidAt: p.paidAt ?? new Date() } });
   await activatePayment(paymentId);
   await logAdmin(admin, "billing_confirm", "user", p.userId, `${p.reference} · ${PLAN_NAMES[p.plan]} · ${p.months} ay`);
@@ -296,7 +296,7 @@ export async function confirmBillingPayment(paymentId: string) {
 export async function rejectBillingPayment(paymentId: string) {
   const admin = await requireAdmin();
   const p = await db.subscriptionPayment.findUnique({ where: { id: paymentId } });
-  if (!p || p.status !== "PENDING") return;
+  if (!p || p.method !== "BANK_TRANSFER" || p.status !== "PENDING") return;
   await db.subscriptionPayment.update({ where: { id: paymentId }, data: { status: "REJECTED" } });
   await logAdmin(admin, "billing_reject", "user", p.userId, p.reference);
   revalidatePath("/admin/payments");

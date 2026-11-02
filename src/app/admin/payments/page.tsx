@@ -15,7 +15,7 @@ export const metadata: Metadata = { title: "Ödənişlər" };
 
 const PAGE = 40;
 const STATUS: Record<BillingStatus, { label: string; cls: string }> = {
-  PENDING: { label: "Təsdiq gözləyir", cls: "bg-amber-100 text-amber-800" },
+  PENDING: { label: "Gözləyir", cls: "bg-amber-100 text-amber-800" },
   PAID: { label: "Ödənilib", cls: "bg-sky-100 text-sky-800" },
   ACTIVATED: { label: "Aktivləşdi", cls: "bg-emerald-100 text-emerald-800" },
   REJECTED: { label: "Rədd edildi", cls: "bg-red-100 text-red-800" },
@@ -36,7 +36,7 @@ export default async function AdminPayments({ searchParams }: { searchParams: Se
   const [total, rows, pending, revenue30, revenueAll, activeSubs] = await Promise.all([
     db.subscriptionPayment.count({ where }),
     db.subscriptionPayment.findMany({ where, orderBy: { createdAt: "desc" }, skip: (page - 1) * PAGE, take: PAGE, include: { user: { select: { id: true, email: true, profile: { select: { displayName: true } } } } } }),
-    db.subscriptionPayment.count({ where: { status: "PENDING" } }),
+    db.subscriptionPayment.count({ where: { status: "PENDING", method: "BANK_TRANSFER" } }),
     db.subscriptionPayment.aggregate({ where: { status: "ACTIVATED", activatedAt: { gte: d30 } }, _sum: { amountQepik: true } }),
     db.subscriptionPayment.aggregate({ where: { status: "ACTIVATED" }, _sum: { amountQepik: true } }),
     db.subscription.count({ where: { plan: { not: "FREE" }, currentPeriodEnd: { gt: new Date() } } }),
@@ -44,7 +44,7 @@ export default async function AdminPayments({ searchParams }: { searchParams: Se
 
   return (
     <div>
-      <PageTitle title="Ödənişlər" text="Karvan abunəlikləri: kart ödənişləri avtomatik aktivləşir, bank köçürmələrini burada təsdiqləyin" />
+      <PageTitle title="Ödənişlər" text="Karvan abunəlikləri: kart ödənişləri gateway təsdiqi ilə avtomatik aktivləşir, bank köçürmələrini burada təsdiqləyin" />
       <div className="mb-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Kpi icon={Clock} label="Təsdiq gözləyir" value={String(pending)} href="/admin/payments?status=PENDING" />
         <Kpi icon={CircleDollarSign} label="Gəlir (30 gün)" value={formatMoney(revenue30._sum.amountQepik ?? 0, "AZN")} />
@@ -81,12 +81,12 @@ export default async function AdminPayments({ searchParams }: { searchParams: Se
                   <span className="block text-xs text-gray-500">{p.user.email}</span>
                 </td>
                 <td className={td}>{PLAN_NAMES[p.plan]} · {p.months === 12 ? "illik" : "aylıq"}</td>
-                <td className={td}>{p.method === "CARD" ? `Kart •••• ${p.cardLast4}` : "Köçürmə"}{p.externalId?.startsWith("test_") && <span className="ml-1 text-xs text-sky-700">(test)</span>}</td>
+                <td className={td}>{p.method === "CARD" ? `Kart${p.provider ? ` · ${p.provider}` : ""}` : "Köçürmə"}{p.provider === "sandbox" && <span className="ml-1 text-xs text-sky-700">(test)</span>}</td>
                 <td className={`${td} text-right font-medium`}>{formatMoney(p.amountQepik, "AZN")}</td>
                 <td className={td}><span className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS[p.status].cls}`}>{STATUS[p.status].label}</span></td>
                 <td className={`${td} text-right text-xs text-gray-500`}>{dateTime(p.createdAt)}</td>
                 <td className={`${td} text-right`}>
-                  {p.status === "PENDING" && (
+                  {p.status === "PENDING" && p.method === "BANK_TRANSFER" && (
                     <div className="flex justify-end gap-1.5">
                       <form action={confirmBillingPayment.bind(null, p.id)}>
                         <button className="rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-emerald-700">Təsdiqlə</button>

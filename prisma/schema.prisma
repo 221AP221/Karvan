@@ -386,6 +386,7 @@ model SubscriptionPayment {
   status      BillingStatus @default(PENDING)
   reference   String        @unique // KRV-XXXXXX: köçürmədə təyinat
   cardLast4   String?
+  provider    String? // epoint | sandbox
   externalId  String?
   note        String?
   createdAt   DateTime      @default(now())

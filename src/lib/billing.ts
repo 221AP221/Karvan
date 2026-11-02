@@ -24,37 +24,30 @@ export const KARVAN_BANK = {
   sample: !process.env.BILLING_IBAN,
 };
 
-// Kart: real gateway qoşulmayıbsa (PAYMENT_GATEWAY boşdur) test rejimi işləyir — pul çıxılmır
-export const CARD_TEST_MODE = !process.env.PAYMENT_GATEWAY;
-
 export function newReference() {
   return `KRV-${randomBytes(4).toString("hex").toUpperCase().slice(0, 6)}`;
 }
 
-function luhn(number: string) {
-  let sum = 0;
-  for (let i = 0; i < number.length; i++) {
-    let d = Number(number[number.length - 1 - i]);
-    if (i % 2) d = d * 2 > 9 ? d * 2 - 9 : d * 2;
-    sum += d;
+// Gateway nəticəsi (webhook və ya sandbox). Təkrar bildirişlər təhlükəsizdir: yalnız gözləyən ödəniş işlənir.
+export async function applyGatewayResult(result: { reference: string; status: "SUCCEEDED" | "FAILED"; externalId?: string; amountQepik?: number }) {
+  const payment = await db.subscriptionPayment.findUnique({ where: { reference: result.reference } });
+  if (!payment || payment.method !== "CARD") return "unknown" as const;
+  // Məbləğ uyğun gəlmirsə, aktivləşdirmə olmur (saxta bildirişdən qorunma)
+  if (result.status === "SUCCEEDED" && result.amountQepik !== undefined && result.amountQepik !== payment.amountQepik) {
+    await db.subscriptionPayment.updateMany({ where: { id: payment.id, status: "PENDING" }, data: { status: "FAILED", note: `Məbləğ uyğun gəlmir: ${result.amountQepik}` } });
+    return "mismatch" as const;
   }
-  return sum % 10 === 0;
-}
-
-export type CardInput = { number: string; expiry: string; cvc: string; name: string };
-
-// Test gateway: kartı yoxlayır; 4000 0000 0000 0002 həmişə rədd olunur (uğursuz ödənişi yoxlamaq üçün)
-export function chargeTestCard(card: CardInput): { ok: true; last4: string; externalId: string } | { ok: false; error: string } {
-  const number = card.number.replace(/\D/g, "");
-  if (number.length < 13 || number.length > 19 || !luhn(number)) return { ok: false, error: "Kart nömrəsi düzgün deyil" };
-  const m = /^(\d{2})\s*\/\s*(\d{2})$/.exec(card.expiry.trim());
-  if (!m || Number(m[1]) < 1 || Number(m[1]) > 12) return { ok: false, error: "Bitmə tarixi AA/İİ formatında olmalıdır" };
-  const exp = new Date(2000 + Number(m[2]), Number(m[1]), 1);
-  if (exp <= new Date()) return { ok: false, error: "Kartın vaxtı bitib" };
-  if (!/^\d{3,4}$/.test(card.cvc)) return { ok: false, error: "CVC 3 rəqəm olmalıdır" };
-  if (card.name.trim().length < 3) return { ok: false, error: "Kart sahibinin adını yazın" };
-  if (number === "4000000000000002") return { ok: false, error: "Bank ödənişi rədd etdi (balans kifayət deyil)" };
-  return { ok: true, last4: number.slice(-4), externalId: `test_${randomBytes(6).toString("hex")}` };
+  if (result.status === "FAILED") {
+    await db.subscriptionPayment.updateMany({ where: { id: payment.id, status: "PENDING" }, data: { status: "FAILED", externalId: result.externalId ?? payment.externalId } });
+    await logActivity({ userId: payment.userId, action: "billing_card_failed", details: payment.reference });
+    return "failed" as const;
+  }
+  // Atomik "tutma": iki eyni vaxtlı bildirişdən yalnız biri aktivləşdirir
+  const claimed = await db.subscriptionPayment.updateMany({ where: { id: payment.id, status: "PENDING" }, data: { status: "PAID", paidAt: new Date(), externalId: result.externalId ?? payment.externalId } });
+  if (claimed.count === 0) return "duplicate" as const;
+  await logActivity({ userId: payment.userId, action: "billing_card", details: `${payment.plan} · ${payment.months} ay · ${payment.reference}` });
+  await activatePayment(payment.id);
+  return "activated" as const;
 }
 
 // Tarifi aktivləşdirir: eyni tarif uzadılırsa müddət mövcud bitmə tarixinə əlavə olunur

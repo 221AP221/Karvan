@@ -3,7 +3,9 @@
 import { redirect } from "next/navigation";
 import { logActivity } from "@/lib/activity";
 import { requireProfile } from "@/lib/auth";
-import { CARD_TEST_MODE, activatePayment, chargeTestCard, isPaidPlan, newReference, priceFor } from "@/lib/billing";
+import { PLAN_NAMES } from "@/lib/plans";
+import { callbackUrl, getBillingGateway, returnUrl } from "@/lib/billing-gateway";
+import { isPaidPlan, newReference, priceFor } from "@/lib/billing";
 import { db } from "@/lib/db";
 import type { FormState } from "@/lib/forms";
 
@@ -14,29 +16,34 @@ function order(form: FormData) {
   return { plan, months, amountQepik: priceFor(plan, months) };
 }
 
-export async function payByCard(_: FormState, form: FormData): Promise<FormState> {
+// Kart: Karvan-da kart sahəsi yoxdur. Ödəniş yaradılır, istifadəçi gateway-in təhlükəsiz səhifəsinə yönləndirilir.
+export async function startCardPayment(_: FormState, form: FormData): Promise<FormState> {
   const profile = await requireProfile();
   const o = order(form);
   if (!o) return { error: "Tarif seçilməyib" };
-  if (!CARD_TEST_MODE) return { error: "Kart ödənişi hazırda əlçatan deyil. Bank köçürməsini seçin." };
+  const gateway = getBillingGateway();
+  if (!gateway) return { error: "Kart ödənişi hazırda əlçatan deyil. Bank köçürməsini seçin." };
 
-  const result = chargeTestCard({
-    number: String(form.get("number") ?? ""),
-    expiry: String(form.get("expiry") ?? ""),
-    cvc: String(form.get("cvc") ?? ""),
-    name: String(form.get("name") ?? ""),
-  });
-  if (!result.ok) {
-    await logActivity({ userId: profile.userId, email: profile.user.email, action: "billing_card_failed", details: result.error });
-    return { error: result.error };
+  const reference = newReference();
+  const payment = await db.subscriptionPayment.create({ data: { userId: profile.userId, ...o, method: "CARD", status: "PENDING", provider: gateway.name, reference } });
+  let url: string;
+  try {
+    const checkout = await gateway.createCheckout({
+      reference,
+      amountQepik: o.amountQepik,
+      description: `Karvan ${PLAN_NAMES[o.plan]} · ${o.months} ay`,
+      successUrl: returnUrl(payment.id),
+      errorUrl: returnUrl(payment.id),
+      callbackUrl: callbackUrl(gateway.name),
+    });
+    url = checkout.url;
+    if (checkout.externalId) await db.subscriptionPayment.update({ where: { id: payment.id }, data: { externalId: checkout.externalId } });
+  } catch (error) {
+    console.error("gateway", error);
+    await db.subscriptionPayment.update({ where: { id: payment.id }, data: { status: "FAILED", note: "Gateway sorğusu alınmadı" } });
+    return { error: "Ödəniş səhifəsi açılmadı. Bir az sonra yenidən cəhd edin və ya bank köçürməsini seçin." };
   }
-  // Kart məlumatı saxlanılmır: yalnız son 4 rəqəm
-  const payment = await db.subscriptionPayment.create({
-    data: { userId: profile.userId, ...o, method: "CARD", status: "PAID", paidAt: new Date(), reference: newReference(), cardLast4: result.last4, externalId: result.externalId },
-  });
-  await logActivity({ userId: profile.userId, email: profile.user.email, action: "billing_card", details: `${o.plan} · ${o.months} ay · ${payment.reference}` });
-  await activatePayment(payment.id);
-  redirect(`/dashboard/billing/success?id=${payment.id}`);
+  redirect(url);
 }
 
 export async function payByTransfer(_: FormState, form: FormData): Promise<FormState> {

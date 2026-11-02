@@ -32,6 +32,11 @@ Məhsul spesifikasiyası: [docs/PRD.md](docs/PRD.md)
 - Super admin: adminləri təyin edir, istifadəçi kimi daxil olur (dəstək üçün). Şifrələr görünmür (hash), admin yenisini
   və ya müvəqqəti şifrə təyin edir
 
+**Abunəlik ödənişi:** kart məlumatı Karvan-a daxil olmur. İstifadəçi gateway-in öz səhifəsinə yönləndirilir, nəticə
+`/api/payments/webhook/<provider>` ilə imzalı bildirişlə gəlir (məbləğ və imza yoxlanılır, təkrar bildiriş zərərsizdir).
+Lokalda gateway yoxdursa `/pay/sandbox` simulyasiyası işləyir. Epoint üçün `.env`-də `PAYMENT_GATEWAY=epoint` və açarlar.
+Bank köçürməsi: admin "Ödənişlər"-də təsdiqləyir.
+
 **Sayt** (`/`, `/tr`, `/ru`)
 - Ana səhifə və kataloq Azərbaycan, türk və rus dillərində (hər dilin öz URL-i, hreflang, sitemap.xml)
 - İşıqlı və qaranlıq rejim (seçim yadda qalır, ilk dəfə sistem ayarı)
