@@ -1,6 +1,7 @@
 import { randomBytes } from "node:crypto";
 import type { Plan } from "@/generated/prisma/client";
 import { logActivity } from "@/lib/activity";
+import { gatewayByName } from "@/lib/billing-gateway";
 import { db } from "@/lib/db";
 
 // Karvan abunəlik ödənişləri. Qiymətlər qəpiklə; illik ödənişdə 2 ay pulsuz.
@@ -77,4 +78,14 @@ export async function expireIfNeeded(userId: string, sub: { plan: Plan; currentP
     return true;
   }
   return false;
+}
+
+// İstifadəçi gateway-dən qayıdanda: nəticə webhook ilə gəlməyibsə, gateway API-dən soruşulur.
+// Bu, webhook-un çatmadığı lokal mühitdə də işləyir və itmiş bildirişdən qoruyur.
+export async function reconcileCardPayment(paymentId: string) {
+  const payment = await db.subscriptionPayment.findUnique({ where: { id: paymentId } });
+  if (!payment || payment.method !== "CARD" || payment.status !== "PENDING" || !payment.provider) return;
+  const gateway = gatewayByName(payment.provider);
+  const result = await gateway?.fetchResult?.({ reference: payment.reference, externalId: payment.externalId }).catch(() => null);
+  if (result) await applyGatewayResult(result);
 }
