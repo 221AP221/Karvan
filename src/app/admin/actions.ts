@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { randomBytes } from "node:crypto";
 import { logAdmin, requireAdmin, requireSuperAdmin } from "@/lib/admin";
+import { pingAi } from "@/lib/ai";
+import { getStoredAi, saveStoredAi } from "@/lib/ai-settings";
 import { hashPassword, startImpersonation } from "@/lib/auth";
 import { activatePayment } from "@/lib/billing";
 import { db } from "@/lib/db";
@@ -300,4 +302,38 @@ export async function rejectBillingPayment(paymentId: string) {
   await db.subscriptionPayment.update({ where: { id: paymentId }, data: { status: "REJECTED" } });
   await logAdmin(admin, "billing_reject", "user", p.userId, p.reference);
   revalidatePath("/admin/payments");
+}
+
+// AI ayarı: açar bazada şifrələnmiş saxlanılır, yalnız super admin dəyişə bilər
+const AI_PROVIDERS = ["groq", "gemini", "openrouter", "ollama", "anthropic"];
+
+export async function saveAiSettings(_: FormState, form: FormData): Promise<FormState> {
+  const admin = await requireSuperAdmin();
+  const provider = String(form.get("provider") ?? "");
+  if (provider === "off") {
+    await saveStoredAi(null);
+    await logAdmin(admin, "ai_settings", "service", "ai", "AI ayarı silindi");
+    revalidatePath("/admin/settings");
+    return { ok: true };
+  }
+  if (!AI_PROVIDERS.includes(provider)) return { error: "Təminatçı seçin" };
+  const previous = await getStoredAi();
+  const typed = String(form.get("apiKey") ?? "").trim().replace(/^["']|["']$/g, "");
+  // Boş buraxılıbsa, eyni təminatçının saxlanmış açarı qalır
+  const apiKey = typed || (previous?.provider === provider ? previous.apiKey : undefined);
+  if (provider !== "ollama" && (!apiKey || apiKey.length < 10)) return { error: "Açarı yapışdırın (ən azı 10 simvol)" };
+  await saveStoredAi({ provider, apiKey: provider === "ollama" ? undefined : apiKey, model: String(form.get("model") ?? "").trim() || undefined });
+  await logAdmin(admin, "ai_settings", "service", "ai", `təminatçı: ${provider}`);
+  revalidatePath("/admin/settings");
+  return { ok: true };
+}
+
+export async function testAi(): Promise<{ ok: boolean; message: string }> {
+  await requireSuperAdmin();
+  try {
+    const reply = await pingAi();
+    return { ok: true, message: `AI cavab verdi: “${reply}”` };
+  } catch (error) {
+    return { ok: false, message: error instanceof Error ? error.message : "AI cavab vermədi" };
+  }
 }

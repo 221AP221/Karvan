@@ -1,6 +1,8 @@
 import { z } from "zod";
 
 export class AiError extends Error {}
+// Quraşdırma problemi (açar yoxdur/yanlışdır): detalı yalnız admin görür, satıcıya sadə mesaj göstərilir
+export class AiSetupError extends AiError {}
 
 // AI təminatçıları. Hamısı yalnız mətn generasiyası üçündür. Pulsuz seçimlər OpenAI formatını (chat/completions)
 // dəstəkləyir, ona görə bir adapter hamısına xidmət edir. Model adlarını təminatçının cari siyahısından yoxlayın
@@ -16,14 +18,14 @@ const PRESETS: Record<string, { baseUrl: string; model: string; keyEnv: string |
   custom: { baseUrl: "", model: "", keyEnv: "AI_API_KEY" },
 };
 
-const KEY_NAMES: Record<string, string> = { groq: "GROQ_API_KEY", gemini: "GEMINI_API_KEY", openrouter: "OPENROUTER_API_KEY", custom: "AI_API_KEY", anthropic: "ANTHROPIC_API_KEY" };
+export const KEY_NAMES: Record<string, string> = { groq: "GROQ_API_KEY", gemini: "GEMINI_API_KEY", openrouter: "OPENROUTER_API_KEY", custom: "AI_API_KEY", anthropic: "ANTHROPIC_API_KEY" };
 const RESTART = "Dəyişiklikdən sonra saytı dayandırıb (Ctrl+C) yenidən işə salın: npm run dev.";
 
 // İstifadəçiyə dəqiq deyir ki, nə çatışmır (açar yoxdur, provayder səhvdir və s.)
 export function explainMissingAi(env: NodeJS.ProcessEnv = process.env): string {
   const provider = env.AI_PROVIDER?.toLowerCase();
   if (!provider) {
-    return `AI açarı tapılmadı. Windows-da setup-ai.bat faylını iki dəfə klikləyin (Groq-un pulsuz açarı ilə). Əl ilə: .env faylına AI_PROVIDER=groq və GROQ_API_KEY=... yazın. ${RESTART}`;
+    return `AI açarı hələ yazılmayıb. Admin paneldə Parametrlər → AI bölməsində açarı bir dəfə yazın (Groq-un pulsuz açarı olar), sayt bundan sonra hər dəfə özü işləyəcək.`;
   }
   if (provider !== "ollama" && !PRESETS[provider] && provider !== "anthropic") {
     return `AI_PROVIDER="${env.AI_PROVIDER}" tanınmır. Düzgün dəyərlər: groq, gemini, openrouter, ollama, custom, anthropic. ${RESTART}`;
@@ -98,7 +100,7 @@ export async function generateWithOpenAi<T extends z.ZodType>(cfg: OpenAiConfig,
       jsonMode = false; // bəzi modellər response_format-ı dəstəkləmir
       continue;
     }
-    if (res.status === 401 || res.status === 403) throw new AiError("AI açarı yanlışdır və ya icazəsi yoxdur.");
+    if (res.status === 401 || res.status === 403) throw new AiSetupError("AI açarı yanlışdır və ya icazəsi yoxdur. Admin paneldə Parametrlər → AI bölməsində yeniləyin.");
     if (res.status === 429) throw new AiError("AI xidməti hazırda məşğuldur (pulsuz limit dolub). Bir az sonra yenidən cəhd edin.");
     if (!res.ok) throw new AiError(`AI xidməti xəta qaytardı (${res.status}).`);
 

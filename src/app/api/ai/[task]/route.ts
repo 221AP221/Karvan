@@ -3,13 +3,14 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import {
   AiError,
+  AiSetupError,
   draftPaymentReminder,
   generateServiceDescriptions,
   parseInvoiceText,
   suggestTheme,
 } from "@/lib/ai";
 import { logActivity } from "@/lib/activity";
-import { resolveAiConfig } from "@/lib/ai-provider";
+import { getAiConfig } from "@/lib/ai-settings";
 import { getCurrentProfile } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { invoiceUrl } from "@/lib/invoices";
@@ -41,7 +42,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ tas
   const body = await request.json().catch(() => null);
 
   // Plan üzrə aylıq AI limiti: pulsuz modellərin kvotasını da qoruyur. AI qoşulmayıbsa, sorğu sayılmır.
-  if (resolveAiConfig()) {
+  if (await getAiConfig()) {
     const limit = PLAN_LIMITS[profile.user.subscription?.plan ?? "FREE"].aiRequestsPerMonth;
     const used = await db.activityLog.count({ where: { userId: profile.userId, action: "ai_request", createdAt: { gte: startOfMonth() } } });
     if (used >= limit) {
@@ -91,6 +92,9 @@ export async function POST(request: Request, { params }: { params: Promise<{ tas
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: "Məlumatlar düzgün deyil" }, { status: 400 });
+    }
+    if (error instanceof AiSetupError && profile.user.role === "USER") {
+      return NextResponse.json({ error: "AI köməkçi hazırda əlçatan deyil. Bir az sonra yenidən cəhd edin." }, { status: 503 });
     }
     if (error instanceof AiError) return NextResponse.json({ error: error.message }, { status: 422 });
     if (error instanceof Anthropic.RateLimitError) {

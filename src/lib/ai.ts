@@ -1,9 +1,10 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { betaZodOutputFormat } from "@anthropic-ai/sdk/helpers/beta/zod";
 import { z } from "zod";
-import { AiError, explainMissingAi, generateWithOpenAi, resolveAiConfig } from "@/lib/ai-provider";
+import { AiError, AiSetupError, explainMissingAi, generateWithOpenAi } from "@/lib/ai-provider";
+import { getAiConfig } from "@/lib/ai-settings";
 
-export { AiError };
+export { AiError, AiSetupError };
 
 const MODEL = "claude-opus-5-5";
 
@@ -20,8 +21,8 @@ async function generate<T extends z.ZodType>(
   prompt: string,
   effort: "low" | "medium",
 ): Promise<z.infer<T>> {
-  const config = resolveAiConfig();
-  if (!config) throw new AiError(explainMissingAi());
+  const config = await getAiConfig();
+  if (!config) throw new AiSetupError(explainMissingAi());
   // Pulsuz/lokal modellər (Groq, Gemini, OpenRouter, Ollama): OpenAI formatı
   if (config.kind === "openai") return generateWithOpenAi(config, schema, system, prompt);
 
@@ -173,4 +174,10 @@ ${timing}`,
     "low",
   );
   return message;
+}
+
+// Admin panelində "AI-ı yoxla" düyməsi üçün: qısa sınaq sorğusu
+export async function pingAi() {
+  const { reply } = await generate(z.object({ reply: z.string() }), "Yalnız JSON qaytar.", 'reply sahəsinə "ok" sözünü yaz.', "low");
+  return reply;
 }

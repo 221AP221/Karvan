@@ -48,7 +48,7 @@ Bank köçürməsi: admin "Ödənişlər"-də təsdiqləyir.
 - Sabit qiymətli xidmət → dərhal faktura səhifəsi; razılaşma ilə → sorğu
 - Faktura səhifəsi: rekvizitlər (kopyala düyməsi ilə), "Ödədim", PDF (QR kodlu)
 
-**AI** (Windows-da `setup-ai.bat` ilə açar quraşdırılır; mətn generasiyası; `.env`-də `AI_PROVIDER`: pulsuz groq / gemini / openrouter / ollama və ya ödənişli `ANTHROPIC_API_KEY`; plan üzrə aylıq limit)
+**AI** (açar bir dəfə Admin → Parametrlər → AI bölməsində yazılır, bazada şifrələnir, sayt hər dəfə özü işləyir; alternativ: `.env` və ya `setup-ai.bat`; mətn generasiyası; `.env`-də `AI_PROVIDER`: pulsuz groq / gemini / openrouter / ollama və ya ödənişli `ANTHROPIC_API_KEY`; plan üzrə aylıq limit)
 - Yeni faktura: "Aygün, 3 dərs 50 manatdan, cüməyə qədər" → doldurulmuş forma + xəbərdarlıqlar
 - Xidmət təsviri: 3 variant
 - Profil rəngi təklifi

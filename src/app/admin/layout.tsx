@@ -1,7 +1,7 @@
 import "@fontsource-variable/ibm-plex-sans";
 import "@fontsource/ibm-plex-mono/400.css";
 import "@fontsource/ibm-plex-mono/500.css";
-import { CreditCard, ExternalLink, FileText, LayoutDashboard, LayoutGrid, LogOut, ScrollText, Users } from "lucide-react";
+import { Settings, CreditCard, ExternalLink, FileText, LayoutDashboard, LayoutGrid, LogOut, ScrollText, Users } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { KarvanMark } from "@/components/Logo";
@@ -18,6 +18,7 @@ const NAV = [
   { href: "/admin/payments", label: "Ödənişlər", icon: CreditCard },
   { href: "/admin/invoices", label: "Fakturalar", icon: FileText },
   { href: "/admin/logs", label: "Jurnal", icon: ScrollText },
+  { href: "/admin/settings", label: "Parametrlər", icon: Settings },
 ];
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {

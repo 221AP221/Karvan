@@ -106,6 +106,7 @@ export const ACTION_LABELS: Record<string, string> = {
   password_set: "Şifrə dəyişdirildi",
   role_change: "Rol dəyişdi",
   impersonate: "İstifadəçi kimi daxil oldu",
+  ai_settings: "AI ayarı dəyişdi",
   billing_confirm: "Ödəniş təsdiqləndi",
   billing_reject: "Ödəniş rədd edildi",
 };

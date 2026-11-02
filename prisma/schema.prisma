@@ -396,3 +396,10 @@ model SubscriptionPayment {
   @@index([status, createdAt])
   @@index([userId, createdAt])
 }
+
+// Admin paneldən idarə olunan ayarlar (məs. AI açarı: şifrələnmiş saxlanılır)
+model AppSetting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
