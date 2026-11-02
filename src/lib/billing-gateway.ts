@@ -1,4 +1,4 @@
-import { createHash, timingSafeEqual } from "node:crypto";
+import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 
 // Kart ödənişi: kart məlumatı heç vaxt Karvan-a daxil olmur. İstifadəçi ödəniş sisteminin (gateway) öz
 // səhifəsinə yönləndirilir, nəticəni gateway server-server bildirişi (webhook) ilə bizə göndərir.
@@ -64,25 +64,40 @@ const epoint: BillingGateway = {
   },
 };
 
-// Gateway qoşulmayıbsa yalnız lokal işləmədə /pay/sandbox simulyasiya səhifəsi işləyir (kart sahəsi yoxdur)
+// Test gateway: real gateway ilə eyni yol (yönləndirmə + imzalı webhook + eyni aktivləşmə). Fərq yalnız ondadır ki,
+// ödəniş səhifəsi /pay/sandbox-dır və yalnız test kartlarını qəbul edir, pul çıxılmır.
+const sandboxSecret = () => process.env.SANDBOX_SECRET ?? "karvan-sandbox-secret";
+export const sandboxSign = (data: string) => createHmac("sha256", sandboxSecret()).update(data).digest("hex");
+
 const sandbox: BillingGateway = {
   name: "sandbox",
   async createCheckout(input) {
     return { url: `${appUrl()}/pay/sandbox/${input.reference}` };
   },
-  async parseWebhook() {
-    return null;
+  async parseWebhook(request) {
+    const form = await request.formData().catch(() => null);
+    const data = String(form?.get("data") ?? "");
+    const signature = String(form?.get("signature") ?? "");
+    if (!data || !signature || !safeEqual(signature, sandboxSign(data))) return null;
+    const body = JSON.parse(Buffer.from(data, "base64").toString("utf8")) as { status?: string; order_id?: string; transaction?: string; amount?: number };
+    if (!body.order_id) return null;
+    return { reference: body.order_id, status: body.status === "success" ? "SUCCEEDED" : "FAILED", externalId: body.transaction, amountQepik: body.amount !== undefined ? Math.round(body.amount * 100) : undefined };
   },
 };
 
+export function sandboxEnabled() {
+  return process.env.PAYMENT_GATEWAY === "sandbox" || (!process.env.PAYMENT_GATEWAY && process.env.NODE_ENV !== "production");
+}
+
 export function getBillingGateway(): BillingGateway | null {
   if (process.env.PAYMENT_GATEWAY === "epoint" && process.env.EPOINT_PUBLIC_KEY && process.env.EPOINT_PRIVATE_KEY) return epoint;
-  if (!process.env.PAYMENT_GATEWAY && process.env.NODE_ENV !== "production") return sandbox;
+  if (sandboxEnabled()) return sandbox;
   return null;
 }
 
 export function gatewayByName(name: string): BillingGateway | null {
   if (name === "epoint" && process.env.EPOINT_PRIVATE_KEY) return epoint;
+  if (name === "sandbox" && sandboxEnabled()) return sandbox;
   return null;
 }
 

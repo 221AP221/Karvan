@@ -34,7 +34,7 @@ Məhsul spesifikasiyası: [docs/PRD.md](docs/PRD.md)
 
 **Abunəlik ödənişi:** kart məlumatı Karvan-a daxil olmur. İstifadəçi gateway-in öz səhifəsinə yönləndirilir, nəticə
 `/api/payments/webhook/<provider>` ilə imzalı bildirişlə gəlir (məbləğ və imza yoxlanılır, təkrar bildiriş zərərsizdir).
-Lokalda gateway yoxdursa `/pay/sandbox` simulyasiyası işləyir. Epoint üçün `.env`-də `PAYMENT_GATEWAY=epoint` və açarlar.
+Test rejimində `/pay/sandbox` səhifəsi real gateway kimi işləyir (test kartları, imzalı webhook); canlıya çıxanda yalnız `.env` açarları dəyişir. Epoint üçün `.env`-də `PAYMENT_GATEWAY=epoint` və açarlar.
 Bank köçürməsi: admin "Ödənişlər"-də təsdiqləyir.
 
 **Sayt** (`/`, `/tr`, `/ru`)
