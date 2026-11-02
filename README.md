@@ -38,7 +38,7 @@ Test rejimində `/pay/sandbox` səhifəsi real gateway kimi işləyir (test kart
 Bank köçürməsi: admin "Ödənişlər"-də təsdiqləyir.
 
 **Sayt** (`/`, `/tr`, `/ru`)
-- Ana səhifə və kataloq Azərbaycan, türk və rus dillərində (hər dilin öz URL-i, hreflang, sitemap.xml)
+- Ana səhifə və kataloq Azərbaycan, türk, rus və ingilis dillərində (hər dilin öz URL-i, hreflang, sitemap.xml)
 - İşıqlı və qaranlıq rejim (seçim yadda qalır, ilk dəfə sistem ayarı)
 - Xidmətlər kataloqu (`/xidmetler`, `/tr/hizmetler`, `/ru/uslugi`): axtarış, sahə, şəhər, qiymət, valyuta, təsdiqlənmiş, sıralama.
   Satıcı Parametrlərdən kataloqda görünməməyi seçə bilər. Lokal bazada nümunə satıcılar əlavə olunur.

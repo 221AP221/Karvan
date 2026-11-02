@@ -14,7 +14,21 @@ export const SERVICE_CATEGORIES = [
 ] as const;
 
 // Kataloq türk və rus dillərində də göstərilir
-export const CATEGORY_LABELS: Record<"tr" | "ru", Record<ServiceCategory, string>> = {
+export const CATEGORY_LABELS: Record<"tr" | "ru" | "en", Record<ServiceCategory, string>> = {
+  en: {
+    beauty: "Beauty and care",
+    education: "Education and tutoring",
+    design: "Design",
+    marketing: "Social media and ads",
+    photo_video: "Photo and video",
+    fitness: "Fitness and health",
+    consulting: "Consulting",
+    psychology: "Psychology",
+    it: "IT and programming",
+    events: "Events",
+    translation: "Translation",
+    other: "Other",
+  },
   tr: {
     beauty: "Güzellik ve bakım",
     education: "Eğitim ve özel ders",
@@ -45,7 +59,7 @@ export const CATEGORY_LABELS: Record<"tr" | "ru", Record<ServiceCategory, string
   },
 };
 
-export function localizedCategory(key: string | null | undefined, locale: "az" | "tr" | "ru"): string | null {
+export function localizedCategory(key: string | null | undefined, locale: "az" | "tr" | "ru" | "en"): string | null {
   if (!key) return null;
   if (locale === "az") return categoryLabel(key);
   return CATEGORY_LABELS[locale][key as ServiceCategory] ?? null;

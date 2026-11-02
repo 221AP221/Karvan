@@ -2,18 +2,18 @@
 // Azərbaycan dili əsasdır (prefikssiz URL), türk və rus dilləri /tr və /ru altında: hər dilin öz URL-i
 // olduğu üçün axtarış sistemləri hər versiyanı ayrıca indeksləyir (hreflang).
 
-export const LOCALES = ["az", "tr", "ru"] as const;
+export const LOCALES = ["az", "tr", "ru", "en"] as const;
 export type Locale = (typeof LOCALES)[number];
 export const DEFAULT_LOCALE: Locale = "az";
 export const LOCALE_COOKIE = "lang";
 
 export const isLocale = (v: unknown): v is Locale => LOCALES.includes(v as Locale);
 
-export const LOCALE_NAMES: Record<Locale, string> = { az: "Azərbaycanca", tr: "Türkçe", ru: "Русский" };
-export const OG_LOCALE: Record<Locale, string> = { az: "az_AZ", tr: "tr_TR", ru: "ru_RU" };
+export const LOCALE_NAMES: Record<Locale, string> = { az: "Azərbaycanca", tr: "Türkçe", ru: "Русский", en: "English" };
+export const OG_LOCALE: Record<Locale, string> = { az: "az_AZ", tr: "tr_TR", ru: "ru_RU", en: "en_US" };
 
-export const HOME_PATH: Record<Locale, string> = { az: "/", tr: "/tr", ru: "/ru" };
-export const CATALOG_PATH: Record<Locale, string> = { az: "/xidmetler", tr: "/tr/hizmetler", ru: "/ru/uslugi" };
+export const HOME_PATH: Record<Locale, string> = { az: "/", tr: "/tr", ru: "/ru", en: "/en" };
+export const CATALOG_PATH: Record<Locale, string> = { az: "/xidmetler", tr: "/tr/hizmetler", ru: "/ru/uslugi", en: "/en/services" };
 
 export const SITE_URL = (process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000").replace(/\/$/, "");
 
@@ -21,6 +21,7 @@ export const SITE_URL = (process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:30
 export function localeFromPath(pathname: string): Locale | null {
   if (pathname === "/tr" || pathname.startsWith("/tr/")) return "tr";
   if (pathname === "/ru" || pathname.startsWith("/ru/")) return "ru";
+  if (pathname === "/en" || pathname.startsWith("/en/")) return "en";
   if (pathname === "/" || pathname === CATALOG_PATH.az) return "az";
   return null;
 }
@@ -29,6 +30,6 @@ export function localeFromPath(pathname: string): Locale | null {
 export function alternates(paths: Record<Locale, string>, locale: Locale) {
   return {
     canonical: paths[locale],
-    languages: { az: paths.az, tr: paths.tr, ru: paths.ru, "x-default": paths.az },
+    languages: { az: paths.az, tr: paths.tr, ru: paths.ru, en: paths.en, "x-default": paths.az },
   };
 }

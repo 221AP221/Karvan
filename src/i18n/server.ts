@@ -1,10 +1,11 @@
 import { cookies, headers } from "next/headers";
 import { DEFAULT_LOCALE, LOCALE_COOKIE, type Locale, isLocale } from "./config";
 import { az } from "./dictionaries/az";
+import { en } from "./dictionaries/en";
 import { ru } from "./dictionaries/ru";
 import { tr } from "./dictionaries/tr";
 
-const DICTIONARIES = { az, tr, ru };
+const DICTIONARIES = { az, tr, ru, en };
 export type Dict = typeof az;
 
 export const getDictionary = (locale: Locale): Dict => DICTIONARIES[locale];
