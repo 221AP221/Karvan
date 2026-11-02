@@ -8,10 +8,13 @@ import {
   parseInvoiceText,
   suggestTheme,
 } from "@/lib/ai";
+import { logActivity } from "@/lib/activity";
+import { resolveAiConfig } from "@/lib/ai-provider";
 import { getCurrentProfile } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { invoiceUrl } from "@/lib/invoices";
 import { formatMoney } from "@/lib/money";
+import { PLAN_LIMITS, startOfMonth } from "@/lib/plans";
 
 const inputs = {
   "parse-invoice": z.object({ text: z.string().min(3).max(2000) }),
@@ -28,7 +31,6 @@ const inputs = {
   }),
 };
 
-// TODO(M4): plan üzrə aylıq AI limiti (PLAN_LIMITS.aiRequestsPerMonth)
 export async function POST(request: Request, { params }: { params: Promise<{ task: string }> }) {
   const profile = await getCurrentProfile();
   if (!profile) return NextResponse.json({ error: "Daxil olun" }, { status: 401 });
@@ -37,6 +39,16 @@ export async function POST(request: Request, { params }: { params: Promise<{ tas
   if (!(task in inputs)) return NextResponse.json({ error: "Naməlum əməliyyat" }, { status: 404 });
 
   const body = await request.json().catch(() => null);
+
+  // Plan üzrə aylıq AI limiti: pulsuz modellərin kvotasını da qoruyur. AI qoşulmayıbsa, sorğu sayılmır.
+  if (resolveAiConfig()) {
+    const limit = PLAN_LIMITS[profile.user.subscription?.plan ?? "FREE"].aiRequestsPerMonth;
+    const used = await db.activityLog.count({ where: { userId: profile.userId, action: "ai_request", createdAt: { gte: startOfMonth() } } });
+    if (used >= limit) {
+      return NextResponse.json({ error: `Bu ayki AI limiti (${limit} sorğu) bitib. Daha çoxu üçün yuxarı plana keçin.` }, { status: 429 });
+    }
+    await logActivity({ userId: profile.userId, email: profile.user.email, action: "ai_request", details: task });
+  }
 
   try {
     switch (task) {

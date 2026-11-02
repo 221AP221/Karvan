@@ -1,13 +1,15 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { betaZodOutputFormat } from "@anthropic-ai/sdk/helpers/beta/zod";
 import { z } from "zod";
+import { AiError, NOT_CONFIGURED, generateWithOpenAi, resolveAiConfig } from "@/lib/ai-provider";
+
+export { AiError };
 
 const MODEL = "claude-opus-5-5";
 
 let client: Anthropic | undefined;
 
 function getClient() {
-  if (!process.env.ANTHROPIC_API_KEY) throw new AiError("AI qoşulmayıb: ANTHROPIC_API_KEY təyin edilməyib.");
   return (client ??= new Anthropic());
 }
 
@@ -18,6 +20,11 @@ async function generate<T extends z.ZodType>(
   prompt: string,
   effort: "low" | "medium",
 ): Promise<z.infer<T>> {
+  const config = resolveAiConfig();
+  if (!config) throw new AiError(NOT_CONFIGURED);
+  // Pulsuz/lokal modellər (Groq, Gemini, OpenRouter, Ollama): OpenAI formatı
+  if (config.kind === "openai") return generateWithOpenAi(config, schema, system, prompt);
+
   const response = await getClient().beta.messages.parse({
     model: MODEL,
     max_tokens: 4000,
@@ -37,8 +44,6 @@ async function generate<T extends z.ZodType>(
   }
   return response.parsed_output;
 }
-
-export class AiError extends Error {}
 
 // AI-1: sərbəst mətndən faktura
 
