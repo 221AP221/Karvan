@@ -27,6 +27,8 @@ for (let attempt = 1; ; attempt++) {
     await new Promise((r) => setTimeout(r, 1500));
   }
 }
+// Sxem dəyişəndə (yeni zip) Prisma klienti köhnə qalmasın: "Unknown argument" xətasının qarşısını alır
+execSync("npx prisma generate", { stdio: ["ignore", "ignore", "inherit"] });
 // Demo hesab və onun analitika məlumatları (yalnız çatışmayanlar əlavə olunur)
 try {
   execSync("npx tsx prisma/seed.ts", { stdio: ["ignore", "ignore", "pipe"] });
