@@ -1,7 +1,7 @@
 import { hashPassword } from "../src/lib/auth";
 import { db } from "../src/lib/db";
 
-// Rebrenddən əvvəlki demo hesab (demo@biofaktura.az) varsa, e-poçtu yenilənir.
+// Köhnə adla yaranmış demo hesab varsa, e-poçtu karvan.az-a keçirilir.
 // Arada profilsiz yeni demo hesab yaranıbsa, o silinir ki, köhnə hesab (profili ilə) köçə bilsin.
 const OLD_DEMO = "demo@biofaktura.az";
 const DEMO = "demo@karvan.az";

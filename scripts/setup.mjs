@@ -7,8 +7,10 @@ const run = (cmd) => {
   execSync(cmd, { stdio: "inherit" });
 };
 
-// "biofaktura" lokal bazanın daxili adıdır: dəyişsə, mövcud məlumatlar olan baza tapılmaz
-if (!process.env.DATABASE_URL) run("npx prisma dev -d -n biofaktura");
+if (!process.env.DATABASE_URL) {
+  const { startLocalDatabase } = await import("./local-database.mjs");
+  startLocalDatabase();
+}
 run("npx prisma migrate deploy");
 run("npx prisma db seed");
 

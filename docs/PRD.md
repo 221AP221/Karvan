@@ -187,7 +187,7 @@ Tam sxem: [`prisma/schema.prisma`](../prisma/schema.prisma).
 | Ad | İdeya |
 |---|---|
 | **Karvan** ✅ seçildi | Qısa, yerli, yaddaqalan: xidmətlər karvanı kimi satıcıdan müştəriyə |
-| BioFaktura | İlkin işçi ad |
+| (köhnə ad) | Layihənin ilkin işçi adı, indi Karvan |
 | **Qaimə.link** | Yerli söz + link konsepti |
 | **Sifarişim** | Müştəri baxımından sadə |
 | **Hesabla** | "Hesab yaz" ifadəsindən, feil kimi yaddaqalan |

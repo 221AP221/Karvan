@@ -14,10 +14,19 @@ if (missing.length) {
 await import("dotenv/config");
 
 if (!process.env.DATABASE_URL) {
-  // "biofaktura" lokal bazanın daxili adıdır: dəyişsə, mövcud məlumatlar olan baza tapılmaz
-  execSync("npx prisma dev -d -n biofaktura", { stdio: "ignore" });
+  const { startLocalDatabase } = await import("./local-database.mjs");
+  startLocalDatabase();
 }
-execSync("npx prisma migrate deploy", { stdio: ["ignore", "ignore", "inherit"] });
+// Yeni açılan bazanın qoşulmağa hazır olması bir neçə saniyə çəkə bilər
+for (let attempt = 1; ; attempt++) {
+  try {
+    execSync("npx prisma migrate deploy", { stdio: ["ignore", "ignore", attempt >= 8 ? "inherit" : "ignore"] });
+    break;
+  } catch (error) {
+    if (attempt >= 8) throw error;
+    await new Promise((r) => setTimeout(r, 1500));
+  }
+}
 // Demo hesab və onun analitika məlumatları (yalnız çatışmayanlar əlavə olunur)
 try {
   execSync("npx tsx prisma/seed.ts", { stdio: ["ignore", "ignore", "pipe"] });
