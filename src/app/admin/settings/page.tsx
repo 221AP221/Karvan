@@ -1,7 +1,7 @@
 import { Bot } from "lucide-react";
 import type { Metadata } from "next";
 import { requireAdmin } from "@/lib/admin";
-import { getAiConfig, getStoredAi } from "@/lib/ai-settings";
+import { STALE_CLIENT, getAiConfig, getStoredAi, settingsReady } from "@/lib/ai-settings";
 import { PageTitle, card } from "../ui";
 import { AiSettingsForm } from "./AiSettingsForm";
 
@@ -29,7 +29,9 @@ export default async function AdminSettings() {
             </p>
           </div>
         </div>
-        {admin.role === "SUPER_ADMIN" ? (
+        {!settingsReady() ? (
+          <p role="alert" className="mt-5 rounded-lg bg-amber-50 p-3 text-sm text-amber-900">{STALE_CLIENT}</p>
+        ) : admin.role === "SUPER_ADMIN" ? (
           <AiSettingsForm provider={stored?.provider ?? ""} model={stored?.model ?? ""} hasKey={Boolean(stored?.apiKey)} />
         ) : (
           <p className="mt-5 rounded-lg bg-amber-50 p-3 text-sm text-amber-900">AI ayarını yalnız super admin dəyişə bilər.</p>

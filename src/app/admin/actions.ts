@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { randomBytes } from "node:crypto";
 import { logAdmin, requireAdmin, requireSuperAdmin } from "@/lib/admin";
 import { pingAi } from "@/lib/ai";
-import { getStoredAi, saveStoredAi } from "@/lib/ai-settings";
+import { STALE_CLIENT, getStoredAi, saveStoredAi, settingsReady } from "@/lib/ai-settings";
 import { hashPassword, startImpersonation } from "@/lib/auth";
 import { activatePayment } from "@/lib/billing";
 import { db } from "@/lib/db";
@@ -317,6 +317,7 @@ export async function saveAiSettings(_: FormState, form: FormData): Promise<Form
     return { ok: true };
   }
   if (!AI_PROVIDERS.includes(provider)) return { error: "Təminatçı seçin" };
+  if (!settingsReady()) return { error: STALE_CLIENT };
   const previous = await getStoredAi();
   const typed = String(form.get("apiKey") ?? "").trim().replace(/^["']|["']$/g, "");
   // Boş buraxılıbsa, eyni təminatçının saxlanmış açarı qalır

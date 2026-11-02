@@ -5,10 +5,15 @@ import { decrypt, encrypt } from "@/lib/secrets";
 // Admin paneldə yazılmış AI ayarı (bazada, şifrələnmiş). Varsa .env-dən üstündür: bir dəfə yazılır, sayt hər dəfə özü işləyir.
 export type StoredAi = { provider: string; apiKey?: string; model?: string };
 
+// Yeni zip-dən sonra sayt yenidən başladılmayıbsa, Prisma klienti köhnə qala bilər: çökmək əvəzinə aydın xəbər veririk
+export const settingsReady = () => typeof db.appSetting !== "undefined";
+export const STALE_CLIENT = "Sayt yeni versiyaya uyğun deyil. Saytı dayandırıb (Ctrl+C) yenidən işə salın: npm run dev (baza və Prisma avtomatik yenilənəcək).";
+
 let cache: { at: number; value: StoredAi | null } | undefined;
 
 export async function getStoredAi(): Promise<StoredAi | null> {
   if (cache && Date.now() - cache.at < 30_000) return cache.value;
+  if (!settingsReady()) return null;
   const row = await db.appSetting.findUnique({ where: { key: "ai" } }).catch(() => null);
   const json = row ? decrypt(row.value) : null;
   const value = json ? (JSON.parse(json) as StoredAi) : null;
@@ -17,6 +22,7 @@ export async function getStoredAi(): Promise<StoredAi | null> {
 }
 
 export async function saveStoredAi(value: StoredAi | null) {
+  if (!settingsReady()) throw new Error(STALE_CLIENT);
   if (value) {
     await db.appSetting.upsert({ where: { key: "ai" }, update: { value: encrypt(JSON.stringify(value)) }, create: { key: "ai", value: encrypt(JSON.stringify(value)) } });
   } else {
