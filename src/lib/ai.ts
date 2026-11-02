@@ -1,7 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { betaZodOutputFormat } from "@anthropic-ai/sdk/helpers/beta/zod";
 import { z } from "zod";
-import { AiError, NOT_CONFIGURED, generateWithOpenAi, resolveAiConfig } from "@/lib/ai-provider";
+import { AiError, explainMissingAi, generateWithOpenAi, resolveAiConfig } from "@/lib/ai-provider";
 
 export { AiError };
 
@@ -21,7 +21,7 @@ async function generate<T extends z.ZodType>(
   effort: "low" | "medium",
 ): Promise<z.infer<T>> {
   const config = resolveAiConfig();
-  if (!config) throw new AiError(NOT_CONFIGURED);
+  if (!config) throw new AiError(explainMissingAi());
   // Pulsuz/lokal modellər (Groq, Gemini, OpenRouter, Ollama): OpenAI formatı
   if (config.kind === "openai") return generateWithOpenAi(config, schema, system, prompt);
 

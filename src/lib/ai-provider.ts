@@ -16,8 +16,23 @@ const PRESETS: Record<string, { baseUrl: string; model: string; keyEnv: string |
   custom: { baseUrl: "", model: "", keyEnv: "AI_API_KEY" },
 };
 
-export const NOT_CONFIGURED =
-  "AI qoşulmayıb. .env faylında AI_PROVIDER (groq, gemini, openrouter, ollama) və açarını təyin edin, və ya ANTHROPIC_API_KEY yazın.";
+const KEY_NAMES: Record<string, string> = { groq: "GROQ_API_KEY", gemini: "GEMINI_API_KEY", openrouter: "OPENROUTER_API_KEY", custom: "AI_API_KEY", anthropic: "ANTHROPIC_API_KEY" };
+const RESTART = "Dəyişiklikdən sonra saytı dayandırıb (Ctrl+C) yenidən işə salın: npm run dev.";
+
+// İstifadəçiyə dəqiq deyir ki, nə çatışmır (açar yoxdur, provayder səhvdir və s.)
+export function explainMissingAi(env: NodeJS.ProcessEnv = process.env): string {
+  const provider = env.AI_PROVIDER?.toLowerCase();
+  if (!provider) {
+    return `AI açarı tapılmadı. Windows-da setup-ai.bat faylını iki dəfə klikləyin (Groq-un pulsuz açarı ilə). Əl ilə: .env faylına AI_PROVIDER=groq və GROQ_API_KEY=... yazın. ${RESTART}`;
+  }
+  if (provider !== "ollama" && !PRESETS[provider] && provider !== "anthropic") {
+    return `AI_PROVIDER="${env.AI_PROVIDER}" tanınmır. Düzgün dəyərlər: groq, gemini, openrouter, ollama, custom, anthropic. ${RESTART}`;
+  }
+  if (provider === "custom" && (!env.AI_BASE_URL || !env.AI_MODEL)) return `AI_PROVIDER=custom üçün AI_BASE_URL və AI_MODEL də yazılmalıdır. ${RESTART}`;
+  const key = KEY_NAMES[provider];
+  if (key && !env[key]) return `AI_PROVIDER=${provider} seçilib, amma ${key} boşdur. Açarı .env faylına yazın (setup-ai.bat bunu avtomatik edir). ${RESTART}`;
+  return `AI qoşulmayıb. ${RESTART}`;
+}
 
 export function resolveAiConfig(env: NodeJS.ProcessEnv = process.env): AiConfig | null {
   let provider = env.AI_PROVIDER?.toLowerCase();
