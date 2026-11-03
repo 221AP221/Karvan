@@ -70,6 +70,7 @@ const para = (text, opts = {}) => new Paragraph({ children: inline(text, opts.ru
 
 // ---- başlıqlar: hər biri əlfəcinlə işarələnir ki, mündəricatdan keçid işləsin
 const toc = [];
+const coverMeta = [];
 const headingPara = (text, level) => {
   const id = `h${toc.length + 1}`;
   toc.push({ id, level, text: text.replace(/[*`]/g, "") });
@@ -86,9 +87,29 @@ function buildTable(rows) {
     const longest = Math.max(...rows.map((r) => (r[c] ?? "").replace(/[*`]/g, "").length));
     return Math.min(Math.max(longest, 6), 70);
   });
+  // ən uzun bölünməyən söz sütunun minimum enini müəyyən edir ("Pri" → "P ri" sınmasın)
+  const mins = Array.from({ length: cols }, (_, c) => {
+    const words = rows.flatMap((r) => (r[c] ?? "").replace(/[*`]/g, "").split(/\s+/));
+    const longestWord = Math.max(1, ...words.map((w) => w.length));
+    return Math.min(Math.round(Math.min(longestWord, 14) * 115 + 240), Math.round(CONTENT_WIDTH / 2));
+  });
   const sum = weights.reduce((a, b) => a + b, 0);
-  const widths = weights.map((w) => Math.round((w / sum) * CONTENT_WIDTH));
-  widths[cols - 1] = CONTENT_WIDTH - widths.slice(0, -1).reduce((a, b) => a + b, 0);
+  let widths = weights.map((w) => Math.round((w / sum) * CONTENT_WIDTH));
+  // minimumdan dar sütunlar genişləndirilir, çatışmayan en geniş sütunlardan götürülür
+  for (let pass = 0; pass < 4; pass++) {
+    const debt = widths.reduce((acc, w, c) => acc + Math.max(0, mins[c] - w), 0);
+    if (!debt) break;
+    const slack = widths.reduce((acc, w, c) => acc + Math.max(0, w - mins[c]), 0);
+    if (slack <= 0) break;
+    const take = Math.min(debt, slack);
+    widths = widths.map((w, c) => {
+      const free = Math.max(0, w - mins[c]);
+      const give = Math.round((free / slack) * take);
+      return Math.max(mins[c], w < mins[c] ? mins[c] : w - give);
+    });
+  }
+  const total = widths.reduce((a, b) => a + b, 0);
+  widths[cols - 1] += CONTENT_WIDTH - total;
 
   const border = { style: BorderStyle.SINGLE, size: 2, color: LINE };
   return new Table({
@@ -164,7 +185,13 @@ while (i < src.length) {
     i += 2;
     while (i < src.length && isTableRow(src[i])) rows.push(cells(src[i++]));
     const cols = rows[0].length;
-    body.push(buildTable(rows.map((r) => (r.length === cols ? r : [...r, ...Array(cols - r.length).fill("")]).slice(0, cols))));
+    const norm = rows.map((r) => (r.length === cols ? r : [...r, ...Array(cols - r.length).fill("")]).slice(0, cols));
+    // sənədin ilk, başlıqsız açar-dəyər cədvəli üz qabığına gedir, mətndə təkrarlanmır
+    if (!coverMeta.length && cols === 2 && norm[0].every((c) => c.trim() === "")) {
+      coverMeta.push(...norm.slice(1).map((r) => [r[0].replace(/\*\*/g, "").trim(), r[1].trim()]));
+      continue;
+    }
+    body.push(buildTable(norm));
     body.push(new Paragraph({ text: "", spacing: { after: 160 } }));
     continue;
   }
@@ -234,14 +261,13 @@ while (i < src.length) {
 }
 
 // ---- üz qabığı
-const meta = [
-  ["Məhsul", "Karvan — link-in-bio, sifariş, faktura və ödəniş izləmə platforması"],
-  ["Sənəd", "Biznes Tələbləri Sənədi (BRD)"],
-  ["Versiya", "1.0 — reallaşdırılmış məhsulun vəziyyəti"],
-  ["Status", "Beta-ya hazır"],
-  ["Domen", "karvan.az"],
-  ["Tarix", new Date().toLocaleDateString("az-AZ", { day: "2-digit", month: "long", year: "numeric" })],
-];
+const meta = coverMeta.length
+  ? coverMeta
+  : [
+      ["Məhsul", "Karvan"],
+      ["Sənəd", "Biznes Tələbləri Sənədi (BRD)"],
+      ["Tarix", new Date().toLocaleDateString("az-AZ", { day: "2-digit", month: "long", year: "numeric" })],
+    ];
 
 const cover = [
   new Paragraph({ text: "", spacing: { after: 1600 } }),
@@ -254,7 +280,7 @@ const cover = [
     spacing: { after: 80 },
   }),
   new Paragraph({
-    children: [new TextRun({ text: "Business Requirements Document · BRD", size: 24, color: MUTED })],
+    children: [new TextRun({ text: "Business Requirements Document · BABOK® v3", size: 24, color: MUTED })],
     border: { bottom: { style: BorderStyle.SINGLE, size: 8, color: BRAND } },
     spacing: { after: 600 },
   }),
@@ -262,7 +288,7 @@ const cover = [
   new Paragraph({
     children: [
       new TextRun({
-        text: "Bu sənəd reallaşdırılmış məhsulu təsvir edir: hər tələbin yanında vəziyyət göstərilib — ✅ hazır, 🟡 qismən, ⬜ planlaşdırılan.",
+        text: "Tələblərin prioriteti MoSCoW (M/S/C/W), reallaşma vəziyyəti isə ✅ hazır · 🟡 qismən · ⬜ planlaşdırılan işarələri ilə göstərilib. Oxunuş qaydaları §0.5-dədir.",
         size: 20,
         color: MUTED,
         italics: true,
