@@ -2,7 +2,7 @@
 
 Instagram/TikTok-da xidmət satanlar üçün link-in-bio səhifə, sifariş formu, avtomatik PDF faktura və ödəniş izləmə. AI sərbəst mətndən faktura yaradır, xidmət təsvirləri, tema və ödəniş xatırlatmaları yazır.
 
-Məhsul spesifikasiyası: [docs/PRD.md](docs/PRD.md)
+Sənədlər: **[BRD](docs/BRD.md)** — biznes tələbləri və reallaşma vəziyyəti · [PRD](docs/PRD.md) — ilkin məhsul konsepti
 
 ## Nə işləyir
 
