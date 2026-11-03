@@ -36,13 +36,11 @@ export function KarvanMark({ className = "h-8 w-8" }: { className?: string }) {
   );
 }
 
-// Başlıq və footer üçün: ikon + yazı
+// Saytdakı bütün loqolar: yalnız KARVAN yazısı (K ikonu yoxdur). KarvanMark yalnız brauzer ikonu (favicon) üçün qalır.
 export function Logo({ tone = "light", size = "md" }: { tone?: "light" | "dark"; size?: "sm" | "md" | "lg" }) {
-  const h = { sm: "h-4", md: "h-5", lg: "h-7" }[size];
-  const mark = { sm: "h-6 w-6", md: "h-8 w-8", lg: "h-10 w-10" }[size];
+  const h = { sm: "h-4", md: "h-6", lg: "h-8" }[size];
   return (
-    <span className="inline-flex items-center gap-2.5">
-      <KarvanMark className={`${mark} drop-shadow-[0_4px_10px_rgba(236,28,140,0.25)]`} />
+    <span className="inline-flex items-center">
       <KarvanWordmark tone={tone} className={`${h} w-auto`} />
     </span>
   );

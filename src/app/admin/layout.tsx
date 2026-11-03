@@ -4,7 +4,7 @@ import "@fontsource/ibm-plex-mono/500.css";
 import { Settings, CreditCard, ExternalLink, FileText, LayoutDashboard, LayoutGrid, LogOut, ScrollText, Users } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { KarvanMark } from "@/components/Logo";
+import { Logo } from "@/components/Logo";
 import { requireAdmin } from "@/lib/admin";
 import { logout } from "../(auth)/actions";
 import { AdminNav } from "./nav";
@@ -29,10 +29,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     <div className="panel min-h-screen bg-gray-50 text-gray-900 lg:grid lg:grid-cols-[240px_1fr]">
       <aside className="flex flex-col bg-[#111318] text-gray-300 lg:sticky lg:top-0 lg:h-screen">
         <div className="flex items-center gap-2.5 px-5 py-5">
-          <KarvanMark className="h-8 w-8" />
-          <span className="text-sm font-semibold text-white">
-            Karvan <span className="font-normal text-gray-500">Admin</span>
-          </span>
+          <Logo tone="dark" size="sm" />
+          <span className="rounded bg-white/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-gray-300">Admin</span>
         </div>
         <AdminNav items={NAV.map(({ icon: Icon, ...item }) => ({ ...item, icon: <Icon size={17} strokeWidth={1.8} aria-hidden /> }))} />
       </aside>
