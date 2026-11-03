@@ -1,7 +1,5 @@
 # Karvan — Biznes Tələbləri Sənədi
 
-**Business Requirements Document · BABOK® v3 metodologiyasına uyğun**
-
 | | |
 |---|---|
 | **Məhsul** | Karvan — sosial şəbəkədə xidmət satanlar üçün link-in-bio, sifariş, faktura və ödəniş izləmə platforması |
@@ -21,7 +19,7 @@
 
 ### 0.1 Sənədin məqsədi və auditoriyası
 
-Bu sənəd Karvan platformasının **biznes ehtiyacını, həll əhatəsini, tələblər toplusunu və qəbul meyarlarını** vahid baseline kimi müəyyən edir. Sənəd BABOK v3-ün tələb səviyyələri modelinə (business → stakeholder → solution → transition) əsaslanır və tələblərin məqsədlərdən qəbul testlərinə qədər izlənilənliyini təmin edir (§24).
+Bu sənəd Karvan platformasının **biznes ehtiyacını, həll əhatəsini, tələblər toplusunu və qəbul meyarlarını** vahid baseline kimi müəyyən edir.
 
 | Auditoriya | Sənəddən nə götürür | Əsas bölmələr |
 |---|---|---|
@@ -40,8 +38,7 @@ Bu sənəd **nə** tələb olunduğunu müəyyən edir, **necə** reallaşdırı
 
 | Versiya | Tarix | Dəyişiklik | Müəllif | Status |
 |---|---|---|---|---|
-| 0.1 | 2026-08 | PRD — ilkin məhsul konsepti | Məhsul | Əvəzlənib |
-| 1.0 | 2026-11-03 | Reallaşdırılmış məhsulun ilk sənədləşməsi | Biznes analitikası | Əvəzlənib |
+| 1.0 | 2026-08 | PRD — ilkin məhsul konsepti | Məhsul | Əvəzlənib |
 | **2.0** | **2026-11-03** | **BABOK strukturuna keçid: tələb səviyyələri ayrıldı, biznes əsaslandırması, izlənilənlik matrisi, risk reyestri, UAT planı, keçid tələbləri və dəyişiklik idarəetməsi əlavə olundu** | **Biznes analitikası** | **Cari baseline** |
 
 ### 0.4 Təsdiq və imza
@@ -134,10 +131,13 @@ Tələblərin **91%-i** (138/164 həll tələbi) reallaşıb və yoxlanılıb. L
 
 ### 2.1 Problemin ifadəsi
 
-> **Kim üçün:** sosial şəbəkədə xidmət satan fiziki şəxslər (fərdi usta, repetitor, kiçik studiya).
-> **Hansı problem:** satış prosesinin bütün addımları — qiymət elanı, sifariş qəbulu, hesab-faktura, ödəniş təsdiqi və uçot — əl ilə, bir-birindən ayrı kanallarda aparılır.
-> **Nəticə:** təkrarlanan əməyə sərf olunan vaxt, itirilmiş sorğular, ödəniş mübahisələri və gəlirin görünməməsi.
-> **Mövcud alternativlər:** heç biri bu addımları bir axında birləşdirmir (§3.3).
+Karvanın hədəf istifadəçisi xidmətini sosial şəbəkədə özü satan fiziki şəxsdir: makiyaj ustası, repetitor, fotoqraf, dizayner, üç-dörd nəfərlik studiya. Bu adamın nə satış komandası, nə də mühasibi var — sifarişi də, hesab-fakturanı da, ödənişin yoxlanmasını da özü aparır.
+
+Problem alətlərin yoxluğunda deyil, prosesin dağınıqlığındadır. Bir sifariş beş ayrı kanalda yaşayır: qiymət DM-də deyilir, detallar səsli mesajda razılaşdırılır, bank rekvizitləri yazışmada göndərilir, ödəniş ekran şəkli ilə "təsdiqlənir", kimin borcu qaldığı isə telefonun qeydlərində və ya yaddaşda qalır. Addımlar bir-birindən xəbərsizdir və eyni məlumat hər dəfə əl ilə bir kanaldan digərinə köçürülür.
+
+Bunun əməliyyat nəticələri ölçüləndir. Eyni qiymət sualı gün ərzində onlarla dəfə təkrar cavablanır. Gec cavablanan sorğu çox vaxt itir — müştəri başqa satıcıya keçir. Rekvizitin əl ilə ötürülməsi köçürmə səhvlərinə və "göndərdim / gəlməyib" mübahisələrinə yol açır. Ayın sonunda isə kimin ödədiyini, nə qədər gəlir əldə olunduğunu dəqiq göstərən vahid mənbə olmur; rəqəm təxminə əsaslanır.
+
+Mövcud alternativlər bu zəncirin yalnız bir həlqəsini örtür. Linktree tipli servislər link siyahısı verir, sifariş və faktura imkanı yaratmır. Mühasibat proqramları rəsmi sənəd verir, lakin VÖEN-li şirkətlər üçün qurulub və sosial şəbəkə ilə əlaqəsi yoxdur. Excel uçot üçün işləyir, amma müştəriyə təqdim ediləsi sənəd deyil. Nəticədə zəncirin bütöv saxlanması yenə satıcının öz əməyi hesabına baş verir.
 
 ### 2.2 Problemin parçalanması və dəyəri
 
@@ -157,29 +157,13 @@ Tələblərin **91%-i** (138/164 həll tələbi) reallaşıb və yoxlanılıb. L
 | Rəqib təhlili | ✅ §3.3 |
 | Bazar həcmi qiymətləndirməsi | 🟡 Yuxarıdan-aşağı təxmin, ilkin mənbə yoxdur — §21.1 F-02 |
 
-> **BA qeydi:** §2.2-dəki dəyər rəqəmləri müsahibələrdən çıxarılmış təxminlərdir. Lansdan əvvəl ən azı 50 satıcı üzrə sorğu ilə təsdiqlənməsi tövsiyə olunur (TR-12).
-
 ---
 
 ## 3. Cari vəziyyət (as-is)
 
 ### 3.1 Cari proses
 
-```
-Müştəri profilə baxır
-      │
-      ▼
-DM-də "Qiymət nə qədərdir?"  ──► Satıcı əl ilə cavablayır  ──► (20% cavabsız qalır)
-      │
-      ▼
-Razılaşma  ──►  Rekvizit DM-də yazılır  ──►  Müştəri köçürür
-      │                                            │
-      ▼                                            ▼
-Ekran şəkli göndərilir  ──►  Satıcı bankı yoxlayır  ──►  Dəftərə qeyd (bəzən)
-      │
-      ▼
-Ayın sonu: kim ödəyib? — yaddaş və yazışma arxivi
-```
+![Şəkil 1 — Cari proses (as-is): sifarişin beş ayrı kanalda keçdiyi yol və hər addımın ağrı nöqtəsi](assets/d-3-1.png)
 
 ### 3.2 Cari vəziyyətin ağrı nöqtələri
 
@@ -202,31 +186,11 @@ Ayın sonu: kim ödəyib? — yaddaş və yazışma arxivi
 | Instagram Shop | Məhsul kataloqu | Fiziki məhsul üçündür; "razılaşma ilə" qiymət dəstəklənmir | P1 qismən |
 | Qlobal faktura SaaS (Wave, Zoho) | Faktura | Yerli bank rekvizitləri, dil, qiymət və sosial şəbəkə inteqrasiyası yoxdur | Yerli uyğunsuzluq |
 
-### 3.4 İmkan ifadəsi
-
-Azərbaycan bazarında **link-in-bio + sifariş + faktura + ödəniş izləmə** funksiyalarını yerli dildə, yerli bank rekvizitləri ilə və fiziki şəxsə uyğun qiymətə birləşdirən hazır məhsul yoxdur. Bu birləşmə Karvan üçün fərqlənmə mövqeyidir.
-
----
-
 ## 4. Hədəf vəziyyət (to-be) və imkan boşluğu
 
 ### 4.1 Hədəf proses
 
-```
-Müştəri (bio link / kataloq / axtarış)
-      │
-      ▼
-Satıcı səhifəsi: xidmətlər və qiymətlər açıq  ──►  "Sifariş et"
-      │
-      ├── Sabit qiymət ──► Faktura DƏRHAL yaranır ──► İctimai faktura səhifəsi
-      └── Razılaşma ilə ──► Sorğu ──► Satıcı qiymət yazır ──► Faktura
-                                                                   │
-                                                                   ▼
-                                   Rekvizit + QR ──► Müştəri ödəyir ──► "Ödədim"
-                                                                   │
-                                                                   ▼
-                                   Satıcı təsdiqləyir ──► PAID ──► Analitika və hesabat
-```
+![Şəkil 2 — Hədəf proses (to-be): kəşfdən ödənişin uçotuna qədər vahid axın](assets/d-4-1.png)
 
 ### 4.2 Tələb olunan biznes imkanları və boşluq təhlili
 
@@ -265,7 +229,7 @@ Satıcı səhifəsi: xidmətlər və qiymətlər açıq  ──►  "Sifariş et
 | V1 | Status-kvo | Heç nə etməmək | 0 | Xeyr — P1-P4 qalır |
 | V2 | Hazır həllərin birləşdirilməsi | Linktree + Wave + Google Sheets | Aşağı OPEX, yüksək əl əməyi | Qismən — P1 qismən, P3 yox |
 | V3 | Hazır SaaS-ın lokallaşdırılması (ağ etiket) | Xarici platformanın yerli versiyası | Lisenziya + asılılıq | Qismən — yerli rekvizit və dil məhdud |
-| V4 | **Öz platformanı qurmaq (seçilmiş)** | Karvan | Yüksək CAPEX (reallaşıb), aşağı OPEX | **Bəli** — P1-P4 |
+| V4 | **Öz platformanı qurmaq** | Karvan | Yüksək CAPEX (reallaşıb), aşağı OPEX | **Bəli** — P1-P4 |
 
 ### 5.2 Variantların qiymətləndirilməsi
 
@@ -279,8 +243,6 @@ Satıcı səhifəsi: xidmətlər və qiymətlər açıq  ──►  "Sifariş et
 | Reallaşma müddəti | 15 | 5 | 4 | 3 | 2 |
 | Uzunmüddətli asılılıq riski | 15 | 5 | 3 | 1 | 4 |
 | **Çəkili bal** | **100** | **2,05** | **2,25** | **2,55** | **4,40** |
-
-**Qərar:** V4. Əsas səbəb — yerli uyğunluq və monetizasiya imkanı digər variantlarda strukturca əldə edilə bilmir.
 
 ### 5.3 Gözlənilən faydalar
 
@@ -329,8 +291,6 @@ Satıcı səhifəsi: xidmətlər və qiymətlər açıq  ──►  "Sifariş et
 | 9 | 1 500 | 7% | 105 | ≈ 1 827 |
 | 12 | 2 000 | 8% | 160 | ≈ 2 784 |
 
-> Proqnoz F-01…F-09 fərziyyələrinə əsaslanır (§21.1). Hər rüb faktiki göstərici ilə yenilənməlidir (§27.3).
-
 ### 5.7 Həlledici uğur amilləri
 
 | # | Amil | Ölçmə | Risk əlaqəsi |
@@ -345,7 +305,7 @@ Satıcı səhifəsi: xidmətlər və qiymətlər açıq  ──►  "Sifariş et
 
 ## 6. Biznes məqsədləri və uğur metrikləri
 
-### 6.1 Məqsədlər (SMART)
+### 6.1 Məqsədlər
 
 | # | Məqsəd | Metrik | Baza | Hədəf | Müddət | Ölçmə yeri | Məsul |
 |---|---|---|---|---|---|---|---|
@@ -369,9 +329,7 @@ Satıcı səhifəsi: xidmətlər və qiymətlər açıq  ──►  "Sifariş et
 | Kataloq payı | `ProfileEvent.source` | Aylıq | source=catalog / ümumi sifariş | Mənbə `?s=` etiketindən asılıdır |
 | Saxlanma | `SubscriptionPayment` | Aylıq | 2-ci ay ödəyən / 1-ci ay ödəyən | Abunəlik avtomatik yenilənmir (§30.1) |
 
-> **Vacib:** bütün biznes metrikləri məhsulun içində ölçülür; xarici analitika sistemi tələb olunmur (FR-ANL-*, §20).
-
-### 6.3 Əks-metriklər (guardrail)
+### 6.3 Əks-metriklər
 
 | # | Əks-metrik | Hədd | Niyə |
 |---|---|---|---|
@@ -386,7 +344,7 @@ Satıcı səhifəsi: xidmətlər və qiymətlər açıq  ──►  "Sifariş et
 
 ### 7.1 Kontekst diaqramı
 
-![Şəkil 1 — Karvanın kontekst diaqramı: sistemin sərhədi, aktorlar, xarici sistemlər və məlumat axınları](assets/kontekst-diaqrami.png)
+![Şəkil 3 — Kontekst diaqramı: sistemin sərhədi, aktorlar, xarici sistemlər və məlumat axınları](assets/kontekst-diaqrami.png)
 
 Diaqram sistemin sərhədini və onu kəsən bütün axınları göstərir. Oxunuşu:
 
@@ -425,7 +383,7 @@ Kəsik xətlər iki şeyi bildirir: hələ reallaşdırılmamış axını (e-po�
 | E-13 | SEO | Metadata, strukturlu məlumat, sitemap | FR-SEO |
 | E-14 | Bildirişlər | WhatsApp linki ✅, avtomatik kanallar 🟡 | FR-BLD |
 
-### 7.3 Əhatədən kənar (bu buraxılışda)
+### 7.3 Əhatədən kənar
 
 | # | Mövzu | Səbəb | Nə vaxt |
 |---|---|---|---|
@@ -470,16 +428,7 @@ Kəsik xətlər iki şeyi bildirir: hələ reallaşdırılmamış axını (e-po�
 
 ### 8.2 Güc / maraq matrisi
 
-```
- Təsir
- yüksək │ PD-06  PD-09  PD-11        │ PD-01  PD-05
-        │ (qane et / izlə)           │ (yaxından idarə et)
-        ├────────────────────────────┼─────────────────────
- aşağı  │ PD-03  PD-10               │ PD-02  PD-04  PD-07  PD-08
-        │ (müşahidə et)              │ (məlumatlandır)
-        └────────────────────────────┴─────────────────────
-              aşağı                         yüksək     Maraq
-```
+![Şəkil 4 — Paydaşların güc / maraq matrisi və hər kvadrant üçün əlaqə strategiyası](assets/d-8-2.png)
 
 ### 8.3 Sistem rolları və icazələr
 
@@ -545,13 +494,7 @@ Kəsik xətlər iki şeyi bildirir: hələ reallaşdırılmamış axını (e-po�
 
 ### 10.1 Tələb səviyyələri və əlaqəsi
 
-```
-BG — Biznes məqsədi            (niyə)
- └─► BR — Biznes tələbi        (təşkilat nəyə nail olmalıdır)
-      └─► SH — Paydaş tələbi   (rol nə edə bilməlidir)
-           └─► FR / NFR / DR / IR — Həll tələbi (sistem nə etməlidir)
-                └─► UAT — Qəbul meyarı (necə yoxlanılır)
-```
+![Şəkil 5 — Tələblərin arxitekturası: biznes məqsədindən qəbul meyarına qədər səviyyələr](assets/d-10-1.png)
 
 Tam izlənilənlik §24-dədir. Hər həll tələbi ən azı bir paydaş tələbinə, hər paydaş tələbi ən azı bir biznes tələbinə bağlıdır; bağlantısız tələb əhatədən kənar sayılır.
 
@@ -649,8 +592,6 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 ---
 
 ## 13. Funksional həll tələbləri (FR)
-
-> Oxunuş: **Pri** = MoSCoW · **Mənbə** = paydaş tələbi · **Yox.** = yoxlama üsulu (T test, D demo, İ inspeksiya, A analiz) · **Vəz.** = reallaşma vəziyyəti.
 
 ### 13.1 Hesab və autentifikasiya — `FR-HES`
 
@@ -893,75 +834,23 @@ Lansı bloklayan `M` prioritetli açıq tələb yoxdur; 🟡 vəziyyətli FR-HES
 
 ### 14.1 Proses: satıcının yolu (qeydiyyatdan ilk ödənişə)
 
-```
-Paket seçimi (ana səhifə)
-        │
-        ▼
-Qeydiyyat (2 addım: şəxsi məlumat → hesab)
-        │
-        ├── pulsuz plan ──────────────► Səhifəm (profil qurma)
-        └── Pro / Pro Max seçilibsə ──► Ödəniş səhifəsi ─► Abunəlik aktiv
-                                                              │
-                                                              ▼
-                                   Xidmət əlavə et ─► Linki bio-ya qoy
-                                                              │
-                                                              ▼
-                                   Müştəri sifariş verir ─► Faktura ─► Ödəniş ─► Analitika
-```
+![Şəkil 6 — Satıcının yolu: paket seçimindən ilk ödənişə qədər](assets/d-14-1.png)
 
 ### 14.2 Proses: sifariş axını (qiymət növündən asılı)
 
-```
-Müştəri xidməti seçir
-        │
-        ├── Sabit qiymət ─────► Forma ─► Faktura DƏRHAL yaranır ─► Faktura səhifəsi
-        │                                      │
-        │                                 (limit dolubsa → sorğuya çevrilir)
-        │
-        └── Razılaşma ilə ────► Forma (sorğu) ─► Satıcı panelində "təsdiq gözləyir"
-                                                   │
-                              Satıcı qiyməti yazır ─► Faktura yaranır
-                                                   └─ imtina edir ─► Sorğu bağlanır
-```
+![Şəkil 7 — Sifariş axını: xidmətin qiymət növünə görə iki ssenari](assets/d-14-2.png)
 
 ### 14.3 Proses: ödənişin təsdiqi (müştəri fakturası)
 
-```
-Faktura göndərilir (SENT) ─► Müştəri açır (VIEWED)
-        │
-        ├─ Müştəri "Ödədim" basır ──► CLAIMED_PAID ─► Satıcı bankı yoxlayır
-        │                                               ├─ "Pul gəlib"  ─► PAID
-        │                                               └─ "Gəlməyib"   ─► SENT
-        └─ Son tarix keçir ─────────► OVERDUE
-```
+![Şəkil 8 — Fakturanın ödəniş statusu və statusu dəyişdirən tərəflər](assets/d-14-3.png)
 
 ### 14.4 Proses: abunəlik ödənişi
 
-```
-Tarif + müddət seçimi (aylıq / illik)
-        │
-        ├── Bank kartı ──► Aqreqatorun səhifəsi ──► imzalı webhook ──► ACTIVATED (avtomatik)
-        │                        │
-        │                        └─ istifadəçi qayıdır ─► nəticə API-dən yoxlanılır
-        │
-        └── Bank köçürməsi ──► KRV-XXXXXX kodu ──► PENDING ──► Admin təsdiqi ──► ACTIVATED
-```
+![Şəkil 9 — Abunəlik ödənişi: kart (aqreqator) və bank köçürməsi axınları](assets/d-14-4.png)
 
 ### 14.5 Proses: moderasiya
 
-```
-Şikayət / avtomatik nəzarət
-        │
-        ▼
-Admin istifadəçini tapır ─► Fəaliyyət jurnalını oxuyur
-        │
-        ├─ Xidməti bloklayır (səhifədən və kataloqdan çıxır)
-        ├─ Hesabı bloklayır (səbəb ilə; sessiyalar bağlanır)
-        └─ Hesabı silir (e-poçtla təsdiq)
-                │
-                ▼
-         Hər əməliyyat admin jurnalına yazılır
-```
+![Şəkil 10 — Moderasiya prosesi: şikayətdən qərara və admin jurnalına](assets/d-14-5.png)
 
 ### 14.6 Faktura statusunun keçid matrisi
 
@@ -1085,20 +974,7 @@ BABOK təsnifatı: **D** = definitiv (strukturu müəyyən edir, pozula bilməz)
 
 ### 16.1 Məntiqi məlumat modeli
 
-```
-User (rol, blok vəziyyəti, FİN/pasport)
- ├─1:1─ Subscription (plan, müddətin sonu)
- ├─1:N─ Session · PasswordReset · SubscriptionPayment
- └─1:1─ Profile (username, brend, rəng, rekvizit, kataloq görünüşü)
-          ├─1:N─ SocialLink · PortfolioItem · Media
-          ├─1:N─ Service (qiymət növü, valyuta, müddət, şəkil, moderasiya)
-          ├─1:N─ Order ──0:1── Invoice ─1:N─ InvoiceItem
-          │                      ├─1:N─ Payment
-          │                      └─1:N─ Reminder
-          └─1:N─ ProfileEvent (baxış, forma, zəng, link klikləri)
-
-Sistem: AdminLog · ActivityLog · AppSetting (şifrələnmiş ayarlar)
-```
+![Şəkil 11 — Məntiqi məlumat modeli: əsas varlıqlar və aralarındakı əlaqələr](assets/d-16-1.png)
 
 Fiziki sxem: [`prisma/schema.prisma`](../prisma/schema.prisma); miqrasiya tarixçəsi: [`prisma/migrations/`](../prisma/migrations/).
 
@@ -1445,8 +1321,6 @@ Faktura **qeyri-rəsmi ödəniş sorğusudur**. PDF-də "Bu sənəd ödəniş so
 
 ## 24. İzlənilənlik matrisi
 
-### 24.1 Biznes məqsədi → tələb → qəbul
-
 | Məqsəd | Biznes tələbi | Paydaş tələbi | Həll tələbi | Qəbul |
 |---|---|---|---|---|
 | BG-01 Satıcı bazası | BR-01 | SH-SAT-01, SH-SAT-02 | FR-HES-01…03, FR-SEH-01…06 | UAT-01 |
@@ -1576,21 +1450,7 @@ Versiya 2.0 təsdiqləndikdən sonra (§0.4) bu sənəd **baseline** sayılır. 
 
 ### 28.2 Dəyişiklik prosesi
 
-```
-Dəyişiklik ehtiyacı
-      │
-      ▼
-CR qeydiyyatı (təşəbbüskar, səbəb, təklif olunan dəyişiklik)
-      │
-      ▼
-BA təsir təhlili: əhatə · tələblər · risk · UAT · qrafik · xərc
-      │
-      ├─ Aşağı təsir  ──► BA təsdiqi ──► baseline yenilənir (versiya +0.1)
-      └─ Yüksək təsir ──► Sponsor qərarı ──► qəbul / rədd / təxirə salma
-                                 │
-                                 ▼
-                     §24 izlənilənlik matrisi yenilənir
-```
+![Şəkil 12 — Dəyişikliklərin idarə olunması: CR-dən baseline yenilənməsinə qədər](assets/d-28-2.png)
 
 ### 28.3 Təsirin təsnifatı
 
@@ -1599,10 +1459,6 @@ BA təsir təhlili: əhatə · tələblər · risk · UAT · qrafik · xərc
 | Aşağı | Yalnız ifadə dəqiqləşir, həll dəyişmir | BA |
 | Orta | Bir həll tələbi əlavə olunur/dəyişir, qrafikə təsiri yoxdur | BA + Texniki |
 | Yüksək | Əhatə, qiymət strukturu, hüquqi model və ya BG hədəfi dəyişir | Sponsor |
-
-### 28.4 Tələblərin prioritetləşdirilməsi
-
-Prioritet MoSCoW ilə verilir; mübahisəli hallarda meyarlar: ① biznes məqsədinə təsir ② reallaşdırma xərci ③ risk azaltması ④ asılılıq. `Must` tələblərin ümumi həcmi buraxılışın 60%-ni keçməməlidir.
 
 ---
 
@@ -1729,4 +1585,3 @@ v1.0-dakı §3 metrikləri (M1…M7) v2.0-da BG-01…BG-07 kimi, §16 riskləri 
 
 ---
 
-*Bu sənəd reallaşdırılmış məhsulun vəziyyətinə əsasən hazırlanıb və BABOK v3 bilik sahələrinə (biznes analizinin planlaşdırılması, elisitasiya, tələblərin idarə olunması, strategiyanın təhlili, tələblərin analizi və dizaynın müəyyənləşdirilməsi, həllin qiymətləndirilməsi) uyğun strukturlaşdırılıb. Hər dəyişiklik §28-dəki prosedurdan keçməli, müvafiq tələb bəndi və §24 izlənilənlik matrisi yenilənməlidir.*

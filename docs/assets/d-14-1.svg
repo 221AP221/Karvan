@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1560" height="820" viewBox="0 0 1560 820" font-family="DejaVu Sans, Segoe UI, Arial, sans-serif">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6B7280"/></marker>
+<marker id="ab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#D6127E"/></marker>
+<marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#9AA1AC"/></marker>
+</defs>
+<rect width="1560" height="820" fill="#FFFFFF"/>
+<text x="60" y="54" font-size="27" font-weight="700" fill="#1F2227">Satıcının yolu</text>
+<text x="60" y="84" font-size="16" fill="#6B7280">Paket seçimindən ilk ödənişə qədər (§14.1)</text>
+<line x1="60" y1="102" x2="1500" y2="102" stroke="#E3E5E9" stroke-width="2"/>
+<rect x="80" y="150" width="300" height="80" rx="10" fill="#F7F8FA" stroke="#C9CDD4" stroke-width="2"/>
+<text x="230.0" y="187.0" font-size="17" font-weight="700" fill="#1F2227" text-anchor="middle">Paket seçimi</text>
+<text x="230.0" y="210.0" font-size="13" fill="#6B7280" text-anchor="middle">ana səhifə</text>
+<rect x="80" y="280" width="300" height="92" rx="10" fill="#FFF5FA" stroke="#D6127E" stroke-width="2"/>
+<text x="230.0" y="323.0" font-size="17" font-weight="700" fill="#D6127E" text-anchor="middle">Qeydiyyat</text>
+<text x="230.0" y="346.0" font-size="13" fill="#6B7280" text-anchor="middle">① şəxsi məlumat ② hesab</text>
+<path d="M230 230 L230 280" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<polygon points="620,261.0 750.0,326 620,391.0 490.0,326" fill="#FFFFFF" stroke="#C9CDD4" stroke-width="2"/>
+<text x="620" y="324" font-size="16" font-weight="700" fill="#1F2227" text-anchor="middle">Seçilən plan?</text>
+<text x="620" y="344" font-size="13" fill="#6B7280" text-anchor="middle">FR-HES-08</text>
+<path d="M380 326 L490 326" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="880" y="170" width="320" height="80" rx="10" fill="#F2FBF5" stroke="#58A86B" stroke-width="2"/>
+<text x="1040.0" y="207.0" font-size="17" font-weight="700" fill="#246B38" text-anchor="middle">Pulsuz</text>
+<text x="1040.0" y="230.0" font-size="13" fill="#6B7280" text-anchor="middle">birbaşa “Səhifəm”ə</text>
+<rect x="880" y="400" width="320" height="80" rx="10" fill="#FFF7ED" stroke="#D9962B" stroke-width="2"/>
+<text x="1040.0" y="437.0" font-size="17" font-weight="700" fill="#92540A" text-anchor="middle">Pro / Pro Max</text>
+<text x="1040.0" y="460.0" font-size="13" fill="#6B7280" text-anchor="middle">ödəniş səhifəsinə</text>
+<path d="M620 261 L620 210 L870 210" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M620 391 L620 440 L870 440" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="880" y="520" width="320" height="80" rx="10" fill="#F2FBF5" stroke="#58A86B" stroke-width="2"/>
+<text x="1040.0" y="557.0" font-size="17" font-weight="700" fill="#246B38" text-anchor="middle">Abunəlik aktiv</text>
+<text x="1040.0" y="580.0" font-size="13" fill="#6B7280" text-anchor="middle">15 dəq. ərzində</text>
+<path d="M1040 480 L1040 520" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="1270" y="280" width="230" height="92" rx="10" fill="#FFF5FA" stroke="#D6127E" stroke-width="2"/>
+<text x="1385.0" y="323.0" font-size="17" font-weight="700" fill="#D6127E" text-anchor="middle">Profil qurulur</text>
+<text x="1385.0" y="346.0" font-size="13" fill="#6B7280" text-anchor="middle">səhifəm</text>
+<path d="M1200 210 L1385 210 L1385 280" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M1200 560 L1385 560 L1385 372" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="80" y="660" width="260" height="80" rx="10" fill="#F7F8FA" stroke="#C9CDD4" stroke-width="2"/>
+<text x="210.0" y="697.0" font-size="16" font-weight="700" fill="#1F2227" text-anchor="middle">Xidmət əlavə et</text>
+<text x="210.0" y="720.0" font-size="12" fill="#6B7280" text-anchor="middle">qiymət və şəkil</text>
+<rect x="372" y="660" width="260" height="80" rx="10" fill="#F7F8FA" stroke="#C9CDD4" stroke-width="2"/>
+<text x="502.0" y="697.0" font-size="16" font-weight="700" fill="#1F2227" text-anchor="middle">Link bio-ya qoyulur</text>
+<text x="502.0" y="720.0" font-size="12" fill="#6B7280" text-anchor="middle">Instagram / TikTok</text>
+<path d="M340 700 L366 700" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="664" y="660" width="260" height="80" rx="10" fill="#F7F8FA" stroke="#C9CDD4" stroke-width="2"/>
+<text x="794.0" y="697.0" font-size="16" font-weight="700" fill="#1F2227" text-anchor="middle">Müştəri sifariş verir</text>
+<text x="794.0" y="720.0" font-size="12" fill="#6B7280" text-anchor="middle">forma</text>
+<path d="M632 700 L658 700" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="956" y="660" width="260" height="80" rx="10" fill="#FFF5FA" stroke="#D6127E" stroke-width="2"/>
+<text x="1086.0" y="697.0" font-size="16" font-weight="700" fill="#D6127E" text-anchor="middle">Faktura</text>
+<text x="1086.0" y="720.0" font-size="12" fill="#6B7280" text-anchor="middle">nömrə · PDF</text>
+<path d="M924 700 L950 700" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="1248" y="660" width="260" height="80" rx="10" fill="#FFF5FA" stroke="#D6127E" stroke-width="2"/>
+<text x="1378.0" y="697.0" font-size="16" font-weight="700" fill="#D6127E" text-anchor="middle">Ödəniş və analitika</text>
+<text x="1378.0" y="720.0" font-size="12" fill="#6B7280" text-anchor="middle">status · gəlir · mənbə</text>
+<path d="M1216 700 L1242 700" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M1385 372 L1385 620 L210 620 L210 660" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="588.16" y="598" width="223.68" height="22" fill="#FFFFFF" opacity="0.92"/>
+<text x="700" y="612" font-size="14" fill="#6B7280" text-anchor="middle" font-weight="400">profil hazır olduqdan sonra</text>
+</svg>

@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="800" viewBox="0 0 1440 800" font-family="DejaVu Sans, Segoe UI, Arial, sans-serif">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6B7280"/></marker>
+<marker id="ab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#D6127E"/></marker>
+<marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#9AA1AC"/></marker>
+</defs>
+<rect width="1440" height="800" fill="#FFFFFF"/>
+<text x="60" y="54" font-size="27" font-weight="700" fill="#1F2227">Moderasiya prosesi</text>
+<text x="60" y="84" font-size="16" fill="#6B7280">Şikayətdən qərara və jurnala (§14.5)</text>
+<line x1="60" y1="102" x2="1380" y2="102" stroke="#E3E5E9" stroke-width="2"/>
+<rect x="80" y="300" width="300" height="92" rx="10" fill="#F7F8FA" stroke="#C9CDD4" stroke-width="2"/>
+<text x="230.0" y="343.0" font-size="17" font-weight="700" fill="#1F2227" text-anchor="middle">Şikayət / siqnal</text>
+<text x="230.0" y="366.0" font-size="13" fill="#6B7280" text-anchor="middle">istifadəçi və ya nəzarət</text>
+<rect x="450" y="300" width="300" height="92" rx="10" fill="#FFF5FA" stroke="#D6127E" stroke-width="2"/>
+<text x="600.0" y="343.0" font-size="17" font-weight="700" fill="#D6127E" text-anchor="middle">Admin araşdırır</text>
+<text x="600.0" y="366.0" font-size="13" fill="#6B7280" text-anchor="middle">fəaliyyət jurnalı</text>
+<path d="M380 346 L450 346" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<polygon points="950,281.0 1080.0,346 950,411.0 820.0,346" fill="#FFFFFF" stroke="#C9CDD4" stroke-width="2"/>
+<text x="950" y="344" font-size="16" font-weight="700" fill="#1F2227" text-anchor="middle">Qərar</text>
+<text x="950" y="364" font-size="13" fill="#6B7280" text-anchor="middle">§8.3 icazələri</text>
+<path d="M750 346 L820 346" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="1120" y="140" width="290" height="86" rx="10" fill="#FFF7ED" stroke="#D9962B" stroke-width="2"/>
+<text x="1265.0" y="180.0" font-size="16" font-weight="700" fill="#92540A" text-anchor="middle">Xidmət bloklanır</text>
+<text x="1265.0" y="203.0" font-size="12" fill="#6B7280" text-anchor="middle">səhifə və kataloqdan çıxır</text>
+<rect x="1120" y="300" width="290" height="86" rx="10" fill="#FFF7ED" stroke="#D9962B" stroke-width="2"/>
+<text x="1265.0" y="340.0" font-size="16" font-weight="700" fill="#92540A" text-anchor="middle">Hesab bloklanır</text>
+<text x="1265.0" y="363.0" font-size="12" fill="#6B7280" text-anchor="middle">səbəb · sessiyalar bağlanır</text>
+<rect x="1120" y="460" width="290" height="86" rx="10" fill="#FFFFFF" stroke="#9AA1AC" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="1265.0" y="500.0" font-size="16" font-weight="700" fill="#6B7280" text-anchor="middle">Hesab silinir</text>
+<text x="1265.0" y="523.0" font-size="12" fill="#6B7280" text-anchor="middle">e-poçtla təsdiq</text>
+<path d="M950 281 L950 183 L1110 183" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M1080 343 L1110 343" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M950 411 L950 503 L1110 503" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="450" y="620" width="500" height="92" rx="10" fill="#FFF5FA" stroke="#D6127E" stroke-width="2"/>
+<text x="700.0" y="663.0" font-size="17" font-weight="700" fill="#D6127E" text-anchor="middle">Admin jurnalı</text>
+<text x="700.0" y="686.0" font-size="13" fill="#6B7280" text-anchor="middle">hər əməliyyat yazılır və silinmir (BRU-15)</text>
+<path d="M1265 546 L1265 666 L950 666" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M1120 183 L1060 183 L1060 132 L50 132 L50 666 L450 666" fill="none" stroke="#9AA1AC" stroke-width="2" stroke-dasharray="7 6" marker-end="url(#ad)"/>
+<text x="300" y="124" font-size="14" fill="#6B7280" text-anchor="start" font-weight="400">nəticə hər üç halda jurnala düşür</text>
+<rect x="80" y="440" width="300" height="92" rx="10" fill="#FFFFFF" stroke="#9AA1AC" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="230.0" y="483.0" font-size="16" font-weight="700" fill="#6B7280" text-anchor="middle">Satıcı səbəbi görür</text>
+<text x="230.0" y="506.0" font-size="12" fill="#6B7280" text-anchor="middle">panelində bildiriş</text>
+<path d="M1120 262 L1090 262 L1090 420 L230 420 L230 440" fill="none" stroke="#9AA1AC" stroke-width="2" stroke-dasharray="7 6" marker-end="url(#ad)"/>
+</svg>

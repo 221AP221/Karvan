@@ -206,24 +206,27 @@ while (i < src.length) {
     // PNG başlığından ölçüləri oxuyuruq
     const pxW = data.readUInt32BE(16);
     const pxH = data.readUInt32BE(20);
-    const w = 640;
-    const h = Math.round((pxH / pxW) * w);
-    body.push(
-      new Paragraph({
-        alignment: AlignmentType.CENTER,
-        // sənədin standart sətir aralığı şəkli kəsdiyi üçün burada avtomatik aralıq verilir
-        spacing: { before: 120, after: 80, line: 240, lineRule: "auto" },
-        children: [new ImageRun({ type: "png", data, transformation: { width: w, height: h } })],
-      }),
-    );
+    // şəkil öz landşaft səhifəsində verilir: A4 eni 29,7 sm − 2×2 sm kənar
+    let w = 960;
+    let h = Math.round((pxH / pxW) * w);
+    const maxH = 560; // 21 sm − 2×2 sm − başlıq/altyazı
+    if (h > maxH) { w = Math.round((pxW / pxH) * maxH); h = maxH; }
+    const figure = new Paragraph({
+      alignment: AlignmentType.CENTER,
+      // sənədin standart sətir aralığı şəkli kəsdiyi üçün burada avtomatik aralıq verilir
+      spacing: { before: 120, after: 80, line: 240, lineRule: "auto" },
+      children: [new ImageRun({ type: "png", data, transformation: { width: w, height: h } })],
+    });
+    figure.__figure = true;
+    body.push(figure);
     if (image[1]) {
-      body.push(
-        new Paragraph({
-          alignment: AlignmentType.CENTER,
-          spacing: { after: 220 },
-          children: [new TextRun({ text: image[1], italics: true, size: 18, color: MUTED, font: "Calibri" })],
-        }),
-      );
+      const caption = new Paragraph({
+        alignment: AlignmentType.CENTER,
+        spacing: { after: 220 },
+        children: [new TextRun({ text: image[1], italics: true, size: 18, color: MUTED, font: "Calibri" })],
+      });
+      caption.__figure = true;
+      body.push(caption);
     }
     i++;
     continue;
@@ -313,7 +316,7 @@ const cover = [
     spacing: { after: 80 },
   }),
   new Paragraph({
-    children: [new TextRun({ text: "Business Requirements Document · BABOK® v3", size: 24, color: MUTED })],
+    children: [new TextRun({ text: "", size: 8 })],
     border: { bottom: { style: BorderStyle.SINGLE, size: 8, color: BRAND } },
     spacing: { after: 600 },
   }),
@@ -360,7 +363,7 @@ const headingStyle = (size, color, before, after) => ({
   paragraph: { spacing: { before, after }, keepNext: true, outlineLevel: undefined },
 });
 
-const doc = new Document({
+const docOptions = {
   creator: "Karvan",
   title: "Karvan — Biznes Tələbləri Sənədi (BRD)",
   description: "Karvan platformasının biznes tələbləri və reallaşma vəziyyəti",
@@ -413,10 +416,42 @@ const doc = new Document({
           ],
         }),
       },
-      children: [...cover, ...body],
+      children: [],
     },
   ],
+};
+
+// ---- bölmələr: hər diaqram öz landşaft səhifəsində verilir
+const base = docOptions.sections[0];
+const LAND = { width: PAGE.height, height: PAGE.width };
+const makeSection = (children, landscape) => ({
+  properties: {
+    page: {
+      size: landscape ? LAND : PAGE,
+      margin: { top: MARGIN, bottom: MARGIN, left: MARGIN, right: MARGIN },
+    },
+  },
+  headers: base.headers,
+  footers: base.footers,
+  children,
 });
+
+const sections = [];
+let buf_ = [...cover];
+let inFigure = false;
+for (const block of body) {
+  const isFig = block.__figure === true;
+  if (isFig !== inFigure) {
+    if (buf_.length) sections.push(makeSection(buf_, inFigure));
+    buf_ = [];
+    inFigure = isFig;
+  }
+  buf_.push(block);
+}
+if (buf_.length) sections.push(makeSection(buf_, inFigure));
+docOptions.sections = sections;
+
+const doc = new Document(docOptions);
 
 Packer.toBuffer(doc).then((buf) => {
   fs.writeFileSync(process.argv[3], buf);

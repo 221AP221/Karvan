@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="880" viewBox="0 0 1240 880" font-family="DejaVu Sans, Segoe UI, Arial, sans-serif">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6B7280"/></marker>
+<marker id="ab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#D6127E"/></marker>
+<marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#9AA1AC"/></marker>
+</defs>
+<rect width="1240" height="880" fill="#FFFFFF"/>
+<text x="60" y="54" font-size="27" font-weight="700" fill="#1F2227">Paydaşların güc / maraq matrisi</text>
+<text x="60" y="84" font-size="16" fill="#6B7280">Hər paydaş üçün əlaqə strategiyası (§8.2)</text>
+<line x1="60" y1="102" x2="1180" y2="102" stroke="#E3E5E9" stroke-width="2"/>
+<rect x="220" y="160" width="440" height="290" rx="12" fill="#FFF7ED" stroke="#D9962B" stroke-width="2"/>
+<text x="244" y="200" font-size="18" fill="#1F2227" text-anchor="start" font-weight="700">Qane et / izlə</text>
+<text x="244" y="236" font-size="15" fill="#6B7280" text-anchor="start" font-weight="400">PD-06 Ödəniş aqreqatoru</text>
+<text x="244" y="264" font-size="15" fill="#6B7280" text-anchor="start" font-weight="400">PD-09 Hüquq məsləhətçisi</text>
+<text x="244" y="292" font-size="15" fill="#6B7280" text-anchor="start" font-weight="400">PD-11 Tənzimləyici</text>
+<rect x="660" y="160" width="440" height="290" rx="12" fill="#FFF5FA" stroke="#D6127E" stroke-width="2"/>
+<text x="684" y="200" font-size="18" fill="#1F2227" text-anchor="start" font-weight="700">Yaxından idarə et</text>
+<text x="684" y="236" font-size="15" fill="#6B7280" text-anchor="start" font-weight="400">PD-01 Sponsor</text>
+<text x="684" y="264" font-size="15" fill="#6B7280" text-anchor="start" font-weight="400">PD-05 Texniki komanda</text>
+<rect x="220" y="450" width="440" height="290" rx="12" fill="#FAFBFC" stroke="#C9CDD4" stroke-width="2"/>
+<text x="244" y="490" font-size="18" fill="#1F2227" text-anchor="start" font-weight="700">Müşahidə et</text>
+<text x="244" y="526" font-size="15" fill="#6B7280" text-anchor="start" font-weight="400">PD-03 Müştəri</text>
+<text x="244" y="554" font-size="15" fill="#6B7280" text-anchor="start" font-weight="400">PD-10 Axtarış sistemləri</text>
+<rect x="660" y="450" width="440" height="290" rx="12" fill="#F2FBF5" stroke="#58A86B" stroke-width="2"/>
+<text x="684" y="490" font-size="18" fill="#1F2227" text-anchor="start" font-weight="700">Məlumatlandır</text>
+<text x="684" y="526" font-size="15" fill="#6B7280" text-anchor="start" font-weight="400">PD-02 Satıcı</text>
+<text x="684" y="554" font-size="15" fill="#6B7280" text-anchor="start" font-weight="400">PD-04 Dəstək</text>
+<text x="684" y="582" font-size="15" fill="#6B7280" text-anchor="start" font-weight="400">PD-07 AI təminatçısı</text>
+<text x="684" y="610" font-size="15" fill="#6B7280" text-anchor="start" font-weight="400">PD-08 E-poçt provayderi</text>
+<text x="660" y="130" font-size="15" fill="#6B7280" text-anchor="middle" font-weight="400">Maraq →</text>
+<text x="440.0" y="130" font-size="14" fill="#6B7280" text-anchor="middle" font-weight="400">aşağı</text>
+<text x="880.0" y="130" font-size="14" fill="#6B7280" text-anchor="middle" font-weight="400">yüksək</text>
+<text x="150" y="305.0" font-size="14" fill="#6B7280" text-anchor="middle" transform="rotate(-90 150 305.0)">yüksək</text>
+<text x="150" y="595.0" font-size="14" fill="#6B7280" text-anchor="middle" transform="rotate(-90 150 595.0)">aşağı</text>
+<text x="112" y="450" font-size="15" fill="#6B7280" text-anchor="middle" transform="rotate(-90 112 450)">↑ Təsir</text>
+<text x="220" y="800" font-size="15" fill="#6B7280" text-anchor="start" font-weight="400">Strategiya paydaşın təsiri (qərarı dəyişə bilmə gücü) və marağının (nəticədən asılılığının) kəsişməsindən çıxır.</text>
+</svg>

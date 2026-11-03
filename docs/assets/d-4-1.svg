@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1560" height="900" viewBox="0 0 1560 900" font-family="DejaVu Sans, Segoe UI, Arial, sans-serif">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6B7280"/></marker>
+<marker id="ab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#D6127E"/></marker>
+<marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#9AA1AC"/></marker>
+</defs>
+<rect width="1560" height="900" fill="#FFFFFF"/>
+<text x="60" y="54" font-size="27" font-weight="700" fill="#1F2227">Hədəf proses (to-be)</text>
+<text x="60" y="84" font-size="16" fill="#6B7280">Karvanda sifarişin vahid axını: kəşfdən ödənişin uçotuna qədər (§4.1)</text>
+<line x1="60" y1="102" x2="1500" y2="102" stroke="#E3E5E9" stroke-width="2"/>
+<rect x="80" y="150" width="300" height="86" rx="10" fill="#F7F8FA" stroke="#C9CDD4" stroke-width="2"/>
+<text x="230.0" y="190.0" font-size="18" font-weight="700" fill="#1F2227" text-anchor="middle">Müştəri</text>
+<text x="230.0" y="213.0" font-size="14" fill="#6B7280" text-anchor="middle">bio link · kataloq · axtarış</text>
+<rect x="80" y="300" width="300" height="86" rx="10" fill="#FFF5FA" stroke="#D6127E" stroke-width="2"/>
+<text x="230.0" y="340.0" font-size="18" font-weight="700" fill="#D6127E" text-anchor="middle">Satıcı səhifəsi</text>
+<text x="230.0" y="363.0" font-size="14" fill="#6B7280" text-anchor="middle">xidmətlər və qiymətlər açıq</text>
+<path d="M230 236 L230 300" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M380 343 L470 343" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<polygon points="620,278.0 740.0,343 620,408.0 500.0,343" fill="#FFFFFF" stroke="#C9CDD4" stroke-width="2"/>
+<text x="620" y="341" font-size="16" font-weight="700" fill="#1F2227" text-anchor="middle">Qiymət növü?</text>
+<text x="620" y="361" font-size="13" fill="#6B7280" text-anchor="middle">xidmətin ayarı</text>
+<rect x="820" y="170" width="330" height="86" rx="10" fill="#F2FBF5" stroke="#58A86B" stroke-width="2"/>
+<text x="985.0" y="210.0" font-size="18" font-weight="700" fill="#246B38" text-anchor="middle">Sabit qiymət</text>
+<text x="985.0" y="233.0" font-size="14" fill="#6B7280" text-anchor="middle">faktura DƏRHAL yaranır</text>
+<rect x="820" y="430" width="330" height="86" rx="10" fill="#FFFFFF" stroke="#C9CDD4" stroke-width="2"/>
+<text x="985.0" y="470.0" font-size="18" font-weight="700" fill="#1F2227" text-anchor="middle">Razılaşma ilə</text>
+<text x="985.0" y="493.0" font-size="14" fill="#6B7280" text-anchor="middle">sorğu satıcıya düşür</text>
+<path d="M620 278 L620 213 L810 213" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M620 408 L620 473 L810 473" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="820" y="560" width="330" height="72" rx="10" fill="#FFFFFF" stroke="#C9CDD4" stroke-width="2"/>
+<text x="985.0" y="602.0" font-size="17" font-weight="700" fill="#1F2227" text-anchor="middle">Satıcı qiyməti yazır</text>
+<path d="M985 516 L985 560" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="1210" y="300" width="280" height="86" rx="10" fill="#FFF5FA" stroke="#D6127E" stroke-width="2"/>
+<text x="1350.0" y="340.0" font-size="18" font-weight="700" fill="#D6127E" text-anchor="middle">Faktura</text>
+<text x="1350.0" y="363.0" font-size="14" fill="#6B7280" text-anchor="middle">nömrə · PDF · QR</text>
+<path d="M1150 213 L1350 213 L1350 300" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M1150 596 L1180 596 L1180 343 L1210 343" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="1210" y="470" width="280" height="72" rx="10" fill="#F7F8FA" stroke="#C9CDD4" stroke-width="2"/>
+<text x="1350.0" y="503.0" font-size="17" font-weight="700" fill="#1F2227" text-anchor="middle">Rekvizit + QR</text>
+<text x="1350.0" y="526.0" font-size="13" fill="#6B7280" text-anchor="middle">kopyala və ödə</text>
+<path d="M1350 386 L1350 470" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="1210" y="620" width="280" height="72" rx="10" fill="#F7F8FA" stroke="#C9CDD4" stroke-width="2"/>
+<text x="1350.0" y="653.0" font-size="17" font-weight="700" fill="#1F2227" text-anchor="middle">Müştəri “Ödədim”</text>
+<text x="1350.0" y="676.0" font-size="13" fill="#6B7280" text-anchor="middle">CLAIMED_PAID</text>
+<path d="M1350 542 L1350 620" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="820" y="700" width="330" height="80" rx="10" fill="#F2FBF5" stroke="#58A86B" stroke-width="2"/>
+<text x="985.0" y="737.0" font-size="17" font-weight="700" fill="#246B38" text-anchor="middle">Satıcı təsdiqləyir</text>
+<text x="985.0" y="760.0" font-size="13" fill="#6B7280" text-anchor="middle">status → PAID</text>
+<path d="M1210 656 L1150 656 L1150 700" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="380" y="700" width="330" height="80" rx="10" fill="#FFF5FA" stroke="#D6127E" stroke-width="2"/>
+<text x="545.0" y="737.0" font-size="17" font-weight="700" fill="#D6127E" text-anchor="middle">Analitika və hesabat</text>
+<text x="545.0" y="760.0" font-size="13" fill="#6B7280" text-anchor="middle">gəlir · konversiya · mənbə</text>
+<path d="M820 740 L710 740" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="80" y="700" width="260" height="86" rx="10" fill="#FAFBFC" stroke="#E3E5E9" stroke-width="2"/>
+<text x="102" y="728" font-size="15" font-weight="700" fill="#1F2227">İşarələr</text>
+<rect x="102" y="736" width="50" height="16" rx="5" fill="#FFF5FA" stroke="#D6127E" stroke-width="2"/>
+<text x="166" y="752" font-size="14" fill="#4B5563">sistemin yaratdığı sənəd</text>
+<line x1="102" y1="773" x2="152" y2="773" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<text x="166" y="778" font-size="14" fill="#4B5563">axın</text>
+</svg>

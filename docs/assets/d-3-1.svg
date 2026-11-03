@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1060" viewBox="0 0 1500 1060" font-family="DejaVu Sans, Segoe UI, Arial, sans-serif">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6B7280"/></marker>
+<marker id="ab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#D6127E"/></marker>
+<marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#9AA1AC"/></marker>
+</defs>
+<rect width="1500" height="1060" fill="#FFFFFF"/>
+<text x="60" y="54" font-size="27" font-weight="700" fill="#1F2227">Cari proses (as-is)</text>
+<text x="60" y="84" font-size="16" fill="#6B7280">Sifarişin beş ayrı kanalda keçdiyi mövcud yol və hər addımın ağrı nöqtəsi (§3.1)</text>
+<line x1="60" y1="102" x2="1440" y2="102" stroke="#E3E5E9" stroke-width="2"/>
+<rect x="380" y="140" width="520" height="68" rx="10" fill="#F7F8FA" stroke="#C9CDD4" stroke-width="2"/>
+<text x="640.0" y="171.0" font-size="17" font-weight="700" fill="#1F2227" text-anchor="middle">Müştəri profilə baxır</text>
+<text x="640.0" y="194.0" font-size="13" fill="#6B7280" text-anchor="middle">Instagram / TikTok</text>
+<path d="M640 208 L640 228" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="380" y="228" width="520" height="68" rx="10" fill="#F7F8FA" stroke="#C9CDD4" stroke-width="2"/>
+<text x="640.0" y="259.0" font-size="17" font-weight="700" fill="#1F2227" text-anchor="middle">DM: “Qiymət nə qədərdir?”</text>
+<text x="640.0" y="282.0" font-size="13" fill="#6B7280" text-anchor="middle">hər müştəri ayrıca soruşur</text>
+<text x="930" y="268" font-size="14" fill="#92540A" text-anchor="start" font-weight="400">P1 · təkrar əmək</text>
+<path d="M900 262 L924 262" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M640 296 L640 316" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="380" y="316" width="520" height="68" rx="10" fill="#F7F8FA" stroke="#C9CDD4" stroke-width="2"/>
+<text x="640.0" y="347.0" font-size="17" font-weight="700" fill="#1F2227" text-anchor="middle">Satıcı əl ilə cavablayır</text>
+<text x="640.0" y="370.0" font-size="13" fill="#6B7280" text-anchor="middle">eyni mətn gündə onlarla dəfə</text>
+<text x="930" y="356" font-size="14" fill="#92540A" text-anchor="start" font-weight="400">P1 · sorğuların ≈20%-i cavabsız qalır</text>
+<path d="M900 350 L924 350" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M640 384 L640 404" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="380" y="404" width="520" height="68" rx="10" fill="#F7F8FA" stroke="#C9CDD4" stroke-width="2"/>
+<text x="640.0" y="435.0" font-size="17" font-weight="700" fill="#1F2227" text-anchor="middle">Razılaşma</text>
+<text x="640.0" y="458.0" font-size="13" fill="#6B7280" text-anchor="middle">səsli mesaj / yazışma</text>
+<path d="M640 472 L640 492" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="380" y="492" width="520" height="68" rx="10" fill="#F7F8FA" stroke="#C9CDD4" stroke-width="2"/>
+<text x="640.0" y="523.0" font-size="17" font-weight="700" fill="#1F2227" text-anchor="middle">Rekvizit DM-də göndərilir</text>
+<text x="640.0" y="546.0" font-size="13" fill="#6B7280" text-anchor="middle">kart nömrəsi əl ilə yazılır</text>
+<text x="930" y="532" font-size="14" fill="#92540A" text-anchor="start" font-weight="400">P2 · səhv rəqəm riski</text>
+<path d="M900 526 L924 526" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M640 560 L640 580" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="380" y="580" width="520" height="68" rx="10" fill="#F7F8FA" stroke="#C9CDD4" stroke-width="2"/>
+<text x="640.0" y="611.0" font-size="17" font-weight="700" fill="#1F2227" text-anchor="middle">Müştəri köçürür</text>
+<text x="640.0" y="634.0" font-size="13" fill="#6B7280" text-anchor="middle">bank tətbiqi</text>
+<path d="M640 648 L640 668" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="380" y="668" width="520" height="68" rx="10" fill="#F7F8FA" stroke="#C9CDD4" stroke-width="2"/>
+<text x="640.0" y="699.0" font-size="17" font-weight="700" fill="#1F2227" text-anchor="middle">Ekran şəkli göndərilir</text>
+<text x="640.0" y="722.0" font-size="13" fill="#6B7280" text-anchor="middle">ödənişin yeganə “sübutu”</text>
+<text x="930" y="708" font-size="14" fill="#92540A" text-anchor="start" font-weight="400">P2 · “göndərdim / gəlməyib” mübahisəsi</text>
+<path d="M900 702 L924 702" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M640 736 L640 756" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="380" y="756" width="520" height="68" rx="10" fill="#F7F8FA" stroke="#C9CDD4" stroke-width="2"/>
+<text x="640.0" y="787.0" font-size="17" font-weight="700" fill="#1F2227" text-anchor="middle">Satıcı bankı yoxlayır</text>
+<text x="640.0" y="810.0" font-size="13" fill="#6B7280" text-anchor="middle">əl ilə tutuşdurma</text>
+<path d="M640 824 L640 844" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="380" y="844" width="520" height="68" rx="10" fill="#F7F8FA" stroke="#C9CDD4" stroke-width="2"/>
+<text x="640.0" y="875.0" font-size="17" font-weight="700" fill="#1F2227" text-anchor="middle">Dəftərə / yaddaşa qeyd</text>
+<text x="640.0" y="898.0" font-size="13" fill="#6B7280" text-anchor="middle">bəzən heç qeyd olunmur</text>
+<text x="930" y="884" font-size="14" fill="#92540A" text-anchor="start" font-weight="400">P3 · vahid uçot mənbəyi yoxdur</text>
+<path d="M900 878 L924 878" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="380" y="938" width="520" height="72" rx="10" fill="#FFF7ED" stroke="#D9962B" stroke-width="2"/>
+<text x="640.0" y="971.0" font-size="17" font-weight="700" fill="#92540A" text-anchor="middle">Ayın sonu: kim ödəyib, kim qalıb?</text>
+<text x="640.0" y="994.0" font-size="13" fill="#6B7280" text-anchor="middle">cavab yaddaşda və yazışma arxivində axtarılır</text>
+<path d="M640 912 L640 938" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<text x="60" y="150" font-size="14" fill="#6B7280" text-anchor="start" font-weight="700">Addım</text>
+<text x="930" y="150" font-size="14" fill="#6B7280" text-anchor="start" font-weight="700">Ağrı nöqtəsi</text>
+</svg>

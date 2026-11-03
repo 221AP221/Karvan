@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="760" viewBox="0 0 1500 760" font-family="DejaVu Sans, Segoe UI, Arial, sans-serif">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6B7280"/></marker>
+<marker id="ab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#D6127E"/></marker>
+<marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#9AA1AC"/></marker>
+</defs>
+<rect width="1500" height="760" fill="#FFFFFF"/>
+<text x="60" y="54" font-size="27" font-weight="700" fill="#1F2227">Fakturanın ödəniş statusu</text>
+<text x="60" y="84" font-size="16" fill="#6B7280">Statusun kim tərəfindən və nə zaman dəyişdiyi (§14.3)</text>
+<line x1="60" y1="102" x2="1440" y2="102" stroke="#E3E5E9" stroke-width="2"/>
+<rect x="80" y="300" width="250" height="86" rx="10" fill="#FFFFFF" stroke="#C9CDD4" stroke-width="2"/>
+<text x="205.0" y="340.0" font-size="19" font-weight="700" fill="#1F2227" text-anchor="middle">SENT</text>
+<text x="205.0" y="363.0" font-size="13" fill="#6B7280" text-anchor="middle">faktura göndərilib</text>
+<rect x="400" y="300" width="250" height="86" rx="10" fill="#FFFFFF" stroke="#C9CDD4" stroke-width="2"/>
+<text x="525.0" y="340.0" font-size="19" font-weight="700" fill="#1F2227" text-anchor="middle">VIEWED</text>
+<text x="525.0" y="363.0" font-size="13" fill="#6B7280" text-anchor="middle">müştəri açıb</text>
+<path d="M330 343 L400 343" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<text x="365" y="330" font-size="13" fill="#6B7280" text-anchor="middle" font-weight="400">açılır</text>
+<rect x="730" y="300" width="290" height="86" rx="10" fill="#FFF7ED" stroke="#D9962B" stroke-width="2"/>
+<text x="875.0" y="340.0" font-size="18" font-weight="700" fill="#92540A" text-anchor="middle">CLAIMED_PAID</text>
+<text x="875.0" y="363.0" font-size="13" fill="#6B7280" text-anchor="middle">müştəri “Ödədim” basıb</text>
+<path d="M650 343 L730 343" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="1120" y="180" width="290" height="86" rx="10" fill="#F2FBF5" stroke="#58A86B" stroke-width="2"/>
+<text x="1265.0" y="220.0" font-size="19" font-weight="700" fill="#246B38" text-anchor="middle">PAID</text>
+<text x="1265.0" y="243.0" font-size="13" fill="#6B7280" text-anchor="middle">satıcı: “Pul gəlib”</text>
+<path d="M1020 320 L1120 320 L1120 266" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="1120" y="440" width="290" height="86" rx="10" fill="#FFF7ED" stroke="#D9962B" stroke-width="2"/>
+<text x="1265.0" y="480.0" font-size="19" font-weight="700" fill="#92540A" text-anchor="middle">OVERDUE</text>
+<text x="1265.0" y="503.0" font-size="13" fill="#6B7280" text-anchor="middle">son tarix keçib</text>
+<path d="M205 386 L205 483 L1120 483" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="488.56" y="460" width="262.88" height="22" fill="#FFFFFF" opacity="0.92"/>
+<text x="620" y="474" font-size="14" fill="#6B7280" text-anchor="middle" font-weight="400">son ödəniş tarixi keçir (sistem)</text>
+<path d="M875 386 L875 424 L205 424 L205 386" fill="none" stroke="#9AA1AC" stroke-width="2" stroke-dasharray="7 6" marker-end="url(#ad)"/>
+<rect x="614.0" y="402" width="208.00000000000003" height="22" fill="#FFFFFF" opacity="0.92"/>
+<text x="718" y="416" font-size="14" fill="#6B7280" text-anchor="middle" font-weight="400">satıcı: “Gəlməyib” → SENT</text>
+<path d="M1265 440 L1265 266" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<text x="1278" y="360" font-size="14" fill="#6B7280" text-anchor="start" font-weight="400">satıcı təsdiqləyir</text>
+<rect x="80" y="600" width="420" height="86" rx="10" fill="#FFFFFF" stroke="#9AA1AC" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="290.0" y="640.0" font-size="18" font-weight="700" fill="#6B7280" text-anchor="middle">DRAFT</text>
+<text x="290.0" y="663.0" font-size="13" fill="#6B7280" text-anchor="middle">satıcının hazırladığı, hələ göndərilməyən</text>
+<path d="M290 600 L290 540 L205 540 L205 386" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<text x="300" y="530" font-size="14" fill="#6B7280" text-anchor="start" font-weight="400">göndərilir</text>
+<rect x="620" y="600" width="420" height="86" rx="10" fill="#FFFFFF" stroke="#9AA1AC" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="830.0" y="640.0" font-size="18" font-weight="700" fill="#6B7280" text-anchor="middle">CANCELLED</text>
+<text x="830.0" y="663.0" font-size="13" fill="#6B7280" text-anchor="middle">satıcı ləğv edir — nömrə azad olunmur</text>
+<text x="620" y="710" font-size="15" fill="#6B7280" text-anchor="start" font-weight="400">PAID və CANCELLED son vəziyyətlərdir; nömrə heç bir halda təkrar istifadə edilmir (BRU-03).</text>
+</svg>

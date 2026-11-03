@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1580" height="740" viewBox="0 0 1580 740" font-family="DejaVu Sans, Segoe UI, Arial, sans-serif">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6B7280"/></marker>
+<marker id="ab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#D6127E"/></marker>
+<marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#9AA1AC"/></marker>
+</defs>
+<rect width="1580" height="740" fill="#FFFFFF"/>
+<text x="60" y="54" font-size="27" font-weight="700" fill="#1F2227">Abunəlik ödənişi</text>
+<text x="60" y="84" font-size="16" fill="#6B7280">Kart və bank köçürməsi axınları (§14.4)</text>
+<line x1="60" y1="102" x2="1520" y2="102" stroke="#E3E5E9" stroke-width="2"/>
+<rect x="80" y="300" width="300" height="92" rx="10" fill="#FFF5FA" stroke="#D6127E" stroke-width="2"/>
+<text x="230.0" y="343.0" font-size="17" font-weight="700" fill="#D6127E" text-anchor="middle">Tarif + müddət</text>
+<text x="230.0" y="366.0" font-size="13" fill="#6B7280" text-anchor="middle">aylıq / illik seçimi</text>
+<polygon points="600,281.0 725.0,346 600,411.0 475.0,346" fill="#FFFFFF" stroke="#C9CDD4" stroke-width="2"/>
+<text x="600" y="351" font-size="16" font-weight="700" fill="#1F2227" text-anchor="middle">Ödəniş üsulu?</text>
+<path d="M380 346 L475 346" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="840" y="160" width="330" height="86" rx="10" fill="#FFFFFF" stroke="#C9CDD4" stroke-width="2"/>
+<text x="1005.0" y="200.0" font-size="17" font-weight="700" fill="#1F2227" text-anchor="middle">Aqreqatorun səhifəsi</text>
+<text x="1005.0" y="223.0" font-size="13" fill="#6B7280" text-anchor="middle">kart məlumatı bizdə yox</text>
+<path d="M600 281 L600 203 L830 203" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="840" y="470" width="330" height="86" rx="10" fill="#FFFFFF" stroke="#C9CDD4" stroke-width="2"/>
+<text x="1005.0" y="510.0" font-size="17" font-weight="700" fill="#1F2227" text-anchor="middle">KRV-XXXXXX kodu</text>
+<text x="1005.0" y="533.0" font-size="13" fill="#6B7280" text-anchor="middle">bank köçürməsi</text>
+<path d="M600 411 L600 513 L830 513" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="1220" y="160" width="260" height="86" rx="10" fill="#F2FBF5" stroke="#58A86B" stroke-width="2"/>
+<text x="1350.0" y="200.0" font-size="16" font-weight="700" fill="#246B38" text-anchor="middle">İmzalı webhook</text>
+<text x="1350.0" y="223.0" font-size="12" fill="#6B7280" text-anchor="middle">imza + məbləğ yoxlanır</text>
+<path d="M1170 203 L1220 203" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="1220" y="290" width="260" height="86" rx="10" fill="#FFFFFF" stroke="#9AA1AC" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="1350.0" y="330.0" font-size="16" font-weight="700" fill="#6B7280" text-anchor="middle">Nəticə API-dən</text>
+<text x="1350.0" y="353.0" font-size="12" fill="#6B7280" text-anchor="middle">webhook gəlməsə</text>
+<path d="M1005 246 L1005 333 L1220 333" fill="none" stroke="#9AA1AC" stroke-width="2" stroke-dasharray="7 6" marker-end="url(#ad)"/>
+<rect x="1220" y="470" width="260" height="86" rx="10" fill="#FFF7ED" stroke="#D9962B" stroke-width="2"/>
+<text x="1350.0" y="510.0" font-size="17" font-weight="700" fill="#92540A" text-anchor="middle">PENDING</text>
+<text x="1350.0" y="533.0" font-size="12" fill="#6B7280" text-anchor="middle">admin təsdiqi</text>
+<path d="M1170 513 L1220 513" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="600" y="620" width="420" height="86" rx="10" fill="#F2FBF5" stroke="#58A86B" stroke-width="2"/>
+<text x="810.0" y="660.0" font-size="19" font-weight="700" fill="#246B38" text-anchor="middle">ACTIVATED</text>
+<text x="810.0" y="683.0" font-size="13" fill="#6B7280" text-anchor="middle">abunəlik aktiv · müddət əlavə olunur</text>
+<path d="M1480 203 L1515 203 L1515 663 L1020 663" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M1480 333 L1515 333" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M1480 513 L1515 513" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<text x="150" y="600" font-size="15" fill="#6B7280" text-anchor="start" font-weight="400">Təkrar webhook müddəti ikiqat uzatmır (NFR-REL-01);</text>
+<text x="150" y="624" font-size="15" fill="#6B7280" text-anchor="start" font-weight="400">məbləğ uyğun gəlmirsə aktivləşmir (BRU-09);</text>
+<text x="150" y="648" font-size="15" fill="#6B7280" text-anchor="start" font-weight="400">1 saat ərzində bitməyən ödəniş bağlanır (BRU-11).</text>
+</svg>

@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1420" height="760" viewBox="0 0 1420 760" font-family="DejaVu Sans, Segoe UI, Arial, sans-serif">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6B7280"/></marker>
+<marker id="ab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#D6127E"/></marker>
+<marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#9AA1AC"/></marker>
+</defs>
+<rect width="1420" height="760" fill="#FFFFFF"/>
+<text x="60" y="54" font-size="27" font-weight="700" fill="#1F2227">Tələblərin arxitekturası</text>
+<text x="60" y="84" font-size="16" fill="#6B7280">Hər səviyyə bir yuxarıdakını əsaslandırır; aşağıdan yuxarı izlənilənlik §24-dədir (§10.1)</text>
+<line x1="60" y1="102" x2="1360" y2="102" stroke="#E3E5E9" stroke-width="2"/>
+<rect x="150" y="150" width="1060" height="86" rx="10" fill="#FFF5FA" stroke="#D6127E" stroke-width="2"/>
+<text x="680.0" y="199.0" font-size="18" font-weight="700" fill="#D6127E" text-anchor="middle"></text>
+<text x="178" y="188" font-size="19" fill="#D6127E" text-anchor="start" font-weight="700">BG</text>
+<text x="178" y="214" font-size="16" fill="#1F2227" text-anchor="start" font-weight="400">Biznes məqsədi</text>
+<text x="1182" y="202" font-size="15" fill="#6B7280" text-anchor="end" font-weight="400">niyə — təşkilat nəyə nail olmaq istəyir</text>
+<path d="M210 236 L210 266" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="186" y="266" width="1024" height="86" rx="10" fill="#F7F8FA" stroke="#C9CDD4" stroke-width="2"/>
+<text x="698.0" y="315.0" font-size="18" font-weight="700" fill="#1F2227" text-anchor="middle"></text>
+<text x="214" y="304" font-size="19" fill="#1F2227" text-anchor="start" font-weight="700">BR</text>
+<text x="214" y="330" font-size="16" fill="#1F2227" text-anchor="start" font-weight="400">Biznes tələbi</text>
+<text x="1182" y="318" font-size="15" fill="#6B7280" text-anchor="end" font-weight="400">təşkilat səviyyəsində nə tələb olunur</text>
+<path d="M246 352 L246 382" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="222" y="382" width="988" height="86" rx="10" fill="#F7F8FA" stroke="#C9CDD4" stroke-width="2"/>
+<text x="716.0" y="431.0" font-size="18" font-weight="700" fill="#1F2227" text-anchor="middle"></text>
+<text x="250" y="420" font-size="19" fill="#1F2227" text-anchor="start" font-weight="700">SH</text>
+<text x="250" y="446" font-size="16" fill="#1F2227" text-anchor="start" font-weight="400">Paydaş tələbi</text>
+<text x="1182" y="434" font-size="15" fill="#6B7280" text-anchor="end" font-weight="400">rol nə edə bilməlidir</text>
+<path d="M282 468 L282 498" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="258" y="498" width="952" height="86" rx="10" fill="#F7F8FA" stroke="#C9CDD4" stroke-width="2"/>
+<text x="734.0" y="547.0" font-size="18" font-weight="700" fill="#1F2227" text-anchor="middle"></text>
+<text x="286" y="536" font-size="19" fill="#1F2227" text-anchor="start" font-weight="700">FR / NFR / DR / IR</text>
+<text x="286" y="562" font-size="16" fill="#1F2227" text-anchor="start" font-weight="400">Həll tələbi</text>
+<text x="1182" y="550" font-size="15" fill="#6B7280" text-anchor="end" font-weight="400">sistem nə etməlidir</text>
+<path d="M318 584 L318 614" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="294" y="614" width="916" height="86" rx="10" fill="#F2FBF5" stroke="#58A86B" stroke-width="2"/>
+<text x="752.0" y="663.0" font-size="18" font-weight="700" fill="#246B38" text-anchor="middle"></text>
+<text x="322" y="652" font-size="19" fill="#246B38" text-anchor="start" font-weight="700">UAT</text>
+<text x="322" y="678" font-size="16" fill="#1F2227" text-anchor="start" font-weight="400">Qəbul meyarı</text>
+<text x="1182" y="666" font-size="15" fill="#6B7280" text-anchor="end" font-weight="400">necə yoxlanılır</text>
+<text x="150" y="720" font-size="15" fill="#6B7280" text-anchor="start" font-weight="400">Bağlantısı olmayan tələb əhatədən kənar sayılır: hər həll tələbi ən azı bir paydaş tələbinə, hər paydaş tələbi ən azı bir biznes tələbinə bağlıdır.</text>
+</svg>

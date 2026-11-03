@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="820" viewBox="0 0 1400 820" font-family="DejaVu Sans, Segoe UI, Arial, sans-serif">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6B7280"/></marker>
+<marker id="ab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#D6127E"/></marker>
+<marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#9AA1AC"/></marker>
+</defs>
+<rect width="1400" height="820" fill="#FFFFFF"/>
+<text x="60" y="54" font-size="27" font-weight="700" fill="#1F2227">Dəyişikliklərin idarə olunması</text>
+<text x="60" y="84" font-size="16" fill="#6B7280">Baseline-dan sonra hər dəyişiklik bu yoldan keçir (§28.2)</text>
+<line x1="60" y1="102" x2="1340" y2="102" stroke="#E3E5E9" stroke-width="2"/>
+<rect x="540" y="140" width="320" height="76" rx="10" fill="#F7F8FA" stroke="#C9CDD4" stroke-width="2"/>
+<text x="700.0" y="175.0" font-size="17" font-weight="700" fill="#1F2227" text-anchor="middle">Dəyişiklik ehtiyacı</text>
+<text x="700.0" y="198.0" font-size="13" fill="#6B7280" text-anchor="middle">istənilən paydaş</text>
+<rect x="500" y="260" width="400" height="86" rx="10" fill="#FFFFFF" stroke="#C9CDD4" stroke-width="2"/>
+<text x="700.0" y="300.0" font-size="17" font-weight="700" fill="#1F2227" text-anchor="middle">CR qeydiyyatı</text>
+<text x="700.0" y="323.0" font-size="13" fill="#6B7280" text-anchor="middle">təşəbbüskar · səbəb · təklif</text>
+<path d="M700 216 L700 260" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="460" y="390" width="480" height="96" rx="10" fill="#FFF5FA" stroke="#D6127E" stroke-width="2"/>
+<text x="700.0" y="435.0" font-size="17" font-weight="700" fill="#D6127E" text-anchor="middle">BA təsir təhlili</text>
+<text x="700.0" y="458.0" font-size="13" fill="#6B7280" text-anchor="middle">əhatə · tələblər · risk · UAT · qrafik · xərc</text>
+<path d="M700 346 L700 390" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<polygon points="700,510.0 850.0,580 700,650.0 550.0,580" fill="#FFFFFF" stroke="#C9CDD4" stroke-width="2"/>
+<text x="700" y="578" font-size="16" font-weight="700" fill="#1F2227" text-anchor="middle">Təsir səviyyəsi?</text>
+<text x="700" y="598" font-size="13" fill="#6B7280" text-anchor="middle">§28.3 meyarları</text>
+<path d="M700 486 L700 510" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="120" y="540" width="320" height="86" rx="10" fill="#F2FBF5" stroke="#58A86B" stroke-width="2"/>
+<text x="280.0" y="580.0" font-size="17" font-weight="700" fill="#246B38" text-anchor="middle">Aşağı / orta</text>
+<text x="280.0" y="603.0" font-size="13" fill="#6B7280" text-anchor="middle">BA (+ texniki) təsdiqi</text>
+<path d="M550 580 L440 580" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="960" y="540" width="320" height="86" rx="10" fill="#FFF7ED" stroke="#D9962B" stroke-width="2"/>
+<text x="1120.0" y="580.0" font-size="17" font-weight="700" fill="#92540A" text-anchor="middle">Yüksək</text>
+<text x="1120.0" y="603.0" font-size="13" fill="#6B7280" text-anchor="middle">sponsor qərarı</text>
+<path d="M850 580 L960 580" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="960" y="670" width="320" height="76" rx="10" fill="#FFFFFF" stroke="#C9CDD4" stroke-width="2"/>
+<text x="1120.0" y="714.0" font-size="16" font-weight="700" fill="#1F2227" text-anchor="middle">qəbul · rədd · təxirə</text>
+<path d="M1120 626 L1120 670" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<rect x="390" y="690" width="520" height="86" rx="10" fill="#FFF5FA" stroke="#D6127E" stroke-width="2"/>
+<text x="650.0" y="730.0" font-size="17" font-weight="700" fill="#D6127E" text-anchor="middle">Baseline yenilənir</text>
+<text x="650.0" y="753.0" font-size="13" fill="#6B7280" text-anchor="middle">versiya +0.1 · §24 izlənilənlik matrisi</text>
+<path d="M280 626 L280 733 L390 733" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M960 708 L909 708 L909 733" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+</svg>
