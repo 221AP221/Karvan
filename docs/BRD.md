@@ -386,22 +386,25 @@ Satıcı səhifəsi: xidmətlər və qiymətlər açıq  ──►  "Sifariş et
 
 ### 7.1 Kontekst diaqramı
 
-```
-            ┌──────────────────────────────────────────────────────────┐
-            │                        KARVAN                            │
- Ziyarətçi ─┤  ictimai səhifələr · kataloq · sifariş · faktura         ├─ Axtarış sistemləri
-  Müştəri  ─┤                                                          │   (sitemap, strukturlu
-            │  satıcı paneli · analitika · AI · abunəlik               │    məlumat)
-   Satıcı  ─┤                                                          ├─ Ödəniş aqreqatoru
-            │  admin panel · moderasiya · jurnal · hesabat             │   (Epoint / Payriff)
-    Admin  ─┤                                                          ├─ AI təminatçısı
-Super admin─┤                                                          ├─ E-poçt provayderi ⬜
-            └──────────────────────────────────────────────────────────┘
-                         │                              │
-                         ▼                              ▼
-                 Satıcının bankı                 WhatsApp (wa.me linki)
-                (platformadan kənar)
-```
+![Şəkil 1 — Karvanın kontekst diaqramı: sistemin sərhədi, aktorlar, xarici sistemlər və məlumat axınları](assets/kontekst-diaqrami.png)
+
+Diaqram sistemin sərhədini və onu kəsən bütün axınları göstərir. Oxunuşu:
+
+| Tərəf | Kim / nə | Karvana verir | Karvandan alır |
+|---|---|---|---|
+| Aktor | **Müştəri** (qeydiyyatsız) | Sifariş, "Ödədim" bildirişi | Xidmət və qiymət, faktura, PDF, rekvizit |
+| Aktor | **Satıcı** | Profil, xidmət, qiymət və ödəniş təsdiqi | Sifariş, faktura, analitika, abunəlik |
+| Aktor | **Admin / super admin** | Moderasiya, plan və hesab əməliyyatları | İstifadəçi məlumatı, jurnal, hesabat |
+| Xarici sistem | **Ödəniş aqreqatoru** (Epoint / Payriff) | İmzalı webhook, nəticə API-si | Abunəlik ödənişi sorğusu |
+| Xarici sistem | **AI təminatçısı** | Təklif olunan mətn | Mətn sorğusu (faktura, təsvir, xatırlatma) |
+| Xarici sistem | **E-poçt provayderi** ⬜ | — | Şifrə bərpası və bildiriş məktubu |
+| Xarici sistem | **Axtarış sistemləri** | — | Sitemap, strukturlu məlumat, OG şəkilləri |
+| Xarici kanal | **WhatsApp** | — | Hazır mətnli faktura linki |
+| **Sərhəddən kənar** | **Satıcının bankı** | — | — |
+
+Diaqramın ən vacib detalı sağ-aşağı küncdədir: **pul axını sistemin sərhədindən keçmir**. Müştəri köçürməni birbaşa satıcının bankına edir, satıcı da ödənişi orada yoxlayır; Karvan yalnız bu faktın qeydini (status və sənəd) saxlayır. Bu bölgü platformanın hüquqi mövqeyini müəyyən edir (BRU-16, §23.1) və eyni zamanda ödəniş təsdiqinin niyə manual qaldığını izah edir (M-06).
+
+Kəsik xətlər iki şeyi bildirir: hələ reallaşdırılmamış axını (e-poçt provayderi — IR-03) və platformadan kənar baş verən əməliyyatı (bank köçürməsi).
 
 ### 7.2 Əhatəyə daxildir
 

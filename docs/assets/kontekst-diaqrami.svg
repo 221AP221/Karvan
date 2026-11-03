@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1760" height="1180" viewBox="0 0 1760 1180" font-family="DejaVu Sans, Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#6B7280"/>
+    </marker>
+    <marker id="ab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#D6127E"/>
+    </marker>
+    <marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#9AA1AC"/>
+    </marker>
+  </defs>
+
+  <rect width="1760" height="1180" fill="#FFFFFF"/>
+
+  <!-- başlıq -->
+  <text x="70" y="62" font-size="30" font-weight="700" fill="#1F2227">Karvan — kontekst diaqramı</text>
+  <text x="70" y="94" font-size="17" fill="#6B7280">Sistemin sərhədi, aktorlar, xarici sistemlər və aralarındakı məlumat axınları (§7.1)</text>
+  <line x1="70" y1="112" x2="1690" y2="112" stroke="#E3E5E9" stroke-width="2"/>
+
+  <!-- MƏRKƏZ: sistem -->
+  <rect x="620" y="360" width="520" height="440" rx="18" fill="#FFF5FA" stroke="#D6127E" stroke-width="3"/>
+  <text x="880" y="418" font-size="34" font-weight="700" fill="#D6127E" text-anchor="middle">KARVAN</text>
+  <text x="880" y="446" font-size="15" fill="#6B7280" text-anchor="middle">karvan.az — sistemin sərhədi</text>
+  <line x1="660" y1="470" x2="1100" y2="470" stroke="#F0C3D9" stroke-width="2"/>
+  <text x="660" y="508" font-size="16" font-weight="600" fill="#1F2227">İctimai hissə</text>
+  <text x="660" y="532" font-size="15" fill="#4B5563">səhifələr · kataloq · sifariş · faktura</text>
+  <text x="660" y="582" font-size="16" font-weight="600" fill="#1F2227">Satıcı paneli</text>
+  <text x="660" y="606" font-size="15" fill="#4B5563">xidmətlər · analitika · AI · abunəlik</text>
+  <text x="660" y="656" font-size="16" font-weight="600" fill="#1F2227">Admin panel</text>
+  <text x="660" y="680" font-size="15" fill="#4B5563">moderasiya · jurnal · hesabat</text>
+  <text x="660" y="730" font-size="16" font-weight="600" fill="#1F2227">Məlumat</text>
+  <text x="660" y="754" font-size="15" fill="#4B5563">profil · sifariş · faktura · ödəniş · jurnal</text>
+
+  <!-- SOL: aktorlar -->
+  <rect x="70" y="182" width="260" height="96" rx="12" fill="#F7F8FA" stroke="#C9CDD4" stroke-width="2"/>
+  <text x="200" y="222" font-size="19" font-weight="700" fill="#1F2227" text-anchor="middle">Müştəri</text>
+  <text x="200" y="248" font-size="14" fill="#6B7280" text-anchor="middle">ziyarətçi · qeydiyyatsız</text>
+
+  <rect x="70" y="472" width="260" height="96" rx="12" fill="#F7F8FA" stroke="#C9CDD4" stroke-width="2"/>
+  <text x="200" y="512" font-size="19" font-weight="700" fill="#1F2227" text-anchor="middle">Satıcı</text>
+  <text x="200" y="538" font-size="14" fill="#6B7280" text-anchor="middle">xidmət satan fiziki şəxs</text>
+
+  <rect x="70" y="762" width="260" height="96" rx="12" fill="#F7F8FA" stroke="#C9CDD4" stroke-width="2"/>
+  <text x="200" y="802" font-size="19" font-weight="700" fill="#1F2227" text-anchor="middle">Admin</text>
+  <text x="200" y="828" font-size="14" fill="#6B7280" text-anchor="middle">dəstək · super admin</text>
+
+  <!-- SAĞ: xarici sistemlər -->
+  <rect x="1430" y="132" width="260" height="96" rx="12" fill="#FFFFFF" stroke="#C9CDD4" stroke-width="2"/>
+  <text x="1560" y="172" font-size="18" font-weight="700" fill="#1F2227" text-anchor="middle">Ödəniş aqreqatoru</text>
+  <text x="1560" y="198" font-size="14" fill="#6B7280" text-anchor="middle">Epoint / Payriff</text>
+
+  <rect x="1430" y="352" width="260" height="96" rx="12" fill="#FFFFFF" stroke="#C9CDD4" stroke-width="2"/>
+  <text x="1560" y="392" font-size="18" font-weight="700" fill="#1F2227" text-anchor="middle">AI təminatçısı</text>
+  <text x="1560" y="418" font-size="14" fill="#6B7280" text-anchor="middle">Groq · Gemini · Ollama · Claude</text>
+
+  <rect x="1430" y="572" width="260" height="96" rx="12" fill="#FFFFFF" stroke="#9AA1AC" stroke-width="2" stroke-dasharray="7 6"/>
+  <text x="1560" y="612" font-size="18" font-weight="700" fill="#6B7280" text-anchor="middle">E-poçt provayderi</text>
+  <text x="1560" y="638" font-size="14" fill="#9AA1AC" text-anchor="middle">planlaşdırılan (IR-03)</text>
+
+  <rect x="1430" y="792" width="260" height="96" rx="12" fill="#FFFFFF" stroke="#C9CDD4" stroke-width="2"/>
+  <text x="1560" y="832" font-size="18" font-weight="700" fill="#1F2227" text-anchor="middle">Axtarış sistemləri</text>
+  <text x="1560" y="858" font-size="14" fill="#6B7280" text-anchor="middle">Google · Bing</text>
+
+  <!-- AŞAĞI: platformadan kənar -->
+  <rect x="470" y="970" width="300" height="96" rx="12" fill="#FFFFFF" stroke="#9AA1AC" stroke-width="2" stroke-dasharray="7 6"/>
+  <text x="620" y="1010" font-size="18" font-weight="700" fill="#6B7280" text-anchor="middle">Satıcının bankı</text>
+  <text x="620" y="1036" font-size="14" fill="#9AA1AC" text-anchor="middle">pul platformadan keçmir</text>
+
+  <rect x="1000" y="970" width="300" height="96" rx="12" fill="#FFFFFF" stroke="#C9CDD4" stroke-width="2"/>
+  <text x="1150" y="1010" font-size="18" font-weight="700" fill="#1F2227" text-anchor="middle">WhatsApp</text>
+  <text x="1150" y="1036" font-size="14" fill="#6B7280" text-anchor="middle">wa.me paylaşım linki</text>
+
+  <!-- AXINLAR: sol -->
+  <path d="M330 230 H475 V430 H610" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)" marker-start="url(#a)"/>
+  <text x="352" y="214" font-size="14" fill="#1F2227">→ sifariş, "Ödədim" bildirişi</text>
+  <text x="352" y="196" font-size="14" fill="#6B7280">← xidmət və qiymət, faktura, PDF, rekvizit</text>
+
+  <path d="M330 520 H520 H610" fill="none" stroke="#D6127E" stroke-width="2.5" marker-end="url(#ab)" marker-start="url(#ab)"/>
+  <text x="352" y="504" font-size="14" fill="#1F2227">→ profil, xidmət, qiymət və ödəniş təsdiqi</text>
+  <text x="352" y="556" font-size="14" fill="#6B7280">← sifariş, faktura, analitika, abunəlik</text>
+
+  <path d="M330 810 H475 V690 H610" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)" marker-start="url(#a)"/>
+  <text x="352" y="794" font-size="14" fill="#1F2227">→ moderasiya, plan əməliyyatları</text>
+  <text x="352" y="846" font-size="14" fill="#6B7280">← istifadəçi məlumatı, jurnal, hesabat</text>
+
+  <!-- AXINLAR: sağ -->
+  <path d="M1150 410 H1285 V180 H1420" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)" marker-start="url(#a)"/>
+  <text x="1160" y="394" font-size="14" fill="#1F2227">→ abunəlik ödənişi sorğusu</text>
+  <text x="1160" y="376" font-size="14" fill="#6B7280">← imzalı webhook, nəticə API-si</text>
+
+  <path d="M1150 490 H1330 V400 H1420" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)" marker-start="url(#a)"/>
+  <text x="1160" y="474" font-size="14" fill="#1F2227">→ mətn sorğusu (faktura, təsvir)</text>
+  <text x="1160" y="456" font-size="14" fill="#6B7280">← təklif olunan mətn</text>
+
+  <path d="M1150 600 H1285 V620 H1420" fill="none" stroke="#9AA1AC" stroke-width="2" stroke-dasharray="7 6" marker-end="url(#ad)"/>
+  <text x="1160" y="592" font-size="14" fill="#6B7280">→ şifrə bərpası və bildiriş məktubu</text>
+
+  <path d="M1150 700 H1285 V840 H1420" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+  <text x="1160" y="692" font-size="14" fill="#1F2227">→ sitemap, strukturlu məlumat, OG</text>
+
+  <!-- AXIN: WhatsApp -->
+  <path d="M1000 800 V905 H1150 V960" fill="none" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+  <text x="1012" y="890" font-size="14" fill="#1F2227">→ hazır mətnli faktura linki</text>
+
+  <!-- AXIN: pul (platformadan kənar) -->
+  <path d="M70 230 H40 V1018 H460" fill="none" stroke="#9AA1AC" stroke-width="2.5" stroke-dasharray="8 6" marker-end="url(#ad)"/>
+  <text x="56" y="930" font-size="14" fill="#6B7280">pul köçürməsi</text>
+  <text x="56" y="950" font-size="14" fill="#6B7280">(platformadan kənar)</text>
+
+  <path d="M390 970 V620 H250 V578" fill="none" stroke="#9AA1AC" stroke-width="2.5" stroke-dasharray="8 6" marker-end="url(#ad)"/>
+  <text x="402" y="800" font-size="14" fill="#6B7280">satıcı pulun</text>
+  <text x="402" y="820" font-size="14" fill="#6B7280">gəlib-gəlmədiyini</text>
+  <text x="402" y="840" font-size="14" fill="#6B7280">bankda yoxlayır</text>
+  <path d="M470 1018 H390" fill="none" stroke="#9AA1AC" stroke-width="2.5" stroke-dasharray="8 6"/>
+
+  <!-- leqenda -->
+  <rect x="1330" y="960" width="360" height="116" rx="10" fill="#FAFBFC" stroke="#E3E5E9" stroke-width="2"/>
+  <text x="1352" y="990" font-size="15" font-weight="700" fill="#1F2227">İşarələr</text>
+  <line x1="1352" y1="1012" x2="1402" y2="1012" stroke="#6B7280" stroke-width="2" marker-end="url(#a)"/>
+  <text x="1414" y="1017" font-size="14" fill="#4B5563">reallaşdırılmış axın</text>
+  <line x1="1352" y1="1040" x2="1402" y2="1040" stroke="#9AA1AC" stroke-width="2" stroke-dasharray="7 6" marker-end="url(#ad)"/>
+  <text x="1414" y="1045" font-size="14" fill="#4B5563">planlaşdırılan / platformadan kənar</text>
+</svg>

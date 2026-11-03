@@ -9,6 +9,7 @@ const {
   ExternalHyperlink,
   Footer,
   Header,
+  ImageRun,
   HeadingLevel,
   LevelFormat,
   PageBreak,
@@ -37,7 +38,8 @@ const PAGE = { width: 11906, height: 16838 }; // A4
 const MARGIN = 1134; // 2 sm
 const CONTENT_WIDTH = PAGE.width - MARGIN * 2;
 
-const src = fs.readFileSync(process.argv[2], "utf8").split("\n");
+const INPUT = process.argv[2];
+const src = fs.readFileSync(INPUT, "utf8").split("\n");
 
 // ---- sətirdaxili format: **qalın**, `kod`, [mətn](link), *maili*
 function inline(text, base = {}) {
@@ -193,6 +195,37 @@ while (i < src.length) {
     }
     body.push(buildTable(norm));
     body.push(new Paragraph({ text: "", spacing: { after: 160 } }));
+    continue;
+  }
+
+  // şəkil: ![alt](yol)
+  const image = /^!\[([^\]]*)\]\(([^)]+)\)$/.exec(t);
+  if (image) {
+    const file = path.resolve(path.dirname(INPUT), image[2]);
+    const data = fs.readFileSync(file);
+    // PNG başlığından ölçüləri oxuyuruq
+    const pxW = data.readUInt32BE(16);
+    const pxH = data.readUInt32BE(20);
+    const w = 640;
+    const h = Math.round((pxH / pxW) * w);
+    body.push(
+      new Paragraph({
+        alignment: AlignmentType.CENTER,
+        // sənədin standart sətir aralığı şəkli kəsdiyi üçün burada avtomatik aralıq verilir
+        spacing: { before: 120, after: 80, line: 240, lineRule: "auto" },
+        children: [new ImageRun({ type: "png", data, transformation: { width: w, height: h } })],
+      }),
+    );
+    if (image[1]) {
+      body.push(
+        new Paragraph({
+          alignment: AlignmentType.CENTER,
+          spacing: { after: 220 },
+          children: [new TextRun({ text: image[1], italics: true, size: 18, color: MUTED, font: "Calibri" })],
+        }),
+      );
+    }
+    i++;
     continue;
   }
 
