@@ -53,6 +53,7 @@ import { SiteFooter } from "@/components/site/SiteFooter";
 import { CATALOG_PATH, HOME_PATH, type Locale, SITE_URL } from "@/i18n/config";
 import type { Dict } from "@/i18n/server";
 import { PLAN_PRICES } from "@/lib/plans";
+import { jsonLdScript } from "@/lib/seo";
 
 const NICHE_ICONS = [Brush, GraduationCap, PenTool, Megaphone, Camera, Hand, Dumbbell, Brain, Briefcase, Send, Clapperboard, Languages];
 const STEP_ICONS = [Palette, Link2, Receipt, TrendingUp];
@@ -100,11 +101,38 @@ function StructuredData({ t, locale }: { t: Dict; locale: Locale }) {
     },
     {
       "@context": "https://schema.org",
+      "@type": "Organization",
+      "@id": `${SITE_URL}#organization`,
+      name: "Karvan",
+      url: SITE_URL,
+      logo: `${SITE_URL}/icon.svg`,
+      description: t.footer.tagline,
+      address: { "@type": "PostalAddress", addressLocality: "Bakı", addressCountry: "AZ" },
+      contactPoint: [{ "@type": "ContactPoint", telephone: "*0221", email: "hello@karvan.az", contactType: "customer support", availableLanguage: ["az", "tr", "ru", "en"] }],
+      areaServed: ["AZ", "TR", "GE", "KZ"],
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "@id": `${SITE_URL}#website`,
+      url: SITE_URL,
+      name: "Karvan",
+      inLanguage: locale,
+      publisher: { "@id": `${SITE_URL}#organization` },
+      // Google-un sayt daxili axtarış qutusu üçün
+      potentialAction: {
+        "@type": "SearchAction",
+        target: { "@type": "EntryPoint", urlTemplate: `${SITE_URL}${CATALOG_PATH[locale]}?q={search_term_string}` },
+        "query-input": "required name=search_term_string",
+      },
+    },
+    {
+      "@context": "https://schema.org",
       "@type": "FAQPage",
       mainEntity: t.faq.items.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
     },
   ];
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data).replace(/</g, "\\u003c") }} />;
+  return <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(data)} />;
 }
 
 // "Əvvəl": DM yazışması

@@ -13,10 +13,10 @@ export const az = {
   },
 
   meta: {
-    title: "Karvan — Instagram və TikTok üçün link-in-bio, sifariş və onlayn faktura",
+    title: "Link-in-bio səhifə və onlayn faktura — Karvan",
     description:
-      "Xidmətlərinizi bir linkdən satın: link-in-bio səhifə, sifariş formu, avtomatik PDF faktura və ödəniş izləmə. Makiyaj ustaları, repetitorlar, dizaynerlər, fotoqraflar və SMM mütəxəssisləri üçün. Pulsuz başlayın.",
-    keywords: ["link-in-bio", "onlayn faktura", "faktura yaratmaq", "Instagram satış", "sifariş formu", "ödəniş izləmə", "xidmət satışı", "freelancer Azərbaycan"],
+      "Instagram və TikTok bio-nuz üçün bir link: xidmətlər, qiymətlər, sifariş formu və avtomatik PDF faktura. Ödənişi izləyin. Pulsuz başlayın, komissiya yoxdur.",
+    keywords: ["link in bio", "link-in-bio səhifə", "onlayn faktura", "faktura yaratmaq", "Instagram-da satış", "onlayn sifariş formu", "ödəniş izləmə", "xidmət satışı", "usta tapmaq", "Bakı xidmətlər"],
   },
 
   nav: {
@@ -222,9 +222,23 @@ export const az = {
     rights: "Bütün hüquqlar qorunur.",
   },
 
+  seo: {
+    categoryTitle: "{category} xidmətləri",
+    withCity: "{title} — {city}",
+    categoryDescription: "{category} sahəsində {n} xidmət: açıq qiymətlər, müddət və birbaşa sifariş. Karvan kataloqunda usta seçin.",
+    browseCategories: "Sahə üzrə xidmətlər",
+    browseCities: "Şəhər üzrə xidmətlər",
+    sellerTitle: "{name} — {profession}",
+    sellerDescription: "{intro} Xidmətlər: {services}. Onlayn sifariş və avtomatik faktura — Karvan.",
+    sellerIntro: "{profession} · {city}.",
+    sellerFallback: "{name} səhifəsi: xidmətlər, qiymətlər və onlayn sifariş — Karvan.",
+    sellerCity: "{title}, {city}",
+    priceFrom: "{price}-dən",
+  },
+
   catalog: {
-    metaTitle: "Xidmətlər kataloqu — ustalar və mütəxəssislər",
-    metaDescription: "Makiyaj, dərs, dizayn, foto, SMM və digər xidmətləri qiymətə, şəhərə və sahəyə görə müqayisə edin, birbaşa sifariş verin.",
+    metaTitle: "Xidmətlər kataloqu — usta və mütəxəssis tapın",
+    metaDescription: "Makiyaj, repetitor, dizayn, foto, SMM və digər xidmətləri qiymətə, şəhərə və sahəyə görə müqayisə edin. Qiymətlər açıq, sifariş birbaşa ustadan, bir kliklə.",
     eyebrow: "Xidmətlər kataloqu",
     title: "Lazım olan xidməti tapın",
     text: "Karvan-da qeydiyyatdan keçmiş ustaların və mütəxəssislərin xidmətləri. Qiymət açıqdır, sifariş bir kliklə.",

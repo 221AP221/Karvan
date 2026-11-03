@@ -1,29 +1,47 @@
 import type { MetadataRoute } from "next";
 import { CATALOG_PATH, HOME_PATH, LOCALES, SITE_URL } from "@/i18n/config";
 import { db } from "@/lib/db";
+import { SERVICE_CATEGORIES } from "@/lib/services";
 
-// Yeni satıcılar saatda bir əlavə olunur
+// Yeni satıcılar və xidmətlər saatda bir dəfə sitemap-a düşür
 export const revalidate = 3600;
 
-// Hər dil versiyası ayrıca URL-dir və bir-birinə hreflang ilə bağlanır; satıcı səhifələri də daxildir
+const url = (path: string) => `${SITE_URL}${path === "/" ? "" : path}`;
+
+// Hər dil versiyası ayrıca URL-dir və bir-birinə hreflang ilə bağlanır
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const localized = (paths: Record<(typeof LOCALES)[number], string>, priority: number) =>
+  const localized = (paths: Record<(typeof LOCALES)[number], string>, priority: number, suffix = "") =>
     LOCALES.map((l) => ({
-      url: `${SITE_URL}${paths[l] === "/" ? "" : paths[l]}`,
+      url: url(paths[l]) + suffix,
       changeFrequency: "weekly" as const,
       priority,
-      alternates: { languages: Object.fromEntries(LOCALES.map((x) => [x, `${SITE_URL}${paths[x] === "/" ? "" : paths[x]}`])) },
+      alternates: { languages: Object.fromEntries(LOCALES.map((x) => [x, url(paths[x]) + suffix])) },
     }));
 
-  const sellers = await db.profile.findMany({
-    where: { showInCatalog: true, user: { blockedAt: null }, services: { some: { isActive: true, blocked: false } } },
-    select: { username: true },
-    take: 5000,
-  });
+  const [sellers, categories] = await Promise.all([
+    db.profile.findMany({
+      where: { showInCatalog: true, user: { blockedAt: null }, services: { some: { isActive: true, blocked: false } } },
+      select: { username: true, services: { select: { createdAt: true }, orderBy: { createdAt: "desc" }, take: 1 } },
+      take: 5000,
+    }),
+    // Yalnız xidməti olan sahələr: boş səhifələr sitemap-a düşmür
+    db.service.groupBy({
+      by: ["category"],
+      where: { isActive: true, blocked: false, profile: { showInCatalog: true, user: { blockedAt: null } } },
+      _count: true,
+    }),
+  ]);
+  const filled = new Set(categories.map((c) => c.category));
 
   return [
     ...localized(HOME_PATH, 1),
     ...localized(CATALOG_PATH, 0.9),
-    ...sellers.map((s) => ({ url: `${SITE_URL}/${s.username}`, changeFrequency: "weekly" as const, priority: 0.6 })),
+    ...SERVICE_CATEGORIES.filter((c) => filled.has(c.key)).flatMap((c) => localized(CATALOG_PATH, 0.7, `?category=${c.key}`)),
+    ...sellers.map((s) => ({
+      url: url(`/${s.username}`),
+      lastModified: s.services[0]?.createdAt,
+      changeFrequency: "weekly" as const,
+      priority: 0.6,
+    })),
   ];
 }

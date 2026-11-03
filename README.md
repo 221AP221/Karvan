@@ -37,6 +37,13 @@ Məhsul spesifikasiyası: [docs/PRD.md](docs/PRD.md)
 Test rejimində `/pay/sandbox` səhifəsi real gateway kimi işləyir (test kartları, imzalı webhook); canlıya çıxanda yalnız `.env` açarları dəyişir. Aqreqator `.env`-də seçilir: `PAYMENT_GATEWAY=epoint` və ya `payriff` (+ açarlar). Webhook gəlməsə də, istifadəçi qayıdanda nəticə gateway API-dən yoxlanılır.
 Bank köçürməsi: admin "Ödənişlər"-də təsdiqləyir.
 
+**SEO**
+- Açar sözlərə uyğun başlıq və təsvirlər (4 dildə), hər səhifə üçün canonical və hreflang
+- Kataloqda sahə/şəhər səhifələri indeksləşir (`?category=`), qalan filtr birləşmələri `noindex`; sahə başlığı H1-ə düşür
+- Strukturlu məlumat (JSON-LD): Organization, WebSite + axtarış, SoftwareApplication, FAQ, CollectionPage + ItemList,
+  satıcı səhifəsində ProfessionalService + qiymətli Offer-lər, hər səhifədə BreadcrumbList
+- Paylaşım şəkilləri avtomatik yaranır (`opengraph-image`), sitemap-da sahə səhifələri və satıcılar var
+
 **Sayt** (`/`, `/tr`, `/ru`)
 - Ana səhifə və kataloq Azərbaycan, türk, rus və ingilis dillərində (hər dilin öz URL-i, hreflang, sitemap.xml)
 - İşıqlı və qaranlıq rejim (seçim yadda qalır, ilk dəfə sistem ayarı)

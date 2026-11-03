@@ -13,10 +13,10 @@ export const tr: typeof az = {
   },
 
   meta: {
-    title: "Karvan — Instagram ve TikTok için link-in-bio, sipariş ve online fatura",
+    title: "Link-in-bio sayfası ve online fatura — Karvan",
     description:
-      "Hizmetlerinizi tek bir linkten satın: link-in-bio sayfası, sipariş formu, otomatik PDF fatura ve ödeme takibi. Makyaj sanatçıları, özel ders verenler, tasarımcılar, fotoğrafçılar ve sosyal medya uzmanları için. Ücretsiz başlayın.",
-    keywords: ["link-in-bio", "online fatura", "fatura oluşturma", "Instagram'dan satış", "sipariş formu", "ödeme takibi", "hizmet satışı", "freelancer"],
+      "Instagram ve TikTok biyografiniz için tek link: hizmetler, fiyatlar, sipariş formu ve otomatik PDF fatura. Ödemeleri takip edin. Ücretsiz başlayın, komisyon yok.",
+    keywords: ["link in bio", "link-in-bio sayfası", "online fatura", "fatura oluşturma", "Instagram'dan satış", "online sipariş formu", "ödeme takibi", "hizmet satışı", "usta bulma"],
   },
 
   nav: {
@@ -222,9 +222,23 @@ export const tr: typeof az = {
     rights: "Tüm hakları saklıdır.",
   },
 
+  seo: {
+    categoryTitle: "{category} hizmetleri",
+    withCity: "{title} — {city}",
+    categoryDescription: "{category} alanında {n} hizmet: açık fiyatlar, süre ve doğrudan sipariş. Karvan kataloğundan uzman seçin.",
+    browseCategories: "Alana göre hizmetler",
+    browseCities: "Şehre göre hizmetler",
+    sellerTitle: "{name} — {profession}",
+    sellerDescription: "{intro} Hizmetler: {services}. Online sipariş ve otomatik fatura — Karvan.",
+    sellerIntro: "{profession} · {city}.",
+    sellerFallback: "{name} sayfası: hizmetler, fiyatlar ve online sipariş — Karvan.",
+    sellerCity: "{title}, {city}",
+    priceFrom: "{price} ve üzeri",
+  },
+
   catalog: {
-    metaTitle: "Hizmet kataloğu — uzmanlar ve profesyoneller",
-    metaDescription: "Makyaj, ders, tasarım, fotoğraf, sosyal medya ve diğer hizmetleri fiyata, şehre ve alana göre karşılaştırın, doğrudan sipariş verin.",
+    metaTitle: "Hizmet kataloğu — uzman ve profesyonel bulun",
+    metaDescription: "Makyaj, özel ders, tasarım, fotoğraf, sosyal medya ve diğer hizmetleri fiyata, şehre ve alana göre karşılaştırın. Fiyatlar açık, sipariş doğrudan uzmandan.",
     eyebrow: "Hizmet kataloğu",
     title: "İhtiyacınız olan hizmeti bulun",
     text: "Karvan'a kayıtlı uzmanların ve profesyonellerin hizmetleri. Fiyatlar açık, sipariş tek tıkla.",

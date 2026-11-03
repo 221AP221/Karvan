@@ -13,10 +13,10 @@ export const en: typeof az = {
   },
 
   meta: {
-    title: "Karvan — link in bio, orders and online invoices for Instagram and TikTok sellers",
+    title: "Link in bio page and online invoices — Karvan",
     description:
-      "Sell your services from a single link: a link-in-bio page, order form, automatic PDF invoices and payment tracking. Built for makeup artists, tutors, designers, photographers and social media managers. Start free.",
-    keywords: ["link in bio", "online invoice", "invoice generator", "sell on Instagram", "order form", "payment tracking", "sell services online", "freelancer Azerbaijan"],
+      "One link for your Instagram and TikTok bio: services, prices, an order form and automatic PDF invoices. Track payments. Start free, no commission on sales.",
+    keywords: ["link in bio", "link in bio page", "online invoice", "invoice generator", "sell on Instagram", "online order form", "payment tracking", "sell services online", "find a professional"],
   },
 
   nav: {
@@ -222,9 +222,23 @@ export const en: typeof az = {
     rights: "All rights reserved.",
   },
 
+  seo: {
+    categoryTitle: "{category} services",
+    withCity: "{title} — {city}",
+    categoryDescription: "{n} services in {category}: clear prices, duration and direct ordering. Pick a professional in the Karvan directory.",
+    browseCategories: "Services by category",
+    browseCities: "Services by city",
+    sellerTitle: "{name} — {profession}",
+    sellerDescription: "{intro} Services: {services}. Online ordering and automatic invoices — Karvan.",
+    sellerIntro: "{profession} · {city}.",
+    sellerFallback: "{name} on Karvan: services, prices and online ordering.",
+    sellerCity: "{title}, {city}",
+    priceFrom: "from {price}",
+  },
+
   catalog: {
-    metaTitle: "Services directory — professionals and specialists",
-    metaDescription: "Compare makeup, tutoring, design, photo, social media and other services by price, city and category, and order directly.",
+    metaTitle: "Services directory — find a professional near you",
+    metaDescription: "Compare makeup, tutoring, design, photo, social media and other services by price, city and category. Prices are public and you order straight from the professional.",
     eyebrow: "Services directory",
     title: "Find the service you need",
     text: "Services from professionals registered on Karvan. Prices are public and ordering takes one click.",

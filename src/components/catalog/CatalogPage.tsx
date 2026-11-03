@@ -4,11 +4,12 @@ import Link from "next/link";
 import { Header } from "@/components/landing/Header";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import type { Prisma } from "@/generated/prisma/client";
-import { CATALOG_PATH, type Locale, OG_LOCALE, alternates } from "@/i18n/config";
+import { CATALOG_PATH, HOME_PATH, LOCALES, type Locale, OG_LOCALE } from "@/i18n/config";
 import { type Dict, getDictionary } from "@/i18n/server";
 import { db } from "@/lib/db";
 import { CURRENCIES, formatMoney, isCurrency } from "@/lib/money";
 import { PLAN_LIMITS } from "@/lib/plans";
+import { absoluteUrl, breadcrumbs, clamp, fill, jsonLdScript } from "@/lib/seo";
 import { type SearchParams, param } from "@/lib/search-params";
 import { SERVICE_CATEGORIES, localizedCategory } from "@/lib/services";
 import { AutoSubmit } from "./AutoSubmit";
@@ -17,14 +18,62 @@ const PAGE_SIZE = 24;
 const SORTS = ["recommended", "new", "priceAsc", "priceDesc"] as const;
 type Sort = (typeof SORTS)[number];
 
-export function catalogMetadata(locale: Locale): Metadata {
+// Kataloqun indeksləşən səhifələri: əsas səhifə, sahə və sahə+şəhər. Qalan filtr birləşmələri (axtarış, qiymət,
+// sıralama, səhifə 2+) eyni məzmunun təkrarıdır: noindex verilir və canonical əsas səhifəni göstərir.
+function catalogSeo(locale: Locale, sp: Record<string, string | string[] | undefined>, total?: number) {
+  const t = getDictionary(locale);
+  const category = SERVICE_CATEGORIES.some((c) => c.key === param(sp, "category")) ? param(sp, "category") : "";
+  const city = param(sp, "city").slice(0, 60);
+  const base = CATALOG_PATH[locale];
+  const noisy = ["q", "price", "currency", "min", "max", "verified", "sort", "page"].some((k) => param(sp, k));
+  const indexable = !noisy;
+  const label = category ? (localizedCategory(category, locale) ?? "") : "";
+
+  let title = t.catalog.metaTitle;
+  let description = t.catalog.metaDescription;
+  if (label) {
+    title = fill(t.seo.categoryTitle, { category: label });
+    description = fill(t.seo.categoryDescription, { category: label, n: total ?? "" });
+  }
+  if (city && indexable) title = fill(t.seo.withCity, { title, city });
+
+  const query = new URLSearchParams();
+  if (indexable && category) query.set("category", category);
+  if (indexable && city) query.set("city", city);
+  const suffix = query.size ? `?${query}` : "";
+  // Sahə səhifəsinin digər dillərdəki qarşılığı eyni filtrlə göstərilir (hreflang)
+  const languages = Object.fromEntries(LOCALES.map((l) => [l, `${CATALOG_PATH[l]}${suffix}`])) as Record<Locale, string>;
+  return { title, description: clamp(description), canonical: `${base}${suffix}`, languages, indexable, category, city, label };
+}
+
+export async function catalogMetadata(locale: Locale, searchParams?: Record<string, string | string[] | undefined>): Promise<Metadata> {
   const t = getDictionary(locale).catalog;
+  const sp = searchParams ?? {};
+  const first = catalogSeo(locale, sp);
+  // Sahə səhifəsinin təsvirində xidmət sayı göstərilir
+  const total = first.label ? await countServices(first.category, first.city) : undefined;
+  const seo = catalogSeo(locale, sp, total);
   return {
-    title: t.metaTitle,
-    description: t.metaDescription,
-    alternates: alternates(CATALOG_PATH, locale),
-    openGraph: { type: "website", siteName: "Karvan", title: t.metaTitle, description: t.metaDescription, url: CATALOG_PATH[locale], locale: OG_LOCALE[locale] },
+    title: seo.title,
+    description: seo.description,
+    keywords: seo.label ? [seo.label, t.metaTitle] : undefined,
+    alternates: { canonical: seo.canonical, languages: { ...seo.languages, "x-default": seo.languages.az } },
+    openGraph: { type: "website", siteName: "Karvan", title: seo.title, description: seo.description, url: seo.canonical, locale: OG_LOCALE[locale] },
+    twitter: { card: "summary_large_image", title: seo.title, description: seo.description },
+    robots: { index: seo.indexable, follow: true },
   };
+}
+
+// Sahə/şəhər üzrə ümumi say (metadata üçün)
+function countServices(category: string, city: string) {
+  return db.service.count({
+    where: {
+      isActive: true,
+      blocked: false,
+      ...(category ? { category } : {}),
+      profile: { showInCatalog: true, user: { blockedAt: null }, ...(city ? { city: { equals: city, mode: "insensitive" as const } } : {}) },
+    },
+  });
 }
 
 function duration(s: { durationDays: number | null; durationWeeks: number | null; durationMonths: number | null; duration: string | null }, t: Dict["catalog"]) {
@@ -44,7 +93,7 @@ const control =
 
 export async function CatalogPage({ locale, searchParams }: { locale: Locale; searchParams: SearchParams }) {
   const dict = getDictionary(locale);
-  const t = dict.catalog;
+  const t = { ...dict.catalog, ...dict.seo };
   const sp = await searchParams;
   const q = param(sp, "q").slice(0, 80);
   const category = param(sp, "category");
@@ -121,6 +170,7 @@ export async function CatalogPage({ locale, searchParams }: { locale: Locale; se
   const cities = [...new Set(cityRows.map((c) => c.city!.trim()).filter(Boolean))];
   const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
   const path = CATALOG_PATH[locale];
+  const seo = catalogSeo(locale, sp, total);
   const active = Boolean(q || category || city || price || currency || min || max || verified || sort !== "recommended");
 
   const pageHref = (n: number) => {
@@ -132,13 +182,15 @@ export async function CatalogPage({ locale, searchParams }: { locale: Locale; se
 
   return (
     <div className="min-h-screen bg-white text-gray-900 [color-scheme:light] dark:bg-[#0c0c0f] dark:text-gray-100 dark:[color-scheme:dark]">
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(catalogJsonLd(locale, seo, services, total))} />
       <Header locale={locale} nav={dict.nav} common={dict.common} paths={CATALOG_PATH} onHome={false} />
 
       <section className="relative overflow-hidden border-b border-gray-100 bg-gradient-to-b from-violet-50/70 to-white pb-10 pt-28 dark:border-white/5 dark:from-violet-500/10 dark:to-transparent">
         <div aria-hidden className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-pink-300/30 blur-3xl dark:bg-pink-600/20" />
         <div className="relative mx-auto max-w-6xl px-4">
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-violet-600 dark:text-violet-300">{t.eyebrow}</p>
-          <h1 className="mt-3 max-w-3xl text-balance text-4xl font-bold leading-tight sm:text-5xl">{t.title}</h1>
+          {/* Sahə seçiləndə başlıq həmin sahəni göstərir: axtarışda bu səhifə o söz üzrə tanınır */}
+          <h1 className="mt-3 max-w-3xl text-balance text-4xl font-bold leading-tight sm:text-5xl">{seo.label ? seo.title : t.title}</h1>
           <p className="mt-4 max-w-2xl text-lg text-gray-600 dark:text-gray-400">{t.text}</p>
 
           {/* GET formu: filtrlər URL-də qalır, link paylaşmaq olur, JS olmadan da işləyir */}
@@ -337,7 +389,41 @@ export async function CatalogPage({ locale, searchParams }: { locale: Locale; se
           </nav>
         )}
 
-        <div className="mt-14 flex flex-col items-center justify-between gap-4 rounded-3xl bg-gradient-to-r from-violet-600 to-pink-600 p-8 text-white sm:flex-row">
+        {/* Axtarış sistemləri sahə və şəhər səhifələrini yalnız bu linklərlə tapa bilir (filtrlər <select>-dir) */}
+        <nav aria-label={t.browseCategories} className="mt-12 border-t border-gray-100 pt-8 dark:border-white/10">
+          <h2 className="text-sm font-semibold text-gray-900 dark:text-white">{t.browseCategories}</h2>
+          <ul className="mt-3 flex flex-wrap gap-2">
+            {SERVICE_CATEGORIES.map((c) => (
+              <li key={c.key}>
+                <Link
+                  href={`${path}?category=${c.key}`}
+                  className={`inline-block rounded-full border px-3 py-1.5 text-sm transition ${c.key === category ? "border-gray-900 bg-gray-900 text-white dark:border-white dark:bg-white dark:text-gray-900" : "border-gray-200 text-gray-700 hover:border-gray-400 dark:border-white/10 dark:text-gray-300"}`}
+                >
+                  {localizedCategory(c.key, locale)}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          {cities.length > 0 && (
+            <>
+              <h2 className="mt-6 text-sm font-semibold text-gray-900 dark:text-white">{t.browseCities}</h2>
+              <ul className="mt-3 flex flex-wrap gap-2">
+                {cities.map((c) => (
+                  <li key={c}>
+                    <Link
+                      href={`${path}?${category ? `category=${category}&` : ""}city=${encodeURIComponent(c)}`}
+                      className={`inline-block rounded-full border px-3 py-1.5 text-sm transition ${c === city ? "border-gray-900 bg-gray-900 text-white dark:border-white dark:bg-white dark:text-gray-900" : "border-gray-200 text-gray-700 hover:border-gray-400 dark:border-white/10 dark:text-gray-300"}`}
+                    >
+                      {c}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+        </nav>
+
+        <div className="mt-10 flex flex-col items-center justify-between gap-4 rounded-3xl bg-gradient-to-r from-violet-600 to-pink-600 p-8 text-white sm:flex-row">
           <p className="text-lg font-semibold">{t.sellerCta}</p>
           <Link href="/signup" className="shrink-0 rounded-full bg-white px-6 py-3 font-semibold text-violet-700">
             {t.sellerButton}
@@ -348,4 +434,47 @@ export async function CatalogPage({ locale, searchParams }: { locale: Locale; se
       <SiteFooter locale={locale} t={dict} paths={CATALOG_PATH} />
     </div>
   );
+}
+
+// Kataloq nəticələri: axtarış sistemləri siyahını və qiymətləri oxuya bilsin
+function catalogJsonLd(
+  locale: Locale,
+  seo: ReturnType<typeof catalogSeo>,
+  services: { title: string; description: string | null; amountQepik: number | null; currency: string; priceType: string; profile: { username: string; displayName: string } }[],
+  total: number,
+) {
+  const t = getDictionary(locale);
+  return [
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      name: seo.title,
+      description: seo.description,
+      url: absoluteUrl(seo.canonical),
+      inLanguage: locale,
+      mainEntity: {
+        "@type": "ItemList",
+        numberOfItems: total,
+        itemListElement: services.slice(0, 20).map((s, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          url: absoluteUrl(`/${s.profile.username}#xidmetler`),
+          item: {
+            "@type": "Service",
+            name: s.title,
+            ...(s.description ? { description: clamp(s.description, 200) } : {}),
+            provider: { "@type": "ProfessionalService", name: s.profile.displayName, url: absoluteUrl(`/${s.profile.username}`) },
+            ...(s.priceType === "FIXED" && s.amountQepik !== null
+              ? { offers: { "@type": "Offer", price: (s.amountQepik / 100).toFixed(2), priceCurrency: s.currency, availability: "https://schema.org/InStock" } }
+              : {}),
+          },
+        })),
+      },
+    },
+    breadcrumbs([
+      { name: "Karvan", path: HOME_PATH[locale] },
+      { name: t.catalog.eyebrow, path: CATALOG_PATH[locale] },
+      ...(seo.label ? [{ name: seo.label, path: seo.canonical }] : []),
+    ]),
+  ];
 }

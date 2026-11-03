@@ -1,15 +1,19 @@
 import { ArrowUpRight, BadgeCheck, Briefcase, Clock, ExternalLink, MapPin, Phone, ShoppingBag, UserRound } from "lucide-react";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { HomeButton } from "@/components/HomeButton";
 import { Logo } from "@/components/Logo";
 import { PageTracker } from "@/components/PageTracker";
 import { SocialIcon } from "@/components/SocialIcon";
+import { CATALOG_PATH } from "@/i18n/config";
+import { getDictionary } from "@/i18n/server";
 import { db } from "@/lib/db";
 import { formatMoney } from "@/lib/money";
 import { formatPhone } from "@/lib/phone";
 import { PLAN_LIMITS } from "@/lib/plans";
-import { formatDuration } from "@/lib/services";
+import { absoluteUrl, breadcrumbs, clamp, fill, jsonLdScript } from "@/lib/seo";
+import { categoryLabel, formatDuration } from "@/lib/services";
 import { PLATFORM_BY_KEY } from "@/lib/social";
 import { OrderForm } from "./OrderForm";
 
@@ -27,15 +31,88 @@ async function getProfile(username: string) {
   });
 }
 
+// Satıcı səhifələri uzun-quyruq axtarışların əsas mənbəyidir: "makiyaj ustası Bakı" kimi sorğular bura gətirir.
+// Başlıq, təsvir və strukturlu məlumat profil məlumatından qurulur.
+function seoParts(profile: NonNullable<Awaited<ReturnType<typeof getProfile>>>) {
+  const t = getDictionary("az").seo;
+  const services = profile.services.map((s) => s.title);
+  const cheapest = profile.services
+    .filter((s) => s.priceType === "FIXED" && s.amountQepik !== null)
+    .sort((a, b) => a.amountQepik! - b.amountQepik!)[0];
+  const title = profile.profession ? fill(t.sellerTitle, { name: profile.displayName, profession: profile.profession }) : profile.displayName;
+  const intro = profile.profession ? fill(t.sellerIntro, { profession: profile.profession, city: profile.city ?? "" }) : (profile.city ?? "");
+  const description = services.length
+    ? clamp(fill(t.sellerDescription, { intro: profile.bio?.trim() || intro, services: services.slice(0, 4).join(", ") }))
+    : clamp(profile.bio?.trim() || fill(t.sellerFallback, { name: profile.displayName }));
+  return { title: profile.city ? fill(t.sellerCity, { title, city: profile.city }) : title, description, cheapest };
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const profile = await getProfile((await params).username);
-  if (!profile || profile.user.blockedAt) return {};
-  const title = profile.profession ? `${profile.displayName} · ${profile.profession}` : profile.displayName;
+  const username = (await params).username;
+  const profile = await getProfile(username);
+  // Bloklanmış və ya tapılmayan səhifə indeksləşmir
+  if (!profile || profile.user.blockedAt) return { robots: { index: false, follow: false } };
+  const { title, description } = seoParts(profile);
+  const path = `/${profile.username}`;
   return {
     title,
-    description: profile.bio ?? undefined,
-    openGraph: { title, description: profile.bio ?? undefined, images: profile.avatarUrl ? [profile.avatarUrl] : undefined },
+    description,
+    alternates: { canonical: path },
+    openGraph: {
+      type: "profile",
+      siteName: "Karvan",
+      title,
+      description,
+      url: path,
+      locale: "az_AZ",
+    },
+    twitter: { card: "summary", title, description },
+    robots: { index: profile.showInCatalog, follow: true },
   };
+}
+
+// Axtarış sistemləri üçün: xidmətlər qiymətləri ilə birlikdə oxunaqlı formada
+function SellerJsonLd({ profile }: { profile: NonNullable<Awaited<ReturnType<typeof getProfile>>> }) {
+  const { description } = seoParts(profile);
+  const url = absoluteUrl(`/${profile.username}`);
+  const data = [
+    {
+      "@context": "https://schema.org",
+      "@type": "ProfessionalService",
+      "@id": `${url}#business`,
+      name: profile.displayName,
+      url,
+      description,
+      ...(profile.profession ? { additionalType: profile.profession, knowsAbout: profile.profession } : {}),
+      ...(profile.avatarUrl ? { image: profile.avatarUrl.startsWith("http") ? profile.avatarUrl : absoluteUrl(profile.avatarUrl) } : {}),
+      ...(profile.phone ? { telephone: profile.phone } : {}),
+      ...(profile.city ? { address: { "@type": "PostalAddress", addressLocality: profile.city, addressCountry: "AZ" } } : {}),
+      ...(profile.socialLinks.length ? { sameAs: profile.socialLinks.filter((l) => l.platform !== "CUSTOM").map((l) => l.url) } : {}),
+      ...(profile.services.length
+        ? {
+            hasOfferCatalog: {
+              "@type": "OfferCatalog",
+              name: "Xidmətlər",
+              itemListElement: profile.services.map((s) => ({
+                "@type": "Offer",
+                name: s.title,
+                ...(s.description ? { description: s.description } : {}),
+                ...(s.priceType === "FIXED" && s.amountQepik !== null
+                  ? { price: (s.amountQepik / 100).toFixed(2), priceCurrency: s.currency, availability: "https://schema.org/InStock" }
+                  : {}),
+                itemOffered: { "@type": "Service", name: s.title, ...(categoryLabel(s.category) ? { serviceType: categoryLabel(s.category) } : {}) },
+              })),
+            },
+          }
+        : {}),
+    },
+    breadcrumbs([
+      { name: "Karvan", path: "/" },
+      { name: "Xidmətlər", path: CATALOG_PATH.az },
+      { name: profile.displayName, path: `/${profile.username}` },
+    ]),
+  ];
+  return <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(data)} />;
 }
 
 function initials(name: string) {
@@ -96,6 +173,7 @@ export default async function ProfilePage({ params }: Props) {
   return (
     <div className="min-h-screen bg-gray-50" style={{ "--brand": brand } as React.CSSProperties}>
       <PageTracker username={profile.username} />
+      {!profile.user.blockedAt && profile.showInCatalog && <SellerJsonLd profile={profile} />}
       {/* Üz qabığı */}
       <div className="relative h-40 overflow-hidden sm:h-56">
         {profile.coverUrl ? (
@@ -189,6 +267,26 @@ export default async function ProfilePage({ params }: Props) {
 
         {/* Sağ: məzmun */}
         <main className="min-w-0 lg:pt-8">
+          {/* Naviqasiya zənciri: ziyarətçi kataloqa qayıda bilir, axtarış sistemi səhifənin yerini anlayır */}
+          <nav aria-label="Naviqasiya" className="mb-4 flex flex-wrap items-center gap-1.5 text-xs text-gray-500">
+            <Link href="/" className="hover:text-gray-900">
+              Karvan
+            </Link>
+            <span aria-hidden>›</span>
+            <Link href={CATALOG_PATH.az} className="hover:text-gray-900">
+              Xidmətlər
+            </Link>
+            {profile.city && (
+              <>
+                <span aria-hidden>›</span>
+                <Link href={`${CATALOG_PATH.az}?city=${encodeURIComponent(profile.city)}`} className="hover:text-gray-900">
+                  {profile.city}
+                </Link>
+              </>
+            )}
+            <span aria-hidden>›</span>
+            <span className="text-gray-700">{profile.displayName}</span>
+          </nav>
           {(sections.length > 1 || profile.phone) && (
             <div className={`sticky top-0 z-10 -mx-4 mb-6 items-center gap-3 ${sections.length > 1 ? "flex" : "hidden lg:flex"} bg-gray-50/90 px-4 py-3 backdrop-blur lg:mx-0 lg:px-0`}>
               {sections.length > 1 && (
