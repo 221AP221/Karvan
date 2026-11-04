@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { requireProfile } from "@/lib/auth";
-import { KARVAN_BANK, isPaidPlan, newReference, priceFor } from "@/lib/billing";
+import { db } from "@/lib/db";
+import { KARVAN_BANK, carryOverDays, isPaidPlan, newReference, priceFor } from "@/lib/billing";
 import { getBillingGateway } from "@/lib/billing-gateway";
 import { formatMoney } from "@/lib/money";
 import { PLAN_NAMES } from "@/lib/plans";
@@ -11,10 +12,15 @@ import { CheckoutForm } from "./CheckoutForm";
 export const metadata: Metadata = { title: "Ödəniş" };
 
 export default async function Checkout({ searchParams }: { searchParams: SearchParams }) {
-  await requireProfile();
   const sp = await searchParams;
   const plan = param(sp, "plan");
   if (!isPaidPlan(plan)) redirect("/dashboard/billing");
+
+  // Tarif dəyişirsə, köhnə tarifin qalan müddəti yeni tarifdə neçə gün verir (FR-ABN-11)
+  const profile = await requireProfile();
+  const sub = await db.subscription.findUnique({ where: { userId: profile.userId }, select: { plan: true, currentPeriodEnd: true } });
+  const carryDays = carryOverDays(sub, plan);
+
   return (
     <CheckoutForm
       plan={plan}
@@ -24,6 +30,7 @@ export default async function Checkout({ searchParams }: { searchParams: SearchP
       bank={KARVAN_BANK}
       cardAvailable={Boolean(getBillingGateway())}
       sandbox={getBillingGateway()?.name === "sandbox"}
+      carryDays={carryDays}
     />
   );
 }

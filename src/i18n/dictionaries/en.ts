@@ -377,6 +377,7 @@ export const en: typeof az = {
       blocked: "Your account has been blocked. Contact support for details.",
       noProfile: "This account has no page. Contact support.",
       badLink: "The link is invalid or has expired. Request a new one.",
+      tooMany: "Too many attempts. Please try again in a few minutes.",
     },
   },
 };

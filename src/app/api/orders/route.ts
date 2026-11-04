@@ -4,6 +4,7 @@ import { z } from "zod";
 import { logActivity } from "@/lib/activity";
 import { db } from "@/lib/db";
 import { InvoiceLimitError, createInvoice, invoiceUrl } from "@/lib/invoices";
+import { LIMITS, clientIp, limitByIp, rateLimit, tooMany } from "@/lib/rate-limit";
 
 const OrderInput = z.object({
   serviceId: z.string(),
@@ -18,13 +19,20 @@ const OrderInput = z.object({
   visitorId: z.string().regex(/^[A-Za-z0-9_-]{8,64}$/).optional().catch(undefined),
 });
 
-// TODO(M2): IP üzrə rate limit
 export async function POST(request: Request) {
+  // Formanın sui-istifadəsinə qarşı IP üzrə limit (NFR-SEC-10)
+  const limit = await limitByIp("order", LIMITS.order.max, LIMITS.order.windowMs);
+  if (!limit.ok) return tooMany(limit, "Çox sayda sifariş göndərildi. Bir az sonra yenidən cəhd edin.");
+
   const parsed = OrderInput.safeParse(await request.json().catch(() => null));
   if (!parsed.success) {
     return NextResponse.json({ error: parsed.error.issues[0]?.message ?? "Məlumatlar düzgün deyil" }, { status: 400 });
   }
   const input = parsed.data;
+
+  // Eyni xidmətə eyni IP-dən təkrar sifariş: spamın əsas forması
+  const perService = rateLimit(`order:${await clientIp()}:${input.serviceId}`, LIMITS.orderPerService.max, LIMITS.orderPerService.windowMs);
+  if (!perService.ok) return tooMany(perService, "Bu xidmət üçün sifariş artıq göndərilib. Satıcı tezliklə əlaqə saxlayacaq.");
 
   const service = await db.service.findUnique({ where: { id: input.serviceId }, include: { profile: { select: { user: { select: { blockedAt: true } } } } } });
   if (!service || !service.isActive || service.blocked || service.profile.user.blockedAt) {

@@ -16,6 +16,7 @@ import { db } from "@/lib/db";
 import { invoiceUrl } from "@/lib/invoices";
 import { formatMoney } from "@/lib/money";
 import { PLAN_LIMITS, startOfMonth } from "@/lib/plans";
+import { LIMITS, rateLimit, tooMany } from "@/lib/rate-limit";
 
 const inputs = {
   "parse-invoice": z.object({ text: z.string().min(3).max(2000) }),
@@ -38,6 +39,10 @@ export async function POST(request: Request, { params }: { params: Promise<{ tas
 
   const task = (await params).task;
   if (!(task in inputs)) return NextResponse.json({ error: "Naməlum əməliyyat" }, { status: 404 });
+
+  // Aylıq plan limitindən əlavə qısa pəncərəli qoruma: bir hesabın ardıcıl sorğuları
+  const burst = rateLimit(`ai:${profile.userId}`, LIMITS.ai.max, LIMITS.ai.windowMs);
+  if (!burst.ok) return tooMany(burst, "AI sorğuları çox sıxdır. Bir dəqiqə sonra yenidən yoxlayın.");
 
   const body = await request.json().catch(() => null);
 

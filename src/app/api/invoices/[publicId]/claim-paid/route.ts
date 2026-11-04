@@ -1,9 +1,13 @@
 import { NextResponse } from "next/server";
 import { logActivity } from "@/lib/activity";
 import { db } from "@/lib/db";
+import { LIMITS, limitByIp, tooMany } from "@/lib/rate-limit";
 
 // Müştəri "Ödədim" basır; status satıcı təsdiqləyənə qədər CLAIMED_PAID qalır.
 export async function POST(_: Request, { params }: { params: Promise<{ publicId: string }> }) {
+  const limit = await limitByIp("claim-paid", LIMITS.claimPaid.max, LIMITS.claimPaid.windowMs);
+  if (!limit.ok) return tooMany(limit);
+
   const { count } = await db.invoice.updateMany({
     where: { publicId: (await params).publicId, status: { in: ["SENT", "VIEWED", "OVERDUE"] } },
     data: { status: "CLAIMED_PAID" },

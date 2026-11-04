@@ -10,6 +10,7 @@ import { type Dict, getDictionary, getLocale } from "@/i18n/server";
 import type { FormState } from "@/lib/forms";
 import { sendEmail } from "@/lib/notify";
 import { normalizePhone } from "@/lib/phone";
+import { LIMITS, limitByIp } from "@/lib/rate-limit";
 import { checkoutPath } from "@/lib/plan-intent";
 import { findValidReset, hashResetToken as sha256 } from "@/lib/password-reset";
 import { RESERVED_USERNAMES, USERNAME_RE } from "@/lib/username";
@@ -57,6 +58,8 @@ const signupSchema = (e: Errors) =>
 
 export async function signup(_: AuthState, form: FormData): Promise<AuthState> {
   const e = await errors();
+  // IP üzrə limit: kütləvi hesab açılmasının qarşısını alır (NFR-SEC-10)
+  if (!(await limitByIp("signup", LIMITS.signup.max, LIMITS.signup.windowMs)).ok) return fail(e.tooMany);
   const parsed = signupSchema(e).safeParse(Object.fromEntries(form));
   if (!parsed.success) {
     const issue = parsed.error.issues[0];
@@ -104,6 +107,8 @@ export async function signup(_: AuthState, form: FormData): Promise<AuthState> {
 }
 
 export async function login(_: AuthState, form: FormData): Promise<AuthState> {
+  // Şifrə seçmə hücumlarına qarşı IP üzrə limit (NFR-SEC-10)
+  if (!(await limitByIp("login", LIMITS.login.max, LIMITS.login.windowMs)).ok) return fail((await errors()).tooMany);
   const email = String(form.get("email") ?? "").trim().toLowerCase();
   const password = String(form.get("password") ?? "");
   const user = await db.user.findUnique({ where: { email }, include: { profile: { select: { id: true } } } });
@@ -142,6 +147,10 @@ const RESET_MINUTES = 30;
 export async function requestPasswordReset(_: AuthState, form: FormData): Promise<AuthState> {
   const email = String(form.get("email") ?? "").trim().toLowerCase();
   if (!z.email().safeParse(email).success) return fail((await errors()).email);
+  // Hesab üzrə saatlıq limitdən əlavə IP üzrə limit
+  if (!(await limitByIp("password-reset", LIMITS.passwordReset.max, LIMITS.passwordReset.windowMs)).ok) {
+    return fail((await errors()).tooMany);
+  }
 
   // Hesabın olub-olmadığını bildirmirik: cavab həmişə eynidir
   const done: AuthState = { ok: true };

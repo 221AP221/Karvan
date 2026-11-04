@@ -2,6 +2,7 @@ import { z } from "zod";
 import { detectDevice, detectSource, isBot } from "@/lib/analytics";
 import { getCurrentProfile } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { LIMITS, limitByIp } from "@/lib/rate-limit";
 
 const Input = z.object({
   u: z.string().max(40), // səhifə (username)
@@ -17,6 +18,8 @@ export async function POST(request: Request) {
   const done = new Response(null, { status: 204 });
   const userAgent = request.headers.get("user-agent") ?? "";
   if (isBot(userAgent)) return done;
+  // Hadisə axınının şişirdilməsinə qarşı IP limiti; cavab yenə 204-dür
+  if (!(await limitByIp("track", LIMITS.track.max, LIMITS.track.windowMs)).ok) return done;
 
   let body: unknown;
   try {

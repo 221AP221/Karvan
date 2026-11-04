@@ -1,9 +1,10 @@
-import { CircleDollarSign, Clock, CreditCard, TrendingUp } from "lucide-react";
+import { CircleDollarSign, Clock, CreditCard, Download, TrendingUp } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { FilterBar } from "@/components/FilterBar";
 import type { BillingStatus, Prisma } from "@/generated/prisma/client";
 import { requireAdmin } from "@/lib/admin";
+import { paymentsWhere } from "@/lib/admin-queries";
 import { db } from "@/lib/db";
 import { formatMoney } from "@/lib/money";
 import { PLAN_NAMES } from "@/lib/plans";
@@ -28,10 +29,7 @@ export default async function AdminPayments({ searchParams }: { searchParams: Se
   const q = param(sp, "q");
   const status = param(sp, "status");
   const page = Math.max(1, Number(param(sp, "page")) || 1);
-  const where: Prisma.SubscriptionPaymentWhereInput = {
-    ...(q && { OR: [{ reference: { contains: q.toUpperCase() } }, { user: { email: { contains: q, mode: "insensitive" } } }] }),
-    ...(status in STATUS && { status: status as BillingStatus }),
-  };
+  const where: Prisma.SubscriptionPaymentWhereInput = paymentsWhere({ q, status });
   const d30 = new Date(Date.now() - 30 * 86_400_000);
   const [total, rows, pending, revenue30, revenueAll, activeSubs] = await Promise.all([
     db.subscriptionPayment.count({ where }),
@@ -44,7 +42,11 @@ export default async function AdminPayments({ searchParams }: { searchParams: Se
 
   return (
     <div>
-      <PageTitle title="Ödənişlər" text="Karvan abunəlikləri: kart ödənişləri gateway təsdiqi ilə avtomatik aktivləşir, bank köçürmələrini burada təsdiqləyin" />
+      <PageTitle title="Ödənişlər" text="Karvan abunəlikləri: kart ödənişləri gateway təsdiqi ilə avtomatik aktivləşir, bank köçürmələrini burada təsdiqləyin">
+        <a href={hrefWith("/api/admin/export", { ...sp, type: "payments" }, { page: null })} className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-medium hover:border-gray-500">
+          <Download size={15} aria-hidden /> Excel-ə ixrac
+        </a>
+      </PageTitle>
       <div className="mb-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Kpi icon={Clock} label="Təsdiq gözləyir" value={String(pending)} href="/admin/payments?status=PENDING" />
         <Kpi icon={CircleDollarSign} label="Gəlir (30 gün)" value={formatMoney(revenue30._sum.amountQepik ?? 0, "AZN")} />

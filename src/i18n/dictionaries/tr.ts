@@ -377,6 +377,7 @@ export const tr: typeof az = {
       blocked: "Hesabınız engellendi. Ayrıntılı bilgi için destekle iletişime geçin.",
       noProfile: "Bu hesabın sayfası bulunamadı. Destekle iletişime geçin.",
       badLink: "Link geçersiz veya süresi dolmuş. Yeniden talep gönderin.",
+      tooMany: "Çok fazla deneme yapıldı. Birkaç dakika sonra tekrar deneyin.",
     },
   },
 };

@@ -51,7 +51,26 @@ export async function applyGatewayResult(result: { reference: string; status: "S
   return "activated" as const;
 }
 
-// Tarifi aktivləşdirir: eyni tarif uzadılırsa müddət mövcud bitmə tarixinə əlavə olunur
+const DAY = 86_400_000;
+
+/**
+ * Tarif dəyişəndə köhnə tarifin qalan müddətinin dəyəri yeni tarifdə günə çevrilir (FR-ABN-11).
+ * Məsələn, illik Pro-dan Pro Max-a keçəndə qalan Pro günlərinin pul dəyəri Pro Max-ın
+ * gündəlik qiymətinə bölünür və yeni müddətə əlavə olunur. Eyni tarif uzadılanda bu
+ * hesablama işləmir: orada müddət sadəcə mövcud bitmə tarixinin üstünə gəlir.
+ */
+export function carryOverDays(from: { plan: Plan; currentPeriodEnd: Date | null } | null, to: PaidPlan, now = new Date()) {
+  if (!from || from.plan === "FREE" || from.plan === to || !from.currentPeriodEnd) return 0;
+  if (!isPaidPlan(from.plan)) return 0;
+  const remainingMs = from.currentPeriodEnd.getTime() - now.getTime();
+  if (remainingMs <= 0) return 0;
+  const remainingDays = remainingMs / DAY;
+  const creditQepik = (MONTHLY[from.plan] / 30) * remainingDays;
+  return Math.floor(creditQepik / (MONTHLY[to] / 30));
+}
+
+// Tarifi aktivləşdirir: eyni tarif uzadılırsa müddət mövcud bitmə tarixinə əlavə olunur,
+// tarif dəyişirsə köhnə tarifin qalan dəyəri gün kimi hesaba alınır (FR-ABN-11)
 export async function activatePayment(paymentId: string) {
   const payment = await db.subscriptionPayment.findUnique({ where: { id: paymentId }, include: { user: { select: { email: true, subscription: true } } } });
   if (!payment || payment.status === "ACTIVATED" || payment.status === "REJECTED" || payment.status === "FAILED") return;
@@ -59,6 +78,8 @@ export async function activatePayment(paymentId: string) {
   const base = sub?.plan === payment.plan && sub.currentPeriodEnd && sub.currentPeriodEnd > new Date() ? sub.currentPeriodEnd : new Date();
   const end = new Date(base);
   end.setMonth(end.getMonth() + payment.months);
+  const carry = isPaidPlan(payment.plan) ? carryOverDays(sub, payment.plan) : 0;
+  if (carry > 0) end.setDate(end.getDate() + carry);
   await db.$transaction([
     db.subscription.upsert({
       where: { userId: payment.userId },
@@ -67,7 +88,12 @@ export async function activatePayment(paymentId: string) {
     }),
     db.subscriptionPayment.update({ where: { id: paymentId }, data: { status: "ACTIVATED", paidAt: payment.paidAt ?? new Date(), activatedAt: new Date() } }),
   ]);
-  await logActivity({ userId: payment.userId, email: payment.user.email, action: "plan_activated", details: `${payment.plan} · ${payment.months} ay · ${payment.reference}` });
+  await logActivity({
+    userId: payment.userId,
+    email: payment.user.email,
+    action: "plan_activated",
+    details: `${payment.plan} · ${payment.months} ay · ${payment.reference}${carry > 0 ? ` · əvvəlki tarifdən ${carry} gün keçirildi` : ""}`,
+  });
 }
 
 // Müddəti bitmiş ödənişli tarif pulsuza qayıdır (girişdə yoxlanılır)

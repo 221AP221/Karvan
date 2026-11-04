@@ -50,3 +50,15 @@ export function adminLogWhere(p: P): Prisma.AdminLogWhereInput {
 
 export const flat = (sp: Record<string, string | string[] | undefined>): P =>
   Object.fromEntries(Object.entries(sp).flatMap(([k, v]) => (typeof v === "string" && v.trim() ? [[k, v.trim()]] : [])));
+
+// Abunəlik ödənişləri: /admin/payments ekranı və CSV ixracı eyni filtri işlədir
+export function paymentsWhere(p: P): Prisma.SubscriptionPaymentWhereInput {
+  const q = p.q ?? "";
+  const STATUSES = ["PENDING", "PAID", "ACTIVATED", "REJECTED", "FAILED"];
+  return {
+    ...(q && {
+      OR: [{ reference: { contains: q.toUpperCase() } }, { user: { email: { contains: q, mode: "insensitive" } } }],
+    }),
+    ...(STATUSES.includes(p.status ?? "") && { status: p.status as Prisma.SubscriptionPaymentWhereInput["status"] }),
+  };
+}

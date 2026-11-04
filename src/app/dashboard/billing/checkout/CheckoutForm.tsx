@@ -13,6 +13,7 @@ type Props = {
   bank: { recipient: string; bank: string; iban: string; voen: string; sample: boolean };
   cardAvailable: boolean;
   sandbox: boolean;
+  carryDays: number;
 };
 
 const input = "h-11 w-full rounded-lg border border-gray-300 bg-white px-3 text-sm outline-none focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/20";
@@ -32,7 +33,7 @@ function CopyRow({ label, value }: { label: string; value: string }) {
   );
 }
 
-export function CheckoutForm({ plan, planName, prices, reference, bank, cardAvailable, sandbox }: Props) {
+export function CheckoutForm({ plan, planName, prices, reference, bank, cardAvailable, sandbox, carryDays }: Props) {
   const [months, setMonths] = useState<1 | 12>(1);
   const [method, setMethod] = useState<"card" | "transfer">(cardAvailable ? "card" : "transfer");
   const [cardState, cardAction, cardPending] = useActionState(startCardPayment, undefined);
@@ -53,6 +54,11 @@ export function CheckoutForm({ plan, planName, prices, reference, bank, cardAvai
         ← Tariflər
       </Link>
       <h1 className="mt-2 text-2xl font-bold">{planName} tarifinə keçid</h1>
+      {carryDays > 0 && (
+        <p className="mt-3 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-900">
+          Hazırkı tarifinizdən qalan müddət itmir: yeni tarifə <strong>{carryDays} gün</strong> kimi əlavə olunacaq.
+        </p>
+      )}
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_320px]">
         <div className="flex flex-col gap-5">

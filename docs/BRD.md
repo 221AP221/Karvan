@@ -750,7 +750,7 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 | FR-ABN-08 | Eyni tarif uzadılanda yeni müddət mövcud müddətin üzərinə əlavə olunmalıdır | M | BRU-09 | T | ✅ |
 | FR-ABN-09 | Müddət bitdikdə tarif avtomatik Pulsuza qayıtmalı, istifadəçinin məlumatları silinməməlidir | M | BRU-10 | T | ✅ |
 | FR-ABN-10 | Abunəlik avtomatik yenilənməməli, təkrar ödəniş istifadəçinin qərarı olmalıdır | M | SH-SAT-12 | İ | ✅ |
-| FR-ABN-11 | Tarif dəyişdirildikdə köhnə tarifin qalan müddətinin dəyəri nəzərə alınmalıdır | S | SH-SAT-12 | T | 🟡 Hazırda nəzərə alınmır — §30.1 |
+| FR-ABN-11 | Tarif dəyişdirildikdə köhnə tarifin qalan müddətinin dəyəri nəzərə alınmalıdır | S | SH-SAT-12 | T | ✅ Qalan müddət yeni tarifdə günə çevrilir; ödəniş səhifəsində göstərilir |
 | FR-ABN-12 | Satıcı ödəniş tarixçəsini paneldə görə bilməlidir | S | SH-SAT-12 | D | ✅ |
 
 ### 13.11 Admin panel — `FR-ADM`
@@ -819,12 +819,12 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 | FR-ODN | 6 | 4 | 0 | 2 |
 | FR-ANL | 10 | 10 | 0 | 0 |
 | FR-AI | 9 | 9 | 0 | 0 |
-| FR-ABN | 12 | 11 | 1 | 0 |
+| FR-ABN | 12 | 12 | 0 | 0 |
 | FR-ADM | 15 | 15 | 0 | 0 |
 | FR-DIL | 6 | 5 | 1 | 0 |
 | FR-SEO | 8 | 8 | 0 | 0 |
 | FR-BLD | 4 | 1 | 1 | 2 |
-| **Cəmi** | **123** | **112 (91%)** | **5 (4%)** | **6 (5%)** |
+| **Cəmi** | **123** | **113 (92%)** | **4 (3%)** | **6 (5%)** |
 
 Lansı bloklayan `M` prioritetli açıq tələb yoxdur; 🟡 vəziyyətli FR-HES-06 və FR-BLD-02 IR-03-ün (e-poçt provayderi) bağlanması ilə həll olunur.
 
@@ -1085,7 +1085,7 @@ Təsnifat ISO/IEC 25010 keyfiyyət modelinə uyğundur. Hər NFR ölçülə bil�
 | NFR-SEC-07 | Yüklənən faylın sahibliyi və tipi yoxlanılmalıdır | ✅ |
 | NFR-SEC-08 | İstifadəçi daxil etdiyi linklərdə yalnız `http(s)` və `mailto` sxemlərinə icazə verilməlidir | ✅ |
 | NFR-SEC-09 | Xarici xidmət açarları şifrələnmiş saxlanılmalı, interfeysdə yenidən göstərilməməlidir | ✅ |
-| NFR-SEC-10 | İctimai formalar və AI endpoint-ləri IP əsaslı sürət məhdudiyyəti ilə qorunmalıdır | ⬜ Yalnız plan limiti var — RSK-08 |
+| NFR-SEC-10 | İctimai formalar və AI endpoint-ləri IP əsaslı sürət məhdudiyyəti ilə qorunmalıdır | ✅ Sifariş, "Ödədim", şəkil yükləmə, analitika, AI, giriş, qeydiyyat və şifrə bərpası üzrə limit (`src/lib/rate-limit.ts`) |
 
 ### 17.5 Məxfilik — `NFR-PRV`
 
@@ -1103,8 +1103,8 @@ Təsnifat ISO/IEC 25010 keyfiyyət modelinə uyğundur. Hər NFR ölçülə bil�
 | NFR-REL-01 | Təkrar gələn webhook abunəlik müddətini ikiqat uzatmamalıdır (idempotentlik) | ✅ |
 | NFR-REL-02 | İtmiş webhook istifadəçi qayıdanda API sorğusu ilə kompensasiya olunmalıdır | ✅ |
 | NFR-REL-03 | AI və e-poçt xidmətlərinin xətası əsas biznes əməliyyatını dayandırmamalıdır | ✅ |
-| NFR-REL-04 | Verilənlər bazasının gündəlik ehtiyat nüsxəsi götürülməlidir | ⬜ TR-04 |
-| NFR-REL-05 | Hədəf işləmə müddəti (uptime) ≥ 99,5% aylıq | ⬜ Monitorinq qurulmayıb — TR-06 |
+| NFR-REL-04 | Verilənlər bazasının gündəlik ehtiyat nüsxəsi götürülməlidir | 🟡 `npm run db:backup` skripti hazırdır; produksiyada cədvəl üzrə işə salınmalıdır (TR-04) |
+| NFR-REL-05 | Hədəf işləmə müddəti (uptime) ≥ 99,5% aylıq | 🟡 `/api/health` nöqtəsi hazırdır; xarici monitorinq qoşulmalıdır (TR-06) |
 
 ### 17.7 İzlənilənlik və dəstəklənmə — `NFR-OPS`
 
@@ -1113,7 +1113,7 @@ Təsnifat ISO/IEC 25010 keyfiyyət modelinə uyğundur. Hər NFR ölçülə bil�
 | NFR-OPS-01 | İstifadəçi fəaliyyəti və admin əməliyyatları jurnalda saxlanılmalıdır | ✅ |
 | NFR-OPS-02 | Hər əməliyyat üçün vaxt, aktor və (mümkün olduqda) IP qeyd edilməlidir | ✅ |
 | NFR-OPS-03 | İş mühiti bir əmrlə qurulmalıdır (baza, miqrasiya, demo məlumat) | ✅ |
-| NFR-OPS-04 | Kritik xətalar üçün xəbərdarlıq kanalı olmalıdır | ⬜ TR-06 |
+| NFR-OPS-04 | Kritik xətalar üçün xəbərdarlıq kanalı olmalıdır | 🟡 `/api/health` 503 qaytarır; xəbərdarlıq kanalı monitorinq xidmətində qurulmalıdır (TR-06) |
 
 ### 17.8 Uyğunluq və dəyişdirilə bilənlik — `NFR-POR`
 
@@ -1178,9 +1178,9 @@ Keçid tələbləri yalnız cari vəziyyətdən hədəf vəziyyətə keçid döv
 | TR-01 | Produksiya mühiti qurulmalı və domen yönləndirilməlidir | Mühit | Texniki | ⬜ |
 | TR-02 | Tətbiq sirləri (`APP_SECRET`, aqreqator açarları, bank rekvizitləri) təhlükəsiz saxlanmalı və yüklənməlidir | Mühit | Texniki | ⬜ |
 | TR-03 | Miqrasiyalar produksiya bazasına tətbiq edilməlidir | Məlumat | Texniki | ⬜ |
-| TR-04 | Gündəlik ehtiyat nüsxə və bərpa prosedurları qurulmalı, bərpa bir dəfə sınaqdan keçirilməlidir | Əməliyyat | Texniki | ⬜ |
+| TR-04 | Gündəlik ehtiyat nüsxə və bərpa prosedurları qurulmalı, bərpa bir dəfə sınaqdan keçirilməlidir | Əməliyyat | Texniki | 🟡 Skript hazırdır; cədvəl (cron) və bərpa sınağı produksiyada |
 | TR-05 | Demo və test məlumatı produksiyadan silinməli və ya gizlədilməlidir (metrikləri təhrif etməməsi üçün) | Məlumat | Texniki | ⬜ |
-| TR-06 | İşləmə müddəti monitorinqi və xəta xəbərdarlıq kanalı qurulmalıdır | Əməliyyat | Texniki | ⬜ |
+| TR-06 | İşləmə müddəti monitorinqi və xəta xəbərdarlıq kanalı qurulmalıdır | Əməliyyat | Texniki | 🟡 `/api/health` hazırdır; monitorinq xidməti seçilməlidir |
 | TR-07 | İstifadə şərtləri, məxfilik siyasəti və cookie bildirişi dərc olunmalıdır | Hüquqi | Hüquq | ⬜ |
 | TR-08 | Dəstək prosedurları yazılmalıdır: şikayət, bloklama, şifrə sıfırlama, ödəniş mübahisəsi | Əməliyyat | Dəstək | ⬜ |
 | TR-09 | Yeni satıcı üçün onboarding axını və nümunə məzmun hazırlanmalıdır | Təlim | Məhsul | 🟡 |
@@ -1209,7 +1209,7 @@ Keçid tələbləri yalnız cari vəziyyətdən hədəf vəziyyətə keçid döv
 | Platforma icmalı və MRR | Admin | `/admin` | FR-ADM-01 | — | ✅ |
 | İstifadəçi siyahısı | Admin | `/admin/users` | Profil, plan, status | CSV | ✅ |
 | Fəaliyyət və admin jurnalı | Admin | `/admin/logs` | 32 + 14 hadisə növü | CSV | ✅ |
-| Abunəlik ödənişləri | Admin | `/admin/payments` | Gözləyən, təsdiqlənmiş, gəlir | — | 🟡 İxrac yoxdur |
+| Abunəlik ödənişləri | Admin | `/admin/payments` | Gözləyən, təsdiqlənmiş, gəlir | CSV | ✅ |
 | Biznes məqsədlərinin icmalı (§6) | Sponsor | Aylıq hesabat | BG-01…07 | Əl ilə | ⬜ TR-11 |
 
 ---
@@ -1273,7 +1273,7 @@ Fərziyyə yanlış çıxarsa, göstərilən tələb və ya göstərici yenidən
 | RSK-05 | Şəkillərin bazada saxlanması həcmi və xərci artırır | Texniki | 3 | 3 | 9 | Azalt | S3/R2 keçid planı (IR-04); həcm monitorinqi | Texniki |
 | RSK-06 | Abunəlik avtomatik yenilənmədiyi üçün gəlir itir | Maliyyə | 4 | 3 | **12** | Azalt | Xatırlatma e-poçtu (v1.1), avtomatik yenilənmə (v2); BG-07 izlənməsi | Biznes |
 | RSK-07 | `APP_SECRET` olmadan və ya səhv konfiqurasiya ilə lansa çıxış | Əməliyyat | 2 | 5 | 10 | Qarşısını al | Buraxılış siyahısında məcburi bənd (G2, §26) | Texniki |
-| RSK-08 | İctimai formaların sui-istifadəsi (spam sifariş) | Təhlükəsizlik | 3 | 3 | 9 | Azalt | IP əsaslı sürət limiti (NFR-SEC-10) lansdan əvvəl | Texniki |
+| RSK-08 | İctimai formaların sui-istifadəsi (spam sifariş) | Təhlükəsizlik | 1 | 3 | 3 | Azaldılıb | IP əsaslı sürət limiti tətbiq olunub (NFR-SEC-10) | Texniki |
 | RSK-09 | Axtarış sistemlərində indeksləşmə gözləniləndən gec baş verir | Marketinq | 3 | 3 | 9 | Qəbul et / azalt | Search Console (TR-13), kataloq linklərinin daxili şəbəkəsi | Marketinq |
 | RSK-10 | Tək super admin hesabının itirilməsi idarəetməni bağlayır | Əməliyyat | 2 | 5 | 10 | Azalt | CLI ilə bərpa proseduru; ən azı 2 super admin (TR-14) | Super admin |
 | RSK-11 | Hüquqi sənədlər lansa yetişmir | Uyğunluq | 3 | 4 | **12** | Azalt | TR-07 üzrə erkən başlama; lansın şərti kimi saxlanması | Hüquq |
@@ -1395,9 +1395,9 @@ Faktura **qeyri-rəsmi ödəniş sorğusudur**. PDF-də "Bu sənəd ödəniş so
 | G-06 | E-poçt provayderi qoşulub (şifrə bərpası üçün minimum) | Texniki | Texniki | ⬜ |
 | G-07 | İstifadə şərtləri, məxfilik siyasəti və cookie bildirişi dərc olunub | Hüquqi | Hüquq | ⬜ |
 | G-08 | Super admin hesabı yaradılıb (ən azı 2), demo hesablar silinib | Əməliyyat | Super admin | ⬜ |
-| G-09 | Gündəlik ehtiyat nüsxə işləyir və bərpa bir dəfə sınaqdan keçirilib | Əməliyyat | Texniki | ⬜ |
-| G-10 | İşləmə müddəti monitorinqi və xəta xəbərdarlığı aktivdir | Əməliyyat | Texniki | ⬜ |
-| G-11 | İctimai formalar üçün IP əsaslı sürət limiti tətbiq olunub | Təhlükəsizlik | Texniki | ⬜ |
+| G-09 | Gündəlik ehtiyat nüsxə işləyir və bərpa bir dəfə sınaqdan keçirilib | Əməliyyat | Texniki | 🟡 Skript hazırdır (`npm run db:backup`), cədvəl və bərpa sınağı qalır |
+| G-10 | İşləmə müddəti monitorinqi və xəta xəbərdarlığı aktivdir | Əməliyyat | Texniki | 🟡 `/api/health` hazırdır, xarici xidmətə qoşulmalıdır |
+| G-11 | İctimai formalar üçün IP əsaslı sürət limiti tətbiq olunub | Təhlükəsizlik | Texniki | ✅ |
 | G-12 | UAT-01…16 keçib, açıq kritik defekt yoxdur | Keyfiyyət | BA | ⬜ |
 | G-13 | Sayt Search Console-a əlavə olunub, `sitemap.xml` göndərilib | Marketinq | Marketinq | ⬜ |
 | G-14 | Dəstək prosedurları yazılıb və komanda təlim keçib | Əməliyyat | Dəstək | ⬜ |
@@ -1479,15 +1479,15 @@ Versiya 2.0 təsdiqləndikdən sonra (§0.4) bu sənəd **baseline** sayılır. 
 
 | # | Məhdudiyyət | Təsir | Həll yolu | Mərhələ |
 |---|---|---|---|---|
-| 30.1 | Tarif dəyişdirildikdə köhnə tarifin qalan müddəti nəzərə alınmır (FR-ABN-11) | İllik Pro-dan Pro Max-a keçəndə satıcı itki hiss edir | Qalan müddətin dəyərinin yeni tarifdən çıxılması | v1.2 |
+| 30.1 | ~~Tarif dəyişdirildikdə qalan müddət itir~~ — həll olunub (FR-ABN-11) | — | Qalan müddət yeni tarifdə gün kimi əlavə olunur | ✅ |
 | 30.2 | Satıcı səhifəsi, faktura və panel yalnız Azərbaycan dilindədir (FR-SEH-11, FR-DIL-06) | Xarici müştəri formanı başa düşməyə bilər | Lüğət faylının genişləndirilməsi | v1.3 |
 | 30.3 | Avtomatik bildiriş yoxdur (FR-BLD-03) | Satıcı yeni sifarişi panelə girəndə görür | E-poçt provayderi | v1.1 |
 | 30.4 | Fəaliyyət jurnalı yalnız bu versiyadan sonrakı hadisələri saxlayır | Tarixi araşdırma məhduddur | — | Qəbul edilib |
 | 30.5 | Pulsuz AI modellərinin dil keyfiyyəti aşağıdır (RSK-02) | "Mətndən faktura" nəticələri düzəliş tələb edir | Ödənişli tarif və ya lokal model | Konfiqurasiya |
 | 30.6 | Şəkillər bazada saxlanılır (DR-09) | Həcm və performans riski | Obyekt saxlamasına keçid | v2 |
-| 30.7 | IP əsaslı sürət limiti yoxdur (NFR-SEC-10) | Spam sifariş riski | Lansdan əvvəl tətbiq | G-11 |
+| 30.7 | ~~IP əsaslı sürət limiti yoxdur~~ — həll olunub (NFR-SEC-10) | — | Limitlər `src/lib/rate-limit.ts` faylında bir yerdə ayarlanır | ✅ |
 | 30.8 | Yük testi aparılmayıb (NFR-PER-05) | 100+ eyni vaxtlı istifadəçidə davranış naməlumdur | Lansdan sonra yük testi | Lans + 30 gün |
-| 30.9 | Abunəlik ödənişləri hesabatının ixracı yoxdur (§20) | Maliyyə uçotu əl ilə aparılır | CSV ixracı əlavə edilməlidir | v1.1 |
+| 30.9 | ~~Abunəlik ödənişləri hesabatının ixracı yoxdur~~ — həll olunub (§20) | — | Admin → Ödənişlər səhifəsində CSV ixracı | ✅ |
 
 ---
 
@@ -1549,21 +1549,21 @@ Versiya 2.0 təsdiqləndikdən sonra (§0.4) bu sənəd **baseline** sayılır. 
 |---|---|---|---|---|
 | Biznes tələbləri (BR) | 12 | — | — | — |
 | Paydaş tələbləri (SH) | 29 | — | — | — |
-| Funksional tələblər (FR) | 123 | 112 | 5 | 6 |
-| Qeyri-funksional tələblər (NFR) | 35 | 28 | 2 | 5 |
+| Funksional tələblər (FR) | 123 | 113 | 4 | 6 |
+| Qeyri-funksional tələblər (NFR) | 35 | 29 | 5 | 1 |
 | Məlumat tələbləri (DR) | 10 | 9 | 1 | 0 |
 | İnterfeys tələbləri (IR) | 5 | 2 | 2 | 1 |
 | Keçid tələbləri (TR) | 14 | 0 | 1 | 13 |
 | Biznes qaydaları (BRU) | 16 | 16 | — | — |
-| **Cəmi həll tələbi** | **173** | **151** | **10** | **12** |
+| **Cəmi həll tələbi** | **173** | **153** | **13** | **7** |
 
 ### 32.3 Əlavə B — Buraxılış hazırlığının xülasəsi
 
 | Kateqoriya | Hazır | Açıq | Bloklayır? |
 |---|---|---|---|
 | Funksional əhatə | 91% | FR-ODN-05, FR-BLD-03/04, FR-KAT-09 | Xeyr (hamısı `W`/`S`) |
-| Təhlükəsizlik | 9/10 | NFR-SEC-10 | **Bəli** — G-11 |
-| Etibarlılıq | 3/5 | NFR-REL-04, NFR-REL-05 | **Bəli** — G-09, G-10 |
+| Təhlükəsizlik | 10/10 | — | Xeyr |
+| Etibarlılıq | 3/5 (+2 qismən) | NFR-REL-04, NFR-REL-05 — produksiyada qoşulmalıdır | Qismən — G-09, G-10 |
 | Hüquqi | 2/6 | H-01…H-04 | **Bəli** — G-07 |
 | İnteqrasiya | 2/5 | IR-01 real sınaq, IR-03 e-poçt | **Bəli** — G-03, G-06 |
 | Keçid (TR) | 0/14 | Hamısı | **Bəli** |

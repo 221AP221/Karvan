@@ -377,6 +377,7 @@ export const az = {
       blocked: "Hesabınız bloklanıb. Ətraflı məlumat üçün dəstəklə əlaqə saxlayın.",
       noProfile: "Bu hesabın səhifəsi tapılmadı. Dəstəklə əlaqə saxlayın.",
       badLink: "Link etibarsızdır və ya vaxtı keçib. Yenidən sorğu göndərin.",
+      tooMany: "Çox sayda cəhd oldu. Bir neçə dəqiqə sonra yenidən yoxlayın.",
     },
   },
 };
