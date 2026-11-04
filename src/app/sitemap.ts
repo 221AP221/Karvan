@@ -37,6 +37,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...localized(HOME_PATH, 1),
     ...localized(CATALOG_PATH, 0.9),
     ...SERVICE_CATEGORIES.filter((c) => filled.has(c.key)).flatMap((c) => localized(CATALOG_PATH, 0.7, `?category=${c.key}`)),
+    // Hüquqi sənədlər: tək dildə (Azərbaycan), ona görə hreflang verilmir
+    ...["/qaydalar", "/mexfilik", "/cookie"].map((path) => ({
+      url: url(path),
+      changeFrequency: "yearly" as const,
+      priority: 0.3,
+    })),
     ...sellers.map((s) => ({
       url: url(`/${s.username}`),
       lastModified: s.services[0]?.createdAt,

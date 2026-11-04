@@ -204,6 +204,7 @@ export const az = {
     product: "Məhsul",
     explore: "Kəşf et",
     account: "Hesab",
+    legal: "Hüquqi",
     contact: "Əlaqə",
     links: {
       how: "Necə işləyir",
@@ -216,10 +217,14 @@ export const az = {
       signup: "Qeydiyyat",
       login: "Daxil ol",
       forgot: "Şifrəni bərpa et",
+      terms: "İstifadə şərtləri",
+      privacy: "Məxfilik siyasəti",
+      cookies: "Cookie siyasəti",
     },
     city: "Bakı, Azərbaycan",
     regions: "Azərbaycan · Türkiyə · Gürcüstan · Qazaxıstan",
     rights: "Bütün hüquqlar qorunur.",
+    cookieNotice: { text: "Bu sayt yalnız işləmək və satıcıya anonim statistika göstərmək üçün cookie istifadə edir. Reklam izləyicisi yoxdur.", accept: "Anladım", more: "Ətraflı" },
   },
 
   seo: {

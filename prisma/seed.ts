@@ -1,6 +1,12 @@
 import { hashPassword } from "../src/lib/auth";
 import { db } from "../src/lib/db";
 
+// Demo məlumat produksiyada metrikləri təhrif edir (BRD TR-05): orada seed işləmir.
+if (process.env.NODE_ENV === "production" && process.env.ALLOW_SEED !== "1") {
+  console.log("Produksiya mühiti: demo məlumat yaradılmır (ALLOW_SEED=1 ilə məcbur etmək olar).");
+  process.exit(0);
+}
+
 // Köhnə adla yaranmış demo hesab varsa, e-poçtu karvan.az-a keçirilir.
 // Arada profilsiz yeni demo hesab yaranıbsa, o silinir ki, köhnə hesab (profili ilə) köçə bilsin.
 const OLD_DEMO = "demo@biofaktura.az";

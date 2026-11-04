@@ -3,8 +3,9 @@ import "@fontsource-variable/geologica";
 import "@fontsource-variable/onest";
 import "./globals.css";
 import { NavigationTracker } from "@/components/BackButton";
+import { CookieNotice } from "@/components/site/CookieNotice";
 import { SITE_URL } from "@/i18n/config";
-import { getLocale } from "@/i18n/server";
+import { getDictionary, getLocale } from "@/i18n/server";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -18,6 +19,7 @@ const THEME_SCRIPT = `try{var t=localStorage.getItem("theme");if(t==="dark"||(!t
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const locale = await getLocale();
+  const notice = getDictionary(locale).footer.cookieNotice;
   return (
     <html lang={locale} suppressHydrationWarning>
       <head>
@@ -26,6 +28,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className="min-h-screen antialiased">
         <NavigationTracker />
         {children}
+        <CookieNotice text={notice.text} accept={notice.accept} more={notice.more} href="/cookie" />
       </body>
     </html>
   );

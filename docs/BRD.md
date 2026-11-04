@@ -88,6 +88,8 @@ Baseline yalnız aşağıdakı rollar təsdiq etdikdən sonra qüvvəyə minir. 
 | [`prisma/schema.prisma`](../prisma/schema.prisma) | Fiziki məlumat modeli |
 | [`prisma/migrations/`](../prisma/migrations/) | Miqrasiya tarixçəsi |
 | [README.md](../README.md) | Quraşdırma və iş mühiti |
+| [BURAXILIS.md](./BURAXILIS.md) | Buraxılış təlimatı: mühit dəyişənləri, ehtiyat nüsxə, monitorinq, rollback |
+| [DESTEK.md](./DESTEK.md) | Dəstək prosedurları və eskalasiya |
 | Əlavə C (§32) | v1.0 → v2.0 tələb nömrələrinin uyğunluğu |
 
 ---
@@ -1094,7 +1096,7 @@ Təsnifat ISO/IEC 25010 keyfiyyət modelinə uyğundur. Hər NFR ölçülə bil�
 | NFR-PRV-01 | Analitikada şəxsi identifikasiya məlumatı saxlanılmamalıdır | ✅ |
 | NFR-PRV-02 | Şəxsiyyət sənədi nömrələri maskalanmalı və ixracdan kənarda qalmalıdır | ✅ |
 | NFR-PRV-03 | Hesab silindikdə şəxsi məlumat silinməlidir | ✅ |
-| NFR-PRV-04 | Məlumatların işlənməsi barədə məlumatlandırma dərc olunmalıdır | ⬜ TR-07 |
+| NFR-PRV-04 | Məlumatların işlənməsi barədə məlumatlandırma dərc olunmalıdır | 🟡 `/mexfilik` və `/cookie` səhifələri hazırdır (layihə variantı); hüquqi təsdiq qalır — TR-07 |
 
 ### 17.6 Etibarlılıq və dayanıqlıq — `NFR-REL`
 
@@ -1175,20 +1177,20 @@ Keçid tələbləri yalnız cari vəziyyətdən hədəf vəziyyətə keçid döv
 
 | # | Keçid tələbi | Növ | Məsul | Vəz. |
 |---|---|---|---|---|
-| TR-01 | Produksiya mühiti qurulmalı və domen yönləndirilməlidir | Mühit | Texniki | ⬜ |
+| TR-01 | Produksiya mühiti qurulmalı və domen yönləndirilməlidir | Mühit | Texniki | ⬜ Addımlar: `docs/BURAXILIS.md` |
 | TR-02 | Tətbiq sirləri (`APP_SECRET`, aqreqator açarları, bank rekvizitləri) təhlükəsiz saxlanmalı və yüklənməlidir | Mühit | Texniki | ⬜ |
 | TR-03 | Miqrasiyalar produksiya bazasına tətbiq edilməlidir | Məlumat | Texniki | ⬜ |
 | TR-04 | Gündəlik ehtiyat nüsxə və bərpa prosedurları qurulmalı, bərpa bir dəfə sınaqdan keçirilməlidir | Əməliyyat | Texniki | 🟡 Skript hazırdır; cədvəl (cron) və bərpa sınağı produksiyada |
-| TR-05 | Demo və test məlumatı produksiyadan silinməli və ya gizlədilməlidir (metrikləri təhrif etməməsi üçün) | Məlumat | Texniki | ⬜ |
+| TR-05 | Demo və test məlumatı produksiyadan silinməli və ya gizlədilməlidir (metrikləri təhrif etməməsi üçün) | Məlumat | Texniki | 🟡 Seed produksiyada işləmir (`NODE_ENV=production` qoruması); mövcud demo hesablar lansda yoxlanılmalıdır |
 | TR-06 | İşləmə müddəti monitorinqi və xəta xəbərdarlıq kanalı qurulmalıdır | Əməliyyat | Texniki | 🟡 `/api/health` hazırdır; monitorinq xidməti seçilməlidir |
-| TR-07 | İstifadə şərtləri, məxfilik siyasəti və cookie bildirişi dərc olunmalıdır | Hüquqi | Hüquq | ⬜ |
-| TR-08 | Dəstək prosedurları yazılmalıdır: şikayət, bloklama, şifrə sıfırlama, ödəniş mübahisəsi | Əməliyyat | Dəstək | ⬜ |
+| TR-07 | İstifadə şərtləri, məxfilik siyasəti və cookie bildirişi dərc olunmalıdır | Hüquqi | Hüquq | 🟡 Üç səhifə və sayt üzrə cookie bildirişi hazırdır; hüquqşünas rəyi və "layihə" xəbərdarlığının silinməsi qalır |
+| TR-08 | Dəstək prosedurları yazılmalıdır: şikayət, bloklama, şifrə sıfırlama, ödəniş mübahisəsi | Əməliyyat | Dəstək | ✅ `docs/DESTEK.md` |
 | TR-09 | Yeni satıcı üçün onboarding axını və nümunə məzmun hazırlanmalıdır | Təlim | Məhsul | 🟡 |
-| TR-10 | Dəstək komandası üçün qısa təlim materialı (admin panel, jurnal, ödənişlər) hazırlanmalıdır | Təlim | Dəstək | ⬜ |
+| TR-10 | Dəstək komandası üçün qısa təlim materialı (admin panel, jurnal, ödənişlər) hazırlanmalıdır | Təlim | Dəstək | ✅ `docs/DESTEK.md` |
 | TR-11 | Abunəlik gəlirinin mühasibat uçotu qaydası müəyyən edilməlidir | Maliyyə | Biznes | ⬜ |
 | TR-12 | Problemin kəmiyyət təsdiqi üçün satıcı sorğusu (n ≥ 50) aparılmalıdır | Təhlil | BA | ⬜ |
 | TR-13 | Sayt Search Console-a əlavə olunmalı, `sitemap.xml` göndərilməlidir | Marketinq | Marketinq | ⬜ |
-| TR-14 | Super admin hesabı yaradılmalı, bərpa prosedurudur sənədləşdirilməlidir | Əməliyyat | Super admin | ⬜ |
+| TR-14 | Super admin hesabı yaradılmalı, bərpa proseduru sənədləşdirilməlidir | Əməliyyat | Super admin | 🟡 Prosedur `docs/BURAXILIS.md` §3-dədir; hesablar produksiyada yaradılmalıdır |
 
 ### 19.1 Dəstək xidməti səviyyəsi (ilkin)
 
@@ -1303,18 +1305,18 @@ Faktura **qeyri-rəsmi ödəniş sorğusudur**. PDF-də "Bu sənəd ödəniş so
 |---|---|
 | Toplanan məlumatın minimumlaşdırılması | ✅ (BR-12, DR-06) |
 | Şəxsiyyət sənədi nömrəsinin maskalanması | ✅ (BRU-05) |
-| Satıcının müştəri məlumatını daxil etməsi barədə məlumatlandırma | ⬜ TR-07 |
-| Cookie bildirişi (anonim analitika identifikatoru) | ⬜ TR-07 |
+| Satıcının müştəri məlumatını daxil etməsi barədə məlumatlandırma | 🟡 Məxfilik siyasətinin §4 bəndində; hüquqi təsdiq qalır |
+| Cookie bildirişi (anonim analitika identifikatoru) | ✅ Sayt üzrə bildiriş + `/cookie` səhifəsi |
 | Məlumatın silinməsi hüququ | ✅ (FR-HES-07, BRU-12) |
-| Saxlanma müddətlərinin dərci | ⬜ §16.4, TR-07 |
+| Saxlanma müddətlərinin dərci | 🟡 Məxfilik siyasətinin §6 bəndində dərc olunub; hüquqi təsdiq qalır |
 
 ### 23.4 Lansdan əvvəl məcburi hüquqi işlər
 
 | # | İş | Məsul | Bloklayır |
 |---|---|---|---|
-| H-01 | İstifadə şərtləri (məsuliyyət bölgüsü, qadağan olunmuş məzmun, abunəlik şərtləri) | Hüquq | Lans |
-| H-02 | Məxfilik siyasəti (toplanan məlumat, məqsəd, müddət, hüquqlar) | Hüquq | Lans |
-| H-03 | Cookie bildirişi | Hüquq | Lans |
+| H-01 | İstifadə şərtləri (məsuliyyət bölgüsü, qadağan olunmuş məzmun, abunəlik şərtləri) | Hüquq | Lans — 🟡 layihə mətni `/qaydalar` ünvanında hazırdır, rəy gözlənilir |
+| H-02 | Məxfilik siyasəti (toplanan məlumat, məqsəd, müddət, hüquqlar) | Hüquq | Lans — 🟡 layihə mətni `/mexfilik` ünvanında hazırdır, rəy gözlənilir |
+| H-03 | Cookie bildirişi | Hüquq | ✅ `/cookie` + sayt üzrə bildiriş |
 | H-04 | Abunəlikdən imtina və geri qaytarma qaydası | Hüquq + Biznes | Lans |
 
 ---
@@ -1393,14 +1395,14 @@ Faktura **qeyri-rəsmi ödəniş sorğusudur**. PDF-də "Bu sənəd ödəniş so
 | G-04 | Bank rekvizitləri (IBAN, VÖEN, bank adı) konfiqurasiya edilib | Biznes | Biznes | ⬜ |
 | G-05 | AI açarı admin paneldə yazılıb və yoxlama sorğusu uğurlu cavab verib | Texniki | Super admin | ⬜ |
 | G-06 | E-poçt provayderi qoşulub (şifrə bərpası üçün minimum) | Texniki | Texniki | ⬜ |
-| G-07 | İstifadə şərtləri, məxfilik siyasəti və cookie bildirişi dərc olunub | Hüquqi | Hüquq | ⬜ |
+| G-07 | İstifadə şərtləri, məxfilik siyasəti və cookie bildirişi dərc olunub | Hüquqi | Hüquq | 🟡 Mətnlər hazırdır, hüquqi təsdiq gözlənilir |
 | G-08 | Super admin hesabı yaradılıb (ən azı 2), demo hesablar silinib | Əməliyyat | Super admin | ⬜ |
 | G-09 | Gündəlik ehtiyat nüsxə işləyir və bərpa bir dəfə sınaqdan keçirilib | Əməliyyat | Texniki | 🟡 Skript hazırdır (`npm run db:backup`), cədvəl və bərpa sınağı qalır |
 | G-10 | İşləmə müddəti monitorinqi və xəta xəbərdarlığı aktivdir | Əməliyyat | Texniki | 🟡 `/api/health` hazırdır, xarici xidmətə qoşulmalıdır |
 | G-11 | İctimai formalar üçün IP əsaslı sürət limiti tətbiq olunub | Təhlükəsizlik | Texniki | ✅ |
 | G-12 | UAT-01…16 keçib, açıq kritik defekt yoxdur | Keyfiyyət | BA | ⬜ |
 | G-13 | Sayt Search Console-a əlavə olunub, `sitemap.xml` göndərilib | Marketinq | Marketinq | ⬜ |
-| G-14 | Dəstək prosedurları yazılıb və komanda təlim keçib | Əməliyyat | Dəstək | ⬜ |
+| G-14 | Dəstək prosedurları yazılıb və komanda təlim keçib | Əməliyyat | Dəstək | 🟡 Prosedurlar yazılıb (`docs/DESTEK.md`), təlim qalır |
 
 **Qərar qaydası:** G-01…G-12 **məcburidir** (hamısı bağlanmalıdır). G-13 və G-14 lansdan sonrakı ilk həftədə bağlana bilər. Bir və ya bir neçə məcburi şərt açıqdırsa, qərar **no-go** olur.
 

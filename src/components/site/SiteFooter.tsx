@@ -29,6 +29,14 @@ export function SiteFooter({ locale, t, paths }: { locale: Locale; t: Dict; path
       ],
     },
     {
+      title: f.legal,
+      links: [
+        { href: "/qaydalar", label: f.links.terms },
+        { href: "/mexfilik", label: f.links.privacy },
+        { href: "/cookie", label: f.links.cookies },
+      ],
+    },
+    {
       title: f.account,
       links: [
         { href: "/signup", label: f.links.signup },
@@ -40,7 +48,7 @@ export function SiteFooter({ locale, t, paths }: { locale: Locale; t: Dict; path
 
   return (
     <footer className="border-t border-gray-200 bg-gray-50/60 text-sm dark:border-white/10 dark:bg-white/[0.02]">
-      <div className="mx-auto grid max-w-6xl gap-12 px-4 py-16 md:grid-cols-[1.4fr_repeat(4,1fr)]">
+      <div className="mx-auto grid max-w-6xl gap-12 px-4 py-16 md:grid-cols-[1.4fr_repeat(4,1fr)] lg:grid-cols-[1.3fr_repeat(5,1fr)]">
         <div className="max-w-xs">
           <Link href={HOME_PATH[locale]} aria-label="Karvan" className="inline-block">
             <span className="dark:hidden">

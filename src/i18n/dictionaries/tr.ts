@@ -204,6 +204,7 @@ export const tr: typeof az = {
     product: "Ürün",
     explore: "Keşfet",
     account: "Hesap",
+    legal: "Yasal",
     contact: "İletişim",
     links: {
       how: "Nasıl çalışır",
@@ -216,10 +217,14 @@ export const tr: typeof az = {
       signup: "Kayıt ol",
       login: "Giriş yap",
       forgot: "Şifremi unuttum",
+      terms: "Kullanım şartları",
+      privacy: "Gizlilik politikası",
+      cookies: "Çerez politikası",
     },
     city: "Bakü, Azerbaycan",
     regions: "Azerbaycan · Türkiye · Gürcistan · Kazakistan",
     rights: "Tüm hakları saklıdır.",
+    cookieNotice: { text: "Bu site yalnızca çalışmak ve satıcıya anonim istatistik göstermek için çerez kullanır. Reklam takipçisi yoktur.", accept: "Anladım", more: "Ayrıntılar" },
   },
 
   seo: {

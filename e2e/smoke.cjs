@@ -7,7 +7,10 @@ require("fs").mkdirSync(`${S}/shots`, { recursive: true });
 const BASE = process.env.BASE_URL ?? "http://localhost:3000";
 (async () => {
   const browser = await chromium.launch();
+  // Cookie bildirişi ictimai səhifələrdə ekranın altını tutur: testdə qabaqcadan qəbul edilmiş sayılır
+  const ACCEPT_COOKIES = () => window.localStorage.setItem("cookie-notice", "e2e");
   const seller = await browser.newPage({ viewport: { width: 1100, height: 900 } });
+  await seller.addInitScript(ACCEPT_COOKIES);
   const errors = [];
   seller.on("pageerror", (e) => errors.push(e.message));
   const shot = (p, name) => p.screenshot({ path: `${S}/shots/${name}.png`, fullPage: true });
@@ -75,6 +78,7 @@ const BASE = process.env.BASE_URL ?? "http://localhost:3000";
 
   // 4. Müştəri: ictimai səhifə (mobil)
   const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2 });
+  await ctx.addInitScript(ACCEPT_COOKIES);
   const customer = await ctx.newPage();
   customer.on("pageerror", (e) => errors.push(e.message));
   await customer.goto(BASE + "/leyla" + RUN);

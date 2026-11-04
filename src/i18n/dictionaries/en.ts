@@ -204,6 +204,7 @@ export const en: typeof az = {
     product: "Product",
     explore: "Explore",
     account: "Account",
+    legal: "Legal",
     contact: "Contact",
     links: {
       how: "How it works",
@@ -216,10 +217,14 @@ export const en: typeof az = {
       signup: "Sign up",
       login: "Log in",
       forgot: "Reset password",
+      terms: "Terms of use",
+      privacy: "Privacy policy",
+      cookies: "Cookie policy",
     },
     city: "Baku, Azerbaijan",
     regions: "Azerbaijan · Türkiye · Georgia · Kazakhstan",
     rights: "All rights reserved.",
+    cookieNotice: { text: "This site uses cookies only to work and to show the seller anonymous statistics. There are no advertising trackers.", accept: "Got it", more: "Details" },
   },
 
   seo: {
