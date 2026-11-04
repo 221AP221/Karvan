@@ -41,7 +41,7 @@ BRD-dəki keçid tələbləri (§19) və buraxılış şərtləri (§26) ilə uy
 | `BILLING_IBAN`, `BILLING_VOEN`, `BILLING_BANK`, `BILLING_RECIPIENT` | bəli | Bank köçürməsi rekvizitləri. |
 | `RESEND_API_KEY` | bəli | Şifrə bərpası və passivlik xəbərdarlıqları. Yoxdursa bərpa işləmir. |
 | `CRON_SECRET` | bəli | Təmizlənmə nöqtəsinin açarı (`/api/cron/cleanup`). Yoxdursa nöqtə bağlıdır. |
-| `ANTHROPIC_API_KEY` və ya admin paneldəki AI ayarı | xeyr | AI köməkçi. Yoxdursa AI funksiyaları sadəcə gizlənir. |
+| Admin paneldəki AI ayarı (və ya `GROQ_API_KEY`, `GEMINI_API_KEY`, `OPENROUTER_API_KEY`, `XAI_API_KEY`, `ANTHROPIC_API_KEY`) | xeyr | AI köməkçi və chatbot. Yoxdursa AI funksiyaları gizlənir, chatbot əlaqə kanallarını göstərir. |
 
 > Sirlər repozitoriyada saxlanılmır: hostinq provayderinin "environment variables" bölməsində verilir.
 

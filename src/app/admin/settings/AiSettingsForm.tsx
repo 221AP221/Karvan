@@ -9,6 +9,7 @@ const PROVIDERS = [
   { id: "groq", label: "Groq: pulsuz, sürətli (tövsiyə)", url: "https://console.groq.com/keys", model: "llama-3.3-70b-versatile" },
   { id: "gemini", label: "Google Gemini: pulsuz", url: "https://aistudio.google.com/apikey", model: "gemini-2.5-flash" },
   { id: "openrouter", label: "OpenRouter: pulsuz modellər", url: "https://openrouter.ai/keys", model: "meta-llama/llama-3.3-70b-instruct:free" },
+  { id: "xai", label: "xAI (Grok): ödənişli, balans tələb olunur", url: "https://console.x.ai", model: "grok-4-fast" },
   { id: "ollama", label: "Ollama: öz kompüterinizdə, açar yoxdur", url: "https://ollama.com", model: "llama3.1" },
   { id: "anthropic", label: "Claude: ödənişli, ən güclü", url: "https://console.anthropic.com", model: "" },
 ];

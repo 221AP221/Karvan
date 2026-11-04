@@ -304,7 +304,7 @@ export async function rejectBillingPayment(paymentId: string) {
 }
 
 // AI ayarı: açar bazada şifrələnmiş saxlanılır, yalnız super admin dəyişə bilər
-const AI_PROVIDERS = ["groq", "gemini", "openrouter", "ollama", "anthropic"];
+const AI_PROVIDERS = ["groq", "gemini", "openrouter", "xai", "ollama", "anthropic"];
 
 export async function saveAiSettings(_: FormState, form: FormData): Promise<FormState> {
   const admin = await requireSuperAdmin();

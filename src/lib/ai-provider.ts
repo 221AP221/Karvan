@@ -14,11 +14,14 @@ const PRESETS: Record<string, { baseUrl: string; model: string; keyEnv: string |
   groq: { baseUrl: "https://api.groq.com/openai/v1", model: "llama-3.3-70b-versatile", keyEnv: "GROQ_API_KEY" },
   gemini: { baseUrl: "https://generativelanguage.googleapis.com/v1beta/openai", model: "gemini-2.5-flash", keyEnv: "GEMINI_API_KEY" },
   openrouter: { baseUrl: "https://openrouter.ai/api/v1", model: "meta-llama/llama-3.3-70b-instruct:free", keyEnv: "OPENROUTER_API_KEY" },
+  // xAI (Grok): OpenAI formatındadır, ona görə eyni adapter işləyir. Model adları tez-tez dəyişir —
+  // cari siyahı docs.x.ai-də və GET https://api.x.ai/v1/models cavabındadır, lazım olsa admin paneldən dəyişin.
+  xai: { baseUrl: "https://api.x.ai/v1", model: "grok-4-fast", keyEnv: "XAI_API_KEY" },
   ollama: { baseUrl: "http://localhost:11434/v1", model: "llama3.1", keyEnv: null },
   custom: { baseUrl: "", model: "", keyEnv: "AI_API_KEY" },
 };
 
-export const KEY_NAMES: Record<string, string> = { groq: "GROQ_API_KEY", gemini: "GEMINI_API_KEY", openrouter: "OPENROUTER_API_KEY", custom: "AI_API_KEY", anthropic: "ANTHROPIC_API_KEY" };
+export const KEY_NAMES: Record<string, string> = { groq: "GROQ_API_KEY", gemini: "GEMINI_API_KEY", openrouter: "OPENROUTER_API_KEY", xai: "XAI_API_KEY", custom: "AI_API_KEY", anthropic: "ANTHROPIC_API_KEY" };
 const RESTART = "Dəyişiklikdən sonra saytı dayandırıb (Ctrl+C) yenidən işə salın: npm run dev.";
 
 // İstifadəçiyə dəqiq deyir ki, nə çatışmır (açar yoxdur, provayder səhvdir və s.)
@@ -28,7 +31,7 @@ export function explainMissingAi(env: NodeJS.ProcessEnv = process.env): string {
     return `AI açarı hələ yazılmayıb. Admin paneldə Parametrlər → AI bölməsində açarı bir dəfə yazın (Groq-un pulsuz açarı olar), sayt bundan sonra hər dəfə özü işləyəcək.`;
   }
   if (provider !== "ollama" && !PRESETS[provider] && provider !== "anthropic") {
-    return `AI_PROVIDER="${env.AI_PROVIDER}" tanınmır. Düzgün dəyərlər: groq, gemini, openrouter, ollama, custom, anthropic. ${RESTART}`;
+    return `AI_PROVIDER="${env.AI_PROVIDER}" tanınmır. Düzgün dəyərlər: groq, gemini, openrouter, xai, ollama, custom, anthropic. ${RESTART}`;
   }
   if (provider === "custom" && (!env.AI_BASE_URL || !env.AI_MODEL)) return `AI_PROVIDER=custom üçün AI_BASE_URL və AI_MODEL də yazılmalıdır. ${RESTART}`;
   const key = KEY_NAMES[provider];
@@ -41,7 +44,7 @@ export function resolveAiConfig(env: NodeJS.ProcessEnv = process.env): AiConfig 
   if (!provider) {
     // Avtomatik seçim: hansı açar yazılıbsa
     if (env.ANTHROPIC_API_KEY) provider = "anthropic";
-    else provider = ["groq", "gemini", "openrouter"].find((p) => env[PRESETS[p].keyEnv!]);
+    else provider = ["groq", "gemini", "openrouter", "xai"].find((p) => env[PRESETS[p].keyEnv!]);
   }
   if (!provider) return null;
   if (provider === "anthropic") return env.ANTHROPIC_API_KEY ? { kind: "anthropic" } : null;
