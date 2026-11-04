@@ -13,6 +13,7 @@ import { normalizePhone } from "@/lib/phone";
 import { LIMITS, limitByIp } from "@/lib/rate-limit";
 import { checkoutPath } from "@/lib/plan-intent";
 import { findValidReset, hashResetToken as sha256 } from "@/lib/password-reset";
+import { TERMS_VERSION } from "@/lib/terms";
 import { RESERVED_USERNAMES, USERNAME_RE } from "@/lib/username";
 
 export type AuthState = (FormState & { field?: string; devLink?: string }) | undefined;
@@ -45,6 +46,7 @@ const signupSchema = (e: Errors) =>
       email: z.email(e.email).trim().toLowerCase(),
       password: z.string().min(8, e.passwordShort).max(128),
       confirm: z.string(),
+      terms: z.literal("on", e.terms), // qəbul edilməyibsə hesab yaradılmır
     })
     .superRefine((v, ctx) => {
       if (v.citizenship === "AZ" && !/^[A-Z0-9]{7}$/.test(v.document)) {
@@ -88,6 +90,8 @@ export async function signup(_: AuthState, form: FormData): Promise<AuthState> {
       finCode: citizenship === "AZ" ? document : null,
       passportNumber: citizenship === "FOREIGN" ? document : null,
       passwordHash: await hashPassword(password),
+      termsAcceptedAt: new Date(),
+      termsVersion: TERMS_VERSION,
       subscription: { create: { plan: "FREE" } },
       profile: {
         create: {
@@ -103,6 +107,7 @@ export async function signup(_: AuthState, form: FormData): Promise<AuthState> {
   });
   await startSession(user.id);
   await logActivity({ userId: user.id, email, action: "signup", details: `@${username}` });
+  await logActivity({ userId: user.id, email, action: "terms_accept", details: TERMS_VERSION });
   redirect(checkoutPath(form.get("plan")) ?? "/dashboard/profile");
 }
 

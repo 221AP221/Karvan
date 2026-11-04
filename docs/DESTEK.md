@@ -66,6 +66,17 @@ Bu, platformanın işi deyil: pul birbaşa satıcıya gedir. Satıcı öz bankı
 
 Qalan müddət itmir: köhnə tarifin qalan dəyəri yeni tarifdə gün kimi əlavə olunur (FR-ABN-11). Ödəniş səhifəsində neçə gün keçiriləcəyi göstərilir.
 
+### 3.6.1 Endirim kodu işləmir
+
+`/admin/campaigns` bölməsində kodu tapın və yoxlayın: aktivdirmi, müddəti bitməyibmi, ümumi və ya istifadəçi üzrə
+limit dolmayıbmı, seçilmiş tarifə və müddətə aiddirmi. Səbəb ödəniş səhifəsində istifadəçiyə də göstərilir.
+İstifadə olunmuş kod silinmir — yalnız deaktiv edilir.
+
+### 3.6.2 "Hesabım özü silinib"
+
+Parametrlərdəki passivlik ayarı (defolt 90 gün) işə düşüb: silinmədən 14 gün əvvəl e-poçta xəbərdarlıq gedir.
+Silinmiş hesab bərpa olunmur — istifadəçi yenidən qeydiyyatdan keçməlidir. Ayarı Parametrlərdən söndürmək olar.
+
 ### 3.7 "Sifariş verə bilmirəm" / "çox sayda sorğu" xətası
 
 İctimai formalarda IP əsaslı limit var (NFR-SEC-10). Eyni xidmətə qısa müddətdə təkrar sifariş limitə düşür. Müştəri 10 dəqiqə gözləməlidir. Limit əsassız maneə yaradırsa, `src/lib/rate-limit.ts` faylında dəyər dəyişdirilir (texniki komanda).

@@ -608,6 +608,8 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 | FR-HES-07 | Satıcı e-poçtunu və şifrəsini dəyişə, digər cihazlardan çıxa və hesabını silə bilməlidir (ad təsdiqi + şifrə) | M | SH-SAT-13 | T | ✅ |
 | FR-HES-08 | Ana səhifədə ödənişli paket seçilibsə, qeydiyyat və ya girişdən sonra istifadəçi birbaşa həmin paketin ödəniş səhifəsinə yönləndirilməlidir | S | SH-SAT-12 | T | ✅ |
 | FR-HES-09 | Bloklanmış hesab daxil ola bilməməli, giriş cəhdində səbəb göstərilməlidir | M | SH-ADM-03 | T | ✅ |
+| FR-HES-10 | Qeydiyyat yalnız istifadə şərtləri və məxfilik siyasəti qəbul edildikdə tamamlanmalı; qəbulun anı və sənəd versiyası saxlanılmalıdır | M | §23, TR-07 | T | ✅ |
+| FR-HES-11 | İstifadəçi uzun müddət girişi olmayan hesabın avtomatik silinməsini idarə edə bilməlidir (defolt 90 gün; silinmədən 14 gün əvvəl xəbərdarlıq) | S | SH-SAT-13, BR-12 | T | ✅ |
 
 ### 13.2 Satıcı səhifəsi (link-in-bio) — `FR-SEH`
 
@@ -623,7 +625,7 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 | FR-SEH-08 | Pulsuz planda səhifənin altında platforma qeydi göstərilməli, ödənişli planlarda göstərilməməlidir | M | SH-SAT-08, BR-07 | T | ✅ |
 | FR-SEH-09 | Pro və Pro Max hesablarda adın yanında təsdiqlənmiş nişanı göstərilməlidir | S | SH-SAT-08 | D | ✅ |
 | FR-SEH-10 | Bloklanmış hesabın səhifəsi 404 qaytarmalı, bloklanmış xidmət səhifədə görünməməlidir | M | SH-ADM-03 | T | ✅ |
-| FR-SEH-11 | Satıcı səhifəsinin interfeysi çoxdilli olmalıdır | C | SH-SAT-09, BR-11 | T | 🟡 Hazırda yalnız Azərbaycan dilində — §30.2 |
+| FR-SEH-11 | Satıcı səhifəsinin interfeysi çoxdilli olmalıdır | C | SH-SAT-09, BR-11 | T | ✅ 4 dil; ziyarətçi səhifədəki seçicidən dili dəyişir, satıcının mətnləri olduğu kimi qalır |
 
 ### 13.3 Xidmətlər — `FR-XID`
 
@@ -722,6 +724,10 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 | FR-AI-07 | Açar admin paneldə bir dəfə yazılmalı, bazada şifrələnmiş saxlanılmalı və tətbiqin yenidən başladılması tələb olunmamalıdır | M | T | ✅ |
 | FR-AI-08 | Aylıq AI sorğu limiti plana görə tətbiq olunmalıdır (10 / 200 / 1000) | M | T | ✅ |
 | FR-AI-09 | Quraşdırma xətasının detalı yalnız administratora göstərilməli, satıcıya sadələşdirilmiş mesaj verilməlidir | M | T | ✅ |
+| FR-AI-10 | Saytda AI köməkçi (chatbot) olmalı: ziyarətçi və satıcıların Karvan haqqında suallarını cavablamalıdır | S | D | ✅ |
+| FR-AI-11 | Köməkçi yalnız məhsul bilik bazası əsasında cavab verməli, bilmədiyini etiraf edib dəstəyə yönləndirməli, kənar mövzulardan imtina etməlidir | M | T | ✅ |
+| FR-AI-12 | Köməkçi şəxsi məlumat (şifrə, kart, sənəd nömrəsi) soruşmamalı və hesab üzərində əməliyyat aparmamalıdır | M | İ | ✅ |
+| FR-AI-13 | AI qoşulmayıbsa, köməkçi sadə mesajla dəstək kanallarını göstərməlidir | M | T | ✅ |
 
 ### 13.10 Abunəlik və monetizasiya — `FR-ABN`
 
@@ -754,6 +760,8 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 | FR-ABN-10 | Abunəlik avtomatik yenilənməməli, təkrar ödəniş istifadəçinin qərarı olmalıdır | M | SH-SAT-12 | İ | ✅ |
 | FR-ABN-11 | Tarif dəyişdirildikdə köhnə tarifin qalan müddətinin dəyəri nəzərə alınmalıdır | S | SH-SAT-12 | T | ✅ Qalan müddət yeni tarifdə günə çevrilir; ödəniş səhifəsində göstərilir |
 | FR-ABN-12 | Satıcı ödəniş tarixçəsini paneldə görə bilməlidir | S | SH-SAT-12 | D | ✅ |
+| FR-ABN-13 | Ödəniş səhifəsində endirim kodu tətbiq edilə bilməli, qiymət serverdə yenidən hesablanmalıdır | S | SH-BIZ-02 | T | ✅ |
+| FR-ABN-14 | Kodun keçərliliyi tarif, müddət, tarix aralığı, ümumi və istifadəçi üzrə limitlə yoxlanılmalı; səbəb istifadəçiyə göstərilməlidir | M | SH-BIZ-02 | T | ✅ |
 
 ### 13.11 Admin panel — `FR-ADM`
 
@@ -774,6 +782,8 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 | FR-ADM-13 | İstifadəçi və jurnal siyahıları CSV formatında ixrac edilməli, şəxsiyyət sənədi nömrələri ixraca düşməməlidir | S | SH-ADM-07, BRU-05 | T | ✅ |
 | FR-ADM-14 | Super admin rol təyin edə, istifadəçi kimi daxil ola (2 saat, jurnala yazılır, görünən qayıdış zolağı ilə) və AI ayarlarını idarə edə bilməlidir | M | SH-BIZ-02 | T | ✅ |
 | FR-ADM-15 | Adi istifadəçi `/admin` ünvanında 404 görməlidir (bölmənin mövcudluğu açıqlanmamalıdır) | M | NFR-SEC-06 | T | ✅ |
+| FR-ADM-16 | Admin kampaniya (endirim kodu) yarada, dəyişə, deaktiv edə bilməlidir: növ (faiz/sabit), dəyər, tarif, müddət, tarix aralığı, ümumi və istifadəçi üzrə limit | S | SH-BIZ-02 | T | ✅ |
+| FR-ADM-17 | Kampaniyaların istifadə sayı və verilmiş endirimin ümumi məbləği göstərilməlidir; istifadə olunmuş kod silinməməlidir | S | SH-BIZ-01 | T | ✅ |
 
 ### 13.12 Çoxdillilik və görünüş — `FR-DIL`
 
@@ -784,7 +794,7 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 | FR-DIL-03 | Dil seçimi header və footer-də olmalı, seçim cookie-də saxlanmalıdır | S | BR-11 | T | ✅ |
 | FR-DIL-04 | Giriş/qeydiyyat səhifələri və server xəta mesajları seçilmiş dildə göstərilməlidir | M | BR-11 | T | ✅ |
 | FR-DIL-05 | İşıqlı/qaranlıq rejim dəstəklənməli, seçim yadda saxlanmalı, ilk açılışda sistem ayarı nəzərə alınmalı və keçiddə "parıltı" olmamalıdır | S | NFR-USE-02 | D | ✅ |
-| FR-DIL-06 | Satıcı səhifəsi, faktura səhifəsi, satıcı paneli və admin panel çoxdilli olmalıdır | C | BR-11 | T | 🟡 Hazırda Azərbaycan dilində — §30.2 |
+| FR-DIL-06 | Satıcı səhifəsi, faktura səhifəsi, satıcı paneli və admin panel çoxdilli olmalıdır | C | BR-11 | T | 🟡 Satıcı səhifəsi və sifariş forması 4 dildə ✅; faktura səhifəsi, panel və admin Azərbaycan dilində — §30.2 |
 
 ### 13.13 Axtarış sistemləri üçün optimallaşdırma — `FR-SEO`
 
@@ -812,21 +822,21 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 
 | Modul | Cəmi | ✅ | 🟡 | ⬜ |
 |---|---|---|---|---|
-| FR-HES | 9 | 8 | 1 | 0 |
-| FR-SEH | 11 | 10 | 1 | 0 |
+| FR-HES | 11 | 10 | 1 | 0 |
+| FR-SEH | 11 | 11 | 0 | 0 |
 | FR-XID | 6 | 6 | 0 | 0 |
 | FR-KAT | 9 | 8 | 0 | 1 |
 | FR-SIF | 9 | 8 | 0 | 1 |
 | FR-FAK | 9 | 9 | 0 | 0 |
 | FR-ODN | 6 | 4 | 0 | 2 |
 | FR-ANL | 10 | 10 | 0 | 0 |
-| FR-AI | 9 | 9 | 0 | 0 |
-| FR-ABN | 12 | 12 | 0 | 0 |
-| FR-ADM | 15 | 15 | 0 | 0 |
+| FR-AI | 13 | 13 | 0 | 0 |
+| FR-ABN | 14 | 14 | 0 | 0 |
+| FR-ADM | 17 | 17 | 0 | 0 |
 | FR-DIL | 6 | 5 | 1 | 0 |
 | FR-SEO | 8 | 8 | 0 | 0 |
 | FR-BLD | 4 | 1 | 1 | 2 |
-| **Cəmi** | **123** | **113 (92%)** | **4 (3%)** | **6 (5%)** |
+| **Cəmi** | **133** | **124 (93%)** | **3 (2%)** | **6 (5%)** |
 
 Lansı bloklayan `M` prioritetli açıq tələb yoxdur; 🟡 vəziyyətli FR-HES-06 və FR-BLD-02 IR-03-ün (e-poçt provayderi) bağlanması ilə həll olunur.
 
@@ -968,6 +978,10 @@ BABOK təsnifatı: **D** = definitiv (strukturu müəyyən edir, pozula bilməz)
 | BRU-13 | AI nəticəsi heç vaxt avtomatik tətbiq olunmur | B | Keyfiyyət nəzarəti | AI funksiyaları | Təsdiq tələb olunur |
 | BRU-14 | Admin başqa admini bloklaya və silə bilməz; super admin öz rolunu sonuncu super admin kimi itirə bilməz | B | İdarəetmə davamlılığı | Admin əməliyyatları | Əməliyyat rədd edilir |
 | BRU-15 | Hər admin əməliyyatı jurnala yazılır və geri silinmir | D | Hesabatlılıq | Admin paneli | — |
+| BRU-17 | Endirim kodu ödənişin məbləğindən böyük ola bilməz; ödəniş sıfıra düşmür | D | Maliyyə nəzarəti | Kuponun tətbiqi | Endirim məhdudlaşdırılır |
+| BRU-18 | Kuponun istifadəsi yalnız ödəniş aktivləşəndə sayılır; limit dolubsa qeyd yaradılmır | B | Kampaniya nəzarəti | Aktivləşmə | Sayılmır |
+| BRU-19 | İstifadə olunmuş endirim kodu silinmir, yalnız deaktiv edilir | D | Hesabatlılıq | Admin paneli | Əməliyyat rədd edilir |
+| BRU-20 | Hesaba hər giriş passivlik sayğacını sıfırlayır; silinmədən əvvəl xəbərdarlıq göndərilir | B | İstifadəçi etibarı | Təmizlənmə | — |
 | BRU-16 | Pul platformanın hesabında toplanmır | D | Hüquqi model (§23.1) | Ödəniş axını | Dizayn qadağası |
 
 ---
@@ -994,6 +1008,9 @@ Fiziki sxem: [`prisma/schema.prisma`](../prisma/schema.prisma); miqrasiya tarix�
 | DR-08 | Xarici xidmət açarları bazada şifrələnmiş saxlanılmalıdır | M | ✅ |
 | DR-09 | Yüklənən şəkillər hazırda bazada saxlanılır; həcm artdıqca obyekt saxlamasına keçid planlaşdırılmalıdır | S | 🟡 §22 RSK-05 |
 | DR-10 | Hesab silinəndə əlaqəli məlumat kaskad formada silinməli, jurnal qalmalıdır | M | ✅ |
+| DR-11 | İstifadə şərtlərinin qəbulu anı və versiyası hesabla birlikdə saxlanılmalıdır | M | ✅ |
+| DR-12 | Son aktivlik tarixi saxlanılmalı və hər girişdə yenilənməlidir | S | ✅ |
+| DR-13 | Endirim kodunun istifadəsi ödənişlə bağlı qeyd kimi saxlanılmalıdır (kim, nə vaxt, nə qədər endirim) | S | ✅ |
 
 ### 16.3 Məlumat lüğəti (seçilmiş sahələr)
 
@@ -1482,7 +1499,7 @@ Versiya 2.0 təsdiqləndikdən sonra (§0.4) bu sənəd **baseline** sayılır. 
 | # | Məhdudiyyət | Təsir | Həll yolu | Mərhələ |
 |---|---|---|---|---|
 | 30.1 | ~~Tarif dəyişdirildikdə qalan müddət itir~~ — həll olunub (FR-ABN-11) | — | Qalan müddət yeni tarifdə gün kimi əlavə olunur | ✅ |
-| 30.2 | Satıcı səhifəsi, faktura və panel yalnız Azərbaycan dilindədir (FR-SEH-11, FR-DIL-06) | Xarici müştəri formanı başa düşməyə bilər | Lüğət faylının genişləndirilməsi | v1.3 |
+| 30.2 | Faktura səhifəsi, satıcı paneli və admin panel Azərbaycan dilindədir (FR-DIL-06) | Xarici satıcı panelə alışmaqda çətinlik çəkə bilər | Lüğətin panel bölməsinə genişləndirilməsi | v1.3 |
 | 30.3 | Avtomatik bildiriş yoxdur (FR-BLD-03) | Satıcı yeni sifarişi panelə girəndə görür | E-poçt provayderi | v1.1 |
 | 30.4 | Fəaliyyət jurnalı yalnız bu versiyadan sonrakı hadisələri saxlayır | Tarixi araşdırma məhduddur | — | Qəbul edilib |
 | 30.5 | Pulsuz AI modellərinin dil keyfiyyəti aşağıdır (RSK-02) | "Mətndən faktura" nəticələri düzəliş tələb edir | Ödənişli tarif və ya lokal model | Konfiqurasiya |
@@ -1551,13 +1568,13 @@ Versiya 2.0 təsdiqləndikdən sonra (§0.4) bu sənəd **baseline** sayılır. 
 |---|---|---|---|---|
 | Biznes tələbləri (BR) | 12 | — | — | — |
 | Paydaş tələbləri (SH) | 29 | — | — | — |
-| Funksional tələblər (FR) | 123 | 113 | 4 | 6 |
+| Funksional tələblər (FR) | 133 | 124 | 3 | 6 |
 | Qeyri-funksional tələblər (NFR) | 35 | 29 | 5 | 1 |
-| Məlumat tələbləri (DR) | 10 | 9 | 1 | 0 |
+| Məlumat tələbləri (DR) | 13 | 12 | 1 | 0 |
 | İnterfeys tələbləri (IR) | 5 | 2 | 2 | 1 |
 | Keçid tələbləri (TR) | 14 | 0 | 1 | 13 |
-| Biznes qaydaları (BRU) | 16 | 16 | — | — |
-| **Cəmi həll tələbi** | **173** | **153** | **13** | **7** |
+| Biznes qaydaları (BRU) | 20 | 20 | — | — |
+| **Cəmi həll tələbi** | **190** | **170** | **12** | **7** |
 
 ### 32.3 Əlavə B — Buraxılış hazırlığının xülasəsi
 

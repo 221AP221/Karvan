@@ -90,6 +90,12 @@ model User {
   blockReason    String?
   createdAt      DateTime     @default(now())
 
+  termsAcceptedAt     DateTime? // istifadə şərtlərinin qəbul edildiyi an (qeydiyyatda məcburi)
+  termsVersion        String? //   qəbul edilmiş şərtlərin versiyası
+  lastSeenAt          DateTime? // son aktivlik: passiv hesabların təmizlənməsi üçün
+  autoDeleteAfterDays Int?      @default(90) // null = söndürülüb; passivlik müddəti
+  inactiveNoticeAt    DateTime? // silinmədən əvvəl xəbərdarlığın göndərildiyi an
+
   profile        Profile?
   subscription   Subscription?
   sessions       Session[]
@@ -193,11 +199,11 @@ model Media {
 }
 
 model Service {
-  id          String    @id @default(cuid())
-  profileId   String
-  profile     Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  title       String
-  description String?
+  id             String    @id @default(cuid())
+  profileId      String
+  profile        Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  title          String
+  description    String?
   category       String? // SERVICE_CATEGORIES-dən açar
   customCategory String? // "Digər" seçiləndə satıcının yazdığı növ
   imageUrl       String? // könüllü şəkil (/api/media/...)
@@ -208,10 +214,10 @@ model Service {
   durationDays   Int?
   durationWeeks  Int?
   durationMonths Int?
-  isActive    Boolean   @default(true)
-  blocked     Boolean   @default(false) // admin moderasiyası: səhifədə və kataloqda görünmür
-  position    Int       @default(0)
-  createdAt   DateTime  @default(now())
+  isActive       Boolean   @default(true)
+  blocked        Boolean   @default(false) // admin moderasiyası: səhifədə və kataloqda görünmür
+  position       Int       @default(0)
+  createdAt      DateTime  @default(now())
 
   orders Order[]
 
@@ -270,13 +276,13 @@ model Invoice {
 }
 
 model InvoiceItem {
-  id         String  @id @default(cuid())
-  invoiceId  String
-  invoice    Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
-  title      String
-  quantity   Int     @default(1)
-  unitQepik  Int
-  position   Int     @default(0)
+  id        String  @id @default(cuid())
+  invoiceId String
+  invoice   Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  title     String
+  quantity  Int     @default(1)
+  unitQepik Int
+  position  Int     @default(0)
 }
 
 model Payment {
@@ -376,25 +382,69 @@ enum BillingStatus {
 
 // Satıcının Karvan abunəliyi üçün ödənişləri (müştəri fakturalarından ayrıdır)
 model SubscriptionPayment {
-  id          String        @id @default(cuid())
-  userId      String
-  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  plan        Plan
-  months      Int
-  amountQepik Int
-  method      BillingMethod
-  status      BillingStatus @default(PENDING)
-  reference   String        @unique // KRV-XXXXXX: köçürmədə təyinat
-  cardLast4   String?
-  provider    String? // epoint | sandbox
-  externalId  String?
-  note        String?
-  createdAt   DateTime      @default(now())
-  paidAt      DateTime?
-  activatedAt DateTime?
+  id            String        @id @default(cuid())
+  userId        String
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan          Plan
+  months        Int
+  amountQepik   Int
+  method        BillingMethod
+  status        BillingStatus @default(PENDING)
+  reference     String        @unique // KRV-XXXXXX: köçürmədə təyinat
+  cardLast4     String?
+  couponCode    String? // tətbiq edilmiş endirim kodu
+  discountQepik Int           @default(0) // endirim məbləği (amountQepik artıq endirimli dəyərdir)
+  provider      String? // epoint | sandbox
+  externalId    String?
+  note          String?
+  createdAt     DateTime      @default(now())
+  paidAt        DateTime?
+  activatedAt   DateTime?
 
   @@index([status, createdAt])
   @@index([userId, createdAt])
+}
+
+enum DiscountType {
+  PERCENT // faizlə endirim
+  FIXED //   sabit məbləğ (qəpik)
+}
+
+// Kampaniya / endirim kodu: admin yaradır, ödəniş səhifəsində tətbiq olunur
+model Coupon {
+  id             String       @id @default(cuid())
+  code           String       @unique // böyük hərflərlə saxlanılır
+  type           DiscountType @default(PERCENT)
+  value          Int //                faiz (1-100) və ya qəpik məbləği
+  plans          Plan[] //              boşdursa bütün ödənişli tariflər
+  months         Int? //                yalnız bu müddət üçün (1 və ya 12); boşdursa hamısı
+  maxUses        Int? //                ümumi istifadə limiti; boşdursa limitsiz
+  maxUsesPerUser Int?         @default(1) // bir istifadəçinin istifadə sayı
+  usedCount      Int          @default(0)
+  startsAt       DateTime?
+  endsAt         DateTime?
+  isActive       Boolean      @default(true)
+  note           String?
+  createdBy      String? //             admin e-poçtu
+  createdAt      DateTime     @default(now())
+
+  redemptions CouponRedemption[]
+
+  @@index([isActive, endsAt])
+}
+
+// Kuponun hansı ödənişdə istifadə olunduğu: təkrar istifadəyə nəzarət və hesabat
+model CouponRedemption {
+  id            String   @id @default(cuid())
+  couponId      String
+  coupon        Coupon   @relation(fields: [couponId], references: [id], onDelete: Cascade)
+  userId        String
+  paymentId     String?  @unique
+  discountQepik Int
+  createdAt     DateTime @default(now())
+
+  @@index([couponId, createdAt])
+  @@index([userId])
 }
 
 // Admin paneldən idarə olunan ayarlar (məs. AI açarı: şifrələnmiş saxlanılır)

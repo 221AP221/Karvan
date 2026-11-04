@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { endSession, hashPassword, requireProfile, verifyPassword } from "@/lib/auth";
+import { AUTO_DELETE_OPTIONS } from "@/lib/inactivity";
 import { db } from "@/lib/db";
 import { type FormState, firstError, optional } from "@/lib/forms";
 
@@ -104,4 +105,28 @@ export async function deleteAccount(_: FormState, form: FormData): Promise<FormS
   await db.user.delete({ where: { id: profile.userId } });
   await logActivity({ userId: profile.userId, email: profile.user.email, action: "account_delete", details: `@${profile.username}` });
   redirect("/");
+}
+
+/**
+ * Passiv hesabın avtomatik silinməsi (defolt olaraq açıqdır).
+ * Seçilən müddət ərzində girişi olmayan hesab təmizlənmə prosesində silinir;
+ * silinmədən əvvəl xəbərdarlıq göndərilir (§ docs/BURAXILIS.md).
+ */
+export async function setAutoDelete(_: FormState, form: FormData): Promise<FormState> {
+  const profile = await requireProfile();
+  const enabled = form.get("autoDelete") === "on";
+  const raw = Number(form.get("days"));
+  const days = AUTO_DELETE_OPTIONS.includes(raw) ? raw : 90;
+  await db.user.update({
+    where: { id: profile.userId },
+    data: { autoDeleteAfterDays: enabled ? days : null, inactiveNoticeAt: null },
+  });
+  await logActivity({
+    userId: profile.userId,
+    email: profile.user.email,
+    action: "auto_delete_settings",
+    details: enabled ? `${days} gün` : "söndürüldü",
+  });
+  revalidatePath("/dashboard/settings");
+  return { ok: true };
 }

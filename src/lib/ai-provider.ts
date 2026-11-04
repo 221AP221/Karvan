@@ -116,3 +116,23 @@ export async function generateWithOpenAi<T extends z.ZodType>(cfg: OpenAiConfig,
   }
   throw new AiError("AI cavabı gözlənilən formatda deyil. Yenidən cəhd edin.");
 }
+
+export type ChatTurn = { role: "user" | "assistant"; content: string };
+
+/** Sərbəst mətn cavabı (chatbot). Strukturlu çıxış tələb olunmur. */
+export async function chatWithOpenAi(cfg: OpenAiConfig, system: string, turns: ChatTurn[]): Promise<string> {
+  let res: Response;
+  try {
+    res = await chat(cfg, [{ role: "system", content: system }, ...turns], false);
+  } catch {
+    throw new AiError("AI xidmətinə qoşulmaq alınmadı.");
+  }
+  if (res.status === 401 || res.status === 403) throw new AiSetupError("AI açarı yanlışdır və ya icazəsi yoxdur.");
+  if (res.status === 429) throw new AiError("AI xidməti hazırda məşğuldur. Bir az sonra yenidən yazın.");
+  if (!res.ok) throw new AiError(`AI xidməti xəta qaytardı (${res.status}).`);
+
+  const data = (await res.json().catch(() => null)) as { choices?: { message?: { content?: string } }[] } | null;
+  const text = data?.choices?.[0]?.message?.content?.trim();
+  if (!text) throw new AiError("AI cavab qaytarmadı.");
+  return text;
+}

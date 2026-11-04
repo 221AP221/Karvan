@@ -96,6 +96,10 @@ export function hrefWith(path: string, sp: Record<string, string | string[] | un
 
 export const ACTION_LABELS: Record<string, string> = {
   plan_change: "Plan dəyişdi",
+  coupon_create: "Endirim kodu yaratdı",
+  coupon_update: "Endirim kodunu dəyişdi",
+  coupon_toggle: "Endirim kodunu aktiv/deaktiv etdi",
+  coupon_delete: "Endirim kodunu sildi",
   block: "Hesab bloklandı",
   unblock: "Blok götürüldü",
   delete_user: "Hesab silindi",

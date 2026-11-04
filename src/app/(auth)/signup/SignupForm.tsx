@@ -36,6 +36,7 @@ export function SignupForm({ t, password: pw, plan }: { t: Dict["auth"]["signup"
   const { state, pending, onSubmit } = useAuthForm(signup);
   const form = useRef<HTMLFormElement>(null);
   const [step, setStep] = useState<1 | 2>(1);
+  const [terms, setTerms] = useState(false);
   const [citizenship, setCitizenship] = useState<"AZ" | "FOREIGN">("AZ");
   const [names, setNames] = useState({ firstName: "", lastName: "", brand: "" });
   const [username, setUsername] = useState("");
@@ -234,12 +235,35 @@ export function SignupForm({ t, password: pw, plan }: { t: Dict["auth"]["signup"
             <ShieldCheck size={15} className="mt-px shrink-0 text-emerald-600" aria-hidden />
             {t.privacy}
           </p>
+
+          {/* İstifadə şərtlərinin qəbulu: qeyd edilmədən hesab yaradılmır */}
+          <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-gray-200 p-3 text-sm text-gray-600 transition hover:border-gray-300 dark:border-white/10 dark:text-gray-300">
+            <input
+              type="checkbox"
+              name="terms"
+              required
+              checked={terms}
+              onChange={(e) => setTerms(e.target.checked)}
+              className="mt-0.5 h-4.5 w-4.5 shrink-0 accent-violet-600"
+            />
+            <span>
+              {t.terms.before}{" "}
+              <Link href="/qaydalar" target="_blank" className="font-medium text-violet-600 underline dark:text-violet-300">
+                {t.terms.terms}
+              </Link>{" "}
+              {t.terms.middle}{" "}
+              <Link href="/mexfilik" target="_blank" className="font-medium text-violet-600 underline dark:text-violet-300">
+                {t.terms.privacy}
+              </Link>{" "}
+              {t.terms.after}
+            </span>
+          </label>
           <AuthError message={state?.field && STEP1_FIELDS.includes(state.field) ? undefined : state?.error} />
           <div className="flex gap-3">
             <button type="button" onClick={() => setStep(1)} aria-label={t.prevStep} className="grid h-12 w-12 shrink-0 place-items-center rounded-xl border border-gray-200 text-gray-600 transition hover:bg-gray-50 dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/10">
               <ArrowLeft size={18} aria-hidden />
             </button>
-            <SubmitButton pending={pending}>{t.submit}</SubmitButton>
+            <SubmitButton pending={pending} disabled={!terms}>{t.submit}</SubmitButton>
           </div>
         </div>
       </form>

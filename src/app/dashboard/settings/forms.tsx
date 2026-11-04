@@ -3,7 +3,7 @@
 import { useActionState, useState } from "react";
 import { ActionForm } from "@/components/ActionForm";
 import { Field, secondaryButtonClass } from "@/components/ui";
-import { changeEmail, changePassword, deleteAccount, setCatalogVisibility, signOutOtherDevices, updatePaymentSettings } from "./actions";
+import { changeEmail, changePassword, deleteAccount, setAutoDelete, setCatalogVisibility, signOutOtherDevices, updatePaymentSettings } from "./actions";
 
 export function EmailForm({ email }: { email: string }) {
   return (
@@ -57,6 +57,37 @@ export function CatalogForm({ visible, featured }: { visible: boolean; featured:
           </span>
         </span>
       </label>
+    </ActionForm>
+  );
+}
+
+export function AutoDeleteForm({ enabled, days, lastSeen, options }: { enabled: boolean; days: number; lastSeen: string | null; options: number[] }) {
+  const [on, setOn] = useState(enabled);
+  return (
+    <ActionForm action={setAutoDelete} submitLabel="Yadda saxla" successMessage="Yadda saxlanıldı">
+      <label className="flex cursor-pointer items-start gap-3">
+        <input type="checkbox" name="autoDelete" checked={on} onChange={(e) => setOn(e.target.checked)} className="mt-1 h-4 w-4 accent-[var(--brand)]" />
+        <span>
+          <span className="block text-sm font-medium text-gray-800">Uzun müddət giriş olmasa, hesabı sil</span>
+          <span className="block text-sm text-gray-500">
+            Seçilən müddət ərzində hesabınıza daxil olmasanız, hesab və bütün məlumatlar silinir. Silinmədən 14 gün əvvəl
+            e-poçtunuza xəbərdarlıq gedir; hesaba daxil olmaq sayğacı sıfırlayır.
+          </span>
+        </span>
+      </label>
+
+      <label className="block max-w-xs">
+        <span className="mb-1 block text-xs font-medium text-gray-600">Passivlik müddəti</span>
+        <select name="days" defaultValue={String(days)} disabled={!on} className="h-10 w-full rounded-lg border border-gray-300 px-3 text-sm outline-none focus:border-[var(--brand)] disabled:bg-gray-50 disabled:text-gray-400">
+          {options.map((d) => (
+            <option key={d} value={d}>
+              {d} gün
+            </option>
+          ))}
+        </select>
+      </label>
+
+      {lastSeen && <p className="text-xs text-gray-500">Son girişiniz: {lastSeen}</p>}
     </ActionForm>
   );
 }

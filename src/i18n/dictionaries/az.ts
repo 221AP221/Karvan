@@ -16,7 +16,18 @@ export const az = {
     title: "Link-in-bio səhifə və onlayn faktura — Karvan",
     description:
       "Instagram və TikTok bio-nuz üçün bir link: xidmətlər, qiymətlər, sifariş formu və avtomatik PDF faktura. Ödənişi izləyin. Pulsuz başlayın, komissiya yoxdur.",
-    keywords: ["link in bio", "link-in-bio səhifə", "onlayn faktura", "faktura yaratmaq", "Instagram-da satış", "onlayn sifariş formu", "ödəniş izləmə", "xidmət satışı", "usta tapmaq", "Bakı xidmətlər"],
+    keywords: [
+      "link in bio",
+      "link-in-bio səhifə",
+      "onlayn faktura",
+      "faktura yaratmaq",
+      "Instagram-da satış",
+      "onlayn sifariş formu",
+      "ödəniş izləmə",
+      "xidmət satışı",
+      "usta tapmaq",
+      "Bakı xidmətlər",
+    ],
   },
 
   nav: {
@@ -46,7 +57,12 @@ export const az = {
         { title: "Gəlin makiyajı", price: "Razılaşma ilə" },
       ],
       order: "Sifariş et",
-      cards: { order: "Yeni sifariş", orderValue: "Nərmin · 40 AZN", invoice: "Faktura göndərildi", paid: "Ödənildi" },
+      cards: {
+        order: "Yeni sifariş",
+        orderValue: "Nərmin · 40 AZN",
+        invoice: "Faktura göndərildi",
+        paid: "Ödənildi",
+      },
     },
   },
 
@@ -72,7 +88,8 @@ export const az = {
     { value: "24/7", label: "sifariş qəbulu" },
   ],
 
-  statement: "Müştəri DM-də qiymət soruşmaq istəmir. O, qiyməti görmək, bir kliklə sifariş vermək və peşəkar faktura almaq istəyir.",
+  statement:
+    "Müştəri DM-də qiymət soruşmaq istəmir. O, qiyməti görmək, bir kliklə sifariş vermək və peşəkar faktura almaq istəyir.",
 
   catalogCta: {
     text: "Xidmət axtarırsınız? Karvan-dakı ustaları qiymətə, şəhərə və sahəyə görə müqayisə edin.",
@@ -92,19 +109,48 @@ export const az = {
       { me: false, text: "Göndərdim, ekran şəkli 👇" },
       { me: true, text: "Bir dəqiqə, yoxlayım..." },
     ],
-    beforePoints: ["Hər müştəriyə eyni cavab", "Rekvizit əl ilə", "Ödəniş ekran şəklində", "Hesab dəftərdə"],
-    invoice: { label: "Faktura", service: "Gündəlik makiyaj", total: "Ümumi", status: "Ödənildi", claimed: "Müştəri “Ödədim” basdı", confirm: "Təsdiqlə" },
-    afterPoints: ["Qiymət səhifədə", "Faktura avtomatik", "“Ödədim” bir kliklə", "Hesab paneldə"],
+    beforePoints: [
+      "Hər müştəriyə eyni cavab",
+      "Rekvizit əl ilə",
+      "Ödəniş ekran şəklində",
+      "Hesab dəftərdə",
+    ],
+    invoice: {
+      label: "Faktura",
+      service: "Gündəlik makiyaj",
+      total: "Ümumi",
+      status: "Ödənildi",
+      claimed: "Müştəri “Ödədim” basdı",
+      confirm: "Təsdiqlə",
+    },
+    afterPoints: [
+      "Qiymət səhifədə",
+      "Faktura avtomatik",
+      "“Ödədim” bir kliklə",
+      "Hesab paneldə",
+    ],
   },
 
   steps: {
     eyebrow: "Necə işləyir",
     title: "4 addımda ilk ödənişə",
     items: [
-      { title: "Səhifənizi qurun", text: "Xidmət, qiymət, sosial linklər və işlərinizi əlavə edin. karvan.az/adiniz 3 dəqiqəyə hazırdır." },
-      { title: "Linki bio-ya qoyun", text: "Instagram, TikTok, WhatsApp və Telegram-da paylaşın. Müştəri xidməti seçir və sifariş verir." },
-      { title: "Faktura özü gedir", text: "Sabit qiymətdə dərhal, razılaşma ilə olan xidmətdə təsdiqinizdən sonra. Rekvizit, QR kod və PDF içindədir." },
-      { title: "Ödənişi izləyin", text: "Müştəri “Ödədim” basır, siz təsdiqləyirsiniz. Kim ödəyib, kim gecikir — bir paneldə." },
+      {
+        title: "Səhifənizi qurun",
+        text: "Xidmət, qiymət, sosial linklər və işlərinizi əlavə edin. karvan.az/adiniz 3 dəqiqəyə hazırdır.",
+      },
+      {
+        title: "Linki bio-ya qoyun",
+        text: "Instagram, TikTok, WhatsApp və Telegram-da paylaşın. Müştəri xidməti seçir və sifariş verir.",
+      },
+      {
+        title: "Faktura özü gedir",
+        text: "Sabit qiymətdə dərhal, razılaşma ilə olan xidmətdə təsdiqinizdən sonra. Rekvizit, QR kod və PDF içindədir.",
+      },
+      {
+        title: "Ödənişi izləyin",
+        text: "Müştəri “Ödədim” basır, siz təsdiqləyirsiniz. Kim ödəyib, kim gecikir — bir paneldə.",
+      },
     ],
   },
 
@@ -113,12 +159,30 @@ export const az = {
     title: "Satış üçün lazım olan hər şey bir yerdə",
     text: "Linktree, Excel cədvəli və WhatsApp yazışmalarını tək alətlə əvəz edin.",
     items: [
-      { title: "Link-in-bio səhifə", text: "Xidmətlər, işləriniz və sosial linklər brend rənginizlə, telefona uyğun." },
-      { title: "Sifariş formu", text: "Sabit qiymətdə faktura dərhal yaranır, razılaşma ilə olan xidmətdə siz təsdiqləyirsiniz." },
-      { title: "PDF faktura və QR", text: "Nömrələnmiş faktura rekvizitlərlə birlikdə. WhatsApp-a bir kliklə gedir." },
-      { title: "Ödəniş izləmə", text: "Qazanılan, gözlənilən və gecikən məbləğlər. Gecikənə nəzakətli xatırlatma." },
-      { title: "Analitika", text: "Ziyarətçilər haradan gəlir, hansı xidmət satır, konversiya neçə faizdir." },
-      { title: "Xidmətlər kataloqu", text: "Bio linkiniz olmadan da tapılın: müştəri sizi axtarışda görür." },
+      {
+        title: "Link-in-bio səhifə",
+        text: "Xidmətlər, işləriniz və sosial linklər brend rənginizlə, telefona uyğun.",
+      },
+      {
+        title: "Sifariş formu",
+        text: "Sabit qiymətdə faktura dərhal yaranır, razılaşma ilə olan xidmətdə siz təsdiqləyirsiniz.",
+      },
+      {
+        title: "PDF faktura və QR",
+        text: "Nömrələnmiş faktura rekvizitlərlə birlikdə. WhatsApp-a bir kliklə gedir.",
+      },
+      {
+        title: "Ödəniş izləmə",
+        text: "Qazanılan, gözlənilən və gecikən məbləğlər. Gecikənə nəzakətli xatırlatma.",
+      },
+      {
+        title: "Analitika",
+        text: "Ziyarətçilər haradan gəlir, hansı xidmət satır, konversiya neçə faizdir.",
+      },
+      {
+        title: "Xidmətlər kataloqu",
+        text: "Bio linkiniz olmadan da tapılın: müştəri sizi axtarışda görür.",
+      },
     ],
   },
 
@@ -130,10 +194,14 @@ export const az = {
       { title: "Mətndən faktura", text: "Necə danışırsınızsa, elə yazın." },
       { title: "Xidmət təsviri", text: "Bir neçə söz — 3 satış mətni." },
       { title: "Brend rəngi", text: "Sahənizə uyğun palitra." },
-      { title: "Nəzakətli xatırlatma", text: "Gecikən ödəniş üçün hazır mesaj." },
+      {
+        title: "Nəzakətli xatırlatma",
+        text: "Gecikən ödəniş üçün hazır mesaj.",
+      },
     ],
     demo: {
-      prompt: "Aygün Məmmədova, 0501234567, 3 fərdi dərs hər biri 50 manat, cümə gününə qədər",
+      prompt:
+        "Aygün Məmmədova, 0501234567, 3 fərdi dərs hər biri 50 manat, cümə gününə qədər",
       you: "Siz yazırsınız",
       reading: "AI oxuyur...",
       convert: "Fakturaya çevir",
@@ -161,19 +229,43 @@ export const az = {
         name: "Pulsuz",
         tagline: "Yeni başlayanlar üçün",
         cta: "Pulsuz başla",
-        features: ["Link-in-bio səhifə", "Limitsiz sifariş", "Ayda 5 faktura", "5 xidmət", "PDF faktura və QR kod", "Əsas analitika", "AI: ayda 10 sorğu"],
+        features: [
+          "Link-in-bio səhifə",
+          "Limitsiz sifariş",
+          "Ayda 5 faktura",
+          "5 xidmət",
+          "PDF faktura və QR kod",
+          "Əsas analitika",
+          "AI: ayda 10 sorğu",
+        ],
       },
       {
         name: "Pro",
         tagline: "Aktiv satanlar üçün",
         cta: "Pro ilə başla",
-        features: ["Pulsuzdakı hər şey", "Təsdiqlənmiş hesab nişanı", "Ayda 100 faktura", "30 xidmət", "Karvan yazısı olmadan", "Müştəridən onlayn kartla ödəniş (tezliklə)", "AI: ayda 200 sorğu"],
+        features: [
+          "Pulsuzdakı hər şey",
+          "Təsdiqlənmiş hesab nişanı",
+          "Ayda 100 faktura",
+          "30 xidmət",
+          "Karvan yazısı olmadan",
+          "Müştəridən onlayn kartla ödəniş (tezliklə)",
+          "AI: ayda 200 sorğu",
+        ],
       },
       {
         name: "Pro Max",
         tagline: "Studiyalar və komandalar üçün",
         cta: "Pro Max seç",
-        features: ["Pro-dakı hər şey", "Limitsiz faktura və xidmət", "Kataloqda önə çıxma və “Seçilmiş” nişanı", "5 komanda üzvü (tezliklə)", "Ətraflı analitika və Excel hesabat", "Prioritet dəstək", "AI: ayda 1000 sorğu"],
+        features: [
+          "Pro-dakı hər şey",
+          "Limitsiz faktura və xidmət",
+          "Kataloqda önə çıxma və “Seçilmiş” nişanı",
+          "5 komanda üzvü (tezliklə)",
+          "Ətraflı analitika və Excel hesabat",
+          "Prioritet dəstək",
+          "AI: ayda 1000 sorğu",
+        ],
       },
     ],
   },
@@ -182,13 +274,34 @@ export const az = {
     eyebrow: "Suallar",
     title: "Tez-tez verilən suallar",
     items: [
-      { q: "Karvan pulsuzdurmu?", a: "Bəli. Pulsuz planda səhifə, limitsiz sifariş, ayda 5 faktura və 5 xidmət var. Kart məlumatı tələb olunmur." },
-      { q: "Müştəri pulu kimə ödəyir?", a: "Birbaşa sizə. Fakturada sizin kart və ya IBAN rekvizitləriniz görünür. Karvan pulunuza toxunmur və komissiya götürmür." },
-      { q: "Faktura rəsmi vergi sənədidirmi?", a: "Xeyr, bu peşəkar ödəniş sorğusudur. VÖEN və e-qaimə dəstəyi növbəti mərhələlərdə planlaşdırılır." },
-      { q: "Hansı ölkələrdə işləyir?", a: "Karvan Azərbaycan üçün qurulub: AZN, yerli banklar, Azərbaycan dili. Sayt türk və rus dillərində də var, faktura USD və EUR ilə yazıla bilər — Türkiyə, Gürcüstan, Qazaxıstan və region üçün hazırdır." },
-      { q: "Texniki bilik lazımdırmı?", a: "Yox. Səhifəni forma dolduraraq 3 dəqiqəyə qurursunuz, sayt kodsuz işləyir." },
-      { q: "Xidmətlərim kataloqda görünəcək?", a: "Bəli, aktiv xidmətləriniz Xidmətlər kataloqunda avtomatik çıxır. İstəməsəniz, Parametrlərdən gizlədə bilərsiniz." },
-      { q: "Ödənişin gəldiyini necə bilirəm?", a: "Müştəri “Ödədim” basanda paneldə görünür. Hesabınızı yoxlayıb bir kliklə təsdiqləyirsiniz." },
+      {
+        q: "Karvan pulsuzdurmu?",
+        a: "Bəli. Pulsuz planda səhifə, limitsiz sifariş, ayda 5 faktura və 5 xidmət var. Kart məlumatı tələb olunmur.",
+      },
+      {
+        q: "Müştəri pulu kimə ödəyir?",
+        a: "Birbaşa sizə. Fakturada sizin kart və ya IBAN rekvizitləriniz görünür. Karvan pulunuza toxunmur və komissiya götürmür.",
+      },
+      {
+        q: "Faktura rəsmi vergi sənədidirmi?",
+        a: "Xeyr, bu peşəkar ödəniş sorğusudur. VÖEN və e-qaimə dəstəyi növbəti mərhələlərdə planlaşdırılır.",
+      },
+      {
+        q: "Hansı ölkələrdə işləyir?",
+        a: "Karvan Azərbaycan üçün qurulub: AZN, yerli banklar, Azərbaycan dili. Sayt türk və rus dillərində də var, faktura USD və EUR ilə yazıla bilər — Türkiyə, Gürcüstan, Qazaxıstan və region üçün hazırdır.",
+      },
+      {
+        q: "Texniki bilik lazımdırmı?",
+        a: "Yox. Səhifəni forma dolduraraq 3 dəqiqəyə qurursunuz, sayt kodsuz işləyir.",
+      },
+      {
+        q: "Xidmətlərim kataloqda görünəcək?",
+        a: "Bəli, aktiv xidmətləriniz Xidmətlər kataloqunda avtomatik çıxır. İstəməsəniz, Parametrlərdən gizlədə bilərsiniz.",
+      },
+      {
+        q: "Ödənişin gəldiyini necə bilirəm?",
+        a: "Müştəri “Ödədim” basanda paneldə görünür. Hesabınızı yoxlayıb bir kliklə təsdiqləyirsiniz.",
+      },
     ],
   },
 
@@ -199,8 +312,56 @@ export const az = {
     secondary: "Demo səhifə",
   },
 
+  // Satıcı səhifəsi (karvan.az/<username>) və sifariş forması
+  // AI köməkçi (chatbot)
+  chat: {
+    title: "Karvan köməkçisi",
+    subtitle: "Suallarınıza cavab verir",
+    open: "Köməkçini aç",
+    close: "Bağla",
+    placeholder: "Sualınızı yazın...",
+    send: "Göndər",
+    greeting: "Salam! Karvan haqqında nə bilmək istəyirsiniz? Tariflər, sifariş axını, faktura — soruşun.",
+    suggestions: ["Karvan necə işləyir?", "Tariflər nə qədərdir?", "Pul necə gəlir?"],
+    error: "Cavab alınmadı. Bir az sonra yenidən yazın.",
+    note: "Cavablar AI tərəfindən hazırlanır, dəqiqləşdirmə üçün: hello@karvan.az",
+  },
+
+  seller: {
+    services: "Xidmətlər",
+    portfolio: "Gördüyüm işlər",
+    about: "Haqqımda",
+    negotiable: "Razılaşma ilə",
+    verified: "Təsdiqlənmiş hesab",
+    call: "Zəng et",
+    nav: "Naviqasiya",
+    catalog: "Xidmətlər",
+    madeWith: "ilə yaradılıb",
+    order: "Sifariş et",
+    ask: "Qiymət soruş",
+    orderTitle: "Sifariş məlumatları",
+    askTitle: "Qiymət sorğusu",
+    name: "Adınız",
+    phone: "Telefon nömrəniz",
+    email: "E-poçt (könüllü)",
+    note: "Qeyd (könüllü)",
+    submitOrder: "Fakturanı al",
+    submitAsk: "Sorğu göndər",
+    sending: "Göndərilir...",
+    close: "Bağla",
+    closeEsc: "Bağla (Esc)",
+    netError: "Bağlantı xətası, yenidən cəhd edin.",
+    day: "gün",
+    week: "həftə",
+    month: "ay",
+    language: "Dil",
+    pending: "Sorğunuz göndərildi. Satıcı qiyməti təsdiqləyən kimi faktura sizə göndəriləcək.",
+    cancel: "Ləğv et",
+  },
+
   footer: {
-    tagline: "Sosial şəbəkələrdə aktiv olan ustalar və mütəxəssislər üçün xidmət satışını bir yerdə quran platforma: səhifə, sifariş, faktura və ödəniş izləmə.",
+    tagline:
+      "Sosial şəbəkələrdə aktiv olan ustalar və mütəxəssislər üçün xidmət satışını bir yerdə quran platforma: səhifə, sifariş, faktura və ödəniş izləmə.",
     product: "Məhsul",
     explore: "Kəşf et",
     account: "Hesab",
@@ -224,26 +385,34 @@ export const az = {
     city: "Bakı, Azərbaycan",
     regions: "Azərbaycan · Türkiyə · Gürcüstan · Qazaxıstan",
     rights: "Bütün hüquqlar qorunur.",
-    cookieNotice: { text: "Bu sayt yalnız işləmək və satıcıya anonim statistika göstərmək üçün cookie istifadə edir. Reklam izləyicisi yoxdur.", accept: "Anladım", more: "Ətraflı" },
+    cookieNotice: {
+      text: "Bu sayt yalnız işləmək və satıcıya anonim statistika göstərmək üçün cookie istifadə edir. Reklam izləyicisi yoxdur.",
+      accept: "Anladım",
+      more: "Ətraflı",
+    },
   },
 
   seo: {
     categoryTitle: "{category} xidmətləri",
     withCity: "{title} — {city}",
-    categoryDescription: "{category} sahəsində {n} xidmət: açıq qiymətlər, müddət və birbaşa sifariş. Karvan kataloqunda usta seçin.",
+    categoryDescription:
+      "{category} sahəsində {n} xidmət: açıq qiymətlər, müddət və birbaşa sifariş. Karvan kataloqunda usta seçin.",
     browseCategories: "Sahə üzrə xidmətlər",
     browseCities: "Şəhər üzrə xidmətlər",
     sellerTitle: "{name} — {profession}",
-    sellerDescription: "{intro} Xidmətlər: {services}. Onlayn sifariş və avtomatik faktura — Karvan.",
+    sellerDescription:
+      "{intro} Xidmətlər: {services}. Onlayn sifariş və avtomatik faktura — Karvan.",
     sellerIntro: "{profession} · {city}.",
-    sellerFallback: "{name} səhifəsi: xidmətlər, qiymətlər və onlayn sifariş — Karvan.",
+    sellerFallback:
+      "{name} səhifəsi: xidmətlər, qiymətlər və onlayn sifariş — Karvan.",
     sellerCity: "{title}, {city}",
     priceFrom: "{price}-dən",
   },
 
   catalog: {
     metaTitle: "Xidmətlər kataloqu — usta və mütəxəssis tapın",
-    metaDescription: "Makiyaj, repetitor, dizayn, foto, SMM və digər xidmətləri qiymətə, şəhərə və sahəyə görə müqayisə edin. Qiymətlər açıq, sifariş birbaşa ustadan, bir kliklə.",
+    metaDescription:
+      "Makiyaj, repetitor, dizayn, foto, SMM və digər xidmətləri qiymətə, şəhərə və sahəyə görə müqayisə edin. Qiymətlər açıq, sifariş birbaşa ustadan, bir kliklə.",
     eyebrow: "Xidmətlər kataloqu",
     title: "Lazım olan xidməti tapın",
     text: "Karvan-da qeydiyyatdan keçmiş ustaların və mütəxəssislərin xidmətləri. Qiymət açıqdır, sifariş bir kliklə.",
@@ -262,7 +431,12 @@ export const az = {
     max: "Maks",
     verified: "Yalnız təsdiqlənmiş",
     sort: "Sıralama",
-    sorts: { recommended: "Tövsiyə olunan", new: "Ən yeni", priceAsc: "Əvvəl ucuz", priceDesc: "Əvvəl bahalı" },
+    sorts: {
+      recommended: "Tövsiyə olunan",
+      new: "Ən yeni",
+      priceAsc: "Əvvəl ucuz",
+      priceDesc: "Əvvəl bahalı",
+    },
     filters: "Filtrlər",
     reset: "Sıfırla",
     results: "{n} xidmət",
@@ -286,7 +460,11 @@ export const az = {
     planChosen: "Seçdiyiniz paket",
     planNext: "Qeydiyyatdan və ya girişdən sonra ödəniş səhifəsi açılacaq.",
     headline: ["Profilinizi", "satış səhifəsinə", "çevirin"],
-    points: ["Bir link: sosial hesablar, xidmətlər, gördüyünüz işlər", "Hər sifarişə avtomatik PDF faktura", "Kim ödəyib, kim gecikir — bir paneldə"],
+    points: [
+      "Bir link: sosial hesablar, xidmətlər, gördüyünüz işlər",
+      "Hər sifarişə avtomatik PDF faktura",
+      "Kim ödəyib, kim gecikir — bir paneldə",
+    ],
     secure: "Məlumatlarınız qorunur, şifrələr şifrələnmiş saxlanılır",
     login: {
       title: "Xoş gördük",
@@ -324,20 +502,30 @@ export const az = {
       emailPlaceholder: "ad@nümunə.az",
       password: "Şifrə",
       confirm: "Şifrəni təsdiqləyin",
-      privacy: "FİN kod və ya pasport nömrəsi yalnız hesabın təsdiqi üçündür, səhifənizdə heç kimə göstərilmir.",
+      privacy:
+        "FİN kod və ya pasport nömrəsi yalnız hesabın təsdiqi üçündür, səhifənizdə heç kimə göstərilmir.",
       prevStep: "Əvvəlki addım",
       submit: "Hesab yarat",
       hasAccount: "Hesabınız var?",
       login: "Daxil olun",
+      terms: {
+        before: "Qeydiyyatı tamamlamaqla",
+        terms: "istifadə şərtləri",
+        middle: "və",
+        privacy: "məxfilik siyasəti",
+        after: "ilə tanış olduğumu və razı olduğumu təsdiqləyirəm",
+      },
     },
     forgot: {
       title: "Şifrəni bərpa et",
       text: "Qeydiyyatdan keçdiyiniz e-poçtu yazın, şifrəni yeniləmək üçün link göndərək.",
       submit: "Link göndər",
       sentTitle: "E-poçtunuzu yoxlayın",
-      sentText: "Bu e-poçt ilə hesab varsa, şifrəni yeniləmək üçün link göndərdik. Link 30 dəqiqə etibarlıdır.",
+      sentText:
+        "Bu e-poçt ilə hesab varsa, şifrəni yeniləmək üçün link göndərdik. Link 30 dəqiqə etibarlıdır.",
       devTitle: "Lokal rejim: e-poçt xidməti qoşulmayıb",
-      devText: "Məktub əvəzinə link burada göstərilir (yalnız öz kompüterinizdə):",
+      devText:
+        "Məktub əvəzinə link burada göstərilir (yalnız öz kompüterinizdə):",
       devButton: "Şifrəni yenilə",
       back: "Girişə qayıt",
       remembered: "Şifrəni xatırladınız?",
@@ -345,7 +533,8 @@ export const az = {
     },
     reset: {
       invalidTitle: "Link etibarsızdır",
-      invalidText: "Linkin vaxtı keçib və ya artıq istifadə olunub. Yeni link istəyin.",
+      invalidText:
+        "Linkin vaxtı keçib və ya artıq istifadə olunub. Yeni link istəyin.",
       newLink: "Yeni link al",
       title: "Yeni şifrə",
       text: "Yeni şifrə təyin edin. Bütün cihazlardan çıxış ediləcək.",
@@ -379,9 +568,11 @@ export const az = {
       phoneTaken: "Bu nömrə ilə artıq hesab var",
       finTaken: "Bu FİN kod ilə artıq hesab var",
       wrongLogin: "E-poçt və ya şifrə yanlışdır",
-      blocked: "Hesabınız bloklanıb. Ətraflı məlumat üçün dəstəklə əlaqə saxlayın.",
+      blocked:
+        "Hesabınız bloklanıb. Ətraflı məlumat üçün dəstəklə əlaqə saxlayın.",
       noProfile: "Bu hesabın səhifəsi tapılmadı. Dəstəklə əlaqə saxlayın.",
       badLink: "Link etibarsızdır və ya vaxtı keçib. Yenidən sorğu göndərin.",
+      terms: "Davam etmək üçün istifadə şərtlərini qəbul edin",
       tooMany: "Çox sayda cəhd oldu. Bir neçə dəqiqə sonra yenidən yoxlayın.",
     },
   },

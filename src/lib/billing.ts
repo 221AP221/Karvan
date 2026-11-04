@@ -2,6 +2,7 @@ import { randomBytes } from "node:crypto";
 import type { Plan } from "@/generated/prisma/client";
 import { logActivity } from "@/lib/activity";
 import { gatewayByName } from "@/lib/billing-gateway";
+import { redeemCoupon } from "@/lib/coupons";
 import { db } from "@/lib/db";
 
 // Karvan abunəlik ödənişləri. Qiymətlər qəpiklə; illik ödənişdə 2 ay pulsuz.
@@ -88,12 +89,46 @@ export async function activatePayment(paymentId: string) {
     }),
     db.subscriptionPayment.update({ where: { id: paymentId }, data: { status: "ACTIVATED", paidAt: payment.paidAt ?? new Date(), activatedAt: new Date() } }),
   ]);
+  // Kupon istifadəsi yalnız ödəniş aktivləşəndə sayılır
+  if (payment.couponCode) {
+    await redeemCoupon({ code: payment.couponCode, userId: payment.userId, paymentId: payment.id, discountQepik: payment.discountQepik });
+  }
   await logActivity({
     userId: payment.userId,
     email: payment.user.email,
     action: "plan_activated",
     details: `${payment.plan} · ${payment.months} ay · ${payment.reference}${carry > 0 ? ` · əvvəlki tarifdən ${carry} gün keçirildi` : ""}`,
   });
+}
+
+/**
+ * Admin tarifi dəyişəndə müddət itmir və sıfırlanmır:
+ *  · mövcud (bitməmiş) müddət varsa — olduğu kimi saxlanılır, tarif dəyişir;
+ *  · müddət yoxdursa (pulsuzdan keçid) — `months` qədər müddət verilir;
+ *  · pulsuza salınanda — müddət təmizlənir.
+ * Qalan müddətin dəyərinin çevrilməsi yalnız istifadəçinin öz ödənişində tətbiq olunur (FR-ABN-11).
+ */
+export async function setPlanKeepingTime(userId: string, plan: Plan, months = 1) {
+  const sub = await db.subscription.findUnique({ where: { userId }, select: { plan: true, currentPeriodEnd: true } });
+  if (plan === "FREE") {
+    await db.subscription.upsert({ where: { userId }, update: { plan: "FREE", currentPeriodEnd: null }, create: { userId, plan: "FREE" } });
+    return null;
+  }
+  const now = new Date();
+  const active = sub?.currentPeriodEnd && sub.currentPeriodEnd > now ? sub.currentPeriodEnd : null;
+  // Mövcud müddət varsa toxunulmur (admin dəyişikliyi satış deyil, ona görə dəyər çevrilməsi tətbiq olunmur);
+  // müddət yoxdursa, açıq uclu abunəlik qalmasın deyə verilir
+  let end = active;
+  if (!end) {
+    end = new Date(now);
+    end.setMonth(end.getMonth() + months);
+  }
+  await db.subscription.upsert({
+    where: { userId },
+    update: { plan, currentPeriodEnd: end },
+    create: { userId, plan, currentPeriodEnd: end },
+  });
+  return end;
 }
 
 // Müddəti bitmiş ödənişli tarif pulsuza qayıdır (girişdə yoxlanılır)

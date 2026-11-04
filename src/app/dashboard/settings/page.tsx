@@ -1,9 +1,10 @@
-import { CreditCard, Crown, KeyRound, LayoutGrid, Mail, MonitorSmartphone, ShieldAlert } from "lucide-react";
+import { CreditCard, Crown, KeyRound, LayoutGrid, Mail, MonitorSmartphone, ShieldAlert, Timer } from "lucide-react";
 import { IconBadge } from "@/components/landing/IconBadge";
 import { requireProfile } from "@/lib/auth";
+import { AUTO_DELETE_OPTIONS } from "@/lib/inactivity";
 import { db } from "@/lib/db";
 import { PLAN_LIMITS, PLAN_NAMES, startOfMonth } from "@/lib/plans";
-import { CatalogForm, DangerZone, EmailForm, PasswordForm, PaymentForm, SessionsButton } from "./forms";
+import { AutoDeleteForm, CatalogForm, DangerZone, EmailForm, PasswordForm, PaymentForm, SessionsButton } from "./forms";
 
 function Section({ icon, title, text, children }: { icon: Parameters<typeof IconBadge>[0]["icon"]; title: string; text: string; children: React.ReactNode }) {
   return (
@@ -24,6 +25,12 @@ export default async function Settings() {
   const profile = await requireProfile();
   const plan = profile.user.subscription?.plan ?? "FREE";
   const limits = PLAN_LIMITS[plan];
+  // Avtomatik silinmə ayarı və son giriş tarixi
+  const account = await db.user.findUnique({ where: { id: profile.userId }, select: { autoDeleteAfterDays: true, lastSeenAt: true } });
+  const lastSeen = account?.lastSeenAt
+    ? new Intl.DateTimeFormat("az-AZ", { day: "2-digit", month: "long", year: "numeric" }).format(account.lastSeenAt)
+    : null;
+
   const [sessions, invoicesThisMonth] = await Promise.all([
     db.session.count({ where: { userId: profile.userId, expiresAt: { gt: new Date() } } }),
     db.invoice.count({ where: { profileId: profile.id, issuedAt: { gte: startOfMonth() } } }),
@@ -92,6 +99,15 @@ export default async function Settings() {
 
         <Section icon={LayoutGrid} title="Xidmətlər kataloqu" text="Yeni müştərilər sizi axtarışda tapsın">
           <CatalogForm visible={profile.showInCatalog} featured={limits.featured} />
+        </Section>
+
+        <Section icon={Timer} title="Passiv hesab" text="Uzun müddət giriş olmadıqda hesabın avtomatik silinməsi">
+          <AutoDeleteForm
+            enabled={account?.autoDeleteAfterDays != null}
+            days={account?.autoDeleteAfterDays ?? 90}
+            options={AUTO_DELETE_OPTIONS}
+            lastSeen={lastSeen}
+          />
         </Section>
 
         <Section icon={MonitorSmartphone} title="Sessiyalar" text="Hesabınıza daxil olunmuş cihazlar">

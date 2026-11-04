@@ -26,10 +26,10 @@ export function AuthError({ message }: { message?: string }) {
   );
 }
 
-export function SubmitButton({ pending, children }: { pending: boolean; children: React.ReactNode }) {
+export function SubmitButton({ pending, children, disabled }: { pending: boolean; children: React.ReactNode; disabled?: boolean }) {
   return (
     <button
-      disabled={pending}
+      disabled={pending || disabled}
       className="group relative flex h-12 w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-violet-600 via-fuchsia-600 to-pink-600 text-[15px] font-semibold text-white shadow-lg shadow-violet-500/25 transition hover:shadow-xl hover:shadow-violet-500/35 disabled:opacity-70"
     >
       <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 group-hover:translate-x-full" aria-hidden />

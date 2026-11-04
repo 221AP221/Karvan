@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 // Fəaliyyət növləri və admin panelində göstərilən adları
 export const ACTIVITY_LABELS: Record<string, string> = {
   signup: "Qeydiyyat",
+  terms_accept: "İstifadə şərtlərini qəbul etdi",
   login: "Giriş",
   login_failed: "Uğursuz giriş",
   login_blocked: "Bloklanmış hesabla giriş cəhdi",
@@ -15,6 +16,9 @@ export const ACTIVITY_LABELS: Record<string, string> = {
   profile_update: "Profili yenilədi",
   payment_settings: "Rekvizitləri dəyişdi",
   catalog_visibility: "Kataloq görünüşünü dəyişdi",
+  auto_delete_settings: "Avtomatik silinmə ayarını dəyişdi",
+  inactive_notice: "Passivlik xəbərdarlığı göndərildi",
+  inactive_delete: "Passivliyə görə silindi",
   sessions_end: "Digər cihazlardan çıxdı",
   account_delete: "Hesabı sildi",
   service_create: "Xidmət yaratdı",

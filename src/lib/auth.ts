@@ -31,6 +31,8 @@ const sha256 = (value: string) => createHash("sha256").update(value).digest("hex
 export async function startSession(userId: string) {
   const token = randomBytes(32).toString("base64url");
   const expiresAt = new Date(Date.now() + SESSION_DAYS * 86_400_000);
+  // Son aktivlik: passiv hesabların təmizlənməsi bu tarixə baxır (src/lib/inactivity.ts)
+  await db.user.update({ where: { id: userId }, data: { lastSeenAt: new Date(), inactiveNoticeAt: null } });
   await db.session.create({ data: { id: sha256(token), userId, expiresAt } });
   (await cookies()).set(COOKIE, token, {
     httpOnly: true,

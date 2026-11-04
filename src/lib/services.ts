@@ -71,16 +71,22 @@ export const categoryLabel = (key: string | null | undefined) =>
   SERVICE_CATEGORIES.find((c) => c.key === key)?.label ?? null;
 
 // "1 ay 2 həftə 3 gün"; strukturlu müddət yoxdursa köhnə sərbəst mətn
-export function formatDuration(s: {
-  durationMonths?: number | null;
-  durationWeeks?: number | null;
-  durationDays?: number | null;
-  duration?: string | null;
-}): string | null {
+type DurationWords = { day: string; week: string; month: string };
+const AZ_DURATION: DurationWords = { day: "gün", week: "həftə", month: "ay" };
+
+export function formatDuration(
+  s: {
+    durationMonths?: number | null;
+    durationWeeks?: number | null;
+    durationDays?: number | null;
+    duration?: string | null;
+  },
+  words: DurationWords = AZ_DURATION,
+): string | null {
   const parts = [
-    s.durationMonths ? `${s.durationMonths} ay` : null,
-    s.durationWeeks ? `${s.durationWeeks} həftə` : null,
-    s.durationDays ? `${s.durationDays} gün` : null,
+    s.durationMonths ? `${s.durationMonths} ${words.month}` : null,
+    s.durationWeeks ? `${s.durationWeeks} ${words.week}` : null,
+    s.durationDays ? `${s.durationDays} ${words.day}` : null,
   ].filter(Boolean);
   return parts.length ? parts.join(" ") : (s.duration ?? null);
 }

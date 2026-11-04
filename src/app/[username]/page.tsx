@@ -3,11 +3,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { HomeButton } from "@/components/HomeButton";
+import { LanguageSwitcher } from "@/components/site/LanguageSwitcher";
 import { Logo } from "@/components/Logo";
 import { PageTracker } from "@/components/PageTracker";
 import { SocialIcon } from "@/components/SocialIcon";
 import { CATALOG_PATH } from "@/i18n/config";
-import { getDictionary } from "@/i18n/server";
+import { getDictionary, getLocale } from "@/i18n/server";
 import { db } from "@/lib/db";
 import { formatMoney } from "@/lib/money";
 import { formatPhone } from "@/lib/phone";
@@ -123,19 +124,19 @@ function initials(name: string) {
     .join("");
 }
 
-function CallButton({ phone, className = "" }: { phone: string; className?: string }) {
+function CallButton({ phone, label, className = "" }: { phone: string; label: string; className?: string }) {
   return (
     <a
       href={`tel:${phone}`}
       data-track="PHONE_CLICK"
-      aria-label={`Zəng et: ${formatPhone(phone)}`}
+      aria-label={`${label}: ${formatPhone(phone)}`}
       className={`group items-center gap-3 rounded-full bg-[var(--brand)] py-1.5 pl-1.5 pr-5 text-white shadow-lg shadow-[var(--brand)]/25 transition hover:-translate-y-0.5 hover:shadow-xl ${className}`}
     >
       <span className="grid h-9 w-9 place-items-center rounded-full bg-white/20">
         <Phone size={17} strokeWidth={2} className="transition group-hover:rotate-12" aria-hidden />
       </span>
       <span className="leading-tight">
-        <span className="block text-[11px] font-medium uppercase tracking-wide text-white/75">Zəng et</span>
+        <span className="block text-[11px] font-medium uppercase tracking-wide text-white/75">{label}</span>
         <span className="block whitespace-nowrap font-semibold tabular-nums">{formatPhone(phone)}</span>
       </span>
     </a>
@@ -158,6 +159,10 @@ export default async function ProfilePage({ params }: Props) {
   const profile = await getProfile((await params).username);
   if (!profile || profile.user.blockedAt) notFound();
 
+  // Səhifənin dili: ziyarətçinin seçimi (cookie / proxy) — satıcının məzmunu olduğu kimi qalır
+  const locale = await getLocale();
+  const t = getDictionary(locale).seller;
+
   const brand = (profile.theme as { primary?: string } | null)?.primary ?? "#D6127E";
   const socials = profile.socialLinks.filter((l) => l.platform !== "CUSTOM");
   const links = profile.socialLinks.filter((l) => l.platform === "CUSTOM");
@@ -165,9 +170,9 @@ export default async function ProfilePage({ params }: Props) {
   const branding = limits.branding;
 
   const sections = [
-    profile.services.length > 0 && { id: "xidmetler", label: "Xidmətlər" },
-    profile.portfolio.length > 0 && { id: "isler", label: "Gördüyüm işlər" },
-    profile.about && { id: "haqqimda", label: "Haqqımda" },
+    profile.services.length > 0 && { id: "xidmetler", label: t.services },
+    profile.portfolio.length > 0 && { id: "isler", label: t.portfolio },
+    profile.about && { id: "haqqimda", label: t.about },
   ].filter(Boolean) as { id: string; label: string }[];
 
   return (
@@ -186,6 +191,10 @@ export default async function ProfilePage({ params }: Props) {
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/25 to-transparent" />
         <HomeButton className="absolute left-4 top-4 sm:left-6 sm:top-6" />
+        {/* Ziyarətçi səhifənin dilini dəyişə bilir: satıcının yazdığı mətnlər olduğu kimi qalır */}
+        <div className="absolute right-4 top-4 rounded-full bg-white/90 shadow-lg shadow-black/10 ring-1 ring-black/5 backdrop-blur sm:right-6 sm:top-6">
+          <LanguageSwitcher locale={locale} label={t.language} />
+        </div>
       </div>
 
       <div className="mx-auto grid max-w-6xl gap-6 px-4 pb-16 lg:grid-cols-[340px_1fr] lg:gap-8">
@@ -202,8 +211,8 @@ export default async function ProfilePage({ params }: Props) {
             <h1 className="mt-4 inline-flex items-center gap-1.5 text-2xl font-bold">
               {profile.displayName}
               {limits.verified && (
-                <BadgeCheck size={22} strokeWidth={2.25} className="shrink-0 fill-sky-500 text-white" aria-label="Təsdiqlənmiş hesab">
-                  <title>Təsdiqlənmiş hesab</title>
+                <BadgeCheck size={22} strokeWidth={2.25} className="shrink-0 fill-sky-500 text-white" aria-label={t.verified}>
+                  <title>{t.verified}</title>
                 </BadgeCheck>
               )}
             </h1>
@@ -220,7 +229,7 @@ export default async function ProfilePage({ params }: Props) {
             {profile.bio && <p className="mt-3 text-pretty text-gray-600">{profile.bio}</p>}
 
             {/* Böyük ekranda nömrə sağ yuxarıdadır, kiçikdə burada */}
-            {profile.phone && <CallButton phone={profile.phone} className="mt-5 inline-flex lg:hidden" />}
+            {profile.phone && <CallButton phone={profile.phone} label={t.call} className="mt-5 inline-flex lg:hidden" />}
 
             {socials.length > 0 && (
               <ul className="mt-5 flex flex-wrap justify-center gap-2 lg:justify-start">
@@ -268,18 +277,18 @@ export default async function ProfilePage({ params }: Props) {
         {/* Sağ: məzmun */}
         <main className="min-w-0 lg:pt-8">
           {/* Naviqasiya zənciri: ziyarətçi kataloqa qayıda bilir, axtarış sistemi səhifənin yerini anlayır */}
-          <nav aria-label="Naviqasiya" className="mb-4 flex flex-wrap items-center gap-1.5 text-xs text-gray-500">
+          <nav aria-label={t.nav} className="mb-4 flex flex-wrap items-center gap-1.5 text-xs text-gray-500">
             <Link href="/" className="hover:text-gray-900">
               Karvan
             </Link>
             <span aria-hidden>›</span>
-            <Link href={CATALOG_PATH.az} className="hover:text-gray-900">
-              Xidmətlər
+            <Link href={CATALOG_PATH[locale]} className="hover:text-gray-900">
+              {t.catalog}
             </Link>
             {profile.city && (
               <>
                 <span aria-hidden>›</span>
-                <Link href={`${CATALOG_PATH.az}?city=${encodeURIComponent(profile.city)}`} className="hover:text-gray-900">
+                <Link href={`${CATALOG_PATH[locale]}?city=${encodeURIComponent(profile.city)}`} className="hover:text-gray-900">
                   {profile.city}
                 </Link>
               </>
@@ -298,14 +307,14 @@ export default async function ProfilePage({ params }: Props) {
                   ))}
                 </nav>
               )}
-              {profile.phone && <CallButton phone={profile.phone} className="ml-auto hidden shrink-0 lg:inline-flex" />}
+              {profile.phone && <CallButton phone={profile.phone} label={t.call} className="ml-auto hidden shrink-0 lg:inline-flex" />}
             </div>
           )}
 
           <div className="flex flex-col gap-10">
             {profile.services.length > 0 && (
               <section>
-                <SectionHeading id="xidmetler" icon={ShoppingBag} title="Xidmətlər" />
+                <SectionHeading id="xidmetler" icon={ShoppingBag} title={t.services} />
                 <ul className="grid gap-3 md:grid-cols-2">
                   {profile.services.map((service) => (
                     <li key={service.id} className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 transition hover:shadow-lg hover:shadow-gray-900/5">
@@ -316,13 +325,13 @@ export default async function ProfilePage({ params }: Props) {
                           {service.priceType === "FIXED" && service.amountQepik !== null ? formatMoney(service.amountQepik, service.currency) : "Razılaşma ilə"}
                         </span>
                       </div>
-                      {formatDuration(service) && (
+                      {formatDuration(service, t) && (
                         <p className="mt-1 inline-flex items-center gap-1.5 text-sm text-gray-500">
-                          <Clock size={14} strokeWidth={1.75} aria-hidden /> {formatDuration(service)}
+                          <Clock size={14} strokeWidth={1.75} aria-hidden /> {formatDuration(service, t)}
                         </p>
                       )}
                       {service.description && <p className="mt-3 flex-1 text-sm text-gray-600">{service.description}</p>}
-                      <OrderForm serviceId={service.id} serviceTitle={service.title} fixedPrice={service.priceType === "FIXED"} />
+                      <OrderForm serviceId={service.id} serviceTitle={service.title} fixedPrice={service.priceType === "FIXED"} t={t} />
                     </li>
                   ))}
                 </ul>
@@ -331,7 +340,7 @@ export default async function ProfilePage({ params }: Props) {
 
             {profile.portfolio.length > 0 && (
               <section>
-                <SectionHeading id="isler" icon={Briefcase} title="Gördüyüm işlər" count={profile.portfolio.length} />
+                <SectionHeading id="isler" icon={Briefcase} title={t.portfolio} count={profile.portfolio.length} />
                 <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                   {profile.portfolio.map((item) => {
                     const body = (
@@ -373,7 +382,7 @@ export default async function ProfilePage({ params }: Props) {
 
             {profile.about && (
               <section>
-                <SectionHeading id="haqqimda" icon={UserRound} title="Haqqımda" />
+                <SectionHeading id="haqqimda" icon={UserRound} title={t.about} />
                 <div className="whitespace-pre-line rounded-2xl border border-gray-200 bg-white p-6 leading-relaxed text-gray-700">
                   {profile.about}
                 </div>
@@ -392,7 +401,7 @@ export default async function ProfilePage({ params }: Props) {
       {branding && (
         <a href="/" className="flex items-center justify-center gap-1.5 pb-10 text-xs text-gray-400 opacity-80 transition hover:opacity-100">
           <Logo size="sm" />
-          ilə yaradılıb
+          {t.madeWith}
         </a>
       )}
     </div>

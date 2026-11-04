@@ -3,6 +3,7 @@ import "@fontsource-variable/geologica";
 import "@fontsource-variable/onest";
 import "./globals.css";
 import { NavigationTracker } from "@/components/BackButton";
+import { ChatWidget } from "@/components/site/ChatWidget";
 import { CookieNotice } from "@/components/site/CookieNotice";
 import { SITE_URL } from "@/i18n/config";
 import { getDictionary, getLocale } from "@/i18n/server";
@@ -19,7 +20,8 @@ const THEME_SCRIPT = `try{var t=localStorage.getItem("theme");if(t==="dark"||(!t
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const locale = await getLocale();
-  const notice = getDictionary(locale).footer.cookieNotice;
+  const dict = getDictionary(locale);
+  const notice = dict.footer.cookieNotice;
   return (
     <html lang={locale} suppressHydrationWarning>
       <head>
@@ -29,6 +31,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <NavigationTracker />
         {children}
         <CookieNotice text={notice.text} accept={notice.accept} more={notice.more} href="/cookie" />
+        <ChatWidget t={dict.chat} />
       </body>
     </html>
   );

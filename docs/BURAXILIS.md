@@ -39,7 +39,8 @@ BRD-dəki keçid tələbləri (§19) və buraxılış şərtləri (§26) ilə uy
 | `EPOINT_PUBLIC_KEY` / `EPOINT_PRIVATE_KEY` | aqreqatora görə | Epoint seçiləndə. |
 | `PAYRIFF_MERCHANT` / `PAYRIFF_SECRET` | aqreqatora görə | Payriff seçiləndə. |
 | `BILLING_IBAN`, `BILLING_VOEN`, `BILLING_BANK`, `BILLING_RECIPIENT` | bəli | Bank köçürməsi rekvizitləri. |
-| `RESEND_API_KEY` | bəli | Şifrə bərpası məktubları. Yoxdursa bərpa işləmir. |
+| `RESEND_API_KEY` | bəli | Şifrə bərpası və passivlik xəbərdarlıqları. Yoxdursa bərpa işləmir. |
+| `CRON_SECRET` | bəli | Təmizlənmə nöqtəsinin açarı (`/api/cron/cleanup`). Yoxdursa nöqtə bağlıdır. |
 | `ANTHROPIC_API_KEY` və ya admin paneldəki AI ayarı | xeyr | AI köməkçi. Yoxdursa AI funksiyaları sadəcə gizlənir. |
 
 > Sirlər repozitoriyada saxlanılmır: hostinq provayderinin "environment variables" bölməsində verilir.
@@ -90,6 +91,23 @@ pg_restore --clean --if-exists --no-owner -d "$DATABASE_URL" backups/karvan-<tar
 ```
 
 > **Vacib:** bərpa lansdan əvvəl ən azı bir dəfə test mühitində sınanmalıdır — işləməyən nüsxə nüsxə sayılmır.
+
+---
+
+## 4.1 Passiv hesabların təmizlənməsi
+
+İstifadəçi parametrlərdən seçir (defolt 90 gün). Gündəlik cron nöqtəni çağırır: müddətə 14 gün qalanda
+xəbərdarlıq məktubu gedir, müddət dolanda hesab silinir.
+
+```
+40 3 * * * curl -fsS -X POST -H "Authorization: Bearer $CRON_SECRET" https://karvan.az/api/cron/cleanup >> /var/log/karvan-cleanup.log 2>&1
+```
+
+Nəyin silinəcəyini əvvəlcədən görmək üçün (heç nə silinmir):
+
+```bash
+curl -s -X POST -H "Authorization: Bearer $CRON_SECRET" "https://karvan.az/api/cron/cleanup?dryRun=1"
+```
 
 ---
 

@@ -27,6 +27,8 @@ const BASE = process.env.BASE_URL ?? "http://localhost:3000";
   await seller.fill("[name=email]", "leyla" + RUN + "@example.az");
   await seller.fill("[name=password]", "sifre12345");
   await seller.fill("[name=confirm]", "sifre12345");
+  // İstifadə şərtləri qəbul edilməyincə düymə aktiv olmur
+  await seller.check("[name=terms]");
   await seller.click("button:has-text('Hesab yarat')");
   await seller.waitForURL("**/dashboard/profile");
   step("qeydiyyat → " + seller.url());

@@ -16,7 +16,17 @@ export const tr: typeof az = {
     title: "Link-in-bio sayfası ve online fatura — Karvan",
     description:
       "Instagram ve TikTok biyografiniz için tek link: hizmetler, fiyatlar, sipariş formu ve otomatik PDF fatura. Ödemeleri takip edin. Ücretsiz başlayın, komisyon yok.",
-    keywords: ["link in bio", "link-in-bio sayfası", "online fatura", "fatura oluşturma", "Instagram'dan satış", "online sipariş formu", "ödeme takibi", "hizmet satışı", "usta bulma"],
+    keywords: [
+      "link in bio",
+      "link-in-bio sayfası",
+      "online fatura",
+      "fatura oluşturma",
+      "Instagram'dan satış",
+      "online sipariş formu",
+      "ödeme takibi",
+      "hizmet satışı",
+      "usta bulma",
+    ],
   },
 
   nav: {
@@ -46,7 +56,12 @@ export const tr: typeof az = {
         { title: "Gelin makyajı", price: "Fiyat görüşülür" },
       ],
       order: "Sipariş ver",
-      cards: { order: "Yeni sipariş", orderValue: "Nərmin · 40 AZN", invoice: "Fatura gönderildi", paid: "Ödendi" },
+      cards: {
+        order: "Yeni sipariş",
+        orderValue: "Nərmin · 40 AZN",
+        invoice: "Fatura gönderildi",
+        paid: "Ödendi",
+      },
     },
   },
 
@@ -72,7 +87,8 @@ export const tr: typeof az = {
     { value: "7/24", label: "sipariş kabulü" },
   ],
 
-  statement: "Müşteri DM'den fiyat sormak istemiyor. Fiyatı görmek, tek tıkla sipariş vermek ve profesyonel bir fatura almak istiyor.",
+  statement:
+    "Müşteri DM'den fiyat sormak istemiyor. Fiyatı görmek, tek tıkla sipariş vermek ve profesyonel bir fatura almak istiyor.",
 
   catalogCta: {
     text: "Hizmet mi arıyorsunuz? Karvan'daki uzmanları fiyata, şehre ve alana göre karşılaştırın.",
@@ -92,19 +108,48 @@ export const tr: typeof az = {
       { me: false, text: "Gönderdim, ekran görüntüsü 👇" },
       { me: true, text: "Bir dakika, kontrol edeyim..." },
     ],
-    beforePoints: ["Her müşteriye aynı cevap", "Banka bilgisi elle", "Ödeme ekran görüntüsüyle", "Hesap defterde"],
-    invoice: { label: "Fatura", service: "Günlük makyaj", total: "Toplam", status: "Ödendi", claimed: "Müşteri “Ödedim”e bastı", confirm: "Onayla" },
-    afterPoints: ["Fiyat sayfada", "Fatura otomatik", "Tek tıkla “Ödedim”", "Hesap panelde"],
+    beforePoints: [
+      "Her müşteriye aynı cevap",
+      "Banka bilgisi elle",
+      "Ödeme ekran görüntüsüyle",
+      "Hesap defterde",
+    ],
+    invoice: {
+      label: "Fatura",
+      service: "Günlük makyaj",
+      total: "Toplam",
+      status: "Ödendi",
+      claimed: "Müşteri “Ödedim”e bastı",
+      confirm: "Onayla",
+    },
+    afterPoints: [
+      "Fiyat sayfada",
+      "Fatura otomatik",
+      "Tek tıkla “Ödedim”",
+      "Hesap panelde",
+    ],
   },
 
   steps: {
     eyebrow: "Nasıl çalışır",
     title: "4 adımda ilk ödemeye",
     items: [
-      { title: "Sayfanızı oluşturun", text: "Hizmetlerinizi, fiyatlarınızı, sosyal linklerinizi ve çalışmalarınızı ekleyin. karvan.az/adiniz 3 dakikada hazır." },
-      { title: "Linki biyografinize koyun", text: "Instagram, TikTok, WhatsApp ve Telegram'da paylaşın. Müşteri hizmeti seçer ve sipariş verir." },
-      { title: "Fatura kendiliğinden gider", text: "Sabit fiyatta hemen, fiyatı görüşülen hizmette onayınızdan sonra. Banka bilgileri, QR kod ve PDF içinde." },
-      { title: "Ödemeyi takip edin", text: "Müşteri “Ödedim”e basar, siz onaylarsınız. Kim ödedi, kim gecikti — tek panelde." },
+      {
+        title: "Sayfanızı oluşturun",
+        text: "Hizmetlerinizi, fiyatlarınızı, sosyal linklerinizi ve çalışmalarınızı ekleyin. karvan.az/adiniz 3 dakikada hazır.",
+      },
+      {
+        title: "Linki biyografinize koyun",
+        text: "Instagram, TikTok, WhatsApp ve Telegram'da paylaşın. Müşteri hizmeti seçer ve sipariş verir.",
+      },
+      {
+        title: "Fatura kendiliğinden gider",
+        text: "Sabit fiyatta hemen, fiyatı görüşülen hizmette onayınızdan sonra. Banka bilgileri, QR kod ve PDF içinde.",
+      },
+      {
+        title: "Ödemeyi takip edin",
+        text: "Müşteri “Ödedim”e basar, siz onaylarsınız. Kim ödedi, kim gecikti — tek panelde.",
+      },
     ],
   },
 
@@ -113,12 +158,30 @@ export const tr: typeof az = {
     title: "Satış için gereken her şey tek yerde",
     text: "Linktree'yi, Excel tablosunu ve WhatsApp yazışmalarını tek bir araçla değiştirin.",
     items: [
-      { title: "Link-in-bio sayfası", text: "Hizmetler, çalışmalar ve sosyal linkler marka renginizle, mobil uyumlu." },
-      { title: "Sipariş formu", text: "Sabit fiyatta fatura anında oluşur, fiyatı görüşülen hizmette siz onaylarsınız." },
-      { title: "PDF fatura ve QR", text: "Numaralı fatura, banka bilgileriyle birlikte. Tek tıkla WhatsApp'a gider." },
-      { title: "Ödeme takibi", text: "Kazanılan, beklenen ve geciken tutarlar. Gecikenlere kibar hatırlatma." },
-      { title: "Analitik", text: "Ziyaretçiler nereden geliyor, hangi hizmet satıyor, dönüşüm oranı kaç." },
-      { title: "Hizmet kataloğu", text: "Bio linkiniz olmadan da bulunun: müşteriler sizi aramada görür." },
+      {
+        title: "Link-in-bio sayfası",
+        text: "Hizmetler, çalışmalar ve sosyal linkler marka renginizle, mobil uyumlu.",
+      },
+      {
+        title: "Sipariş formu",
+        text: "Sabit fiyatta fatura anında oluşur, fiyatı görüşülen hizmette siz onaylarsınız.",
+      },
+      {
+        title: "PDF fatura ve QR",
+        text: "Numaralı fatura, banka bilgileriyle birlikte. Tek tıkla WhatsApp'a gider.",
+      },
+      {
+        title: "Ödeme takibi",
+        text: "Kazanılan, beklenen ve geciken tutarlar. Gecikenlere kibar hatırlatma.",
+      },
+      {
+        title: "Analitik",
+        text: "Ziyaretçiler nereden geliyor, hangi hizmet satıyor, dönüşüm oranı kaç.",
+      },
+      {
+        title: "Hizmet kataloğu",
+        text: "Bio linkiniz olmadan da bulunun: müşteriler sizi aramada görür.",
+      },
     ],
   },
 
@@ -133,7 +196,8 @@ export const tr: typeof az = {
       { title: "Kibar hatırlatma", text: "Geciken ödeme için hazır mesaj." },
     ],
     demo: {
-      prompt: "Aygün Məmmədova, 0501234567, her biri 50 manat olan 3 özel ders, cumaya kadar",
+      prompt:
+        "Aygün Məmmədova, 0501234567, her biri 50 manat olan 3 özel ders, cumaya kadar",
       you: "Siz yazıyorsunuz",
       reading: "Yapay zekâ okuyor...",
       convert: "Faturaya dönüştür",
@@ -161,19 +225,43 @@ export const tr: typeof az = {
         name: "Ücretsiz",
         tagline: "Yeni başlayanlar için",
         cta: "Ücretsiz başla",
-        features: ["Link-in-bio sayfası", "Sınırsız sipariş", "Ayda 5 fatura", "5 hizmet", "PDF fatura ve QR kod", "Temel analitik", "Yapay zekâ: ayda 10 istek"],
+        features: [
+          "Link-in-bio sayfası",
+          "Sınırsız sipariş",
+          "Ayda 5 fatura",
+          "5 hizmet",
+          "PDF fatura ve QR kod",
+          "Temel analitik",
+          "Yapay zekâ: ayda 10 istek",
+        ],
       },
       {
         name: "Pro",
         tagline: "Aktif satıcılar için",
         cta: "Pro ile başla",
-        features: ["Ücretsiz plandaki her şey", "Onaylı hesap rozeti", "Ayda 100 fatura", "30 hizmet", "Karvan yazısı olmadan", "Kartla online ödeme (yakında)", "Yapay zekâ: ayda 200 istek"],
+        features: [
+          "Ücretsiz plandaki her şey",
+          "Onaylı hesap rozeti",
+          "Ayda 100 fatura",
+          "30 hizmet",
+          "Karvan yazısı olmadan",
+          "Kartla online ödeme (yakında)",
+          "Yapay zekâ: ayda 200 istek",
+        ],
       },
       {
         name: "Pro Max",
         tagline: "Stüdyolar ve ekipler için",
         cta: "Pro Max seç",
-        features: ["Pro'daki her şey", "Sınırsız fatura ve hizmet", "Katalogda öne çıkma ve “Öne çıkan” rozeti", "5 ekip üyesi (yakında)", "Gelişmiş analitik ve Excel rapor", "Öncelikli destek", "Yapay zekâ: ayda 1000 istek"],
+        features: [
+          "Pro'daki her şey",
+          "Sınırsız fatura ve hizmet",
+          "Katalogda öne çıkma ve “Öne çıkan” rozeti",
+          "5 ekip üyesi (yakında)",
+          "Gelişmiş analitik ve Excel rapor",
+          "Öncelikli destek",
+          "Yapay zekâ: ayda 1000 istek",
+        ],
       },
     ],
   },
@@ -182,13 +270,34 @@ export const tr: typeof az = {
     eyebrow: "SSS",
     title: "Sık sorulan sorular",
     items: [
-      { q: "Karvan ücretsiz mi?", a: "Evet. Ücretsiz planda sayfa, sınırsız sipariş, ayda 5 fatura ve 5 hizmet var. Kart bilgisi istenmez." },
-      { q: "Müşteri parayı kime öder?", a: "Doğrudan size. Faturada sizin kart veya IBAN bilgileriniz görünür. Karvan paranıza dokunmaz ve komisyon almaz." },
-      { q: "Fatura resmî vergi belgesi mi?", a: "Hayır, bu profesyonel bir ödeme talebidir. Vergi numarası ve e-fatura desteği sonraki aşamalarda planlanıyor." },
-      { q: "Hangi ülkelerde çalışıyor?", a: "Karvan Azerbaycan için tasarlandı: AZN, yerel bankalar, Azerbaycan dili. Site Türkçe ve Rusça da mevcut, fatura USD ve EUR ile kesilebilir — Türkiye, Gürcistan, Kazakistan ve bölge için hazır." },
-      { q: "Teknik bilgi gerekir mi?", a: "Hayır. Sayfanızı bir form doldurarak 3 dakikada kurarsınız, kod gerekmez." },
-      { q: "Hizmetlerim katalogda görünecek mi?", a: "Evet, aktif hizmetleriniz Hizmet kataloğunda otomatik çıkar. İstemezseniz Ayarlar'dan gizleyebilirsiniz." },
-      { q: "Ödemenin geldiğini nasıl anlarım?", a: "Müşteri “Ödedim”e bastığında panelde görünür. Hesabınızı kontrol edip tek tıkla onaylarsınız." },
+      {
+        q: "Karvan ücretsiz mi?",
+        a: "Evet. Ücretsiz planda sayfa, sınırsız sipariş, ayda 5 fatura ve 5 hizmet var. Kart bilgisi istenmez.",
+      },
+      {
+        q: "Müşteri parayı kime öder?",
+        a: "Doğrudan size. Faturada sizin kart veya IBAN bilgileriniz görünür. Karvan paranıza dokunmaz ve komisyon almaz.",
+      },
+      {
+        q: "Fatura resmî vergi belgesi mi?",
+        a: "Hayır, bu profesyonel bir ödeme talebidir. Vergi numarası ve e-fatura desteği sonraki aşamalarda planlanıyor.",
+      },
+      {
+        q: "Hangi ülkelerde çalışıyor?",
+        a: "Karvan Azerbaycan için tasarlandı: AZN, yerel bankalar, Azerbaycan dili. Site Türkçe ve Rusça da mevcut, fatura USD ve EUR ile kesilebilir — Türkiye, Gürcistan, Kazakistan ve bölge için hazır.",
+      },
+      {
+        q: "Teknik bilgi gerekir mi?",
+        a: "Hayır. Sayfanızı bir form doldurarak 3 dakikada kurarsınız, kod gerekmez.",
+      },
+      {
+        q: "Hizmetlerim katalogda görünecek mi?",
+        a: "Evet, aktif hizmetleriniz Hizmet kataloğunda otomatik çıkar. İstemezseniz Ayarlar'dan gizleyebilirsiniz.",
+      },
+      {
+        q: "Ödemenin geldiğini nasıl anlarım?",
+        a: "Müşteri “Ödedim”e bastığında panelde görünür. Hesabınızı kontrol edip tek tıkla onaylarsınız.",
+      },
     ],
   },
 
@@ -199,8 +308,56 @@ export const tr: typeof az = {
     secondary: "Demo sayfa",
   },
 
+  // Satıcı səhifəsi (karvan.az/<username>) və sifariş forması
+  // AI köməkçi (chatbot)
+  chat: {
+    title: "Karvan asistanı",
+    subtitle: "Sorularınızı yanıtlar",
+    open: "Asistanı aç",
+    close: "Kapat",
+    placeholder: "Sorunuzu yazın...",
+    send: "Gönder",
+    greeting: "Merhaba! Karvan hakkında ne öğrenmek istersiniz? Paketler, sipariş akışı, fatura — sorun.",
+    suggestions: ["Karvan nasıl çalışır?", "Paketler ne kadar?", "Para nasıl geliyor?"],
+    error: "Yanıt alınamadı. Birazdan tekrar yazın.",
+    note: "Yanıtlar AI tarafından hazırlanır, netleştirme için: hello@karvan.az",
+  },
+
+  seller: {
+    services: "Hizmetler",
+    portfolio: "Yaptığım işler",
+    about: "Hakkımda",
+    negotiable: "Anlaşmaya göre",
+    verified: "Doğrulanmış hesap",
+    call: "Ara",
+    nav: "Gezinme",
+    catalog: "Hizmetler",
+    madeWith: "ile oluşturuldu",
+    order: "Sipariş ver",
+    ask: "Fiyat sor",
+    orderTitle: "Sipariş bilgileri",
+    askTitle: "Fiyat talebi",
+    name: "Adınız",
+    phone: "Telefon numaranız",
+    email: "E-posta (isteğe bağlı)",
+    note: "Not (isteğe bağlı)",
+    submitOrder: "Faturayı al",
+    submitAsk: "Talep gönder",
+    sending: "Gönderiliyor...",
+    close: "Kapat",
+    closeEsc: "Kapat (Esc)",
+    netError: "Bağlantı hatası, tekrar deneyin.",
+    day: "gün",
+    week: "hafta",
+    month: "ay",
+    language: "Dil",
+    pending: "Talebiniz gönderildi. Satıcı fiyatı onaylar onaylamaz fatura size iletilecek.",
+    cancel: "İptal",
+  },
+
   footer: {
-    tagline: "Sosyal medyada aktif uzmanlar ve profesyoneller için hizmet satışını tek yerde toplayan platform: sayfa, sipariş, fatura ve ödeme takibi.",
+    tagline:
+      "Sosyal medyada aktif uzmanlar ve profesyoneller için hizmet satışını tek yerde toplayan platform: sayfa, sipariş, fatura ve ödeme takibi.",
     product: "Ürün",
     explore: "Keşfet",
     account: "Hesap",
@@ -224,26 +381,34 @@ export const tr: typeof az = {
     city: "Bakü, Azerbaycan",
     regions: "Azerbaycan · Türkiye · Gürcistan · Kazakistan",
     rights: "Tüm hakları saklıdır.",
-    cookieNotice: { text: "Bu site yalnızca çalışmak ve satıcıya anonim istatistik göstermek için çerez kullanır. Reklam takipçisi yoktur.", accept: "Anladım", more: "Ayrıntılar" },
+    cookieNotice: {
+      text: "Bu site yalnızca çalışmak ve satıcıya anonim istatistik göstermek için çerez kullanır. Reklam takipçisi yoktur.",
+      accept: "Anladım",
+      more: "Ayrıntılar",
+    },
   },
 
   seo: {
     categoryTitle: "{category} hizmetleri",
     withCity: "{title} — {city}",
-    categoryDescription: "{category} alanında {n} hizmet: açık fiyatlar, süre ve doğrudan sipariş. Karvan kataloğundan uzman seçin.",
+    categoryDescription:
+      "{category} alanında {n} hizmet: açık fiyatlar, süre ve doğrudan sipariş. Karvan kataloğundan uzman seçin.",
     browseCategories: "Alana göre hizmetler",
     browseCities: "Şehre göre hizmetler",
     sellerTitle: "{name} — {profession}",
-    sellerDescription: "{intro} Hizmetler: {services}. Online sipariş ve otomatik fatura — Karvan.",
+    sellerDescription:
+      "{intro} Hizmetler: {services}. Online sipariş ve otomatik fatura — Karvan.",
     sellerIntro: "{profession} · {city}.",
-    sellerFallback: "{name} sayfası: hizmetler, fiyatlar ve online sipariş — Karvan.",
+    sellerFallback:
+      "{name} sayfası: hizmetler, fiyatlar ve online sipariş — Karvan.",
     sellerCity: "{title}, {city}",
     priceFrom: "{price} ve üzeri",
   },
 
   catalog: {
     metaTitle: "Hizmet kataloğu — uzman ve profesyonel bulun",
-    metaDescription: "Makyaj, özel ders, tasarım, fotoğraf, sosyal medya ve diğer hizmetleri fiyata, şehre ve alana göre karşılaştırın. Fiyatlar açık, sipariş doğrudan uzmandan.",
+    metaDescription:
+      "Makyaj, özel ders, tasarım, fotoğraf, sosyal medya ve diğer hizmetleri fiyata, şehre ve alana göre karşılaştırın. Fiyatlar açık, sipariş doğrudan uzmandan.",
     eyebrow: "Hizmet kataloğu",
     title: "İhtiyacınız olan hizmeti bulun",
     text: "Karvan'a kayıtlı uzmanların ve profesyonellerin hizmetleri. Fiyatlar açık, sipariş tek tıkla.",
@@ -262,7 +427,12 @@ export const tr: typeof az = {
     max: "Maks",
     verified: "Sadece onaylı hesaplar",
     sort: "Sıralama",
-    sorts: { recommended: "Önerilen", new: "En yeni", priceAsc: "Önce en ucuz", priceDesc: "Önce en pahalı" },
+    sorts: {
+      recommended: "Önerilen",
+      new: "En yeni",
+      priceAsc: "Önce en ucuz",
+      priceDesc: "Önce en pahalı",
+    },
     filters: "Filtreler",
     reset: "Sıfırla",
     results: "{n} hizmet",
@@ -275,7 +445,8 @@ export const tr: typeof az = {
     prev: "Önceki",
     next: "Sonraki",
     page: "Sayfa {n} / {total}",
-    sellerCta: "Hizmet mi satıyorsunuz? Ücretsiz sayfa oluşturun ve katalogda görünün.",
+    sellerCta:
+      "Hizmet mi satıyorsunuz? Ücretsiz sayfa oluşturun ve katalogda görünün.",
     sellerButton: "Ücretsiz başla",
     days: "gün",
     weeks: "hafta",
@@ -286,7 +457,11 @@ export const tr: typeof az = {
     planChosen: "Seçtiğiniz paket",
     planNext: "Kayıt veya girişten sonra ödeme sayfası açılacak.",
     headline: ["Profilinizi", "satış sayfasına", "dönüştürün"],
-    points: ["Tek link: sosyal hesaplar, hizmetler, çalışmalarınız", "Her siparişe otomatik PDF fatura", "Kim ödedi, kim gecikti — tek panelde"],
+    points: [
+      "Tek link: sosyal hesaplar, hizmetler, çalışmalarınız",
+      "Her siparişe otomatik PDF fatura",
+      "Kim ödedi, kim gecikti — tek panelde",
+    ],
     secure: "Verileriniz korunur, şifreler şifrelenmiş olarak saklanır",
     login: {
       title: "Tekrar hoş geldiniz",
@@ -324,20 +499,30 @@ export const tr: typeof az = {
       emailPlaceholder: "ad@ornek.com",
       password: "Şifre",
       confirm: "Şifreyi onaylayın",
-      privacy: "FİN kodu veya pasaport numarası yalnızca hesap doğrulaması içindir, sayfanızda kimseye gösterilmez.",
+      privacy:
+        "FİN kodu veya pasaport numarası yalnızca hesap doğrulaması içindir, sayfanızda kimseye gösterilmez.",
       prevStep: "Önceki adım",
       submit: "Hesap oluştur",
       hasAccount: "Hesabınız var mı?",
       login: "Giriş yapın",
+      terms: {
+        before: "Kaydı tamamlayarak",
+        terms: "kullanım şartlarını",
+        middle: "ve",
+        privacy: "gizlilik politikasını",
+        after: "okuduğumu ve kabul ettiğimi onaylıyorum",
+      },
     },
     forgot: {
       title: "Şifreyi sıfırla",
       text: "Kayıtlı e-posta adresinizi yazın, şifrenizi yenilemek için link gönderelim.",
       submit: "Link gönder",
       sentTitle: "E-postanızı kontrol edin",
-      sentText: "Bu e-postayla bir hesap varsa şifre yenileme linki gönderdik. Link 30 dakika geçerlidir.",
+      sentText:
+        "Bu e-postayla bir hesap varsa şifre yenileme linki gönderdik. Link 30 dakika geçerlidir.",
       devTitle: "Yerel mod: e-posta servisi bağlı değil",
-      devText: "E-posta yerine link burada gösterilir (yalnızca kendi bilgisayarınızda):",
+      devText:
+        "E-posta yerine link burada gösterilir (yalnızca kendi bilgisayarınızda):",
       devButton: "Şifreyi yenile",
       back: "Girişe dön",
       remembered: "Şifrenizi hatırladınız mı?",
@@ -345,7 +530,8 @@ export const tr: typeof az = {
     },
     reset: {
       invalidTitle: "Link geçersiz",
-      invalidText: "Linkin süresi dolmuş veya zaten kullanılmış. Yeni bir link isteyin.",
+      invalidText:
+        "Linkin süresi dolmuş veya zaten kullanılmış. Yeni bir link isteyin.",
       newLink: "Yeni link al",
       title: "Yeni şifre",
       text: "Yeni şifrenizi belirleyin. Tüm cihazlardan çıkış yapılacak.",
@@ -379,9 +565,11 @@ export const tr: typeof az = {
       phoneTaken: "Bu numarayla zaten bir hesap var",
       finTaken: "Bu FİN koduyla zaten bir hesap var",
       wrongLogin: "E-posta veya şifre hatalı",
-      blocked: "Hesabınız engellendi. Ayrıntılı bilgi için destekle iletişime geçin.",
+      blocked:
+        "Hesabınız engellendi. Ayrıntılı bilgi için destekle iletişime geçin.",
       noProfile: "Bu hesabın sayfası bulunamadı. Destekle iletişime geçin.",
       badLink: "Link geçersiz veya süresi dolmuş. Yeniden talep gönderin.",
+      terms: "Devam etmek için kullanım şartlarını kabul edin",
       tooMany: "Çok fazla deneme yapıldı. Birkaç dakika sonra tekrar deneyin.",
     },
   },

@@ -1,14 +1,15 @@
 "use client";
 
-import { Building2, Check, Copy, CreditCard, Lock, ShieldCheck } from "lucide-react";
+import { Building2, Check, Copy, CreditCard, Lock, ShieldCheck, Tag, X } from "lucide-react";
 import Link from "next/link";
 import { startTransition, useActionState, useState } from "react";
-import { payByTransfer, startCardPayment } from "../actions";
+import { applyCoupon, payByTransfer, startCardPayment } from "../actions";
 
 type Props = {
   plan: string;
   planName: string;
   prices: { 1: string; 12: string; monthlyOfYear: string };
+  amounts: { 1: number; 12: number }; // qəpiklə: endirim hesablaması üçün
   reference: string;
   bank: { recipient: string; bank: string; iban: string; voen: string; sample: boolean };
   cardAvailable: boolean;
@@ -33,18 +34,25 @@ function CopyRow({ label, value }: { label: string; value: string }) {
   );
 }
 
-export function CheckoutForm({ plan, planName, prices, reference, bank, cardAvailable, sandbox, carryDays }: Props) {
+export function CheckoutForm({ plan, planName, prices, amounts, reference, bank, cardAvailable, sandbox, carryDays }: Props) {
   const [months, setMonths] = useState<1 | 12>(1);
   const [method, setMethod] = useState<"card" | "transfer">(cardAvailable ? "card" : "transfer");
   const [cardState, cardAction, cardPending] = useActionState(startCardPayment, undefined);
   const [bankState, bankAction, bankPending] = useActionState(payByTransfer, undefined);
-  const total = prices[months];
+  const [couponState, couponAction, couponPending] = useActionState(applyCoupon, undefined);
+  const [coupon, setCoupon] = useState("");
+
+  // Tətbiq olunmuş kod yalnız seçilmiş müddət üçün etibarlıdır: müddət dəyişəndə yenidən yoxlanır
+  const applied = couponState?.ok && couponState.appliedMonths === months ? couponState : null;
+  const money = (qepik: number) => `${(qepik / 100).toFixed(2).replace(".", ",")} AZN`;
+  const total = applied ? money(applied.total) : prices[months];
 
   const submit = (action: (f: FormData) => void) => (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
     data.set("plan", plan);
     data.set("months", String(months));
+    if (applied) data.set("coupon", applied.code);
     startTransition(() => action(data));
   };
 
@@ -137,9 +145,69 @@ export function CheckoutForm({ plan, planName, prices, reference, bank, cardAvai
             <div className="flex justify-between"><dt className="text-gray-500">Müddət</dt><dd className="font-medium">{months === 1 ? "1 ay" : "12 ay"}</dd></div>
             <div className="flex justify-between"><dt className="text-gray-500">Ödəniş</dt><dd className="font-medium">{method === "card" ? "Bank kartı" : "Bank köçürməsi"}</dd></div>
           </dl>
-          <div className="mt-4 flex items-baseline justify-between border-t border-gray-100 pt-4">
-            <span className="text-sm text-gray-500">Cəmi</span>
-            <span className="text-2xl font-bold tabular-nums">{total}</span>
+          {/* Endirim kodu */}
+          <div className="mt-4 border-t border-gray-100 pt-4">
+            {applied ? (
+              <div className="flex items-center justify-between gap-2 rounded-xl bg-emerald-50 px-3 py-2.5 text-sm">
+                <span className="flex min-w-0 items-center gap-2 text-emerald-900">
+                  <Tag size={15} className="shrink-0" aria-hidden />
+                  <span className="truncate font-semibold">{applied.code}</span>
+                  <span className="shrink-0 text-emerald-700">−{applied.label}</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={() => { setCoupon(""); startTransition(() => couponAction(new FormData())); }}
+                  aria-label="Endirim kodunu ləğv et"
+                  className="shrink-0 rounded-full p-1 text-emerald-700 hover:bg-emerald-100"
+                >
+                  <X size={15} aria-hidden />
+                </button>
+              </div>
+            ) : (
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const data = new FormData();
+                  data.set("plan", plan);
+                  data.set("months", String(months));
+                  data.set("coupon", coupon);
+                  startTransition(() => couponAction(data));
+                }}
+                className="flex gap-2"
+              >
+                <input
+                  name="coupon"
+                  value={coupon}
+                  onChange={(e) => setCoupon(e.target.value.toUpperCase())}
+                  placeholder="Endirim kodu"
+                  maxLength={24}
+                  className="h-10 min-w-0 flex-1 rounded-lg border border-gray-300 px-3 text-sm uppercase outline-none focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/20"
+                />
+                <button disabled={couponPending || !coupon.trim()} className="h-10 shrink-0 rounded-lg border border-gray-300 px-3 text-sm font-medium hover:border-gray-500 disabled:opacity-50">
+                  {couponPending ? "..." : "Tətbiq et"}
+                </button>
+              </form>
+            )}
+            {couponState && !couponState.ok && <p role="alert" className="mt-2 text-xs text-red-600">{couponState.error}</p>}
+          </div>
+
+          <div className="mt-4 space-y-2 border-t border-gray-100 pt-4">
+            {applied && (
+              <>
+                <div className="flex justify-between text-sm text-gray-500">
+                  <span>Tarif qiyməti</span>
+                  <span className="tabular-nums line-through">{prices[months]}</span>
+                </div>
+                <div className="flex justify-between text-sm text-emerald-700">
+                  <span>Endirim</span>
+                  <span className="tabular-nums">−{money(applied.discountQepik)}</span>
+                </div>
+              </>
+            )}
+            <div className="flex items-baseline justify-between">
+              <span className="text-sm text-gray-500">Cəmi</span>
+              <span className="text-2xl font-bold tabular-nums">{total}</span>
+            </div>
           </div>
           <p className="mt-3 text-xs text-gray-500">Abunəlik avtomatik yenilənmir: müddət bitəndə tarif Pulsuza qayıdır, məlumatlarınız qalır.</p>
         </aside>

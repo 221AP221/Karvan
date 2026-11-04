@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { randomBytes } from "node:crypto";
 import { logAdmin, requireAdmin, requireSuperAdmin } from "@/lib/admin";
+import { setPlanKeepingTime } from "@/lib/billing";
+import { COUPON_RE, normalizeCode } from "@/lib/coupons";
 import { pingAi } from "@/lib/ai";
 import { STALE_CLIENT, getStoredAi, saveStoredAi, settingsReady } from "@/lib/ai-settings";
 import { hashPassword, startImpersonation } from "@/lib/auth";
@@ -36,11 +38,8 @@ export async function setPlan(_: FormState, form: FormData): Promise<FormState> 
   if (!PLANS.includes(plan as (typeof PLANS)[number])) return { error: "Plan düzgün deyil" };
   const user = await target(userId);
   const before = await db.subscription.findUnique({ where: { userId } });
-  await db.subscription.upsert({
-    where: { userId },
-    update: { plan: plan as (typeof PLANS)[number] },
-    create: { userId, plan: plan as (typeof PLANS)[number] },
-  });
+  // Müddət itmir: eyni tarifdə toxunulmur, dəyişəndə qalan dəyər yeni tarifə keçir (FR-ABN-11)
+  await setPlanKeepingTime(userId, plan as (typeof PLANS)[number]);
   await logAdmin(admin, "plan_change", "user", userId, `${PLAN_NAMES[before?.plan ?? "FREE"]} → ${PLAN_NAMES[plan as (typeof PLANS)[number]]}`);
   refresh(userId, user.profile?.username);
   return { ok: true };
@@ -121,7 +120,7 @@ export async function stepPlan(userId: string, direction: 1 | -1): Promise<BulkR
   const next = PLANS[PLANS.indexOf(current) + direction];
   if (!next) return { error: direction > 0 ? "Artıq ən yüksək tarifdədir" : "Artıq pulsuz tarifdədir" };
   const user = await target(userId);
-  await db.subscription.upsert({ where: { userId }, update: { plan: next }, create: { userId, plan: next } });
+  await setPlanKeepingTime(userId, next);
   await logAdmin(admin, "plan_change", "user", userId, `${PLAN_NAMES[current]} → ${PLAN_NAMES[next]}`);
   refresh(userId, user.profile?.username);
   return { ok: true, done: 1 };
@@ -135,7 +134,7 @@ export async function bulkSetPlan(ids: string[], plan: string): Promise<BulkResu
   for (const userId of list) {
     const before = await db.subscription.findUnique({ where: { userId } });
     if (before?.plan === plan) continue;
-    await db.subscription.upsert({ where: { userId }, update: { plan: plan as (typeof PLANS)[number] }, create: { userId, plan: plan as (typeof PLANS)[number] } });
+    await setPlanKeepingTime(userId, plan as (typeof PLANS)[number]);
     await logAdmin(admin, "plan_change", "user", userId, `${PLAN_NAMES[before?.plan ?? "FREE"]} → ${PLAN_NAMES[plan as (typeof PLANS)[number]]}`);
     done++;
   }
@@ -337,4 +336,103 @@ export async function testAi(): Promise<{ ok: boolean; message: string }> {
   } catch (error) {
     return { ok: false, message: error instanceof Error ? error.message : "AI cavab vermədi" };
   }
+}
+
+// ---- Kampaniyalar (endirim kodları)
+
+const couponInput = (form: FormData) => {
+  const code = normalizeCode(String(form.get("code") ?? ""));
+  const type = String(form.get("type") ?? "PERCENT") as "PERCENT" | "FIXED";
+  const rawValue = Number(form.get("value"));
+  const num = (name: string) => {
+    const v = String(form.get(name) ?? "").trim();
+    if (!v) return null;
+    const n = Number(v);
+    return Number.isFinite(n) && n > 0 ? Math.floor(n) : null;
+  };
+  const date = (name: string) => {
+    const v = String(form.get(name) ?? "").trim();
+    return v ? new Date(v) : null;
+  };
+  const plans = form.getAll("plans").map(String).filter((p): p is "PRO" | "PRO_MAX" => p === "PRO" || p === "PRO_MAX");
+  const monthsRaw = String(form.get("months") ?? "");
+
+  if (!COUPON_RE.test(code)) return { error: "Kod 3-24 simvol olmalıdır: A-Z, 0-9, _ və -" };
+  if (!["PERCENT", "FIXED"].includes(type)) return { error: "Endirim növü düzgün deyil" };
+  if (!Number.isFinite(rawValue) || rawValue <= 0) return { error: "Endirim dəyəri sıfırdan böyük olmalıdır" };
+  if (type === "PERCENT" && rawValue > 100) return { error: "Faiz 100-dən böyük ola bilməz" };
+
+  const startsAt = date("startsAt");
+  const endsAt = date("endsAt");
+  if (startsAt && endsAt && endsAt < startsAt) return { error: "Bitmə tarixi başlama tarixindən əvvəl ola bilməz" };
+
+  return {
+    data: {
+      code,
+      type,
+      // Faiz olduğu kimi, sabit məbləğ qəpiyə çevrilir
+      value: type === "PERCENT" ? Math.floor(rawValue) : Math.round(rawValue * 100),
+      plans,
+      months: monthsRaw === "1" || monthsRaw === "12" ? Number(monthsRaw) : null,
+      maxUses: num("maxUses"),
+      maxUsesPerUser: num("maxUsesPerUser"),
+      startsAt,
+      endsAt,
+      note: String(form.get("note") ?? "").trim() || null,
+    },
+  };
+};
+
+export async function createCoupon(_: FormState, form: FormData): Promise<FormState> {
+  const admin = await requireAdmin();
+  const parsed = couponInput(form);
+  if ("error" in parsed) return { error: parsed.error };
+  const exists = await db.coupon.findUnique({ where: { code: parsed.data.code }, select: { id: true } });
+  if (exists) return { error: "Bu kod artıq mövcuddur" };
+
+  await db.coupon.create({ data: { ...parsed.data, createdBy: admin.email } });
+  await logAdmin(admin, "coupon_create", "coupon", parsed.data.code, `${parsed.data.type} ${parsed.data.value}`);
+  revalidatePath("/admin/campaigns");
+  return { ok: true };
+}
+
+export async function updateCoupon(_: FormState, form: FormData): Promise<FormState> {
+  const admin = await requireAdmin();
+  const id = String(form.get("id") ?? "");
+  const parsed = couponInput(form);
+  if ("error" in parsed) return { error: parsed.error };
+  const current = await db.coupon.findUnique({ where: { id } });
+  if (!current) return { error: "Kod tapılmadı" };
+  if (current.code !== parsed.data.code) {
+    const taken = await db.coupon.findUnique({ where: { code: parsed.data.code }, select: { id: true } });
+    if (taken) return { error: "Bu kod artıq mövcuddur" };
+  }
+  await db.coupon.update({ where: { id }, data: parsed.data });
+  await logAdmin(admin, "coupon_update", "coupon", parsed.data.code, `${parsed.data.type} ${parsed.data.value}`);
+  revalidatePath("/admin/campaigns");
+  return { ok: true };
+}
+
+export async function toggleCoupon(_: FormState, form: FormData): Promise<FormState> {
+  const admin = await requireAdmin();
+  const id = String(form.get("id") ?? "");
+  const coupon = await db.coupon.findUnique({ where: { id } });
+  if (!coupon) return { error: "Kod tapılmadı" };
+  await db.coupon.update({ where: { id }, data: { isActive: !coupon.isActive } });
+  await logAdmin(admin, "coupon_toggle", "coupon", coupon.code, coupon.isActive ? "deaktiv" : "aktiv");
+  revalidatePath("/admin/campaigns");
+  return { ok: true };
+}
+
+export async function deleteCoupon(_: FormState, form: FormData): Promise<FormState> {
+  const admin = await requireAdmin();
+  const id = String(form.get("id") ?? "");
+  const coupon = await db.coupon.findUnique({ where: { id }, select: { code: true, usedCount: true } });
+  if (!coupon) return { error: "Kod tapılmadı" };
+  // İstifadə olunmuş kod silinmir: hesabat və ödəniş tarixçəsi qalmalıdır
+  if (coupon.usedCount > 0) return { error: "İstifadə olunmuş kod silinmir — onu deaktiv edin" };
+  await db.coupon.delete({ where: { id } });
+  await logAdmin(admin, "coupon_delete", "coupon", coupon.code, null);
+  revalidatePath("/admin/campaigns");
+  return { ok: true };
 }

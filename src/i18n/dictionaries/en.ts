@@ -16,7 +16,17 @@ export const en: typeof az = {
     title: "Link in bio page and online invoices — Karvan",
     description:
       "One link for your Instagram and TikTok bio: services, prices, an order form and automatic PDF invoices. Track payments. Start free, no commission on sales.",
-    keywords: ["link in bio", "link in bio page", "online invoice", "invoice generator", "sell on Instagram", "online order form", "payment tracking", "sell services online", "find a professional"],
+    keywords: [
+      "link in bio",
+      "link in bio page",
+      "online invoice",
+      "invoice generator",
+      "sell on Instagram",
+      "online order form",
+      "payment tracking",
+      "sell services online",
+      "find a professional",
+    ],
   },
 
   nav: {
@@ -46,7 +56,12 @@ export const en: typeof az = {
         { title: "Bridal makeup", price: "Negotiable" },
       ],
       order: "Order now",
-      cards: { order: "New order", orderValue: "Narmin · 40 AZN", invoice: "Invoice sent", paid: "Paid" },
+      cards: {
+        order: "New order",
+        orderValue: "Narmin · 40 AZN",
+        invoice: "Invoice sent",
+        paid: "Paid",
+      },
     },
   },
 
@@ -72,7 +87,8 @@ export const en: typeof az = {
     { value: "24/7", label: "order intake" },
   ],
 
-  statement: "Customers don't want to ask for prices in DMs. They want to see the price, order in one click and get a professional invoice.",
+  statement:
+    "Customers don't want to ask for prices in DMs. They want to see the price, order in one click and get a professional invoice.",
 
   catalogCta: {
     text: "Looking for a service? Compare Karvan professionals by price, city and category.",
@@ -92,19 +108,48 @@ export const en: typeof az = {
       { me: false, text: "Sent it, here's the screenshot 👇" },
       { me: true, text: "One moment, let me check..." },
     ],
-    beforePoints: ["Same answer to every customer", "Bank details typed by hand", "Payment proof by screenshot", "Accounts in a notebook"],
-    invoice: { label: "Invoice", service: "Everyday makeup", total: "Total", status: "Paid", claimed: "Customer tapped “I paid”", confirm: "Confirm" },
-    afterPoints: ["Prices on your page", "Invoice sent automatically", "“I paid” in one click", "Accounts in a dashboard"],
+    beforePoints: [
+      "Same answer to every customer",
+      "Bank details typed by hand",
+      "Payment proof by screenshot",
+      "Accounts in a notebook",
+    ],
+    invoice: {
+      label: "Invoice",
+      service: "Everyday makeup",
+      total: "Total",
+      status: "Paid",
+      claimed: "Customer tapped “I paid”",
+      confirm: "Confirm",
+    },
+    afterPoints: [
+      "Prices on your page",
+      "Invoice sent automatically",
+      "“I paid” in one click",
+      "Accounts in a dashboard",
+    ],
   },
 
   steps: {
     eyebrow: "How it works",
     title: "Four steps to your first payment",
     items: [
-      { title: "Build your page", text: "Add your services, prices, social links and past work. karvan.az/yourname is ready in 3 minutes." },
-      { title: "Put the link in your bio", text: "Share it on Instagram, TikTok, WhatsApp and Telegram. Customers pick a service and place an order." },
-      { title: "The invoice sends itself", text: "Instantly for fixed prices, after your approval for negotiable ones. Bank details, QR code and PDF included." },
-      { title: "Track the payment", text: "The customer taps “I paid”, you confirm. Who paid and who is late — all in one dashboard." },
+      {
+        title: "Build your page",
+        text: "Add your services, prices, social links and past work. karvan.az/yourname is ready in 3 minutes.",
+      },
+      {
+        title: "Put the link in your bio",
+        text: "Share it on Instagram, TikTok, WhatsApp and Telegram. Customers pick a service and place an order.",
+      },
+      {
+        title: "The invoice sends itself",
+        text: "Instantly for fixed prices, after your approval for negotiable ones. Bank details, QR code and PDF included.",
+      },
+      {
+        title: "Track the payment",
+        text: "The customer taps “I paid”, you confirm. Who paid and who is late — all in one dashboard.",
+      },
     ],
   },
 
@@ -113,12 +158,30 @@ export const en: typeof az = {
     title: "Everything you need to sell, in one place",
     text: "Replace Linktree, spreadsheets and WhatsApp chats with a single tool.",
     items: [
-      { title: "Link-in-bio page", text: "Services, portfolio and social links in your brand colour, made for phones." },
-      { title: "Order form", text: "Fixed prices create the invoice instantly; for negotiable services you approve first." },
-      { title: "PDF invoice and QR", text: "Numbered invoices with your bank details, shared to WhatsApp in one click." },
-      { title: "Payment tracking", text: "Earned, pending and overdue amounts, plus polite reminders for late payers." },
-      { title: "Analytics", text: "Where visitors come from, which service sells best and your conversion rate." },
-      { title: "Services directory", text: "Get found even without your bio link: customers discover you through search." },
+      {
+        title: "Link-in-bio page",
+        text: "Services, portfolio and social links in your brand colour, made for phones.",
+      },
+      {
+        title: "Order form",
+        text: "Fixed prices create the invoice instantly; for negotiable services you approve first.",
+      },
+      {
+        title: "PDF invoice and QR",
+        text: "Numbered invoices with your bank details, shared to WhatsApp in one click.",
+      },
+      {
+        title: "Payment tracking",
+        text: "Earned, pending and overdue amounts, plus polite reminders for late payers.",
+      },
+      {
+        title: "Analytics",
+        text: "Where visitors come from, which service sells best and your conversion rate.",
+      },
+      {
+        title: "Services directory",
+        text: "Get found even without your bio link: customers discover you through search.",
+      },
     ],
   },
 
@@ -128,12 +191,16 @@ export const en: typeof az = {
     text: "Describe the deal in plain words: AI finds the customer, service, amount and date. You review everything before sending.",
     items: [
       { title: "Invoice from text", text: "Write the way you talk." },
-      { title: "Service descriptions", text: "A few words, three sales texts." },
+      {
+        title: "Service descriptions",
+        text: "A few words, three sales texts.",
+      },
       { title: "Brand colour", text: "A palette that fits your niche." },
       { title: "Polite reminders", text: "A ready message for late payments." },
     ],
     demo: {
-      prompt: "Aygun Mammadova, 0501234567, 3 private lessons at 50 manat each, by Friday",
+      prompt:
+        "Aygun Mammadova, 0501234567, 3 private lessons at 50 manat each, by Friday",
       you: "You type",
       reading: "AI is reading...",
       convert: "Turn into invoice",
@@ -161,19 +228,43 @@ export const en: typeof az = {
         name: "Free",
         tagline: "For people just starting out",
         cta: "Start free",
-        features: ["Link-in-bio page", "Unlimited orders", "5 invoices per month", "5 services", "PDF invoices and QR code", "Basic analytics", "AI: 10 requests per month"],
+        features: [
+          "Link-in-bio page",
+          "Unlimited orders",
+          "5 invoices per month",
+          "5 services",
+          "PDF invoices and QR code",
+          "Basic analytics",
+          "AI: 10 requests per month",
+        ],
       },
       {
         name: "Pro",
         tagline: "For active sellers",
         cta: "Start with Pro",
-        features: ["Everything in Free", "Verified account badge", "100 invoices per month", "30 services", "No Karvan branding", "Online card payments from customers (soon)", "AI: 200 requests per month"],
+        features: [
+          "Everything in Free",
+          "Verified account badge",
+          "100 invoices per month",
+          "30 services",
+          "No Karvan branding",
+          "Online card payments from customers (soon)",
+          "AI: 200 requests per month",
+        ],
       },
       {
         name: "Pro Max",
         tagline: "For studios and teams",
         cta: "Choose Pro Max",
-        features: ["Everything in Pro", "Unlimited invoices and services", "Featured placement and “Featured” badge in the directory", "5 team members (soon)", "Advanced analytics and Excel reports", "Priority support", "AI: 1000 requests per month"],
+        features: [
+          "Everything in Pro",
+          "Unlimited invoices and services",
+          "Featured placement and “Featured” badge in the directory",
+          "5 team members (soon)",
+          "Advanced analytics and Excel reports",
+          "Priority support",
+          "AI: 1000 requests per month",
+        ],
       },
     ],
   },
@@ -182,13 +273,34 @@ export const en: typeof az = {
     eyebrow: "FAQ",
     title: "Frequently asked questions",
     items: [
-      { q: "Is Karvan free?", a: "Yes. The free plan includes your page, unlimited orders, 5 invoices a month and 5 services. No card required." },
-      { q: "Who do customers pay?", a: "You, directly. Your card or IBAN details appear on the invoice. Karvan never touches your money and takes no commission." },
-      { q: "Is the invoice an official tax document?", a: "No, it is a professional payment request. Tax ID and e-invoice support are planned for later stages." },
-      { q: "Which countries does it work in?", a: "Karvan is built for Azerbaijan: AZN, local banks and Azerbaijani language. The site is also available in Turkish, Russian and English, and invoices can be issued in USD and EUR, so it is ready for Turkey, Georgia, Kazakhstan and the wider region." },
-      { q: "Do I need technical skills?", a: "No. You set up your page by filling in a form in about 3 minutes, no code involved." },
-      { q: "Will my services appear in the directory?", a: "Yes, your active services show up in the Services directory automatically. You can hide them in Settings if you prefer." },
-      { q: "How do I know a payment arrived?", a: "When the customer taps “I paid”, you see it in your dashboard. Check your account and confirm with one click." },
+      {
+        q: "Is Karvan free?",
+        a: "Yes. The free plan includes your page, unlimited orders, 5 invoices a month and 5 services. No card required.",
+      },
+      {
+        q: "Who do customers pay?",
+        a: "You, directly. Your card or IBAN details appear on the invoice. Karvan never touches your money and takes no commission.",
+      },
+      {
+        q: "Is the invoice an official tax document?",
+        a: "No, it is a professional payment request. Tax ID and e-invoice support are planned for later stages.",
+      },
+      {
+        q: "Which countries does it work in?",
+        a: "Karvan is built for Azerbaijan: AZN, local banks and Azerbaijani language. The site is also available in Turkish, Russian and English, and invoices can be issued in USD and EUR, so it is ready for Turkey, Georgia, Kazakhstan and the wider region.",
+      },
+      {
+        q: "Do I need technical skills?",
+        a: "No. You set up your page by filling in a form in about 3 minutes, no code involved.",
+      },
+      {
+        q: "Will my services appear in the directory?",
+        a: "Yes, your active services show up in the Services directory automatically. You can hide them in Settings if you prefer.",
+      },
+      {
+        q: "How do I know a payment arrived?",
+        a: "When the customer taps “I paid”, you see it in your dashboard. Check your account and confirm with one click.",
+      },
     ],
   },
 
@@ -199,8 +311,56 @@ export const en: typeof az = {
     secondary: "Demo page",
   },
 
+  // Satıcı səhifəsi (karvan.az/<username>) və sifariş forması
+  // AI köməkçi (chatbot)
+  chat: {
+    title: "Karvan assistant",
+    subtitle: "Answers your questions",
+    open: "Open assistant",
+    close: "Close",
+    placeholder: "Type your question...",
+    send: "Send",
+    greeting: "Hi! What would you like to know about Karvan? Plans, order flow, invoices — just ask.",
+    suggestions: ["How does Karvan work?", "How much are the plans?", "How do I get paid?"],
+    error: "No answer received. Please try again shortly.",
+    note: "Answers are generated by AI; to confirm: hello@karvan.az",
+  },
+
+  seller: {
+    services: "Services",
+    portfolio: "My work",
+    about: "About me",
+    negotiable: "By agreement",
+    verified: "Verified account",
+    call: "Call",
+    nav: "Breadcrumb",
+    catalog: "Services",
+    madeWith: "made with",
+    order: "Order",
+    ask: "Ask for a price",
+    orderTitle: "Order details",
+    askTitle: "Price request",
+    name: "Your name",
+    phone: "Your phone number",
+    email: "Email (optional)",
+    note: "Note (optional)",
+    submitOrder: "Get the invoice",
+    submitAsk: "Send request",
+    sending: "Sending...",
+    close: "Close",
+    closeEsc: "Close (Esc)",
+    netError: "Connection error, please try again.",
+    day: "d",
+    week: "w",
+    month: "mo",
+    language: "Language",
+    pending: "Your request has been sent. As soon as the seller confirms the price, you will receive the invoice.",
+    cancel: "Cancel",
+  },
+
   footer: {
-    tagline: "A platform that brings service sales together for professionals active on social media: page, orders, invoices and payment tracking.",
+    tagline:
+      "A platform that brings service sales together for professionals active on social media: page, orders, invoices and payment tracking.",
     product: "Product",
     explore: "Explore",
     account: "Account",
@@ -224,17 +384,23 @@ export const en: typeof az = {
     city: "Baku, Azerbaijan",
     regions: "Azerbaijan · Türkiye · Georgia · Kazakhstan",
     rights: "All rights reserved.",
-    cookieNotice: { text: "This site uses cookies only to work and to show the seller anonymous statistics. There are no advertising trackers.", accept: "Got it", more: "Details" },
+    cookieNotice: {
+      text: "This site uses cookies only to work and to show the seller anonymous statistics. There are no advertising trackers.",
+      accept: "Got it",
+      more: "Details",
+    },
   },
 
   seo: {
     categoryTitle: "{category} services",
     withCity: "{title} — {city}",
-    categoryDescription: "{n} services in {category}: clear prices, duration and direct ordering. Pick a professional in the Karvan directory.",
+    categoryDescription:
+      "{n} services in {category}: clear prices, duration and direct ordering. Pick a professional in the Karvan directory.",
     browseCategories: "Services by category",
     browseCities: "Services by city",
     sellerTitle: "{name} — {profession}",
-    sellerDescription: "{intro} Services: {services}. Online ordering and automatic invoices — Karvan.",
+    sellerDescription:
+      "{intro} Services: {services}. Online ordering and automatic invoices — Karvan.",
     sellerIntro: "{profession} · {city}.",
     sellerFallback: "{name} on Karvan: services, prices and online ordering.",
     sellerCity: "{title}, {city}",
@@ -243,7 +409,8 @@ export const en: typeof az = {
 
   catalog: {
     metaTitle: "Services directory — find a professional near you",
-    metaDescription: "Compare makeup, tutoring, design, photo, social media and other services by price, city and category. Prices are public and you order straight from the professional.",
+    metaDescription:
+      "Compare makeup, tutoring, design, photo, social media and other services by price, city and category. Prices are public and you order straight from the professional.",
     eyebrow: "Services directory",
     title: "Find the service you need",
     text: "Services from professionals registered on Karvan. Prices are public and ordering takes one click.",
@@ -262,7 +429,12 @@ export const en: typeof az = {
     max: "Max",
     verified: "Verified only",
     sort: "Sort by",
-    sorts: { recommended: "Recommended", new: "Newest", priceAsc: "Price: low to high", priceDesc: "Price: high to low" },
+    sorts: {
+      recommended: "Recommended",
+      new: "Newest",
+      priceAsc: "Price: low to high",
+      priceDesc: "Price: high to low",
+    },
     filters: "Filters",
     reset: "Reset",
     results: "{n} services",
@@ -275,7 +447,8 @@ export const en: typeof az = {
     prev: "Previous",
     next: "Next",
     page: "Page {n} of {total}",
-    sellerCta: "Do you sell services? Create a free page and appear in the directory.",
+    sellerCta:
+      "Do you sell services? Create a free page and appear in the directory.",
     sellerButton: "Start free",
     days: "d",
     weeks: "wk",
@@ -286,7 +459,11 @@ export const en: typeof az = {
     planChosen: "Your selected plan",
     planNext: "The payment page opens right after you sign up or log in.",
     headline: ["Turn your profile", "into a sales", "page"],
-    points: ["One link: social accounts, services and your work", "An automatic PDF invoice for every order", "Who paid and who is late — in one dashboard"],
+    points: [
+      "One link: social accounts, services and your work",
+      "An automatic PDF invoice for every order",
+      "Who paid and who is late — in one dashboard",
+    ],
     secure: "Your data is protected and passwords are stored encrypted",
     login: {
       title: "Welcome back",
@@ -324,20 +501,31 @@ export const en: typeof az = {
       emailPlaceholder: "name@example.com",
       password: "Password",
       confirm: "Confirm password",
-      privacy: "Your FIN code or passport number is only used to verify the account and is never shown on your page.",
+      privacy:
+        "Your FIN code or passport number is only used to verify the account and is never shown on your page.",
       prevStep: "Previous step",
       submit: "Create account",
       hasAccount: "Already have an account?",
       login: "Log in",
+      terms: {
+        before:
+          "By completing signup I confirm that I have read and accept the",
+        terms: "terms of use",
+        middle: "and the",
+        privacy: "privacy policy",
+        after: "",
+      },
     },
     forgot: {
       title: "Reset your password",
       text: "Enter the email you registered with and we will send you a link to set a new password.",
       submit: "Send link",
       sentTitle: "Check your email",
-      sentText: "If an account exists for this email, we sent a password reset link. It is valid for 30 minutes.",
+      sentText:
+        "If an account exists for this email, we sent a password reset link. It is valid for 30 minutes.",
       devTitle: "Local mode: email service is not connected",
-      devText: "The link is shown here instead of an email (only on your own computer):",
+      devText:
+        "The link is shown here instead of an email (only on your own computer):",
       devButton: "Reset password",
       back: "Back to log in",
       remembered: "Remembered your password?",
@@ -345,7 +533,8 @@ export const en: typeof az = {
     },
     reset: {
       invalidTitle: "Link is not valid",
-      invalidText: "The link has expired or was already used. Request a new one.",
+      invalidText:
+        "The link has expired or was already used. Request a new one.",
       newLink: "Get a new link",
       title: "New password",
       text: "Set a new password. You will be logged out of all devices.",
@@ -382,6 +571,7 @@ export const en: typeof az = {
       blocked: "Your account has been blocked. Contact support for details.",
       noProfile: "This account has no page. Contact support.",
       badLink: "The link is invalid or has expired. Request a new one.",
+      terms: "Accept the terms of use to continue",
       tooMany: "Too many attempts. Please try again in a few minutes.",
     },
   },

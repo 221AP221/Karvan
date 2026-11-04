@@ -26,6 +26,7 @@ export default async function Checkout({ searchParams }: { searchParams: SearchP
       plan={plan}
       planName={PLAN_NAMES[plan]}
       prices={{ 1: formatMoney(priceFor(plan, 1), "AZN"), 12: formatMoney(priceFor(plan, 12), "AZN"), monthlyOfYear: formatMoney(Math.round(priceFor(plan, 12) / 12), "AZN") }}
+      amounts={{ 1: priceFor(plan, 1), 12: priceFor(plan, 12) }}
       reference={newReference()}
       bank={KARVAN_BANK}
       cardAvailable={Boolean(getBillingGateway())}
