@@ -1,6 +1,7 @@
 import "@fontsource-variable/ibm-plex-sans";
 import "@fontsource/ibm-plex-mono/400.css";
 import "@fontsource/ibm-plex-mono/500.css";
+import { Settings } from "lucide-react";
 import Link from "next/link";
 import { isImpersonating, requireProfile } from "@/lib/auth";
 import { NAV_PERMISSION, ROLE_LABELS, can, workspacesFor } from "@/lib/team";
@@ -24,8 +25,10 @@ const NAV = [
   { href: "/dashboard/profile", key: "profile" },
   { href: "/dashboard/team", key: "team" },
   { href: "/dashboard/billing", key: "billing" },
-  { href: "/dashboard/settings", key: "settings" },
 ] as const;
+
+// Parametrlər menyuda yox, yuxarıdakı sətirdə (Çıxışın yanında) durur: menyu bir sətrə sığsın
+const SETTINGS = { href: "/dashboard/settings", key: "settings" } as const;
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const profile = await requireProfile();
@@ -75,6 +78,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
             <Link href={`/${profile.username}`} target="_blank" className="hidden text-gray-600 sm:inline">
               /{profile.username} ↗
             </Link>
+            {can(profile.role, "account") && (
+              <Link href={SETTINGS.href} className="text-gray-600 hover:text-gray-900" title={t.nav[SETTINGS.key]}>
+                <Settings size={17} aria-hidden />
+                <span className="sr-only">{t.nav[SETTINGS.key]}</span>
+              </Link>
+            )}
             <form action={logout}>
               <button className="text-gray-500 hover:text-gray-900">{t.shell.logout}</button>
             </form>
