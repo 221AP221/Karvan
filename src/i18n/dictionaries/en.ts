@@ -40,7 +40,6 @@ export const en: typeof az = {
   },
 
   hero: {
-    badge: "For service sellers in Azerbaijan and the region",
     lead: ["Your profile", "link"],
     words: ["sells for you", "sends invoices", "tracks payments"],
     text: "Put one link in your Instagram and TikTok bio. Customers see your prices, order in one click, the invoice goes out automatically and the payment shows up in your dashboard.",

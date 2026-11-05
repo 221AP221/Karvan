@@ -47,7 +47,6 @@ import { SmoothScroll } from "@/components/landing/SmoothScroll";
 import { StepsTimeline } from "@/components/landing/StepsTimeline";
 import Magnet from "@/components/reactbits/Magnet";
 import ScrollReveal from "@/components/reactbits/ScrollReveal";
-import ShinyText from "@/components/reactbits/ShinyText";
 import SpotlightCard from "@/components/reactbits/SpotlightCard";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { CATALOG_PATH, HOME_PATH, type Locale, SITE_URL } from "@/i18n/config";
@@ -233,17 +232,7 @@ export function LandingPage({ locale, t }: { locale: Locale; t: Dict }) {
 
           <div className="relative mx-auto grid max-w-6xl items-center gap-16 px-4 pb-24 lg:grid-cols-[1.1fr_1fr]">
             <div className="text-center lg:text-left">
-              <Appear trigger="mount" distance={12} duration={0.5}>
-                <span className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-white/80 px-4 py-1.5 text-sm shadow-sm backdrop-blur dark:border-violet-400/30 dark:bg-white/5">
-                  <span className="relative flex h-2 w-2">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-violet-500 opacity-75" />
-                    <span className="relative inline-flex h-2 w-2 rounded-full bg-violet-600" />
-                  </span>
-                  <ShinyText text={t.hero.badge} color="#D6127E" shineColor="#FFC3E0" speed={3} />
-                </span>
-              </Appear>
-
-              <HeroHeadline lead={t.hero.lead} words={t.hero.words} className="mt-6 text-[2.5rem] leading-[1.08] sm:text-6xl lg:text-7xl" />
+              <HeroHeadline lead={t.hero.lead} words={t.hero.words} className="text-[2.5rem] leading-[1.08] sm:text-6xl lg:text-7xl" />
 
               <Appear trigger="mount" delay={0.15}>
                 <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-gray-600 lg:mx-0 dark:text-gray-400">{t.hero.text}</p>

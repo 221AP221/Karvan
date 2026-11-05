@@ -683,6 +683,10 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 | FR-FAK-07 | Faktura WhatsApp-a hazır mətnlə göndərilə və linki kopyalana bilməlidir | M | SH-SAT-05 | T | ✅ |
 | FR-FAK-08 | Faktura statusları: `DRAFT`, `SENT`, `VIEWED`, `CLAIMED_PAID`, `PAID`, `OVERDUE`, `CANCELLED` | M | BR-04 | İ | ✅ |
 | FR-FAK-09 | Fakturalar siyahısında status, valyuta və tarix filtrləri olmalıdır | S | SH-SAT-06 | D | ✅ |
+| FR-FAK-10 | Faktura sətrində xidmət satıcının mövcud xidmətlərindən seçilə, yaxud sərbəst yazıla bilməlidir; seçim zamanı qiymət avtomatik dolmalıdır | S | SH-SAT-04 | T | ✅ |
+| FR-FAK-11 | Satıcı fakturanı həmişəlik silə bilməlidir; silinmə iki addımla təsdiqlənməli, ödənilmiş fakturada hesabata təsiri barədə xəbərdarlıq göstərilməlidir | S | SH-SAT-04 | T | ✅ |
+| FR-FAK-12 | Silinmə fakturanın sətirlərini, ödəniş qeydlərini, xatırlatmalarını və rəyini də silməli, reytinq yenidən hesablanmalıdır | M | BRU-04 | T | ✅ |
+| FR-FAK-13 | Aylıq faktura limiti yaradılmış fakturaların sayğacına əsaslanmalıdır: silinmə limiti geri qaytarmamalıdır | M | BRU-09 | T | ✅ |
 
 ### 13.7 Ödəniş izləmə (müştəri → satıcı) — `FR-ODN`
 
@@ -864,7 +868,7 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 | FR-XID | 6 | 6 | 0 | 0 |
 | FR-KAT | 9 | 9 | 0 | 0 |
 | FR-SIF | 9 | 8 | 1 | 0 |
-| FR-FAK | 9 | 9 | 0 | 0 |
+| FR-FAK | 13 | 13 | 0 | 0 |
 | FR-ODN | 6 | 4 | 0 | 2 |
 | FR-ANL | 10 | 10 | 0 | 0 |
 | FR-AI | 13 | 13 | 0 | 0 |
@@ -875,7 +879,7 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 | FR-BLD | 7 | 4 | 2 | 1 |
 | FR-REY | 7 | 7 | 0 | 0 |
 | FR-KMD | 12 | 12 | 0 | 0 |
-| **Cəmi** | **156** | **148 (95%)** | **5 (3%)** | **3 (2%)** |
+| **Cəmi** | **160** | **152 (95%)** | **5 (3%)** | **3 (2%)** |
 
 Lansı bloklayan `M` prioritetli açıq tələb yoxdur; 🟡 vəziyyətli FR-HES-06 və FR-BLD-02 IR-03-ün (e-poçt provayderi) bağlanması ilə həll olunur.
 

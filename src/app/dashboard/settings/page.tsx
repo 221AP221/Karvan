@@ -4,6 +4,7 @@ import { requirePageAccess } from "@/lib/auth";
 import { AUTO_DELETE_OPTIONS } from "@/lib/inactivity";
 import { db } from "@/lib/db";
 import { PLAN_LIMITS, PLAN_NAMES, startOfMonth } from "@/lib/plans";
+import { invoicesUsedThisMonth } from "@/lib/invoices";
 import { AutoDeleteForm, CatalogForm, DangerZone, EmailForm, PasswordForm, PaymentForm, SessionsButton } from "./forms";
 
 function Section({ icon, title, text, children }: { icon: Parameters<typeof IconBadge>[0]["icon"]; title: string; text: string; children: React.ReactNode }) {
@@ -33,7 +34,7 @@ export default async function Settings() {
 
   const [sessions, invoicesThisMonth] = await Promise.all([
     db.session.count({ where: { userId: profile.userId, expiresAt: { gt: new Date() } } }),
-    db.invoice.count({ where: { profileId: profile.id, issuedAt: { gte: startOfMonth() } } }),
+    invoicesUsedThisMonth(profile.id),
   ]);
 
   return (

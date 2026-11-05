@@ -40,7 +40,6 @@ export const tr: typeof az = {
   },
 
   hero: {
-    badge: "Azerbaycan'da ve bölgede hizmet satanlar için",
     lead: ["Profil", "linkiniz"],
     words: ["satış yapar", "fatura keser", "ödemeyi takip eder"],
     text: "Instagram ve TikTok biyografinize tek bir link koyun. Müşteri fiyatı görür, tek tıkla sipariş verir, fatura kendiliğinden gider, ödeme panelinizde görünür.",

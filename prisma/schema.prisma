@@ -147,6 +147,9 @@ model Profile {
   coverUrl      String?
   invoicePrefix String  @default("INV")
   invoiceSeq    Int     @default(0)
+  // Aylıq faktura limiti: silinmiş fakturalar limiti geri qaytarmasın deyə ayrıca sayğac
+  invoiceQuotaMonth DateTime?
+  invoiceQuotaUsed  Int      @default(0)
   // Tema: { primary, background, text, font, buttonStyle }
   theme         Json?
 

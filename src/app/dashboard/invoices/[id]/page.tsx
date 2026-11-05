@@ -8,8 +8,8 @@ import { effectiveStatus } from "@/lib/invoice-status";
 import { invoiceUrl } from "@/lib/invoices";
 import { formatMoney } from "@/lib/money";
 import { invoiceShareText, whatsappShareLink } from "@/lib/notify";
-import { cancelInvoice, markInvoicePaid, reopenInvoice } from "../../actions";
-import { CopyLink, ReminderDraft } from "./client";
+import { cancelInvoice, deleteInvoice, markInvoicePaid, reopenInvoice } from "../../actions";
+import { CopyLink, DeleteInvoice, ReminderDraft } from "./client";
 
 const date = (d: Date) => d.toLocaleDateString("az-AZ", { day: "2-digit", month: "2-digit", year: "numeric" });
 
@@ -116,6 +116,8 @@ export default async function InvoiceDetail({ params }: { params: Promise<{ id: 
               </form>
             </div>
           )}
+
+          <DeleteInvoice action={deleteInvoice.bind(null, invoice.id)} number={invoice.number} paid={invoice.status === "PAID"} />
         </div>
       </div>
     </div>

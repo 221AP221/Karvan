@@ -7,6 +7,7 @@ import { db } from "@/lib/db";
 import { OPEN_STATUSES } from "@/lib/invoice-status";
 import { formatTotals } from "@/lib/money";
 import { PLAN_LIMITS, startOfMonth } from "@/lib/plans";
+import { invoicesUsedThisMonth } from "@/lib/invoices";
 import { CopyLink } from "./invoices/[id]/client";
 
 export default async function Dashboard() {
@@ -20,7 +21,7 @@ export default async function Dashboard() {
   const [recent, pendingOrders, usedThisMonth, paidThisMonth, outstanding, serviceCount, linkCount, workCount] = await Promise.all([
     db.invoice.findMany({ where, orderBy: { issuedAt: "desc" }, take: 5 }),
     db.order.count({ where: { ...where, status: "PENDING_APPROVAL" } }),
-    db.invoice.count({ where: { ...where, issuedAt: { gte: startOfMonth() } } }),
+    invoicesUsedThisMonth(profile.id),
     db.invoice.groupBy({ by: ["currency"], where: { ...where, status: "PAID", paidAt: { gte: startOfMonth() } }, _sum: { totalQepik: true } }),
     db.invoice.groupBy({ by: ["currency"], where: { ...where, status: { in: OPEN_STATUSES } }, _sum: { totalQepik: true } }),
     db.service.count({ where }),

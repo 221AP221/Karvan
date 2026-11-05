@@ -12,7 +12,9 @@ import { createInvoiceAction } from "../../actions";
 type Item = { title: string; quantity: string; unitPrice: string };
 const emptyItem: Item = { title: "", quantity: "1", unitPrice: "" };
 
-export function InvoiceEditor() {
+export type PickableService = { id: string; title: string; unitPrice: string; currency: string };
+
+export function InvoiceEditor({ services }: { services: PickableService[] }) {
   const [text, setText] = useState("");
   const [ai, setAi] = useState<{ busy?: boolean; error?: string; warnings?: string[] }>({});
   const [customer, setCustomer] = useState({ name: "", phone: "", dueDate: "", note: "" });
@@ -48,6 +50,19 @@ export function InvoiceEditor() {
 
   function updateItem(index: number, patch: Partial<Item>) {
     setItems((list) => list.map((item, i) => (i === index ? { ...item, ...patch } : item)));
+  }
+
+  /**
+   * Siyahıdan hazır xidmət seçiləndə qiyməti özü doldurur; əllə yazılan ad olduğu kimi qalır.
+   * Qiymət yalnız boş sətirdə doldurulur ki, satıcının öz yazdığı məbləğ pozulmasın.
+   */
+  function pickService(index: number, title: string) {
+    const match = services.find((s) => s.title === title);
+    if (!match?.unitPrice) return;
+    // Qiymət yalnız boş sətrə yazılır: satıcının öz yazdığı məbləğ pozulmur
+    setItems((list) => list.map((item, i) => (i === index && !item.unitPrice ? { ...item, unitPrice: match.unitPrice } : item)));
+    // Başqa sətirdə məbləğ yoxdursa, valyuta da xidmətinkinə uyğunlaşır
+    if (match.currency && !items.some((item, i) => i !== index && item.unitPrice)) setCurrency(match.currency);
   }
 
   return (
@@ -89,10 +104,29 @@ export function InvoiceEditor() {
         </Card>
 
         <Card title="Xidmətlər">
+          {services.length > 0 && (
+            <datalist id="xidmetler">
+              {services.map((s) => (
+                <option key={s.id} value={s.title} label={s.unitPrice ? `${s.unitPrice} ${s.currency}` : "Razılaşma ilə"} />
+              ))}
+            </datalist>
+          )}
           <div className="flex flex-col gap-3">
             {items.map((item, index) => (
               <div key={index} className="grid grid-cols-[1fr_64px_96px_auto] items-center gap-2">
-                <input aria-label="Xidmət" value={item.title} onChange={(e) => updateItem(index, { title: e.target.value })} placeholder="Xidmət" className={inputClass} />
+                <div className="min-w-0">
+                  <input
+                    aria-label="Xidmət"
+                    value={item.title}
+                    onChange={(e) => {
+                      updateItem(index, { title: e.target.value });
+                      pickService(index, e.target.value);
+                    }}
+                    list={services.length ? "xidmetler" : undefined}
+                    placeholder={services.length ? "Xidməti seçin və ya yazın" : "Xidmət"}
+                    className={inputClass}
+                  />
+                </div>
                 <input aria-label="Say" value={item.quantity} onChange={(e) => updateItem(index, { quantity: e.target.value })} inputMode="numeric" className={inputClass} />
                 <input aria-label="Qiymət" value={item.unitPrice} onChange={(e) => updateItem(index, { unitPrice: e.target.value })} inputMode="decimal" placeholder={currency} className={inputClass} />
                 <button type="button" onClick={() => setItems((l) => (l.length > 1 ? l.filter((_, i) => i !== index) : l))} className="px-2 text-gray-400 hover:text-red-600" aria-label="Sətri sil">

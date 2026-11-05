@@ -28,16 +28,17 @@ export function invoiceUrl(id: string) {
 export async function createInvoice(input: NewInvoice) {
   return db.$transaction(async (tx) => {
     // Sətri kilidləyirik ki, paralel sorğular eyni nömrəni və ya limitdən artıq faktura yaratmasın.
-    const [profile] = await tx.$queryRaw<{ id: string; userId: string; invoicePrefix: string; invoiceSeq: number }[]>`
-      SELECT id, "userId", "invoicePrefix", "invoiceSeq" FROM "Profile" WHERE id = ${input.profileId} FOR UPDATE`;
+    const [profile] = await tx.$queryRaw<{ id: string; userId: string; invoicePrefix: string; invoiceSeq: number; invoiceQuotaMonth: Date | null; invoiceQuotaUsed: number }[]>`
+      SELECT id, "userId", "invoicePrefix", "invoiceSeq", "invoiceQuotaMonth", "invoiceQuotaUsed" FROM "Profile" WHERE id = ${input.profileId} FOR UPDATE`;
     if (!profile) throw new Error("Profil tapılmadı");
 
     const subscription = await tx.subscription.findUnique({ where: { userId: profile.userId } });
     const limits = PLAN_LIMITS[subscription?.plan ?? "FREE"];
 
-    const usedThisMonth = await tx.invoice.count({
-      where: { profileId: profile.id, issuedAt: { gte: startOfMonth() } },
-    });
+    // Limit yaradılmış fakturaların sayğacına baxır: faktura silinəndə limit geri qayıtmır
+    const month = startOfMonth();
+    const sameMonth = profile.invoiceQuotaMonth !== null && new Date(profile.invoiceQuotaMonth).getTime() === month.getTime();
+    const usedThisMonth = sameMonth ? profile.invoiceQuotaUsed : 0;
     if (usedThisMonth >= limits.invoicesPerMonth) {
       throw new InvoiceLimitError(
         `Planınızda ayda ${limits.invoicesPerMonth} faktura yaratmaq olar. Daha çoxu üçün yuxarı plana keçin.`,
@@ -46,7 +47,10 @@ export async function createInvoice(input: NewInvoice) {
 
     const paymentMethod = limits.onlinePayments ? (input.paymentMethod ?? "MANUAL") : "MANUAL";
     const seq = profile.invoiceSeq + 1;
-    await tx.profile.update({ where: { id: profile.id }, data: { invoiceSeq: seq } });
+    await tx.profile.update({
+      where: { id: profile.id },
+      data: { invoiceSeq: seq, invoiceQuotaMonth: month, invoiceQuotaUsed: usedThisMonth + 1 },
+    });
 
     return tx.invoice.create({
       data: {
@@ -77,4 +81,11 @@ export function getPublicInvoice(publicId: string) {
       profile: { include: { user: { select: { subscription: { select: { plan: true } } } } } },
     },
   });
+}
+
+/** Bu ay istifadə olunmuş faktura sayı (sayğacdan — silinən faktura limiti geri qaytarmır). */
+export async function invoicesUsedThisMonth(profileId: string) {
+  const p = await db.profile.findUnique({ where: { id: profileId }, select: { invoiceQuotaMonth: true, invoiceQuotaUsed: true } });
+  if (!p?.invoiceQuotaMonth) return 0;
+  return p.invoiceQuotaMonth.getTime() === startOfMonth().getTime() ? p.invoiceQuotaUsed : 0;
 }

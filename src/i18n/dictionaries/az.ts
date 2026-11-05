@@ -41,7 +41,6 @@ export const az = {
   },
 
   hero: {
-    badge: "Azərbaycanda və regionda xidmət satanlar üçün",
     lead: ["Profil", "linkiniz"],
     words: ["satış edir", "faktura yazır", "ödənişi izləyir"],
     text: "Instagram və TikTok bio-nuza bir link qoyun. Müştəri qiyməti görür, bir kliklə sifariş verir, faktura özü gedir, ödəniş paneldə görünür.",

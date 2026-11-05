@@ -8,6 +8,7 @@ import { z } from "zod";
 import { requirePermission, requireProfile } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { notify } from "@/lib/notifications";
+import { refreshRating } from "@/lib/reviews";
 import { deleteMediaByUrl, ownedMediaUrl } from "@/lib/media";
 import { PLAN_LIMITS } from "@/lib/plans";
 import { InvoiceLimitError, createInvoice } from "@/lib/invoices";
@@ -248,4 +249,25 @@ export async function reopenInvoice(id: string) {
   });
   await logActivity({ userId: profile.userId, email: profile.user.email, profileId: profile.id, actor: profile.actor, action: "invoice_reopen", details: id });
   revalidatePath(`/dashboard/invoices/${id}`);
+}
+
+/**
+ * Faktura silinir. Sətirləri, ödənişləri, xatırlatmaları və rəyi baza özü silir (cascade).
+ * Aylıq limit geri qayıtmır: sayğac ayrıca saxlanılır (src/lib/invoices.ts).
+ */
+export async function deleteInvoice(id: string) {
+  const profile = await requirePermission("invoices");
+  const invoice = await db.invoice.findFirst({
+    where: { id, profileId: profile.id },
+    select: { id: true, number: true, publicId: true, review: { select: { id: true } } },
+  });
+  if (!invoice) return;
+  await db.invoice.delete({ where: { id: invoice.id } });
+  // Rəy də silindi: satıcının reytinqi yenidən hesablanır
+  if (invoice.review) await refreshRating(profile.id);
+  await logActivity({ userId: profile.userId, email: profile.user.email, profileId: profile.id, actor: profile.actor, action: "invoice_delete", details: invoice.number });
+  revalidatePath("/dashboard/invoices");
+  revalidatePath("/dashboard");
+  revalidatePath(`/i/${invoice.publicId}`);
+  redirect("/dashboard/invoices");
 }
