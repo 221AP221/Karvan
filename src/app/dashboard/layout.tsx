@@ -80,7 +80,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
             </form>
           </div>
         </div>
-        <nav className="mx-auto flex max-w-4xl gap-1 overflow-x-auto px-4 pb-2 text-sm">
+        <nav className="mx-auto flex max-w-4xl flex-wrap gap-x-1 gap-y-0.5 px-4 pb-2 text-sm">
           {nav.map((item) => (
             <Link key={item.href} href={item.href} className="whitespace-nowrap rounded-full px-3 py-1.5 hover:bg-gray-100">
               {t.nav[item.key]}
