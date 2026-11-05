@@ -20,11 +20,21 @@ if (!process.env.DATABASE_URL) {
 // Yeni açılan bazanın qoşulmağa hazır olması bir neçə saniyə çəkə bilər
 for (let attempt = 1; ; attempt++) {
   try {
-    execSync("npx prisma migrate deploy", { stdio: ["ignore", "ignore", attempt >= 8 ? "inherit" : "ignore"] });
+    execSync("npx prisma migrate deploy", { stdio: ["ignore", "ignore", attempt >= 8 ? "pipe" : "ignore"] });
     break;
   } catch (error) {
-    if (attempt >= 8) throw error;
-    await new Promise((r) => setTimeout(r, 1500));
+    if (attempt < 8) {
+      await new Promise((r) => setTimeout(r, 1500));
+      continue;
+    }
+    const text = String(error.stderr ?? "") + String(error.stdout ?? "");
+    process.stderr.write(text);
+    // Yarımçıq qalmış miqrasiya: nə edəcəyini açıq yazırıq, yoxsa sayt köhnə kodla açıq qalır
+    if (text.includes("P3009")) {
+      const name = text.match(/The `([^`]+)` migration started/)?.[1] ?? "<miqrasiya_adı>";
+      console.error(`\nBaza yenilənmədi: əvvəlki cəhd yarımçıq qalıb. Bu iki əmri işlədin, sonra yenidən \`npm run dev\`:\n  npx prisma migrate resolve --rolled-back ${name}\n  npx prisma migrate deploy\n`);
+    }
+    throw error;
   }
 }
 // Sxem dəyişəndə (yeni zip) Prisma klienti köhnə qalmasın: "Unknown argument" xətasının qarşısını alır
