@@ -3,6 +3,7 @@ import type { Plan } from "@/generated/prisma/client";
 import { logActivity } from "@/lib/activity";
 import { gatewayByName } from "@/lib/billing-gateway";
 import { redeemCoupon } from "@/lib/coupons";
+import { syncTeamWithPlan } from "@/lib/team";
 import { db } from "@/lib/db";
 
 // Karvan abunəlik ödənişləri. Qiymətlər qəpiklə; illik ödənişdə 2 ay pulsuz.
@@ -89,6 +90,10 @@ export async function activatePayment(paymentId: string) {
     }),
     db.subscriptionPayment.update({ where: { id: paymentId }, data: { status: "ACTIVATED", paidAt: payment.paidAt ?? new Date(), activatedAt: new Date() } }),
   ]);
+  // Tarif Pro Max olanda dondurulmuş komanda üzvləri geri qayıdır
+  const profile = await db.profile.findUnique({ where: { userId: payment.userId }, select: { id: true } });
+  if (profile) await syncTeamWithPlan(profile.id, payment.plan);
+
   // Kupon istifadəsi yalnız ödəniş aktivləşəndə sayılır
   if (payment.couponCode) {
     await redeemCoupon({ code: payment.couponCode, userId: payment.userId, paymentId: payment.id, discountQepik: payment.discountQepik });
@@ -112,6 +117,8 @@ export async function setPlanKeepingTime(userId: string, plan: Plan, months = 1)
   const sub = await db.subscription.findUnique({ where: { userId }, select: { plan: true, currentPeriodEnd: true } });
   if (plan === "FREE") {
     await db.subscription.upsert({ where: { userId }, update: { plan: "FREE", currentPeriodEnd: null }, create: { userId, plan: "FREE" } });
+    const freed = await db.profile.findUnique({ where: { userId }, select: { id: true } });
+    if (freed) await syncTeamWithPlan(freed.id, "FREE");
     return null;
   }
   const now = new Date();
@@ -128,6 +135,8 @@ export async function setPlanKeepingTime(userId: string, plan: Plan, months = 1)
     update: { plan, currentPeriodEnd: end },
     create: { userId, plan, currentPeriodEnd: end },
   });
+  const target = await db.profile.findUnique({ where: { userId }, select: { id: true } });
+  if (target) await syncTeamWithPlan(target.id, plan);
   return end;
 }
 
@@ -135,6 +144,9 @@ export async function setPlanKeepingTime(userId: string, plan: Plan, months = 1)
 export async function expireIfNeeded(userId: string, sub: { plan: Plan; currentPeriodEnd: Date | null } | null) {
   if (sub && sub.plan !== "FREE" && sub.currentPeriodEnd && sub.currentPeriodEnd < new Date()) {
     await db.subscription.update({ where: { userId }, data: { plan: "FREE", currentPeriodEnd: null } });
+    // Komanda üzvləri silinmir, dondurulur: tarif bərpa olunanda geri qayıdırlar
+    const expiredProfile = await db.profile.findUnique({ where: { userId }, select: { id: true } });
+    if (expiredProfile) await syncTeamWithPlan(expiredProfile.id, "FREE");
     await logActivity({ userId, action: "plan_expired", details: sub.plan });
     return true;
   }

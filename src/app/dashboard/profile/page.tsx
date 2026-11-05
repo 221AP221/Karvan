@@ -1,9 +1,9 @@
 import { formatPhone } from "@/lib/phone";
-import { requireProfile } from "@/lib/auth";
+import { requirePageAccess } from "@/lib/auth";
 import { BasicsForm } from "./BasicsForm";
 
 export default async function ProfileBasics() {
-  const profile = await requireProfile();
+  const profile = await requirePageAccess("profile");
   return (
     <BasicsForm
       profile={{

@@ -1,10 +1,10 @@
 import { ExternalLink } from "lucide-react";
 import { secondaryButtonClass } from "@/components/ui";
-import { requireProfile } from "@/lib/auth";
+import { requirePageAccess } from "@/lib/auth";
 import { ProfileTabs } from "./Tabs";
 
 export default async function ProfileLayout({ children }: { children: React.ReactNode }) {
-  const profile = await requireProfile();
+  const profile = await requirePageAccess("profile");
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-center justify-between gap-3">

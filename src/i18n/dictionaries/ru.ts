@@ -335,6 +335,7 @@ export const ru: typeof az = {
       reviews: "Отзывы",
       notifications: "Уведомления",
       profile: "Моя страница",
+      team: "Команда",
       billing: "Подписка",
       settings: "Настройки",
     },

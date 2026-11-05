@@ -1,13 +1,13 @@
 import { ExternalLink, Trash2 } from "lucide-react";
 import { Card } from "@/components/ui";
-import { requireProfile } from "@/lib/auth";
+import { requirePageAccess } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { PLATFORMS, displayValue } from "@/lib/social";
 import { deleteCustomLink } from "../actions";
 import { AddLinkForm, SocialsForm } from "./forms";
 
 export default async function SocialSettings() {
-  const profile = await requireProfile();
+  const profile = await requirePageAccess("profile");
   const links = await db.socialLink.findMany({ where: { profileId: profile.id }, orderBy: { position: "asc" } });
   const values = Object.fromEntries(
     PLATFORMS.map((p) => {

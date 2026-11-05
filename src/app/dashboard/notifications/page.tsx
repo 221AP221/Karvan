@@ -1,6 +1,6 @@
 import { Bell, Clock, Info } from "lucide-react";
 import type { Metadata } from "next";
-import { requireProfile } from "@/lib/auth";
+import { requirePageAccess } from "@/lib/auth";
 import { getDictionary, getLocale } from "@/i18n/server";
 import { db } from "@/lib/db";
 import { channelReady } from "@/lib/notifications";
@@ -9,7 +9,7 @@ import { NotifyQueue, NotifySettings } from "./ui";
 export const metadata: Metadata = { title: "Bildirişlər" };
 
 export default async function NotificationsPage() {
-  const profile = await requireProfile();
+  const profile = await requirePageAccess("notifications");
   const locale = await getLocale();
   const t = getDictionary(locale).panel.notifications;
   const [queue, recent] = await Promise.all([

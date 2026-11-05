@@ -2,7 +2,7 @@ import { MessageSquareQuote, Star, TrendingUp } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Stars } from "@/components/Rating";
-import { requireProfile } from "@/lib/auth";
+import { requirePageAccess } from "@/lib/auth";
 import { getDictionary, getLocale } from "@/i18n/server";
 import { db } from "@/lib/db";
 import { formatRating, maskName } from "@/lib/reviews";
@@ -11,7 +11,7 @@ import { ReplyForm } from "./ui";
 export const metadata: Metadata = { title: "Rəylər" };
 
 export default async function ReviewsPage() {
-  const profile = await requireProfile();
+  const profile = await requirePageAccess("reviews");
   const locale = await getLocale();
   const t = getDictionary(locale).panel.reviews;
   const reviews = await db.review.findMany({

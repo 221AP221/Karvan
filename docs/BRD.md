@@ -5,10 +5,10 @@
 | **Məhsul** | Karvan — sosial şəbəkədə xidmət satanlar üçün link-in-bio, sifariş, faktura və ödəniş izləmə platforması |
 | **Domen** | karvan.az |
 | **Sənəd kodu** | KRV-BRD-002 |
-| **Versiya** | 2.0 (baseline) |
+| **Versiya** | 2.1 (baseline) |
 | **Sənədin statusu** | Təsdiqə təqdim olunur |
 | **Məhsulun statusu** | Beta-ya hazır — buraxılış şərtləri §26 |
-| **Baseline tarixi** | 03 noyabr 2026 |
+| **Baseline tarixi** | 05 noyabr 2026 |
 | **Növbəti baxış** | Lansdan 30 gün sonra (§27) |
 | **Hazırladı** | Biznes analitikası |
 | **Əhatə olunan bazar** | Azərbaycan (əsas) · Türkiyə, Gürcüstan, Qazaxıstan (hazırlıq) |
@@ -39,7 +39,8 @@ Bu sənəd **nə** tələb olunduğunu müəyyən edir, **necə** reallaşdırı
 | Versiya | Tarix | Dəyişiklik | Müəllif | Status |
 |---|---|---|---|---|
 | 1.0 | 2026-08 | PRD — ilkin məhsul konsepti | Məhsul | Əvəzlənib |
-| **2.0** | **2026-11-03** | **BABOK strukturuna keçid: tələb səviyyələri ayrıldı, biznes əsaslandırması, izlənilənlik matrisi, risk reyestri, UAT planı, keçid tələbləri və dəyişiklik idarəetməsi əlavə olundu** | **Biznes analitikası** | **Cari baseline** |
+| **2.0** | **2026-11-03** | **BABOK strukturuna keçid: tələb səviyyələri ayrıldı, biznes əsaslandırması, izlənilənlik matrisi, risk reyestri, UAT planı, keçid tələbləri və dəyişiklik idarəetməsi əlavə olundu** | Biznes analitikası | Əvəzlənib |
+| **2.1** | **2026-11-05** | **Rəylər və reytinq (FR-REY), bildirişlər (FR-BLD-05…07), Pro Max komanda üzvləri (FR-KMD) və rol-icazə matrisi əlavə olundu; panel çoxdilli edildi** | **Biznes analitikası** | **Cari baseline** |
 
 ### 0.4 Təsdiq və imza
 
@@ -438,6 +439,8 @@ Kəsik xətlər iki şeyi bildirir: hələ reallaşdırılmamış axını (e-po�
 |---|---|---|---|
 | **Ziyarətçi** | Qeydiyyatsız şəxs | Ana səhifə, kataloq, satıcı səhifəsi, sifariş vermək, faktura səhifəsini açmaq | Panelə çıxış yoxdur |
 | **Satıcı** (`USER`) | Xidmət satan fiziki şəxs | Öz profili, xidmətlər, sifarişlər, fakturalar, analitika, abunəlik, parametrlər | Yalnız öz məlumatı (BRU-04) |
+| **Menecer** (`MANAGER`) | Satıcının komanda üzvü | Sifarişlər, fakturalar, xidmətlər, səhifə, analitika, rəylər, bildirişlər, AI | Abunəlik, rekvizitlər, komanda və hesab parametrlərinə çıxışı yoxdur |
+| **İşçi** (`STAFF`) | Satıcının komanda üzvü | Yalnız sifarişlər və fakturalar | Analitika, xidmətlər, səhifə, abunəlik, rekvizitlər bağlıdır |
 | **Admin** (`ADMIN`) | Dəstək komandası | İstifadəçi axtarışı və düzəlişi, plan dəyişmək, bloklamaq, moderasiya, jurnal, ixrac, köçürmə təsdiqi | Admini bloklaya/silə bilməz (BRU-14) |
 | **Super admin** (`SUPER_ADMIN`) | Məhsul sahibi | Admin icazələri + rol təyinatı, istifadəçi kimi daxil olmaq, AI ayarları | Sonuncu super admin rolunu itirə bilməz (BRU-14) |
 
@@ -559,6 +562,7 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 | SH-SAT-11 | Mən yeni müştərinin məni kataloqdan tapmasını istəyirəm, lakin bunu söndürə də bilməliyəm | PR-01 | BR-06, BR-12 |
 | SH-SAT-12 | Mən planımı özüm seçib, ödənişi özüm idarə etməliyəm | PR-03 | BR-07 |
 | SH-SAT-13 | Mən hesabımı və məlumatlarımı silə bilməliyəm | PR-01 | BR-12 |
+| SH-SAT-14 | Mən işimi tək idarə etməyəndə komanda yoldaşımı panelə əlavə edə, ona nə görə biləcəyini özüm təyin edə bilməliyəm | PR-03 | BR-07 |
 
 ### 12.2 Müştəri (`SH-MUS`)
 
@@ -755,7 +759,7 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 | Platforma qeydi | var | yoxdur | yoxdur |
 | Kataloqda önə çıxma | — | — | ✅ |
 | CSV hesabat | — | — | ✅ |
-| Komanda üzvü | 1 | 1 | 5 ⬜ |
+| Komanda üzvü | 1 | 1 | 5 (sahib daxil) ✅ |
 | AI sorğu / ay | 10 | 200 | 1000 |
 
 | # | Tələb | Pri | Mənbə | Yox. | Vəz. |
@@ -773,6 +777,7 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 | FR-ABN-11 | Tarif dəyişdirildikdə köhnə tarifin qalan müddətinin dəyəri nəzərə alınmalıdır | S | SH-SAT-12 | T | ✅ Qalan müddət yeni tarifdə günə çevrilir; ödəniş səhifəsində göstərilir |
 | FR-ABN-12 | Satıcı ödəniş tarixçəsini paneldə görə bilməlidir | S | SH-SAT-12 | D | ✅ |
 | FR-ABN-13 | Ödəniş səhifəsində endirim kodu tətbiq edilə bilməli, qiymət serverdə yenidən hesablanmalıdır | S | SH-BIZ-02 | T | ✅ |
+| FR-ABN-15 | Pro Max komanda üzvü imkanı plan dəyişdikdə avtomatik sinxronlaşmalıdır (bax FR-KMD-09) | S | BR-07 | T | ✅ |
 | FR-ABN-14 | Kodun keçərliliyi tarif, müddət, tarix aralığı, ümumi və istifadəçi üzrə limitlə yoxlanılmalı; səbəb istifadəçiyə göstərilməlidir | M | SH-BIZ-02 | T | ✅ |
 
 ### 13.11 Admin panel — `FR-ADM`
@@ -833,6 +838,23 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 | FR-BLD-07 | Provayderi qoşulmamış kanalın bildirişi itməməli, jurnalda saxlanılmalı və sonradan göndərilə bilməlidir | M | NFR-REL-03 | T | ✅ |
 | FR-BLD-04 | Ödəniş xatırlatmaları son tarixdən əvvəl və sonra avtomatik göndərilməlidir | S | BG-03 | — | ⬜ AI mətni hazır, avtomatik göndərmə yoxdur |
 
+### 13.17 Komanda üzvləri — `FR-KMD`
+
+| # | Tələb | Pri | Mənbə | Yox. | Vəz. |
+|---|---|---|---|---|---|
+| FR-KMD-01 | Pro Max planında satıcı öz iş sahəsinə komanda üzvü dəvət edə bilməlidir | S | SH-SAT-14 | T | ✅ |
+| FR-KMD-02 | Komandanın ölçüsü sahib daxil olmaqla 5 nəfərlə məhdudlaşmalıdır | S | BR-07 | T | ✅ |
+| FR-KMD-03 | Üç rol olmalıdır: sahib (`OWNER`), menecer (`MANAGER`), işçi (`STAFF`) | S | SH-SAT-14 | T | ✅ |
+| FR-KMD-04 | Rolun icazələri mərkəzləşdirilmiş matrisdən gəlməlidir; hər səhifə və hər server əməliyyatı eyni matrisə əsasən yoxlanılmalıdır | M | NFR-SEC-02 | T | ✅ |
+| FR-KMD-05 | İcazəsi olmayan üzv həmin menyu bəndini görməməli, birbaşa URL ilə də səhifəni aça bilməməlidir | M | BRU-04 | T | ✅ |
+| FR-KMD-06 | Dəvət e-poçtla göndərilməli, provayder qoşulmayanda satıcı dəvət linkini özü paylaşa bilməlidir | S | IR-03 | T | ✅ |
+| FR-KMD-07 | Bir hesab həm öz səhifəsini, həm üzvü olduğu komandanın səhifəsini idarə edə bilməlidir; iş sahəsi başlıqdakı seçici ilə dəyişdirilməlidir | S | SH-SAT-14 | T | ✅ |
+| FR-KMD-08 | Sahib üzvün rolunu dəyişə və onu komandadan çıxara bilməlidir; üzv özü komandadan ayrıla bilməlidir | S | SH-SAT-14 | T | ✅ |
+| FR-KMD-09 | Pro Max bitəndə üzvlər silinməməli, dondurulmalıdır (`SUSPENDED`); plan bərpa olunanda avtomatik aktivləşməlidir | S | BR-07 | T | ✅ |
+| FR-KMD-10 | Dondurulmuş üzvün iş sahəsinə girişi kəsilməli, sahibin öz səhifəsi isə işləməyə davam etməlidir | M | BR-07 | T | ✅ |
+| FR-KMD-11 | Fəaliyyət jurnalında əməliyyatı kimin etdiyi (sahib yoxsa hansı üzv) yazılmalıdır | S | BR-09 | T | ✅ |
+| FR-KMD-12 | Bloklanmış sahibin iş sahəsi üzvlər üçün də bağlanmalıdır | M | BRU-14 | T | ✅ |
+
 ### 13.15 Tələblərin əhatə statistikası
 
 | Modul | Cəmi | ✅ | 🟡 | ⬜ |
@@ -846,13 +868,14 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 | FR-ODN | 6 | 4 | 0 | 2 |
 | FR-ANL | 10 | 10 | 0 | 0 |
 | FR-AI | 13 | 13 | 0 | 0 |
-| FR-ABN | 14 | 14 | 0 | 0 |
+| FR-ABN | 15 | 15 | 0 | 0 |
 | FR-ADM | 17 | 17 | 0 | 0 |
 | FR-DIL | 6 | 5 | 1 | 0 |
 | FR-SEO | 8 | 8 | 0 | 0 |
 | FR-BLD | 7 | 4 | 2 | 1 |
 | FR-REY | 7 | 7 | 0 | 0 |
-| **Cəmi** | **143** | **135 (94%)** | **5 (4%)** | **3 (2%)** |
+| FR-KMD | 12 | 12 | 0 | 0 |
+| **Cəmi** | **156** | **148 (95%)** | **5 (3%)** | **3 (2%)** |
 
 Lansı bloklayan `M` prioritetli açıq tələb yoxdur; 🟡 vəziyyətli FR-HES-06 və FR-BLD-02 IR-03-ün (e-poçt provayderi) bağlanması ilə həll olunur.
 

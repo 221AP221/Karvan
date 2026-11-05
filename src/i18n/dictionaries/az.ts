@@ -338,6 +338,7 @@ export const az = {
       reviews: "Rəylər",
       notifications: "Bildirişlər",
       profile: "Səhifəm",
+      team: "Komanda",
       billing: "Abunəlik",
       settings: "Parametrlər",
     },

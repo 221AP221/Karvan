@@ -4,7 +4,7 @@ import { logActivity } from "@/lib/activity";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { endSession, hashPassword, requireProfile, verifyPassword } from "@/lib/auth";
+import { endSession, hashPassword, requirePermission, requireProfile, verifyPassword } from "@/lib/auth";
 import { AUTO_DELETE_OPTIONS } from "@/lib/inactivity";
 import { db } from "@/lib/db";
 import { type FormState, firstError, optional } from "@/lib/forms";
@@ -15,7 +15,7 @@ async function checkPassword(userId: string, password: string) {
 }
 
 export async function changeEmail(_: FormState, form: FormData): Promise<FormState> {
-  const profile = await requireProfile();
+  const profile = await requirePermission("account");
   const parsed = z
     .object({ email: z.email("E-poçt düzgün deyil").trim().toLowerCase(), password: z.string().min(1, "Şifrəni yazın") })
     .safeParse(Object.fromEntries(form));
@@ -30,7 +30,7 @@ export async function changeEmail(_: FormState, form: FormData): Promise<FormSta
 }
 
 export async function changePassword(_: FormState, form: FormData): Promise<FormState> {
-  const profile = await requireProfile();
+  const profile = await requirePermission("account");
   const parsed = z
     .object({
       current: z.string().min(1, "Hazırkı şifrəni yazın"),
@@ -47,7 +47,7 @@ export async function changePassword(_: FormState, form: FormData): Promise<Form
     db.user.update({ where: { id: profile.userId }, data: { passwordHash: await hashPassword(parsed.data.next) } }),
     db.session.deleteMany({ where: { userId: profile.userId, id: { not: profile.sessionId } } }),
   ]);
-  await logActivity({ userId: profile.userId, email: profile.user.email, action: "password_change" });
+  await logActivity({ userId: profile.userId, email: profile.user.email, profileId: profile.id, actor: profile.actor, action: "password_change" });
   return { ok: true };
 }
 
@@ -69,33 +69,33 @@ const PaymentInput = z.object({
 });
 
 export async function updatePaymentSettings(_: FormState, form: FormData): Promise<FormState> {
-  const profile = await requireProfile();
+  const profile = await requirePermission("payouts");
   const parsed = PaymentInput.safeParse(Object.fromEntries(form));
   if (!parsed.success) return { error: firstError(parsed.error) };
   await db.profile.update({ where: { id: profile.id }, data: parsed.data });
-  await logActivity({ userId: profile.userId, email: profile.user.email, action: "payment_settings" });
+  await logActivity({ userId: profile.userId, email: profile.user.email, profileId: profile.id, actor: profile.actor, action: "payment_settings" });
   revalidatePath("/dashboard", "layout");
   return { ok: true };
 }
 
 export async function setCatalogVisibility(_: FormState, form: FormData): Promise<FormState> {
-  const profile = await requireProfile();
+  const profile = await requirePermission("profile");
   await db.profile.update({ where: { id: profile.id }, data: { showInCatalog: form.get("showInCatalog") === "on" } });
-  await logActivity({ userId: profile.userId, email: profile.user.email, action: "catalog_visibility", details: form.get("showInCatalog") === "on" ? "görünür" : "gizli" });
+  await logActivity({ userId: profile.userId, email: profile.user.email, profileId: profile.id, actor: profile.actor, action: "catalog_visibility", details: form.get("showInCatalog") === "on" ? "görünür" : "gizli" });
   revalidatePath("/dashboard/settings");
   return { ok: true };
 }
 
 export async function signOutOtherDevices(): Promise<FormState> {
-  const profile = await requireProfile();
+  const profile = await requirePermission("account");
   await db.session.deleteMany({ where: { userId: profile.userId, id: { not: profile.sessionId } } });
-  await logActivity({ userId: profile.userId, email: profile.user.email, action: "sessions_end" });
+  await logActivity({ userId: profile.userId, email: profile.user.email, profileId: profile.id, actor: profile.actor, action: "sessions_end" });
   revalidatePath("/dashboard/settings");
   return { ok: true };
 }
 
 export async function deleteAccount(_: FormState, form: FormData): Promise<FormState> {
-  const profile = await requireProfile();
+  const profile = await requirePermission("account");
   if (String(form.get("confirmUsername") ?? "").trim().toLowerCase() !== profile.username) {
     return { error: `Təsdiq üçün istifadəçi adınızı yazın: ${profile.username}` };
   }
@@ -103,7 +103,7 @@ export async function deleteAccount(_: FormState, form: FormData): Promise<FormS
   await endSession();
   // Profil, xidmətlər, fakturalar, şəkillər və sessiyalar cascade ilə silinir
   await db.user.delete({ where: { id: profile.userId } });
-  await logActivity({ userId: profile.userId, email: profile.user.email, action: "account_delete", details: `@${profile.username}` });
+  await logActivity({ userId: profile.userId, email: profile.user.email, profileId: profile.id, actor: profile.actor, action: "account_delete", details: `@${profile.username}` });
   redirect("/");
 }
 
@@ -113,7 +113,7 @@ export async function deleteAccount(_: FormState, form: FormData): Promise<FormS
  * silinmədən əvvəl xəbərdarlıq göndərilir (§ docs/BURAXILIS.md).
  */
 export async function setAutoDelete(_: FormState, form: FormData): Promise<FormState> {
-  const profile = await requireProfile();
+  const profile = await requirePermission("account");
   const enabled = form.get("autoDelete") === "on";
   const raw = Number(form.get("days"));
   const days = AUTO_DELETE_OPTIONS.includes(raw) ? raw : 90;
@@ -124,6 +124,8 @@ export async function setAutoDelete(_: FormState, form: FormData): Promise<FormS
   await logActivity({
     userId: profile.userId,
     email: profile.user.email,
+    profileId: profile.id,
+    actor: profile.actor,
     action: "auto_delete_settings",
     details: enabled ? `${days} gün` : "söndürüldü",
   });

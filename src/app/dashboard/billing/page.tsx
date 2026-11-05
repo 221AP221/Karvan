@@ -1,7 +1,7 @@
 import { BadgeCheck, Check, Crown, Rocket } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { requireProfile } from "@/lib/auth";
+import { requirePageAccess } from "@/lib/auth";
 import { MONTHLY } from "@/lib/billing";
 import { db } from "@/lib/db";
 import { formatMoney } from "@/lib/money";
@@ -26,7 +26,7 @@ const STATUS: Record<string, { label: string; cls: string }> = {
 const d = (x: Date) => `${String(x.getDate()).padStart(2, "0")}.${String(x.getMonth() + 1).padStart(2, "0")}.${x.getFullYear()}`;
 
 export default async function Billing() {
-  const profile = await requireProfile();
+  const profile = await requirePageAccess("billing");
   const sub = profile.user.subscription;
   const plan = sub?.plan ?? "FREE";
   // Gateway-də yarımçıq qalan kart ödənişləri 1 saatdan sonra bağlanır

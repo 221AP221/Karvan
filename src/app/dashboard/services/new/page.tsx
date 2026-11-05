@@ -1,6 +1,9 @@
+import { requirePageAccess } from "@/lib/auth";
 import { ServiceForm } from "../ServiceForm";
 
-export default function NewService() {
+export default async function NewService() {
+  await requirePageAccess("services");
+
   return (
     <div>
       <h1 className="mb-6 text-2xl font-bold">Yeni xidmət</h1>

@@ -97,6 +97,7 @@ model User {
   inactiveNoticeAt    DateTime? // silinmədən əvvəl xəbərdarlığın göndərildiyi an
 
   profile        Profile?
+  memberships    Membership[]
   subscription   Subscription?
   sessions       Session[]
   passwordResets PasswordReset[]
@@ -115,10 +116,11 @@ model PasswordReset {
 }
 
 model Session {
-  id        String   @id // cookie tokeninin sha256 heşi
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  expiresAt DateTime
+  id              String   @id // cookie tokeninin sha256 heşi
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  activeProfileId String? // komanda üzvü hansı iş sahəsində işləyir (boşdursa öz səhifəsi)
+  expiresAt       DateTime
 }
 
 model Subscription {
@@ -174,6 +176,7 @@ model Profile {
   notifyEvents   NotificationEvent[]   @default([ORDER_NEW, PAYMENT_CLAIMED, REVIEW_NEW])
   notifyEmail    String? // boşdursa hesabın e-poçtu
   notifyPhone    String? // boşdursa profilin nömrəsi
+  memberships    Membership[]
 }
 
 model SocialLink {
@@ -369,13 +372,16 @@ model AdminLog {
 
 // İstifadəçi fəaliyyəti: giriş, xidmət, faktura və s. Hesab silinsə də qeyd qalır (əlaqə yoxdur, e-poçt saxlanılır)
 model ActivityLog {
-  id        String   @id @default(cuid())
-  userId    String?
-  email     String?
-  action    String // login | login_failed | signup | service_create | invoice_paid ...
-  details   String?
-  ip        String?
-  createdAt DateTime @default(now())
+  id          String   @id @default(cuid())
+  userId      String? // iş sahəsinin sahibi (hesab)
+  actorUserId String? // əməliyyatı edən şəxs: komanda üzvü ola bilər
+  actorName   String?
+  profileId   String? // hansı səhifə üzərində
+  email       String?
+  action      String // login | login_failed | signup | service_create | invoice_paid ...
+  details     String?
+  ip          String?
+  createdAt   DateTime @default(now())
 
   @@index([createdAt])
   @@index([userId, createdAt])
@@ -418,6 +424,39 @@ model SubscriptionPayment {
 
   @@index([status, createdAt])
   @@index([userId, createdAt])
+}
+
+enum TeamRole {
+  OWNER //   səhifənin sahibi: hər şey, o cümlədən abunəlik, rekvizitlər və komanda
+  MANAGER // gündəlik iş: xidmət, sifariş, faktura, analitika, rəy cavabı
+  STAFF //   yalnız sifariş və faktura
+}
+
+enum MemberStatus {
+  INVITED //   dəvət göndərilib, hələ qəbul edilməyib
+  ACTIVE
+  SUSPENDED // tarif Pro Max-dan düşüb: məlumat qalır, giriş bağlanır
+}
+
+// Komanda üzvlüyü: bir profil (iş sahəsi) üzərində bir neçə hesabın işləməsi (Pro Max)
+model Membership {
+  id           String       @id @default(cuid())
+  profileId    String
+  profile      Profile      @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  userId       String? //     dəvət qəbul edilənə qədər boş
+  user         User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role         TeamRole     @default(STAFF)
+  status       MemberStatus @default(INVITED)
+  invitedEmail String //      dəvətin göndərildiyi ünvan
+  inviteToken  String?      @unique // tokenin sha256 heşi
+  inviteExpiry DateTime?
+  invitedBy    String? //     dəvət edən istifadəçinin e-poçtu
+  invitedAt    DateTime     @default(now())
+  acceptedAt   DateTime?
+
+  @@unique([profileId, userId])
+  @@unique([profileId, invitedEmail])
+  @@index([userId, status])
 }
 
 // Müştəri rəyi: yalnız ödənilmiş fakturaya görə yazıla bilər (bir faktura — bir rəy)

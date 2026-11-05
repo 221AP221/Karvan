@@ -3,6 +3,8 @@ import "@fontsource/ibm-plex-mono/400.css";
 import "@fontsource/ibm-plex-mono/500.css";
 import Link from "next/link";
 import { isImpersonating, requireProfile } from "@/lib/auth";
+import { NAV_PERMISSION, ROLE_LABELS, can, workspacesFor } from "@/lib/team";
+import { WorkspaceSwitcher } from "./WorkspaceSwitcher";
 import { getDictionary, getLocale } from "@/i18n/server";
 import { stopImpersonationAction } from "./impersonation";
 import { db } from "@/lib/db";
@@ -20,6 +22,7 @@ const NAV = [
   { href: "/dashboard/reviews", key: "reviews" },
   { href: "/dashboard/notifications", key: "notifications" },
   { href: "/dashboard/profile", key: "profile" },
+  { href: "/dashboard/team", key: "team" },
   { href: "/dashboard/billing", key: "billing" },
   { href: "/dashboard/settings", key: "settings" },
 ] as const;
@@ -28,6 +31,22 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const profile = await requireProfile();
   const t = getDictionary(await getLocale()).panel;
   const pending = await db.order.count({ where: { profileId: profile.id, status: "PENDING_APPROVAL" } });
+
+  // Rolu görmədiyi bölmələr menyuda göstərilmir
+  const nav = NAV.filter((item) => {
+    const permission = NAV_PERMISSION[item.href];
+    if (!permission) return true;
+    if (permission === "team") return profile.isOwner;
+    return can(profile.role, permission);
+  });
+
+  // İş sahələri: öz səhifəsi + aktiv üzvlüklər
+  const own = profile.isOwner ? { profileId: profile.id, username: profile.username, displayName: profile.displayName, role: "OWNER", isOwn: true } : null;
+  const memberships = await workspacesFor(profile.actor.id);
+  const workspaces = [
+    ...(own ? [own] : memberships.filter((w) => w.role === "OWNER").map((w) => ({ ...w, isOwn: true }))),
+    ...memberships.filter((w) => w.role !== "OWNER" && w.status === "ACTIVE").map((w) => ({ ...w, isOwn: false })),
+  ].map((w) => ({ profileId: w.profileId, username: w.username, displayName: w.displayName, role: w.role, isOwn: w.isOwn, isCurrent: w.profileId === profile.id }));
   const impersonating = await isImpersonating();
   const brand = (profile.theme as { primary?: string } | null)?.primary;
 
@@ -47,6 +66,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
             <Logo />
           </Link>
           <div className="flex items-center gap-3 text-sm">
+            <WorkspaceSwitcher workspaces={workspaces} roleLabels={ROLE_LABELS} />
             {profile.user.role !== "USER" && (
               <Link href="/admin" className="rounded-full bg-gray-900 px-3 py-1 text-xs font-semibold text-white">
                 {t.shell.admin}
@@ -61,7 +81,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           </div>
         </div>
         <nav className="mx-auto flex max-w-4xl gap-1 overflow-x-auto px-4 pb-2 text-sm">
-          {NAV.map((item) => (
+          {nav.map((item) => (
             <Link key={item.href} href={item.href} className="whitespace-nowrap rounded-full px-3 py-1.5 hover:bg-gray-100">
               {t.nav[item.key]}
               {item.href === "/dashboard/orders" && pending > 0 && (

@@ -35,6 +35,10 @@ export const ACTIVITY_LABELS: Record<string, string> = {
   review_reply: "Rəyə cavab yazdı",
   notify_settings: "Bildiriş ayarını dəyişdi",
   notify_sent: "Bildiriş göndərdi",
+  team_invite: "Komandaya dəvət göndərdi",
+  team_join: "Komandaya qoşuldu",
+  team_role: "Komanda üzvünün rolunu dəyişdi",
+  team_remove: "Komandadan çıxardı",
   invoice_cancel: "Fakturanı ləğv etdi",
   invoice_reopen: "Fakturanı bərpa etdi",
   ai_request: "AI sorğusu",
@@ -64,10 +68,31 @@ async function clientIp() {
 }
 
 // Qeyd heç vaxt əsas əməliyyatı pozmamalıdır: xəta olsa belə səssizcə keçir
-export async function logActivity(entry: { userId?: string | null; email?: string | null; action: keyof typeof ACTIVITY_LABELS | string; details?: string | null }) {
+/**
+ * Fəaliyyət jurnalı. `actor` verildikdə əməliyyatı kimin etdiyi də yazılır:
+ * komanda üzvü sahibin adından işləyəndə jurnalda hər ikisi görünür.
+ */
+export async function logActivity(entry: {
+  userId?: string | null;
+  email?: string | null;
+  action: keyof typeof ACTIVITY_LABELS | string;
+  details?: string | null;
+  profileId?: string | null;
+  actor?: { id: string; name: string | null } | null;
+}) {
   try {
     await db.activityLog.create({
-      data: { userId: entry.userId ?? null, email: entry.email ?? null, action: entry.action, details: entry.details?.slice(0, 500) ?? null, ip: await clientIp() },
+      data: {
+        userId: entry.userId ?? null,
+        email: entry.email ?? null,
+        action: entry.action,
+        details: entry.details?.slice(0, 500) ?? null,
+        ip: await clientIp(),
+        profileId: entry.profileId ?? null,
+        // Sahibin özü işləyəndə aktyor ayrıca yazılmır
+        actorUserId: entry.actor && entry.actor.id !== entry.userId ? entry.actor.id : null,
+        actorName: entry.actor && entry.actor.id !== entry.userId ? entry.actor.name : null,
+      },
     });
   } catch (error) {
     console.error("activity log", error);

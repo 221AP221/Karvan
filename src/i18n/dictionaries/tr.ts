@@ -334,6 +334,7 @@ export const tr: typeof az = {
       reviews: "Yorumlar",
       notifications: "Bildirimler",
       profile: "Sayfam",
+      team: "Takım",
       billing: "Abonelik",
       settings: "Ayarlar",
     },

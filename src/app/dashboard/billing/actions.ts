@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { logActivity } from "@/lib/activity";
-import { requireProfile } from "@/lib/auth";
+import { requirePermission, requireProfile } from "@/lib/auth";
 import { PLAN_NAMES } from "@/lib/plans";
 import { callbackUrl, getBillingGateway, returnUrl } from "@/lib/billing-gateway";
 import { isPaidPlan, newReference, priceFor } from "@/lib/billing";
@@ -34,7 +34,7 @@ const couponError = (r: { error?: string }) => (r.error ? { error: r.error } : n
 
 // Kart: Karvan-da kart sahəsi yoxdur. Ödəniş yaradılır, istifadəçi gateway-in təhlükəsiz səhifəsinə yönləndirilir.
 export async function startCardPayment(_: FormState, form: FormData): Promise<FormState> {
-  const profile = await requireProfile();
+  const profile = await requirePermission("billing");
   const o = order(form);
   if (!o) return { error: "Tarif seçilməyib" };
   const gateway = getBillingGateway();
@@ -80,7 +80,7 @@ export async function startCardPayment(_: FormState, form: FormData): Promise<Fo
 }
 
 export async function payByTransfer(_: FormState, form: FormData): Promise<FormState> {
-  const profile = await requireProfile();
+  const profile = await requirePermission("billing");
   const o = order(form);
   if (!o) return { error: "Tarif seçilməyib" };
   const reference = String(form.get("reference") ?? "");
@@ -103,7 +103,7 @@ export async function payByTransfer(_: FormState, form: FormData): Promise<FormS
       reference,
     },
   });
-  await logActivity({ userId: profile.userId, email: profile.user.email, action: "billing_transfer", details: `${o.plan} · ${o.months} ay · ${reference}` });
+  await logActivity({ userId: profile.userId, email: profile.user.email, profileId: profile.id, actor: profile.actor, action: "billing_transfer", details: `${o.plan} · ${o.months} ay · ${reference}` });
   redirect(`/dashboard/billing/success?id=${payment.id}`);
 }
 
@@ -114,7 +114,7 @@ export type CouponState =
 
 /** Ödəniş səhifəsində "Tətbiq et": kodu yoxlayır və yeni qiyməti qaytarır. */
 export async function applyCoupon(_: CouponState, form: FormData): Promise<CouponState> {
-  const profile = await requireProfile();
+  const profile = await requirePermission("billing");
   const o = order(form);
   if (!o) return { ok: false, error: "Tarif seçilməyib" };
   const code = String(form.get("coupon") ?? "").trim();

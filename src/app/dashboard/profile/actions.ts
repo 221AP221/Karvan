@@ -3,7 +3,7 @@
 import { logActivity } from "@/lib/activity";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { requireProfile } from "@/lib/auth";
+import { requirePermission, requireProfile } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { normalizePhone } from "@/lib/phone";
 import { type FormState, firstError, optional } from "@/lib/forms";
@@ -37,7 +37,7 @@ const ProfileInput = z.object({
 });
 
 export async function updateProfile(_: FormState, form: FormData): Promise<FormState> {
-  const profile = await requireProfile();
+  const profile = await requirePermission("profile");
   const parsed = ProfileInput.safeParse(Object.fromEntries(form));
   if (!parsed.success) return { error: firstError(parsed.error) };
   const { primaryColor, avatarUrl, coverUrl, ...data } = parsed.data;
@@ -60,7 +60,7 @@ export async function updateProfile(_: FormState, form: FormData): Promise<FormS
     where: { id: profile.id },
     data: { ...data, avatarUrl: avatar, coverUrl: cover, theme },
   });
-  await logActivity({ userId: profile.userId, email: profile.user.email, action: "profile_update", details: data.username !== profile.username ? `ünvan: @${profile.username} → @${data.username}` : null });
+  await logActivity({ userId: profile.userId, email: profile.user.email, profileId: profile.id, actor: profile.actor, action: "profile_update", details: data.username !== profile.username ? `ünvan: @${profile.username} → @${data.username}` : null });
   if (data.username !== profile.username) revalidatePath(`/${profile.username}`);
   refresh(data.username);
   return { ok: true };
@@ -69,7 +69,7 @@ export async function updateProfile(_: FormState, form: FormData): Promise<FormS
 // Sosial şəbəkələr: hamısı bir formada saxlanılır
 
 export async function saveSocials(_: FormState, form: FormData): Promise<FormState> {
-  const profile = await requireProfile();
+  const profile = await requirePermission("profile");
   const links: { platform: (typeof PLATFORMS)[number]["key"]; url: string; position: number }[] = [];
 
   for (const [position, platform] of PLATFORMS.entries()) {
@@ -100,7 +100,7 @@ const CustomLinkInput = z.object({
 });
 
 export async function addCustomLink(_: FormState, form: FormData): Promise<FormState> {
-  const profile = await requireProfile();
+  const profile = await requirePermission("profile");
   const parsed = CustomLinkInput.safeParse(Object.fromEntries(form));
   if (!parsed.success) return { error: firstError(parsed.error) };
   const count = await db.socialLink.count({ where: { profileId: profile.id, platform: "CUSTOM" } });
@@ -113,7 +113,7 @@ export async function addCustomLink(_: FormState, form: FormData): Promise<FormS
 }
 
 export async function deleteCustomLink(id: string) {
-  const profile = await requireProfile();
+  const profile = await requirePermission("profile");
   await db.socialLink.deleteMany({ where: { id, profileId: profile.id, platform: "CUSTOM" } });
   refresh(profile.username);
 }
@@ -131,7 +131,7 @@ const PortfolioInput = z.object({
 });
 
 export async function savePortfolioItem(_: FormState, form: FormData): Promise<FormState> {
-  const profile = await requireProfile();
+  const profile = await requirePermission("profile");
   const parsed = PortfolioInput.safeParse(Object.fromEntries(form));
   if (!parsed.success) return { error: firstError(parsed.error) };
   const rawLink = String(form.get("linkUrl") ?? "").trim();
@@ -156,7 +156,7 @@ export async function savePortfolioItem(_: FormState, form: FormData): Promise<F
 }
 
 export async function deletePortfolioItem(id: string) {
-  const profile = await requireProfile();
+  const profile = await requirePermission("profile");
   const item = await db.portfolioItem.findFirst({ where: { id, profileId: profile.id } });
   if (!item) return;
   await db.portfolioItem.delete({ where: { id } });
@@ -165,7 +165,7 @@ export async function deletePortfolioItem(id: string) {
 }
 
 export async function movePortfolioItem(id: string, direction: -1 | 1) {
-  const profile = await requireProfile();
+  const profile = await requirePermission("profile");
   const items = await db.portfolioItem.findMany({ where: { profileId: profile.id }, orderBy: { position: "asc" } });
   const from = items.findIndex((i) => i.id === id);
   const to = from + direction;

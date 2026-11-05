@@ -5,7 +5,7 @@ import { logActivity } from "@/lib/activity";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { requireProfile } from "@/lib/auth";
+import { requirePermission, requireProfile } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { notify } from "@/lib/notifications";
 import { deleteMediaByUrl, ownedMediaUrl } from "@/lib/media";
@@ -59,7 +59,7 @@ const ServiceInput = z
   });
 
 export async function saveService(_: FormState, form: FormData): Promise<FormState> {
-  const profile = await requireProfile();
+  const profile = await requirePermission("services");
   const parsed = ServiceInput.safeParse(Object.fromEntries(form));
   if (!parsed.success) return { error: firstError(parsed.error) };
 
@@ -70,34 +70,34 @@ export async function saveService(_: FormState, form: FormData): Promise<FormSta
     const before = await db.service.findFirst({ where: { id, profileId: profile.id }, select: { imageUrl: true } });
     if (before && before.imageUrl !== data.imageUrl) await deleteMediaByUrl(profile.id, before.imageUrl);
     await db.service.updateMany({ where: { id, profileId: profile.id }, data });
-    await logActivity({ userId: profile.userId, email: profile.user.email, action: "service_update", details: parsed.data.title });
+    await logActivity({ userId: profile.userId, email: profile.user.email, profileId: profile.id, actor: profile.actor, action: "service_update", details: parsed.data.title });
   } else {
     const count = await db.service.count({ where: { profileId: profile.id } });
     const limit = PLAN_LIMITS[profile.user.subscription?.plan ?? "FREE"].services;
     if (count >= limit) return { error: `Planınızda ən çox ${limit} xidmət əlavə etmək olar. Daha çoxu üçün yuxarı plana keçin.` };
     await db.service.create({ data: { ...data, profileId: profile.id, position: count } });
-    await logActivity({ userId: profile.userId, email: profile.user.email, action: "service_create", details: parsed.data.title });
+    await logActivity({ userId: profile.userId, email: profile.user.email, profileId: profile.id, actor: profile.actor, action: "service_create", details: parsed.data.title });
   }
   revalidatePath(`/${profile.username}`);
   redirect("/dashboard/services");
 }
 
 export async function toggleService(id: string) {
-  const profile = await requireProfile();
+  const profile = await requirePermission("services");
   const service = await db.service.findFirst({ where: { id, profileId: profile.id } });
   if (!service) return;
   await db.service.update({ where: { id }, data: { isActive: !service.isActive } });
-  await logActivity({ userId: profile.userId, email: profile.user.email, action: "service_toggle", details: `${service.title}: ${service.isActive ? "gizlədildi" : "göstərildi"}` });
+  await logActivity({ userId: profile.userId, email: profile.user.email, profileId: profile.id, actor: profile.actor, action: "service_toggle", details: `${service.title}: ${service.isActive ? "gizlədildi" : "göstərildi"}` });
   revalidatePath("/dashboard/services");
   revalidatePath(`/${profile.username}`);
 }
 
 export async function deleteService(id: string) {
-  const profile = await requireProfile();
+  const profile = await requirePermission("services");
   const removed = await db.service.findFirst({ where: { id, profileId: profile.id }, select: { title: true, imageUrl: true } });
   await db.service.deleteMany({ where: { id, profileId: profile.id } });
   if (removed?.imageUrl) await deleteMediaByUrl(profile.id, removed.imageUrl);
-  if (removed) await logActivity({ userId: profile.userId, email: profile.user.email, action: "service_delete", details: removed.title });
+  if (removed) await logActivity({ userId: profile.userId, email: profile.user.email, profileId: profile.id, actor: profile.actor, action: "service_delete", details: removed.title });
   revalidatePath("/dashboard/services");
   revalidatePath(`/${profile.username}`);
 }
@@ -105,7 +105,7 @@ export async function deleteService(id: string) {
 // Sifarişlər
 
 export async function approveOrder(_: FormState, form: FormData): Promise<FormState> {
-  const profile = await requireProfile();
+  const profile = await requirePermission("orders");
   const order = await db.order.findFirst({
     where: { id: String(form.get("orderId")), profileId: profile.id, status: "PENDING_APPROVAL" },
     include: { service: true },
@@ -137,17 +137,17 @@ export async function approveOrder(_: FormState, form: FormData): Promise<FormSt
     throw error;
   }
   await db.order.update({ where: { id: order.id }, data: { status: "APPROVED" } });
-  await logActivity({ userId: profile.userId, email: profile.user.email, action: "order_approve", details: `${order.customerName} · ${amount} ${order.service?.currency ?? "AZN"}` });
+  await logActivity({ userId: profile.userId, email: profile.user.email, profileId: profile.id, actor: profile.actor, action: "order_approve", details: `${order.customerName} · ${amount} ${order.service?.currency ?? "AZN"}` });
   redirect(`/dashboard/invoices/${invoiceId}`);
 }
 
 export async function rejectOrder(id: string) {
-  const profile = await requireProfile();
+  const profile = await requirePermission("orders");
   await db.order.updateMany({
     where: { id, profileId: profile.id, status: "PENDING_APPROVAL" },
     data: { status: "REJECTED" },
   });
-  await logActivity({ userId: profile.userId, email: profile.user.email, action: "order_reject" });
+  await logActivity({ userId: profile.userId, email: profile.user.email, profileId: profile.id, actor: profile.actor, action: "order_reject" });
   revalidatePath("/dashboard", "layout");
 }
 
@@ -183,7 +183,7 @@ const InvoiceInput = z.object({
 });
 
 export async function createInvoiceAction(_: FormState, form: FormData): Promise<FormState> {
-  const profile = await requireProfile();
+  const profile = await requirePermission("invoices");
   const parsed = InvoiceInput.safeParse(Object.fromEntries(form));
   if (!parsed.success) return { error: firstError(parsed.error) };
   const { items, dueDate, currency, ...rest } = parsed.data;
@@ -198,7 +198,7 @@ export async function createInvoiceAction(_: FormState, form: FormData): Promise
       items: items.map((i) => ({ title: i.title, quantity: i.quantity, unitQepik: aznToQepik(i.unitPrice) })),
     });
     invoiceId = invoice.id;
-    await logActivity({ userId: profile.userId, email: profile.user.email, action: "invoice_create", details: `${invoice.number} · ${rest.customerName}` });
+    await logActivity({ userId: profile.userId, email: profile.user.email, profileId: profile.id, actor: profile.actor, action: "invoice_create", details: `${invoice.number} · ${rest.customerName}` });
   } catch (error) {
     if (error instanceof InvoiceLimitError) return { error: error.message };
     throw error;
@@ -207,7 +207,7 @@ export async function createInvoiceAction(_: FormState, form: FormData): Promise
 }
 
 export async function markInvoicePaid(id: string) {
-  const profile = await requireProfile();
+  const profile = await requirePermission("invoices");
   const invoice = await db.invoice.findFirst({ where: { id, profileId: profile.id } });
   if (!invoice || invoice.status === "PAID" || invoice.status === "CANCELLED") return;
   await db.$transaction([
@@ -216,7 +216,7 @@ export async function markInvoicePaid(id: string) {
       data: { invoiceId: id, provider: "manual", amountQepik: invoice.totalQepik, status: "SUCCEEDED" },
     }),
   ]);
-  await logActivity({ userId: profile.userId, email: profile.user.email, action: "invoice_paid", details: invoice.number });
+  await logActivity({ userId: profile.userId, email: profile.user.email, profileId: profile.id, actor: profile.actor, action: "invoice_paid", details: invoice.number });
   // Ödəniş təsdiqləndi: satıcıya qeyd, müştəriyə isə faktura səhifəsində rəy forması açılır
   await notify({
     profileId: profile.id,
@@ -231,21 +231,21 @@ export async function markInvoicePaid(id: string) {
 }
 
 export async function cancelInvoice(id: string) {
-  const profile = await requireProfile();
+  const profile = await requirePermission("invoices");
   await db.invoice.updateMany({
     where: { id, profileId: profile.id, status: { notIn: ["PAID", "CANCELLED"] } },
     data: { status: "CANCELLED" },
   });
-  await logActivity({ userId: profile.userId, email: profile.user.email, action: "invoice_cancel", details: id });
+  await logActivity({ userId: profile.userId, email: profile.user.email, profileId: profile.id, actor: profile.actor, action: "invoice_cancel", details: id });
   revalidatePath(`/dashboard/invoices/${id}`);
 }
 
 export async function reopenInvoice(id: string) {
-  const profile = await requireProfile();
+  const profile = await requirePermission("invoices");
   await db.invoice.updateMany({
     where: { id, profileId: profile.id, status: "CLAIMED_PAID" },
     data: { status: "SENT" },
   });
-  await logActivity({ userId: profile.userId, email: profile.user.email, action: "invoice_reopen", details: id });
+  await logActivity({ userId: profile.userId, email: profile.user.email, profileId: profile.id, actor: profile.actor, action: "invoice_reopen", details: id });
   revalidatePath(`/dashboard/invoices/${id}`);
 }

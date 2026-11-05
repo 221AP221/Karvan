@@ -3,7 +3,7 @@ import Link from "next/link";
 import { FilterBar } from "@/components/FilterBar";
 import { buttonClass } from "@/components/ui";
 import type { Prisma } from "@/generated/prisma/client";
-import { requireProfile } from "@/lib/auth";
+import { requirePageAccess } from "@/lib/auth";
 import { getDictionary, getLocale } from "@/i18n/server";
 import { db } from "@/lib/db";
 import { formatMoney } from "@/lib/money";
@@ -12,7 +12,7 @@ import { SERVICE_CATEGORIES, formatDuration, localizedCategory } from "@/lib/ser
 import { deleteService, toggleService } from "../actions";
 
 export default async function Services({ searchParams }: { searchParams: SearchParams }) {
-  const profile = await requireProfile();
+  const profile = await requirePageAccess("services");
   const locale = await getLocale();
   const dict = getDictionary(locale).panel;
   const t = dict.services;

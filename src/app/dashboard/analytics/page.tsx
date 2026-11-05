@@ -23,7 +23,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
 import { Card } from "@/components/ui";
-import { requireProfile } from "@/lib/auth";
+import { requirePageAccess } from "@/lib/auth";
 import { type Dict, getDictionary, getLocale } from "@/i18n/server";
 import { PERIODS, buildReport, change, niceTop, type Period, type Report, type Totals } from "@/lib/analytics-report";
 import { formatMoney } from "@/lib/money";
@@ -167,7 +167,7 @@ const TAGGED = [
 ] as const;
 
 export default async function AnalyticsPage({ searchParams }: { searchParams: SearchParams }) {
-  const profile = await requireProfile();
+  const profile = await requirePageAccess("analytics");
   const locale = await getLocale();
   const t = getDictionary(locale).panel.analytics;
   const raw = Number(param(await searchParams, "p"));

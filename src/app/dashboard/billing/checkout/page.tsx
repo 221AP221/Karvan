@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { requireProfile } from "@/lib/auth";
+import { requirePageAccess } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { KARVAN_BANK, carryOverDays, isPaidPlan, newReference, priceFor } from "@/lib/billing";
 import { getBillingGateway } from "@/lib/billing-gateway";
@@ -17,7 +17,7 @@ export default async function Checkout({ searchParams }: { searchParams: SearchP
   if (!isPaidPlan(plan)) redirect("/dashboard/billing");
 
   // Tarif dəyişirsə, köhnə tarifin qalan müddəti yeni tarifdə neçə gün verir (FR-ABN-11)
-  const profile = await requireProfile();
+  const profile = await requirePageAccess("billing");
   const sub = await db.subscription.findUnique({ where: { userId: profile.userId }, select: { plan: true, currentPeriodEnd: true } });
   const carryDays = carryOverDays(sub, plan);
 

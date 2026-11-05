@@ -2,7 +2,7 @@ import { CheckCircle2, Clock, XCircle } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { requireProfile } from "@/lib/auth";
+import { requirePageAccess } from "@/lib/auth";
 import { reconcileCardPayment } from "@/lib/billing";
 import { db } from "@/lib/db";
 import { formatMoney } from "@/lib/money";
@@ -13,7 +13,7 @@ import { AutoRefresh } from "./AutoRefresh";
 export const metadata: Metadata = { title: "Ödəniş qəbul edildi" };
 
 export default async function Success({ searchParams }: { searchParams: SearchParams }) {
-  const profile = await requireProfile();
+  const profile = await requirePageAccess("billing");
   const id = param(await searchParams, "id");
   await reconcileCardPayment(id);
   const payment = await db.subscriptionPayment.findFirst({ where: { id, userId: profile.userId } });

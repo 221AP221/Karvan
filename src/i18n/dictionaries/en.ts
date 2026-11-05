@@ -337,6 +337,7 @@ export const en: typeof az = {
       reviews: "Reviews",
       notifications: "Notifications",
       profile: "My page",
+      team: "Team",
       billing: "Subscription",
       settings: "Settings",
     },

@@ -1,6 +1,6 @@
 import { CreditCard, Crown, KeyRound, LayoutGrid, Mail, MonitorSmartphone, ShieldAlert, Timer } from "lucide-react";
 import { IconBadge } from "@/components/landing/IconBadge";
-import { requireProfile } from "@/lib/auth";
+import { requirePageAccess } from "@/lib/auth";
 import { AUTO_DELETE_OPTIONS } from "@/lib/inactivity";
 import { db } from "@/lib/db";
 import { PLAN_LIMITS, PLAN_NAMES, startOfMonth } from "@/lib/plans";
@@ -22,7 +22,7 @@ function Section({ icon, title, text, children }: { icon: Parameters<typeof Icon
 }
 
 export default async function Settings() {
-  const profile = await requireProfile();
+  const profile = await requirePageAccess("account");
   const plan = profile.user.subscription?.plan ?? "FREE";
   const limits = PLAN_LIMITS[plan];
   // Avtomatik silinmə ayarı və son giriş tarixi
