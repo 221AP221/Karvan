@@ -2,6 +2,7 @@ import Link from "next/link";
 import { InvoiceTable } from "@/components/InvoiceTable";
 import { Card, buttonClass } from "@/components/ui";
 import { requireProfile } from "@/lib/auth";
+import { getDictionary, getLocale } from "@/i18n/server";
 import { db } from "@/lib/db";
 import { OPEN_STATUSES } from "@/lib/invoice-status";
 import { formatTotals } from "@/lib/money";
@@ -10,6 +11,9 @@ import { CopyLink } from "./invoices/[id]/client";
 
 export default async function Dashboard() {
   const profile = await requireProfile();
+  const locale = await getLocale();
+  const dict = getDictionary(locale).panel;
+  const t = dict.home;
   const plan = profile.user.subscription?.plan ?? "FREE";
   const where = { profileId: profile.id };
 
@@ -27,19 +31,19 @@ export default async function Dashboard() {
   const pageUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/${profile.username}`;
 
   const steps = [
-    { done: Boolean(profile.avatarUrl), label: "Şəkil və ya loqo yükləyin", href: "/dashboard/profile" },
-    { done: linkCount > 0, label: "Sosial hesablarınızı əlavə edin", href: "/dashboard/profile/social" },
-    { done: Boolean(profile.about) || workCount > 0, label: "Haqqınızda yazın və ya gördüyünüz işləri əlavə edin", href: "/dashboard/profile/portfolio" },
-    { done: serviceCount > 0, label: "İlk xidmətinizi yaradın", href: "/dashboard/services/new" },
-    { done: Boolean(profile.cardNumber || profile.iban), label: "Ödəniş rekvizitlərini yazın", href: "/dashboard/settings" },
+    { done: Boolean(profile.avatarUrl), label: t.stepAvatar, href: "/dashboard/profile" },
+    { done: linkCount > 0, label: t.stepSocial, href: "/dashboard/profile/social" },
+    { done: Boolean(profile.about) || workCount > 0, label: t.stepAbout, href: "/dashboard/profile/portfolio" },
+    { done: serviceCount > 0, label: t.stepService, href: "/dashboard/services/new" },
+    { done: Boolean(profile.cardNumber || profile.iban), label: t.stepPayment, href: "/dashboard/settings" },
   ];
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-bold">Salam, {profile.displayName}</h1>
+      <h1 className="text-2xl font-bold">{t.hello.replace("{name}", profile.displayName)}</h1>
 
       {steps.some((s) => !s.done) && (
-        <Card title="Başlamaq üçün">
+        <Card title={t.start}>
           <ul className="flex flex-col gap-2 text-sm">
             {steps.map((step) => (
               <li key={step.label} className="flex items-center gap-2">
@@ -56,26 +60,26 @@ export default async function Dashboard() {
       )}
 
       <section className="grid grid-cols-2 gap-3 md:grid-cols-4">
-        <Stat label="Bu ay ödənilib" value={formatTotals(paidThisMonth)} />
-        <Stat label="Gözləyən məbləğ" value={formatTotals(outstanding)} />
-        <Stat label="Təsdiq gözləyən sorğu" value={String(pendingOrders)} href={pendingOrders ? "/dashboard/orders" : undefined} />
-        <Stat label="Faktura limiti" value={limit === Infinity ? "Limitsiz" : `${usedThisMonth} / ${limit}`} />
+        <Stat label={t.paidThisMonth} value={formatTotals(paidThisMonth)} />
+        <Stat label={t.outstanding} value={formatTotals(outstanding)} />
+        <Stat label={t.pendingOrders} value={String(pendingOrders)} href={pendingOrders ? "/dashboard/orders" : undefined} />
+        <Stat label={t.invoiceLimit} value={limit === Infinity ? t.unlimited : `${usedThisMonth} / ${limit}`} />
       </section>
 
-      <Card title="Səhifəniz">
+      <Card title={t.yourPage}>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <a href={pageUrl} target="_blank" className="font-mono text-sm text-[var(--brand)] hover:underline">{pageUrl}</a>
           <CopyLink url={pageUrl} />
         </div>
-        <p className="mt-2 text-xs text-gray-500">Bu linki Instagram və TikTok bio-nuza qoyun.</p>
+        <p className="mt-2 text-xs text-gray-500">{t.bioHint}</p>
       </Card>
 
       <div>
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="font-semibold">Son fakturalar</h2>
-          <Link href="/dashboard/invoices/new" className={buttonClass}>+ Yeni faktura</Link>
+          <h2 className="font-semibold">{t.recentInvoices}</h2>
+          <Link href="/dashboard/invoices/new" className={buttonClass}>{t.newInvoice}</Link>
         </div>
-        <InvoiceTable invoices={recent} />
+        <InvoiceTable invoices={recent} words={dict.common} locale={locale} emptyText={dict.common.noInvoices} />
       </div>
     </div>
   );

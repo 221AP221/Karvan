@@ -15,7 +15,7 @@ type Row = {
   status: InvoiceStatus;
 };
 
-export function InvoiceTable({ invoices, emptyText = "Hələ faktura yoxdur." }: { invoices: Row[]; emptyText?: string }) {
+export function InvoiceTable({ invoices, emptyText = "Hələ faktura yoxdur.", words, locale = "az-AZ" }: { invoices: Row[]; emptyText?: string; words?: Partial<Record<string, string>>; locale?: string }) {
   if (invoices.length === 0) {
     return (
       <p className="rounded-2xl border border-dashed border-gray-300 p-10 text-center text-gray-500">
@@ -32,12 +32,12 @@ export function InvoiceTable({ invoices, emptyText = "Hələ faktura yoxdur." }:
               <span className="min-w-0">
                 <span className="block truncate font-medium">{invoice.customerName}</span>
                 <span className="font-mono text-xs text-gray-500">
-                  {invoice.number} · {invoice.issuedAt.toLocaleDateString("az-AZ")}
+                  {invoice.number} · {invoice.issuedAt.toLocaleDateString(locale)}
                 </span>
               </span>
               <span className="flex flex-col items-end gap-1">
                 <span className="font-semibold">{formatMoney(invoice.totalQepik, invoice.currency)}</span>
-                <StatusBadge status={effectiveStatus(invoice)} />
+                <StatusBadge status={effectiveStatus(invoice)} words={words} />
               </span>
             </Link>
           </li>

@@ -4,8 +4,8 @@ import { DEFAULT_LOCALE, LOCALE_COOKIE, isLocale, localeFromPath } from "@/i18n/
 // Dil prefiksi olmayan, amma ziyarətçinin seçdiyi dildə göstərilən səhifələr.
 // Satıcı səhifəsi (/<username>) də buraya aiddir: ünvanı dəyişmir, dili cookie ilə seçilir.
 const AUTH_PATHS = ["/login", "/signup", "/forgot-password", "/reset-password"];
-// Panel və admin Azərbaycan dilindədir, ona görə onlar cookie-ni izləmir
-const AZ_ONLY = ["/dashboard", "/admin", "/pay"];
+// Admin paneli və ödəniş simulyasiyası hələ Azərbaycan dilindədir; satıcı paneli artıq çoxdillidir
+const AZ_ONLY = ["/admin", "/pay"];
 
 // Hər sorğuya dil başlığı (x-locale) əlavə edir: <html lang> və giriş/qeydiyyat səhifələrinin dili bundan asılıdır.
 // Dil prefiksli səhifəyə (/, /tr, /ru, kataloq) baxan ziyarətçinin seçimi cookie-də yadda qalır.

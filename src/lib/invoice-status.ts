@@ -1,5 +1,6 @@
 import type { InvoiceStatus } from "@/generated/prisma/enums";
 
+// Azərbaycan dilindəki standart adlar; panel seçilmiş dildə `statusLabel()` işlədir
 export const STATUS_LABEL: Record<InvoiceStatus, string> = {
   DRAFT: "Qaralama",
   SENT: "Göndərilib",
@@ -29,3 +30,10 @@ export function effectiveStatus(invoice: { status: InvoiceStatus; dueAt: Date | 
 }
 
 export const OPEN_STATUSES: InvoiceStatus[] = ["SENT", "VIEWED", "CLAIMED_PAID", "OVERDUE"];
+
+type StatusWords = Partial<Record<`st${InvoiceStatus}`, string>>;
+
+/** Faktura statusunun seçilmiş dildəki adı. */
+export function statusLabel(status: InvoiceStatus, words?: StatusWords) {
+  return words?.[`st${status}`] ?? STATUS_LABEL[status];
+}

@@ -13,7 +13,16 @@ const control =
   "h-10 rounded-xl border border-gray-200 bg-white text-sm outline-none transition focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/15";
 
 // Filtrlər URL-də saxlanılır: səhifə yenilənəndə və ya link paylaşılanda itmir.
-export function FilterBar({ fields, total }: { fields: FilterField[]; total: number }) {
+// `labels` verilməyəndə Azərbaycan dili işlədilir (admin panel hələ AZ-dir)
+export function FilterBar({
+  fields,
+  total,
+  labels = { all: "hamısı", results: "{n} nəticə" },
+}: {
+  fields: FilterField[];
+  total: number;
+  labels?: { all: string; results: string };
+}) {
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
@@ -58,7 +67,7 @@ export function FilterBar({ fields, total }: { fields: FilterField[]; total: num
             <label key={f.name} className="relative">
               <span className="sr-only">{f.label}</span>
               <select value={params.get(f.name) ?? ""} onChange={(e) => apply(f.name, e.target.value)} className={`${control} appearance-none pl-3 pr-9`}>
-                <option value="">{f.label}: hamısı</option>
+                <option value="">{f.label}: {labels.all}</option>
                 {f.options.map((o) => (
                   <option key={o.value} value={o.value}>
                     {o.label}
@@ -88,7 +97,7 @@ export function FilterBar({ fields, total }: { fields: FilterField[]; total: num
         )}
         <span className="ml-auto inline-flex h-10 items-center gap-2 px-2 text-sm text-gray-400">
           {pending && <LoaderCircle size={15} className="animate-spin" aria-hidden />}
-          {total} nəticə
+          {labels.results.replace("{n}", String(total))}
         </span>
       </div>
     </div>

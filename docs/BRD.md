@@ -393,7 +393,7 @@ Kəsik xətlər iki şeyi bildirir: hələ reallaşdırılmamış axını (e-po�
 | X-02 | Avtomatik e-poçt / SMS / push bildirişləri | Provayder müqaviləsi yoxdur | v1.1 |
 | X-03 | Komanda üzvləri (Pro Max-da elan olunub) | Rol modeli genişləndirilməlidir; interfeysdə "tezliklə" | v1.4 |
 | X-04 | VÖEN və e-qaimə inteqrasiyası | Hazırkı modeldə hüquqi tələb yaranmır (§23.2) | v2 |
-| X-05 | Rəy və reytinq sistemi | Sui-istifadə riski qiymətləndirilməlidir (§31 S5) | v1.3 |
+| ~~X-05~~ | ~~Rəy və reytinq sistemi~~ — reallaşıb | Yalnız ödənişi təsdiqlənmiş müştəri rəy yazır; admin moderasiyası var | ✅ |
 | X-06 | Native mobil tətbiq | Veb tətbiq mobil-uyğundur, dəyər əsaslandırılmır | Qərar yoxdur |
 | X-07 | Təqvim / rezervasiya | Ayrıca məhsul sahəsi | Qərar yoxdur |
 | X-08 | Çoxvalyutalı konvertasiya və cəmləmə | Məzənnə mənbəyi və məsuliyyət müəyyən deyil (BRU-02) | v2 |
@@ -650,7 +650,7 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 | FR-KAT-06 | "Tövsiyə olunan" sıralamada Pro Max hesablar önə çıxmalı və müvafiq nişan almalıdır | S | BR-07 | T | ✅ |
 | FR-KAT-07 | Sahə və şəhər üçün klik edilə bilən, indeksləşən linklər olmalıdır | S | BR-06 | İ | ✅ |
 | FR-KAT-08 | Kartdan satıcının səhifəsinə keçid olmalı, sifariş orada verilməlidir | M | BR-02 | T | ✅ |
-| FR-KAT-09 | Kataloqda rəy və reytinq sistemi olmalıdır | W | SH-MUS-02 | — | ⬜ v1.3 |
+| FR-KAT-09 | Kataloqda rəy və reytinq sistemi olmalıdır | S | SH-MUS-02 | T | ✅ Kartda reytinq göstərilir, "Reytinqə görə" sıralaması var |
 
 ### 13.5 Sifariş — `FR-SIF`
 
@@ -664,7 +664,7 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 | FR-SIF-06 | Satıcının aylıq faktura limiti dolubsa, sabit qiymətli sifariş itməməli, sorğuya çevrilməlidir | M | BR-02, BR-07 | T | ✅ |
 | FR-SIF-07 | Sifarişin gəldiyi mənbə (Instagram, TikTok, kataloq, axtarış, birbaşa və s.) qeyd olunmalıdır | S | SH-SAT-07 | T | ✅ |
 | FR-SIF-08 | Panelin sifarişlər siyahısında axtarış, status, xidmət və tarix filtrləri olmalıdır | S | SH-SAT-06 | D | ✅ |
-| FR-SIF-09 | Yeni sifariş barədə satıcıya anlıq bildiriş göndərilməlidir | S | SH-SAT-06 | — | ⬜ IR-03 |
+| FR-SIF-09 | Yeni sifariş barədə satıcıya anlıq bildiriş göndərilməlidir | S | SH-SAT-06 | T | 🟡 Bildiriş yaradılır və növbəyə düşür; çatdırılma e-poçt provayderindən asılıdır (IR-03) |
 
 ### 13.6 Faktura və PDF — `FR-FAK`
 
@@ -690,6 +690,18 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 | FR-ODN-04 | Müştərinin ödənişi platformadan keçməməli, birbaşa satıcının hesabına getməli və komissiya tutulmamalıdır | M | BR-08 | İ | ✅ |
 | FR-ODN-05 | Müştəri fakturanı kartla onlayn ödəyə bilməlidir | W | SH-MUS-04 | — | ⬜ v1.2 — §31 S3 |
 | FR-ODN-06 | Ödəniş qəbzinin şəkli yüklənib avtomatik yoxlanmalıdır | W | SH-SAT-06 | — | ⬜ |
+
+### 13.16 Rəylər və reytinq — `FR-REY`
+
+| # | Tələb | Pri | Mənbə | Yox. | Vəz. |
+|---|---|---|---|---|---|
+| FR-REY-01 | Rəy yalnız ödənişi təsdiqlənmiş fakturaya görə yazıla bilməli, hər fakturaya bir dəfə | M | BR-09 | T | ✅ |
+| FR-REY-02 | Rəy qiymət (1-5 ulduz) və könüllü mətndən ibarət olmalı, qeydiyyat tələb etməməlidir | M | SH-MUS-02 | T | ✅ |
+| FR-REY-03 | Müştərinin adı səhifədə qısaldılmış göstərilməlidir (məs. "Nərmin Ə.") | M | BR-12 | İ | ✅ |
+| FR-REY-04 | Satıcı rəyə cavab yaza bilməli, cavab rəyin altında görünməlidir | S | SH-SAT-08 | T | ✅ |
+| FR-REY-05 | Satıcı panelində orta reytinq, ulduz bölgüsü və cavabsız rəylərin sayı göstərilməlidir | S | SH-SAT-07 | D | ✅ |
+| FR-REY-06 | Admin qaydalara zidd rəyi səbəb göstərməklə gizlədə bilməli; gizlədilən rəy reytinqə təsir etməməlidir | M | BR-09 | T | ✅ |
+| FR-REY-07 | Reytinq satıcı səhifəsində, kataloq kartında və strukturlu məlumatda (AggregateRating) göstərilməlidir | S | BG-06 | A | ✅ |
 
 ### 13.8 Analitika — `FR-ANL`
 
@@ -794,7 +806,7 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 | FR-DIL-03 | Dil seçimi header və footer-də olmalı, seçim cookie-də saxlanmalıdır | S | BR-11 | T | ✅ |
 | FR-DIL-04 | Giriş/qeydiyyat səhifələri və server xəta mesajları seçilmiş dildə göstərilməlidir | M | BR-11 | T | ✅ |
 | FR-DIL-05 | İşıqlı/qaranlıq rejim dəstəklənməli, seçim yadda saxlanmalı, ilk açılışda sistem ayarı nəzərə alınmalı və keçiddə "parıltı" olmamalıdır | S | NFR-USE-02 | D | ✅ |
-| FR-DIL-06 | Satıcı səhifəsi, faktura səhifəsi, satıcı paneli və admin panel çoxdilli olmalıdır | C | BR-11 | T | 🟡 Satıcı səhifəsi və sifariş forması 4 dildə ✅; faktura səhifəsi, panel və admin Azərbaycan dilində — §30.2 |
+| FR-DIL-06 | Satıcı səhifəsi, faktura səhifəsi, satıcı paneli və admin panel çoxdilli olmalıdır | C | BR-11 | T | 🟡 Satıcı səhifəsi, sifariş forması və satıcı panelinin əsas bölmələri (panel, sifarişlər, xidmətlər, analitika, rəylər, bildirişlər) 4 dildə ✅; faktura səhifəsi, panelin qalan bölmələri və admin panel Azərbaycan dilində — §30.2 |
 
 ### 13.13 Axtarış sistemləri üçün optimallaşdırma — `FR-SEO`
 
@@ -815,7 +827,10 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 |---|---|---|---|---|---|
 | FR-BLD-01 | Faktura WhatsApp vasitəsilə hazır mətnlə paylaşıla bilməlidir | M | SH-SAT-05 | T | ✅ |
 | FR-BLD-02 | Şifrə bərpası məktubu göndərilməlidir | M | SH-SAT-01 | T | 🟡 Kod hazır, provayder açarı yoxdur — IR-03 |
-| FR-BLD-03 | Yeni sifariş və ödəniş barədə bildiriş (e-poçt, SMS, push) göndərilməlidir | S | SH-SAT-06 | — | ⬜ v1.1 |
+| FR-BLD-03 | Yeni sifariş və ödəniş barədə bildiriş (e-poçt, SMS, push) göndərilməlidir | S | SH-SAT-06 | T | 🟡 Mühərrik, növbə və panel hazırdır; e-poçt provayderi qoşulanda işləyir (IR-03) |
+| FR-BLD-05 | Satıcı bildiriş rejimini seçə bilməlidir: avtomatik (dərhal) və ya manual (növbədən özü göndərir) | S | SH-SAT-06 | T | ✅ |
+| FR-BLD-06 | Satıcı kanalları (e-poçt, SMS, push), hadisələri və bildiriş ünvanını ayrıca seçə bilməlidir | S | SH-SAT-06 | T | ✅ |
+| FR-BLD-07 | Provayderi qoşulmamış kanalın bildirişi itməməli, jurnalda saxlanılmalı və sonradan göndərilə bilməlidir | M | NFR-REL-03 | T | ✅ |
 | FR-BLD-04 | Ödəniş xatırlatmaları son tarixdən əvvəl və sonra avtomatik göndərilməlidir | S | BG-03 | — | ⬜ AI mətni hazır, avtomatik göndərmə yoxdur |
 
 ### 13.15 Tələblərin əhatə statistikası
@@ -825,8 +840,8 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 | FR-HES | 11 | 10 | 1 | 0 |
 | FR-SEH | 11 | 11 | 0 | 0 |
 | FR-XID | 6 | 6 | 0 | 0 |
-| FR-KAT | 9 | 8 | 0 | 1 |
-| FR-SIF | 9 | 8 | 0 | 1 |
+| FR-KAT | 9 | 9 | 0 | 0 |
+| FR-SIF | 9 | 8 | 1 | 0 |
 | FR-FAK | 9 | 9 | 0 | 0 |
 | FR-ODN | 6 | 4 | 0 | 2 |
 | FR-ANL | 10 | 10 | 0 | 0 |
@@ -835,8 +850,9 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 | FR-ADM | 17 | 17 | 0 | 0 |
 | FR-DIL | 6 | 5 | 1 | 0 |
 | FR-SEO | 8 | 8 | 0 | 0 |
-| FR-BLD | 4 | 1 | 1 | 2 |
-| **Cəmi** | **133** | **124 (93%)** | **3 (2%)** | **6 (5%)** |
+| FR-BLD | 7 | 4 | 2 | 1 |
+| FR-REY | 7 | 7 | 0 | 0 |
+| **Cəmi** | **143** | **135 (94%)** | **5 (4%)** | **3 (2%)** |
 
 Lansı bloklayan `M` prioritetli açıq tələb yoxdur; 🟡 vəziyyətli FR-HES-06 və FR-BLD-02 IR-03-ün (e-poçt provayderi) bağlanması ilə həll olunur.
 
@@ -982,6 +998,9 @@ BABOK təsnifatı: **D** = definitiv (strukturu müəyyən edir, pozula bilməz)
 | BRU-18 | Kuponun istifadəsi yalnız ödəniş aktivləşəndə sayılır; limit dolubsa qeyd yaradılmır | B | Kampaniya nəzarəti | Aktivləşmə | Sayılmır |
 | BRU-19 | İstifadə olunmuş endirim kodu silinmir, yalnız deaktiv edilir | D | Hesabatlılıq | Admin paneli | Əməliyyat rədd edilir |
 | BRU-20 | Hesaba hər giriş passivlik sayğacını sıfırlayır; silinmədən əvvəl xəbərdarlıq göndərilir | B | İstifadəçi etibarı | Təmizlənmə | — |
+| BRU-21 | Rəy yalnız ödənişi təsdiqlənmiş fakturaya görə yazılır; hər fakturaya bir rəy | D | Saxta rəyin qarşısının alınması | Rəy forması | Forma göstərilmir |
+| BRU-22 | Gizlədilmiş rəy satıcının səhifəsində görünmür və orta reytinqə daxil edilmir | B | Moderasiya | Reytinq hesablaması | Reytinq yenidən hesablanır |
+| BRU-23 | Bildiriş kanalı qoşulmayıbsa, bildiriş silinmir — "kanal qoşulmayıb" kimi jurnalda qalır | B | İtkinin qarşısının alınması | Bildiriş göndərmə | Status SKIPPED |
 | BRU-16 | Pul platformanın hesabında toplanmır | D | Hüquqi model (§23.1) | Ödəniş axını | Dizayn qadağası |
 
 ---
@@ -1011,6 +1030,9 @@ Fiziki sxem: [`prisma/schema.prisma`](../prisma/schema.prisma); miqrasiya tarix�
 | DR-11 | İstifadə şərtlərinin qəbulu anı və versiyası hesabla birlikdə saxlanılmalıdır | M | ✅ |
 | DR-12 | Son aktivlik tarixi saxlanılmalı və hər girişdə yenilənməlidir | S | ✅ |
 | DR-13 | Endirim kodunun istifadəsi ödənişlə bağlı qeyd kimi saxlanılmalıdır (kim, nə vaxt, nə qədər endirim) | S | ✅ |
+| DR-14 | Rəy fakturaya bağlı saxlanılmalı, bir fakturaya yalnız bir rəy yazıla bilməlidir | M | ✅ |
+| DR-15 | Satıcının orta reytinqi və rəy sayı profildə saxlanılmalı, rəy dəyişəndə yenilənməlidir | S | ✅ |
+| DR-16 | Bildirişlər növbə və jurnal kimi saxlanılmalı: hadisə, kanal, status, ünvan və xəta | S | ✅ |
 
 ### 16.3 Məlumat lüğəti (seçilmiş sahələr)
 
@@ -1488,7 +1510,7 @@ Versiya 2.0 təsdiqləndikdən sonra (§0.4) bu sənəd **baseline** sayılır. 
 | **v1.0 — Lans** | Mövcud əhatə (§7.2) | BG-01…BG-04 | — |
 | **v1.1 — Bildirişlər** | E-poçt provayderi, yeni sifariş və ödəniş bildirişləri, avtomatik xatırlatmalar | Ödənilmə nisbətini artırır (BG-03), reaksiyanı sürətləndirir | X-02, RSK-04 |
 | **v1.2 — Müştəri ödənişi** | Fakturanın kartla onlayn ödənişi (satıcı öz merchant hesabı ilə) | Ödəniş sürəti (BG-04), Pro plana keçid motivi (BG-05) | X-01, İ-11 |
-| **v1.3 — Kataloqun gücləndirilməsi** | Rəy və reytinq, sahə/şəhər ünvanlarının genişlənməsi, satıcı səhifəsinin çoxdilliliyi | Orqanik trafik (BG-06) | X-05, FR-DIL-06 |
+| **v1.3 — Kataloqun gücləndirilməsi** | Sahə/şəhər ünvanlarının genişlənməsi, faktura səhifəsi və panelin qalan bölmələrinin çoxdilliliyi | Orqanik trafik (BG-06) | FR-DIL-06 |
 | **v1.4 — Komanda** | Pro Max-da 5 üzv, rol bölgüsü | Studiyalar üçün Pro Max dəyəri | X-03 |
 | **v2 — Rəsmiləşmə və avtomatlaşdırma** | VÖEN/e-qaimə, abunəliyin avtomatik yenilənməsi, obyekt saxlamasına keçid | Böyük satıcılar, saxlanma (BG-07) | X-04, X-09, RSK-05, RSK-06 |
 
@@ -1499,7 +1521,7 @@ Versiya 2.0 təsdiqləndikdən sonra (§0.4) bu sənəd **baseline** sayılır. 
 | # | Məhdudiyyət | Təsir | Həll yolu | Mərhələ |
 |---|---|---|---|---|
 | 30.1 | ~~Tarif dəyişdirildikdə qalan müddət itir~~ — həll olunub (FR-ABN-11) | — | Qalan müddət yeni tarifdə gün kimi əlavə olunur | ✅ |
-| 30.2 | Faktura səhifəsi, satıcı paneli və admin panel Azərbaycan dilindədir (FR-DIL-06) | Xarici satıcı panelə alışmaqda çətinlik çəkə bilər | Lüğətin panel bölməsinə genişləndirilməsi | v1.3 |
+| 30.2 | Faktura səhifəsi, panelin ikinci dərəcəli bölmələri (fakturalar, səhifəm, abunəlik, parametrlər) və admin panel Azərbaycan dilindədir (FR-DIL-06) | Xarici satıcı bu ekranlarda Azərbaycan dili görür | Lüğətin həmin bölmələrə genişləndirilməsi | v1.3 |
 | 30.3 | Avtomatik bildiriş yoxdur (FR-BLD-03) | Satıcı yeni sifarişi panelə girəndə görür | E-poçt provayderi | v1.1 |
 | 30.4 | Fəaliyyət jurnalı yalnız bu versiyadan sonrakı hadisələri saxlayır | Tarixi araşdırma məhduddur | — | Qəbul edilib |
 | 30.5 | Pulsuz AI modellərinin dil keyfiyyəti aşağıdır (RSK-02) | "Mətndən faktura" nəticələri düzəliş tələb edir | Ödənişli tarif və ya lokal model | Konfiqurasiya |
@@ -1520,7 +1542,7 @@ Versiya 2.0 təsdiqləndikdən sonra (§0.4) bu sənəd **baseline** sayılır. 
 | S2 | `*0221` nömrəsi və `hello@karvan.az` ünvanı real əlaqə kanallarıdırmı? | Dəstək SLA və hüquqi sənədlər | Biznes | Lansdan əvvəl |
 | S3 | Müştəri fakturasının onlayn ödənişində model: hər satıcının öz merchant hesabı, yoxsa platforma hesabı? | §23.1 hüquqi statusu dəyişir | Biznes + Hüquq | v1.2-dən əvvəl |
 | S4 | Pulsuz planda AI limiti saxlanılsın, yoxsa azaldılsın (xərc nəzarəti)? | F-07 fərziyyəsi və marja | Biznes | Lans + 30 gün |
-| S5 | Kataloqda rəy sistemi hansı mərhələdə açılır və sui-istifadədən necə qorunur? | RSK-03 | Məhsul | v1.3-dən əvvəl |
+| ~~S5~~ | Rəy sistemi açıldı: yalnız ödənilmiş faktura sahibi yaza bilir, admin gizlədə bilir | Qərar verilib | Məhsul | ✅ |
 | S6 | Problemin kəmiyyət təsdiqi üçün sorğu nə vaxt aparılır (TR-12)? | §2.2 dəyər fərziyyələri | BA + Məhsul | Lansdan əvvəl |
 | S7 | Məlumatların saxlanma müddətləri (§16.4) hüquqi rəylə təsdiqlənirmi? | TR-07, NFR-PRV-04 | Hüquq | Lansdan əvvəl |
 | S8 | Abunəlikdən imtina və geri qaytarma qaydası necə olacaq? | H-04, müştəri etibarı | Biznes + Hüquq | Lansdan əvvəl |
@@ -1568,13 +1590,13 @@ Versiya 2.0 təsdiqləndikdən sonra (§0.4) bu sənəd **baseline** sayılır. 
 |---|---|---|---|---|
 | Biznes tələbləri (BR) | 12 | — | — | — |
 | Paydaş tələbləri (SH) | 29 | — | — | — |
-| Funksional tələblər (FR) | 133 | 124 | 3 | 6 |
+| Funksional tələblər (FR) | 143 | 135 | 5 | 3 |
 | Qeyri-funksional tələblər (NFR) | 35 | 29 | 5 | 1 |
-| Məlumat tələbləri (DR) | 13 | 12 | 1 | 0 |
+| Məlumat tələbləri (DR) | 16 | 15 | 1 | 0 |
 | İnterfeys tələbləri (IR) | 5 | 2 | 2 | 1 |
 | Keçid tələbləri (TR) | 14 | 0 | 1 | 13 |
-| Biznes qaydaları (BRU) | 20 | 20 | — | — |
-| **Cəmi həll tələbi** | **190** | **170** | **12** | **7** |
+| Biznes qaydaları (BRU) | 23 | 23 | — | — |
+| **Cəmi həll tələbi** | **206** | **187** | **14** | **4** |
 
 ### 32.3 Əlavə B — Buraxılış hazırlığının xülasəsi
 

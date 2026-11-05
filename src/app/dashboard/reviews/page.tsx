@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Stars } from "@/components/Rating";
 import { requireProfile } from "@/lib/auth";
+import { getDictionary, getLocale } from "@/i18n/server";
 import { db } from "@/lib/db";
 import { formatRating, maskName } from "@/lib/reviews";
 import { ReplyForm } from "./ui";
@@ -11,6 +12,8 @@ export const metadata: Metadata = { title: "Rəylər" };
 
 export default async function ReviewsPage() {
   const profile = await requireProfile();
+  const locale = await getLocale();
+  const t = getDictionary(locale).panel.reviews;
   const reviews = await db.review.findMany({
     where: { profileId: profile.id },
     orderBy: { createdAt: "desc" },
@@ -30,19 +33,19 @@ export default async function ReviewsPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-bold">Rəylər</h1>
+        <h1 className="text-2xl font-bold">{t.title}</h1>
         <p className="text-sm text-gray-500">
-          Rəyi yalnız ödənişi təsdiqlənmiş müştəri yaza bilər. Rəylər{" "}
+          {t.text.split("{page}")[0]}
           <Link href={`/${profile.username}`} target="_blank" className="underline">
-            səhifənizdə
-          </Link>{" "}
-          və kataloqda göstərilir.
+            {t.pageLink}
+          </Link>
+          {t.text.split("{page}")[1]}
         </p>
       </div>
 
       {visible.length === 0 ? (
         <p className="rounded-2xl border border-dashed border-gray-300 bg-white p-10 text-center text-gray-500">
-          Hələ rəy yoxdur. Müştəri fakturanı ödəyib siz təsdiqlədikdən sonra ona rəy yazmaq təklif olunur.
+          {t.empty}
         </p>
       ) : (
         <>
@@ -52,7 +55,7 @@ export default async function ReviewsPage() {
               <div className="mt-2 flex justify-center">
                 <Stars value={profile.ratingAvg ?? 0} size={18} />
               </div>
-              <p className="mt-2 text-sm text-gray-500">{profile.ratingCount} rəy</p>
+              <p className="mt-2 text-sm text-gray-500">{t.reviewsCount.replace("{n}", String(profile.ratingCount))}</p>
             </div>
 
             <div className="rounded-2xl border border-gray-200 bg-white p-5">
@@ -72,7 +75,7 @@ export default async function ReviewsPage() {
               {unanswered > 0 && (
                 <p className="mt-4 flex items-center gap-2 text-sm text-gray-600">
                   <MessageSquareQuote size={15} className="text-[var(--brand)]" aria-hidden />
-                  {unanswered} rəy cavabsızdır — cavab yazmaq etibarı artırır.
+                  {t.unanswered.replace("{n}", String(unanswered))}
                 </p>
               )}
             </div>
@@ -89,18 +92,18 @@ export default async function ReviewsPage() {
                   </span>
                   <span className="text-xs text-gray-400">
                     {review.invoice.number} ·{" "}
-                    {new Intl.DateTimeFormat("az-AZ", { day: "2-digit", month: "short", year: "numeric" }).format(review.createdAt)}
+                    {new Intl.DateTimeFormat(locale, { day: "2-digit", month: "short", year: "numeric" }).format(review.createdAt)}
                   </span>
                 </div>
 
                 {review.hidden && (
                   <p className="mt-2 rounded-lg bg-red-100 px-3 py-2 text-sm text-red-800">
-                    Bu rəy moderasiya tərəfindən gizlədilib{review.hiddenReason ? `: ${review.hiddenReason}` : ""}. Səhifənizdə görünmür.
+                    {t.hiddenNotice.replace("{reason}", review.hiddenReason ? `: ${review.hiddenReason}` : "")}
                   </p>
                 )}
                 {review.comment && <p className="mt-2 whitespace-pre-line text-gray-700">{review.comment}</p>}
 
-                <ReplyForm id={review.id} reply={review.reply} />
+                <ReplyForm id={review.id} reply={review.reply} t={t} />
               </li>
             ))}
           </ul>
@@ -109,7 +112,7 @@ export default async function ReviewsPage() {
 
       <p className="flex items-start gap-2 text-xs text-gray-500">
         <TrendingUp size={14} className="mt-0.5 shrink-0" aria-hidden />
-        Reytinq kataloqda sıralamaya təsir edir və axtarış nəticəsində ulduz kimi görünə bilər.
+        {t.ratingNote}
       </p>
     </div>
   );

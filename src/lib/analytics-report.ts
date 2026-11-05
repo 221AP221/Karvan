@@ -133,11 +133,12 @@ export async function buildReport(profileId: string, period: Period, now = new D
 
   // Qıf
   const paidOrders = cur.orders.filter((o) => o.invoice?.status === "PAID").length;
+  // `key` interfeysdə tərcümə üçün, `label` isə CSV ixracı üçün (Azərbaycan dilində)
   const funnel = [
-    { label: "Səhifəyə baxan", value: a.visitors },
-    { label: "Sifariş formasını açan", value: a.openers },
-    { label: "Sifariş verən", value: cur.orders.length },
-    { label: "Ödəyən", value: paidOrders },
+    { key: "viewed" as const, label: "Səhifəyə baxan", value: a.visitors },
+    { key: "opened" as const, label: "Sifariş formasını açan", value: a.openers },
+    { key: "ordered" as const, label: "Sifariş verən", value: cur.orders.length },
+    { key: "paid" as const, label: "Ödəyən", value: paidOrders },
   ];
 
   // Mənbələr

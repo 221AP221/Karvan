@@ -24,6 +24,7 @@ import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
 import { Card } from "@/components/ui";
 import { requireProfile } from "@/lib/auth";
+import { type Dict, getDictionary, getLocale } from "@/i18n/server";
 import { PERIODS, buildReport, change, niceTop, type Period, type Report, type Totals } from "@/lib/analytics-report";
 import { formatMoney } from "@/lib/money";
 import { PLAN_LIMITS } from "@/lib/plans";
@@ -39,11 +40,11 @@ const int = (v: number) => String(Math.round(v)).replace(/\B(?=(\d{3})+(?!\d))/g
 const azn = (q: number) => formatMoney(q, "AZN");
 const aznShort = (q: number) => `${int(q / 100)} ₼`;
 
-function hours(h: number | null) {
+function hours(h: number | null, words: Dict["panel"]["analytics"]) {
   if (h === null) return "—";
-  if (h < 1) return "1 saatdan az";
-  if (h < 48) return `${Math.round(h)} saat`;
-  return `${(h / 24).toFixed(1).replace(".", ",")} gün`;
+  if (h < 1) return words.lessThanHour;
+  if (h < 48) return `${Math.round(h)} ${words.hoursUnit}`;
+  return `${(h / 24).toFixed(1).replace(".", ",")} ${words.daysUnit}`;
 }
 
 function totals(t: Totals) {
@@ -111,10 +112,10 @@ function HBar({ label, value, max, display, sub }: { label: string; value: numbe
   );
 }
 
-function TableView({ caption, head, rows }: { caption: string; head: string[]; rows: (string | number)[][] }) {
+function TableView({ caption, head, rows, label }: { caption: string; head: string[]; rows: (string | number)[][]; label: string }) {
   return (
     <details className="mt-4 text-sm">
-      <summary className="cursor-pointer text-xs font-medium text-gray-500 hover:text-gray-800">Cədvəl kimi göstər</summary>
+      <summary className="cursor-pointer text-xs font-medium text-gray-500 hover:text-gray-800">{label}</summary>
       <div className="mt-2 max-h-64 overflow-auto rounded-lg border border-gray-100">
         <table className="w-full text-left text-xs">
           <caption className="sr-only">{caption}</caption>
@@ -134,18 +135,18 @@ function TableView({ caption, head, rows }: { caption: string; head: string[]; r
   );
 }
 
-function Insights({ r }: { r: Report }) {
+function Insights({ r, t }: { r: Report; t: Dict["panel"]["analytics"] }) {
   const tips: string[] = [];
   const best = r.sources.filter((s) => s.visitors >= 5).sort((x, y) => y.orders / y.visitors - x.orders / x.visitors)[0];
-  if (best && best.orders) tips.push(`${best.label} ən yaxşı çevirən mənbədir: hər 100 ziyarətçidən ${Math.round((best.orders / best.visitors) * 100)} nəfər sifariş verir.`);
+  if (best && best.orders) tips.push(t.tipBestSource.replace("{source}", best.label).replace("{n}", String(Math.round((best.orders / best.visitors) * 100))));
   const [visit, open] = r.funnel;
-  if (visit.value >= 10 && open.value / visit.value < 0.08) tips.push("Ziyarətçilərin az hissəsi sifariş formasını açır: xidmətlərin adını, qiymətini və şəkillərini daha cəlbedici edin.");
-  if (r.sales.paidRate !== null && r.sales.paidRate < 60) tips.push("Fakturaların yarıdan çoxu ödənilmir: gecikən fakturalar üçün xatırlatma göndərin.");
-  if (r.audience.mobileShare !== null && r.audience.mobileShare > 70) tips.push(`Ziyarətçilərin ${Math.round(r.audience.mobileShare)}%-i telefondandır: şəkil və mətnləri qısa, oxunaqlı saxlayın.`);
-  if (r.customers.total >= 5 && r.customers.returning / r.customers.total < 0.15) tips.push("Qayıdan müştəri azdır: köhnə müştərilərə endirim və ya paket təklifi göndərin.");
+  if (visit.value >= 10 && open.value / visit.value < 0.08) tips.push(t.tipFunnel);
+  if (r.sales.paidRate !== null && r.sales.paidRate < 60) tips.push(t.tipPayRate);
+  if (r.audience.mobileShare !== null && r.audience.mobileShare > 70) tips.push(t.tipMobile.replace("{n}", String(Math.round(r.audience.mobileShare))));
+  if (r.customers.total >= 5 && r.customers.returning / r.customers.total < 0.15) tips.push(t.tipReturning);
   if (!tips.length) return null;
   return (
-    <Card title="Tövsiyələr">
+    <Card title={t.tips}>
       <ul className="flex flex-col gap-2.5 text-sm text-gray-700">
         {tips.map((t) => (
           <li key={t} className="flex gap-2.5">
@@ -159,14 +160,16 @@ function Insights({ r }: { r: Report }) {
 }
 
 const TAGGED = [
-  { tag: "ig", label: "Instagram bio" },
-  { tag: "tt", label: "TikTok bio" },
-  { tag: "wa", label: "WhatsApp status / mesaj" },
-  { tag: "tg", label: "Telegram kanal" },
-];
+  { tag: "ig", key: "taggedIg" },
+  { tag: "tt", key: "taggedTt" },
+  { tag: "wa", key: "taggedWa" },
+  { tag: "tg", key: "taggedTg" },
+] as const;
 
 export default async function AnalyticsPage({ searchParams }: { searchParams: SearchParams }) {
   const profile = await requireProfile();
+  const locale = await getLocale();
+  const t = getDictionary(locale).panel.analytics;
   const raw = Number(param(await searchParams, "p"));
   const period: Period = (PERIODS as readonly number[]).includes(raw) ? (raw as Period) : 30;
   const r = await buildReport(profile.id, period);
@@ -179,26 +182,38 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Se
   const visitorsTop = niceTop(Math.max(1, ...r.buckets.map((b) => b.visitors)));
   const funnelTop = r.funnel[0].value;
   const sourceTop = Math.max(1, ...r.sources.map((x) => x.visitors));
-  const unit = period === 90 ? "Həftə" : "Gün";
+  const unit = period === 90 ? t.week : t.day;
+  // Qıf addımlarının və mənbələrin adları seçilmiş dildə
+  const funnelLabel = { viewed: t.funnelViewed, opened: t.funnelOpened, ordered: t.funnelOrdered, paid: t.funnelPaid };
+  const sourceLabel: Record<string, string> = {
+    instagram: t.srcInstagram,
+    tiktok: t.srcTiktok,
+    whatsapp: t.srcWhatsapp,
+    facebook: t.srcFacebook,
+    telegram: t.srcTelegram,
+    search: t.srcSearch,
+    direct: t.srcDirect,
+    other: t.srcOther,
+  };
 
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold">Analitika</h1>
-          <p className="text-sm text-gray-500">Satışlarınız və səhifənizə gələn auditoriya. Faizlər əvvəlki {period} günlə müqayisədir.</p>
+          <h1 className="text-2xl font-bold">{t.title}</h1>
+          <p className="text-sm text-gray-500">{t.text.replace("{n}", String(period))}</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
         {reports ? (
           <a href={`/api/analytics/export?p=${period}`} className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:border-gray-400">
-            <Download size={15} aria-hidden /> Hesabatı yüklə (Excel)
+            <Download size={15} aria-hidden /> {t.exportReport}
           </a>
         ) : (
-          <span title="Pro Max planında" className="inline-flex items-center gap-2 rounded-full border border-dashed border-gray-300 px-4 py-2 text-sm text-gray-400">
-            <Lock size={14} aria-hidden /> Hesabat ixracı · Pro Max
+          <span title={t.proOnly} className="inline-flex items-center gap-2 rounded-full border border-dashed border-gray-300 px-4 py-2 text-sm text-gray-400">
+            <Lock size={14} aria-hidden /> {t.exportLocked}
           </span>
         )}
-        <nav className="inline-flex rounded-full border border-gray-200 bg-white p-1 text-sm" aria-label="Dövr">
+        <nav className="inline-flex rounded-full border border-gray-200 bg-white p-1 text-sm" aria-label={t.period}>
           {PERIODS.map((p) => (
             <Link
               key={p}
@@ -207,7 +222,7 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Se
               aria-current={p === period ? "page" : undefined}
               className={`rounded-full px-4 py-1.5 font-medium transition ${p === period ? "bg-gray-900 text-white" : "text-gray-600 hover:text-gray-900"}`}
             >
-              {p} gün
+              {p} {t.days}
             </Link>
           ))}
         </nav>
@@ -216,147 +231,150 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Se
 
       {!r.hasEvents && (
         <p className="rounded-2xl border border-dashed border-gray-300 bg-white p-5 text-sm text-gray-600">
-          Hələ ziyarət qeydə alınmayıb. Səhifə linkinizi bio-ya qoyun — ziyarətçilər, mənbələr və sifarişlər burada görünəcək.
-          Öz baxışlarınız (daxil olduğunuz brauzerdən) sayılmır.
+          {t.noEvents}
         </p>
       )}
 
       {/* Satış */}
       <section>
-        <SectionTitle title="Satış" text="Ödənilmiş gəlir, sifarişlər və fakturaların ödənilməsi" />
+        <SectionTitle title={t.salesTitle} text={t.salesText} />
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 [&>*]:min-w-0">
-          <Kpi icon={Wallet} label="Gəlir" value={totals(s.revenue)} delta={<Delta value={change(s.revenueAzn, s.revenueAznPrev)} />} />
-          <Kpi icon={ShoppingBag} label="Sifarişlər" value={int(s.orders)} delta={<Delta value={change(s.orders, s.ordersPrev)} />} hint={s.pendingApproval ? `${s.pendingApproval} təsdiq gözləyir` : undefined} />
-          <Kpi icon={Receipt} label="Orta çek" value={s.avgOrder ? azn(s.avgOrder) : "—"} delta={<Delta value={change(s.avgOrder, s.avgOrderPrev)} />} />
+          <Kpi icon={Wallet} label={t.revenue} value={totals(s.revenue)} delta={<Delta value={change(s.revenueAzn, s.revenueAznPrev)} />} />
+          <Kpi icon={ShoppingBag} label={t.orders} value={int(s.orders)} delta={<Delta value={change(s.orders, s.ordersPrev)} />} hint={s.pendingApproval ? t.pendingHint.replace("{n}", String(s.pendingApproval)) : undefined} />
+          <Kpi icon={Receipt} label={t.avgOrder} value={s.avgOrder ? azn(s.avgOrder) : "—"} delta={<Delta value={change(s.avgOrder, s.avgOrderPrev)} />} />
           <Kpi
             icon={Percent}
-            label="Ödənilmə dərəcəsi"
+            label={t.payRate}
             value={pct(s.paidRate, 0)}
             delta={<Delta value={s.paidRate !== null && s.paidRatePrev !== null ? s.paidRate - s.paidRatePrev : null} points />}
-            hint="Göndərilən fakturalardan ödənilənlər"
+            hint={t.payRateHint}
           />
-          <Kpi icon={Clock} label="Orta ödəniş müddəti" value={hours(s.payHours)} delta={<Delta value={s.payHours !== null && s.payHoursPrev !== null ? change(s.payHours, s.payHoursPrev) : null} invert />} />
-          <Kpi icon={Wallet} label="Gözlənilən məbləğ" value={totals(s.outstanding)} hint="Hazırda açıq fakturalar" />
-          <Kpi icon={AlertTriangle} label="Gecikmiş" value={totals(s.overdue)} hint="Son ödəniş tarixi keçib" />
-          <Kpi icon={Repeat} label="Qayıdan müştəri" value={r.customers.total ? pct((r.customers.returning / r.customers.total) * 100, 0) : "—"} hint={`${r.customers.total} müştəridən ${r.customers.returning}-i əvvəl də alıb`} />
+          <Kpi icon={Clock} label={t.payTime} value={hours(s.payHours, t)} delta={<Delta value={s.payHours !== null && s.payHoursPrev !== null ? change(s.payHours, s.payHoursPrev) : null} invert />} />
+          <Kpi icon={Wallet} label={t.outstanding} value={totals(s.outstanding)} hint={t.outstandingHint} />
+          <Kpi icon={AlertTriangle} label={t.overdue} value={totals(s.overdue)} hint={t.overdueHint} />
+          <Kpi icon={Repeat} label={t.returning} value={r.customers.total ? pct((r.customers.returning / r.customers.total) * 100, 0) : "—"} hint={t.returningHint.replace("{total}", String(r.customers.total)).replace("{n}", String(r.customers.returning))} />
         </div>
 
         <div className="mt-3">
-        <Card title={`Gəlir (AZN, ${unit.toLowerCase()} üzrə)`}>
+        <Card title={t.revenueChart.replace("{unit}", period === 90 ? t.byWeek : t.byDay)}>
           <BarChart
-            ariaLabel="Ödənilmiş gəlir"
+            ariaLabel={t.paidRevenue}
             data={r.buckets.map((b) => ({ label: b.label, value: b.revenue, display: azn(b.revenue) }))}
             top={revenueTop}
             ticks={[aznShort(revenueTop), aznShort(revenueTop / 2), "0"]}
           />
-          <TableView caption="Gəlir" head={[unit, "Gəlir", "Sifariş"]} rows={r.buckets.map((b) => [b.label, azn(b.revenue), b.orders])} />
+          <TableView label={t.tableView} caption={t.revenue} head={[unit, t.revenue, t.ordersShort]} rows={r.buckets.map((b) => [b.label, azn(b.revenue), b.orders])} />
         </Card>
         </div>
       </section>
 
       {/* Auditoriya */}
       <section>
-        <SectionTitle title="Hədəf auditoriya" text="Səhifənizə kim, haradan və hansı cihazla gəlir" />
+        <SectionTitle title={t.audienceTitle} text={t.audienceText} />
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 [&>*]:min-w-0">
-          <Kpi icon={Users} label="Unikal ziyarətçi" value={int(a.visitors)} delta={<Delta value={change(a.visitors, a.visitorsPrev)} />} />
-          <Kpi icon={Eye} label="Baxışlar" value={int(a.views)} delta={<Delta value={change(a.views, a.viewsPrev)} />} hint={a.visitors ? `Ziyarətçi başına ${(a.views / a.visitors).toFixed(1).replace(".", ",")}` : undefined} />
+          <Kpi icon={Users} label={t.visitors} value={int(a.visitors)} delta={<Delta value={change(a.visitors, a.visitorsPrev)} />} />
+          <Kpi icon={Eye} label={t.views} value={int(a.views)} delta={<Delta value={change(a.views, a.viewsPrev)} />} hint={a.visitors ? t.viewsHint.replace("{n}", (a.views / a.visitors).toFixed(1).replace(".", ",")) : undefined} />
           <Kpi
             icon={MousePointerClick}
-            label="Konversiya"
+            label={t.conversion}
             value={pct(a.conversion)}
             delta={<Delta value={a.conversion !== null && a.conversionPrev !== null ? a.conversion - a.conversionPrev : null} points />}
-            hint="Ziyarətçidən sifarişə"
+            hint={t.conversionHint}
           />
-          <Kpi icon={PhoneCall} label="Zəng klikləri" value={int(a.phoneClicks)} delta={<Delta value={change(a.phoneClicks, a.phoneClicksPrev)} />} hint={`${int(a.linkClicks)} link kliki`} />
+          <Kpi icon={PhoneCall} label={t.phoneClicks} value={int(a.phoneClicks)} delta={<Delta value={change(a.phoneClicks, a.phoneClicksPrev)} />} hint={t.linkClicksHint.replace("{n}", int(a.linkClicks))} />
         </div>
 
         <div className="mt-3 grid gap-3 lg:grid-cols-2 [&>*]:min-w-0">
-          <Card title={`Ziyarətçilər (${unit.toLowerCase()} üzrə)`}>
+          <Card title={t.visitorsChart.replace("{unit}", period === 90 ? t.byWeek : t.byDay)}>
             <BarChart
-              ariaLabel="Unikal ziyarətçilər"
-              data={r.buckets.map((b) => ({ label: b.label, value: b.visitors, display: `${int(b.visitors)} ziyarətçi` }))}
+              ariaLabel={t.visitors}
+              data={r.buckets.map((b) => ({ label: b.label, value: b.visitors, display: `${int(b.visitors)} ${t.visitorsUnit}` }))}
               top={visitorsTop}
               ticks={[int(visitorsTop), visitorsTop >= 2 ? int(visitorsTop / 2) : "", "0"]}
             />
-            <TableView caption="Ziyarətçilər" head={[unit, "Ziyarətçi", "Baxış"]} rows={r.buckets.map((b) => [b.label, b.visitors, b.views])} />
+            <TableView label={t.tableView} caption={t.visitors} head={[unit, t.visitorsShort, t.viewsShort]} rows={r.buckets.map((b) => [b.label, b.visitors, b.views])} />
           </Card>
 
-          <Card title="Satış qıfı">
+          <Card title={t.funnel}>
             <ol className="flex flex-col gap-3">
               {r.funnel.map((step, i) => {
                 const prevStep = r.funnel[i - 1];
                 return (
                   <HBar
-                    key={step.label}
-                    label={`${i + 1}. ${step.label}`}
+                    key={step.key}
+                    label={`${i + 1}. ${funnelLabel[step.key]}`}
                     value={step.value}
                     max={funnelTop}
                     display={int(step.value)}
-                    sub={prevStep ? (prevStep.value ? `${pct((step.value / prevStep.value) * 100, 0)} əvvəlkindən` : "—") : undefined}
+                    sub={prevStep ? (prevStep.value ? `${pct((step.value / prevStep.value) * 100, 0)} ${t.fromPrevious}` : "—") : undefined}
                   />
                 );
               })}
             </ol>
-            <p className="mt-4 text-xs text-gray-500">Ən çox itki olan addımı yaxşılaşdırın: məsələn, formanı açan çox, sifariş verən azdırsa, qiymət və şərtləri aydın yazın.</p>
+            <p className="mt-4 text-xs text-gray-500">{t.funnelHint}</p>
           </Card>
         </div>
 
         <div className="mt-3 grid gap-3 lg:grid-cols-[1.4fr_1fr] [&>*]:min-w-0">
-          <Card title="Trafik mənbələri">
+          <Card title={t.sources}>
             {r.sources.length ? (
               <>
                 <ul className="flex flex-col gap-3">
                   {r.sources.map((x) => (
                     <HBar
                       key={x.key}
-                      label={x.label}
+                      label={sourceLabel[x.key] ?? x.label}
                       value={x.visitors}
                       max={sourceTop}
-                      display={`${int(x.visitors)} ziyarətçi`}
-                      sub={`${x.orders} sifariş · ${x.visitors ? pct((x.orders / x.visitors) * 100, 0) : "—"}`}
+                      display={`${int(x.visitors)} ${t.visitorsUnit}`}
+                      sub={`${x.orders} ${t.ordersShort.toLowerCase()} · ${x.visitors ? pct((x.orders / x.visitors) * 100, 0) : "—"}`}
                     />
                   ))}
                 </ul>
                 <TableView
-                  caption="Mənbələr"
-                  head={["Mənbə", "Ziyarətçi", "Sifariş", "Konversiya", "Gəlir"]}
-                  rows={r.sources.map((x) => [x.label, x.visitors, x.orders, x.visitors ? pct((x.orders / x.visitors) * 100) : "—", azn(x.revenue)])}
+                  label={t.tableView}
+                  caption={t.sources}
+                  head={[t.source, t.visitorsShort, t.ordersShort, t.conversion, t.revenue]}
+                  rows={r.sources.map((x) => [sourceLabel[x.key] ?? x.label, x.visitors, x.orders, x.visitors ? pct((x.orders / x.visitors) * 100) : "—", azn(x.revenue)])}
                 />
               </>
             ) : (
-              <p className="text-sm text-gray-500">Məlumat yoxdur.</p>
+              <p className="text-sm text-gray-500">{t.noData}</p>
             )}
           </Card>
 
           <div className="flex flex-col gap-3">
-            <Card title="Cihazlar">
+            <Card title={t.devices}>
               {a.mobile + a.desktop ? (
                 <>
-                  <div className="flex h-3 gap-[2px] overflow-hidden rounded-full" role="img" aria-label={`Telefon ${a.mobile}, kompüter ${a.desktop}`}>
+                  <div className="flex h-3 gap-[2px] overflow-hidden rounded-full" role="img" aria-label={`${t.phone} ${a.mobile}, ${t.desktop.toLowerCase()} ${a.desktop}`}>
                     <div className="bg-[var(--brand)]" style={{ width: `${(a.mobile / (a.mobile + a.desktop)) * 100}%` }} />
                     <div className="flex-1 bg-[#2a78d6]" />
                   </div>
                   <ul className="mt-3 flex justify-between text-sm">
                     <li className="flex items-center gap-2">
                       <span className="h-2.5 w-2.5 rounded-full bg-[var(--brand)]" aria-hidden />
-                      <Smartphone size={15} className="text-gray-400" aria-hidden /> Telefon
+                      <Smartphone size={15} className="text-gray-400" aria-hidden /> {t.phone}
                       <strong className="tabular-nums">{pct((a.mobile / (a.mobile + a.desktop)) * 100, 0)}</strong>
                     </li>
                     <li className="flex items-center gap-2">
                       <span className="h-2.5 w-2.5 rounded-full bg-[#2a78d6]" aria-hidden />
-                      <Monitor size={15} className="text-gray-400" aria-hidden /> Kompüter
+                      <Monitor size={15} className="text-gray-400" aria-hidden /> {t.desktop}
                       <strong className="tabular-nums">{pct((a.desktop / (a.mobile + a.desktop)) * 100, 0)}</strong>
                     </li>
                   </ul>
                 </>
               ) : (
-                <p className="text-sm text-gray-500">Məlumat yoxdur.</p>
+                <p className="text-sm text-gray-500">{t.noData}</p>
               )}
             </Card>
-            <Card title="Yeni və qayıdan ziyarətçilər">
+            <Card title={t.newVsReturning}>
               <p className="text-sm text-gray-600">
-                <strong className="text-xl tabular-nums text-gray-900">{int(a.returningVisitors)}</strong> ziyarətçi əvvəlki {period} gündə də gəlib
-                {a.visitors ? ` (${pct((a.returningVisitors / a.visitors) * 100, 0)})` : ""}. Qalan {int(a.visitors - a.returningVisitors)} nəfər yenidir.
+                {t.returningLine
+                  .replace("{n}", int(a.returningVisitors))
+                  .replace("{days}", String(period))
+                  .replace("{pct}", a.visitors ? ` (${pct((a.returningVisitors / a.visitors) * 100, 0)})` : "")
+                  .replace("{rest}", int(a.visitors - a.returningVisitors))}
               </p>
             </Card>
           </div>
@@ -365,17 +383,17 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Se
 
       {/* Xidmətlər və linklər */}
       <section className="grid gap-3 lg:grid-cols-[1.4fr_1fr] [&>*]:min-w-0">
-        <Card title="Xidmətlərin performansı">
+        <Card title={t.servicePerformance}>
           {r.topServices.length ? (
             <div className="-mx-5 overflow-x-auto">
               <table className="w-full min-w-[420px] text-left text-sm">
                 <thead className="text-xs text-gray-500">
                   <tr className="border-b border-gray-100">
-                    <th className="px-5 py-2 font-medium">Xidmət</th>
-                    <th className="px-2 py-2 text-right font-medium">Forma açılıb</th>
-                    <th className="px-2 py-2 text-right font-medium">Sifariş</th>
-                    <th className="px-2 py-2 text-right font-medium">Çevrilmə</th>
-                    <th className="px-5 py-2 text-right font-medium">Gəlir</th>
+                    <th className="px-5 py-2 font-medium">{t.service}</th>
+                    <th className="px-2 py-2 text-right font-medium">{t.formOpened}</th>
+                    <th className="px-2 py-2 text-right font-medium">{t.ordersShort}</th>
+                    <th className="px-2 py-2 text-right font-medium">{t.conversion}</th>
+                    <th className="px-5 py-2 text-right font-medium">{t.revenue}</th>
                   </tr>
                 </thead>
                 <tbody className="tabular-nums">
@@ -392,38 +410,38 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Se
               </table>
             </div>
           ) : (
-            <p className="text-sm text-gray-500">Bu dövrdə xidmətlərə maraq qeydə alınmayıb.</p>
+            <p className="text-sm text-gray-500">{t.serviceNoInterest}</p>
           )}
         </Card>
 
-        <Card title="Ən çox klik edilən linklər">
+        <Card title={t.topLinks}>
           {r.topLinks.length ? (
             <ul className="flex flex-col gap-3">
               {r.topLinks.map(([target, count]) => (
-                <HBar key={target} label={PLATFORM_BY_KEY[target as keyof typeof PLATFORM_BY_KEY]?.label ?? target} value={count} max={r.topLinks[0][1]} display={`${count} klik`} />
+                <HBar key={target} label={PLATFORM_BY_KEY[target as keyof typeof PLATFORM_BY_KEY]?.label ?? target} value={count} max={r.topLinks[0][1]} display={`${count} ${t.clicksUnit}`} />
               ))}
             </ul>
           ) : (
-            <p className="text-sm text-gray-500">Hələ klik yoxdur.</p>
+            <p className="text-sm text-gray-500">{t.noClicks}</p>
           )}
         </Card>
       </section>
 
-      <Insights r={r} />
+      <Insights r={r} t={t} />
 
-      <Card title="Mənbəni dəqiq bilmək üçün etiketli linklər">
+      <Card title={t.taggedLinks}>
         <p className="mb-4 flex gap-2 text-sm text-gray-600">
           <Link2 size={16} className="mt-0.5 shrink-0 text-[var(--brand)]" aria-hidden />
-          Instagram və TikTok tətbiqləri bəzən mənbəni gizlədir. Hər platformada aşağıdakı linki istifadə etsəniz, ziyarətçi düzgün mənbəyə yazılacaq.
+          {t.taggedHint}
         </p>
         <ul className="flex flex-col divide-y divide-gray-100">
-          {TAGGED.map((t) => (
-            <li key={t.tag} className="flex flex-wrap items-center justify-between gap-2 py-2.5">
+          {TAGGED.map((tag) => (
+            <li key={tag.tag} className="flex flex-wrap items-center justify-between gap-2 py-2.5">
               <span className="text-sm">
-                <span className="font-medium">{t.label}</span>
-                <span className="ml-2 font-mono text-xs text-gray-500">{`${pageUrl}?s=${t.tag}`}</span>
+                <span className="font-medium">{t[tag.key]}</span>
+                <span className="ml-2 font-mono text-xs text-gray-500">{`${pageUrl}?s=${tag.tag}`}</span>
               </span>
-              <CopyLink url={`${pageUrl}?s=${t.tag}`} />
+              <CopyLink url={`${pageUrl}?s=${tag.tag}`} />
             </li>
           ))}
         </ul>

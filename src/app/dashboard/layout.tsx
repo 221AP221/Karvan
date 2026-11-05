@@ -3,27 +3,30 @@ import "@fontsource/ibm-plex-mono/400.css";
 import "@fontsource/ibm-plex-mono/500.css";
 import Link from "next/link";
 import { isImpersonating, requireProfile } from "@/lib/auth";
+import { getDictionary, getLocale } from "@/i18n/server";
 import { stopImpersonationAction } from "./impersonation";
 import { db } from "@/lib/db";
 import { BackButton } from "@/components/BackButton";
 import { Logo } from "@/components/Logo";
 import { logout } from "../(auth)/actions";
 
+// Paneldəki bölmələr: adlar seçilmiş dildən gəlir (FR-DIL-06)
 const NAV = [
-  { href: "/dashboard", label: "Panel" },
-  { href: "/dashboard/orders", label: "Sifarişlər" },
-  { href: "/dashboard/invoices", label: "Fakturalar" },
-  { href: "/dashboard/services", label: "Xidmətlər" },
-  { href: "/dashboard/analytics", label: "Analitika" },
-  { href: "/dashboard/reviews", label: "Rəylər" },
-  { href: "/dashboard/notifications", label: "Bildirişlər" },
-  { href: "/dashboard/profile", label: "Səhifəm" },
-  { href: "/dashboard/billing", label: "Abunəlik" },
-  { href: "/dashboard/settings", label: "Parametrlər" },
-];
+  { href: "/dashboard", key: "dashboard" },
+  { href: "/dashboard/orders", key: "orders" },
+  { href: "/dashboard/invoices", key: "invoices" },
+  { href: "/dashboard/services", key: "services" },
+  { href: "/dashboard/analytics", key: "analytics" },
+  { href: "/dashboard/reviews", key: "reviews" },
+  { href: "/dashboard/notifications", key: "notifications" },
+  { href: "/dashboard/profile", key: "profile" },
+  { href: "/dashboard/billing", key: "billing" },
+  { href: "/dashboard/settings", key: "settings" },
+] as const;
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const profile = await requireProfile();
+  const t = getDictionary(await getLocale()).panel;
   const pending = await db.order.count({ where: { profileId: profile.id, status: "PENDING_APPROVAL" } });
   const impersonating = await isImpersonating();
   const brand = (profile.theme as { primary?: string } | null)?.primary;
@@ -32,35 +35,35 @@ export default async function DashboardLayout({ children }: { children: React.Re
     <div className="panel" style={{ "--brand": brand } as React.CSSProperties}>
       {impersonating && (
         <div className="flex items-center justify-center gap-3 bg-violet-700 px-4 py-2 text-sm text-white">
-          Admin kimi <strong>@{profile.username}</strong> hesabına baxırsınız
+          {t.shell.impersonating.split("{user}")[0]}<strong>@{profile.username}</strong>{t.shell.impersonating.split("{user}")[1]}
           <form action={stopImpersonationAction}>
-            <button className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-violet-700">Admin panelə qayıt</button>
+            <button className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-violet-700">{t.shell.backToAdmin}</button>
           </form>
         </div>
       )}
       <header className="border-b border-gray-200 bg-white">
         <div className="mx-auto flex max-w-4xl items-center justify-between gap-4 px-4 py-3">
-          <Link href="/dashboard" aria-label="Panel">
+          <Link href="/dashboard" aria-label={t.shell.panel}>
             <Logo />
           </Link>
           <div className="flex items-center gap-3 text-sm">
             {profile.user.role !== "USER" && (
               <Link href="/admin" className="rounded-full bg-gray-900 px-3 py-1 text-xs font-semibold text-white">
-                Admin
+                {t.shell.admin}
               </Link>
             )}
             <Link href={`/${profile.username}`} target="_blank" className="hidden text-gray-600 sm:inline">
               /{profile.username} ↗
             </Link>
             <form action={logout}>
-              <button className="text-gray-500 hover:text-gray-900">Çıxış</button>
+              <button className="text-gray-500 hover:text-gray-900">{t.shell.logout}</button>
             </form>
           </div>
         </div>
         <nav className="mx-auto flex max-w-4xl gap-1 overflow-x-auto px-4 pb-2 text-sm">
           {NAV.map((item) => (
             <Link key={item.href} href={item.href} className="whitespace-nowrap rounded-full px-3 py-1.5 hover:bg-gray-100">
-              {item.label}
+              {t.nav[item.key]}
               {item.href === "/dashboard/orders" && pending > 0 && (
                 <span className="ml-1 rounded-full bg-[var(--brand)] px-1.5 text-xs text-white">{pending}</span>
               )}
@@ -69,7 +72,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         </nav>
       </header>
       <main className="mx-auto max-w-4xl px-4 py-6">
-        <BackButton hideOn={["/dashboard"]} className="-ml-2 mb-3" />
+        <BackButton hideOn={["/dashboard"]} label={t.analytics.back} className="-ml-2 mb-3" />
         {children}
       </main>
     </div>
