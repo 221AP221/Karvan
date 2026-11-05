@@ -6,6 +6,7 @@ import { randomBytes } from "node:crypto";
 import { logAdmin, requireAdmin, requireSuperAdmin } from "@/lib/admin";
 import { setPlanKeepingTime } from "@/lib/billing";
 import { COUPON_RE, normalizeCode } from "@/lib/coupons";
+import { refreshRating } from "@/lib/reviews";
 import { pingAi } from "@/lib/ai";
 import { STALE_CLIENT, getStoredAi, saveStoredAi, settingsReady } from "@/lib/ai-settings";
 import { hashPassword, startImpersonation } from "@/lib/auth";
@@ -434,5 +435,26 @@ export async function deleteCoupon(_: FormState, form: FormData): Promise<FormSt
   await db.coupon.delete({ where: { id } });
   await logAdmin(admin, "coupon_delete", "coupon", coupon.code, null);
   revalidatePath("/admin/campaigns");
+  return { ok: true };
+}
+
+// ---- Rəy moderasiyası
+
+export async function toggleReviewVisibility(_: FormState, form: FormData): Promise<FormState> {
+  const admin = await requireAdmin();
+  const id = String(form.get("id") ?? "");
+  const reason = String(form.get("reason") ?? "").trim().slice(0, 200);
+  const review = await db.review.findUnique({ where: { id }, select: { id: true, hidden: true, profileId: true, profile: { select: { username: true } } } });
+  if (!review) return { error: "Rəy tapılmadı" };
+
+  await db.review.update({
+    where: { id },
+    data: review.hidden ? { hidden: false, hiddenReason: null } : { hidden: true, hiddenReason: reason || "Qaydalara uyğun deyil" },
+  });
+  // Gizlədilən rəy reytinqdən çıxır
+  await refreshRating(review.profileId);
+  await logAdmin(admin, review.hidden ? "review_show" : "review_hide", "service", id, review.profile.username);
+  revalidatePath("/admin/reviews");
+  revalidatePath(`/${review.profile.username}`);
   return { ok: true };
 }

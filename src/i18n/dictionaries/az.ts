@@ -357,6 +357,11 @@ export const az = {
     language: "Dil",
     pending: "Sorğunuz göndərildi. Satıcı qiyməti təsdiqləyən kimi faktura sizə göndəriləcək.",
     cancel: "Ləğv et",
+    reviews: "Rəylər",
+    review: "rəy",
+    noReviews: "Hələ rəy yoxdur",
+    sellerReply: "Satıcının cavabı",
+    ratingLabel: "rəy",
   },
 
   footer: {
@@ -436,6 +441,7 @@ export const az = {
       new: "Ən yeni",
       priceAsc: "Əvvəl ucuz",
       priceDesc: "Əvvəl bahalı",
+      rating: "Reytinqə görə",
     },
     filters: "Filtrlər",
     reset: "Sıfırla",

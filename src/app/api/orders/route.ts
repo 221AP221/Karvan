@@ -4,6 +4,7 @@ import { z } from "zod";
 import { logActivity } from "@/lib/activity";
 import { db } from "@/lib/db";
 import { InvoiceLimitError, createInvoice, invoiceUrl } from "@/lib/invoices";
+import { notify } from "@/lib/notifications";
 import { LIMITS, clientIp, limitByIp, rateLimit, tooMany } from "@/lib/rate-limit";
 
 const OrderInput = z.object({
@@ -68,8 +69,17 @@ export async function POST(request: Request) {
   const seller = await db.profile.findUnique({ where: { id: service.profileId }, select: { userId: true, user: { select: { email: true } } } });
   await logActivity({ userId: seller?.userId, email: seller?.user.email, action: "order_received", details: `${service.title} · ${input.customerName}` });
 
+  // Satıcıya bildiriş: ayarına görə dərhal gedir və ya növbəyə düşür (FR-BLD-03)
+  await notify({
+    profileId: service.profileId,
+    event: "ORDER_NEW",
+    title: `Yeni sifariş: ${service.title}`,
+    body: `${input.customerName} (${input.customerPhone}) “${service.title}” xidmətini sifariş etdi.${input.note ? `\nQeyd: ${input.note}` : ""}`,
+    linkPath: "/dashboard/orders",
+    entityId: order.id,
+  });
+
   if (!autoInvoice) {
-    // TODO(M2): satıcıya bildiriş
     return NextResponse.json({ pending: true });
   }
 

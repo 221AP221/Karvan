@@ -1,4 +1,4 @@
-import { ArrowUpRight, BadgeCheck, Briefcase, Clock, ExternalLink, MapPin, Phone, ShoppingBag, UserRound } from "lucide-react";
+import { ArrowUpRight, BadgeCheck, Briefcase, Clock, ExternalLink, MapPin, Phone, ShoppingBag, UserRound, Star } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -6,6 +6,7 @@ import { HomeButton } from "@/components/HomeButton";
 import { LanguageSwitcher } from "@/components/site/LanguageSwitcher";
 import { Logo } from "@/components/Logo";
 import { PageTracker } from "@/components/PageTracker";
+import { RatingBadge, Stars } from "@/components/Rating";
 import { SocialIcon } from "@/components/SocialIcon";
 import { CATALOG_PATH } from "@/i18n/config";
 import { getDictionary, getLocale } from "@/i18n/server";
@@ -13,6 +14,7 @@ import { db } from "@/lib/db";
 import { formatMoney } from "@/lib/money";
 import { formatPhone } from "@/lib/phone";
 import { PLAN_LIMITS } from "@/lib/plans";
+import { maskName } from "@/lib/reviews";
 import { absoluteUrl, breadcrumbs, clamp, fill, jsonLdScript } from "@/lib/seo";
 import { categoryLabel, formatDuration } from "@/lib/services";
 import { PLATFORM_BY_KEY } from "@/lib/social";
@@ -27,6 +29,7 @@ async function getProfile(username: string) {
       socialLinks: { orderBy: { position: "asc" } },
       services: { where: { isActive: true, blocked: false }, orderBy: { position: "asc" } },
       portfolio: { orderBy: { position: "asc" } },
+      reviews: { where: { hidden: false }, orderBy: { createdAt: "desc" }, take: 20, include: { service: { select: { title: true } } } },
       user: { select: { blockedAt: true, subscription: { select: { plan: true } } } },
     },
   });
@@ -89,6 +92,18 @@ function SellerJsonLd({ profile }: { profile: NonNullable<Awaited<ReturnType<typ
       ...(profile.phone ? { telephone: profile.phone } : {}),
       ...(profile.city ? { address: { "@type": "PostalAddress", addressLocality: profile.city, addressCountry: "AZ" } } : {}),
       ...(profile.socialLinks.length ? { sameAs: profile.socialLinks.filter((l) => l.platform !== "CUSTOM").map((l) => l.url) } : {}),
+      // Reytinq axtarış nəticəsində ulduz kimi görünə bilər (rich result)
+      ...(profile.ratingAvg !== null && profile.ratingCount > 0
+        ? {
+            aggregateRating: {
+              "@type": "AggregateRating",
+              ratingValue: profile.ratingAvg,
+              reviewCount: profile.ratingCount,
+              bestRating: 5,
+              worstRating: 1,
+            },
+          }
+        : {}),
       ...(profile.services.length
         ? {
             hasOfferCatalog: {
@@ -173,6 +188,7 @@ export default async function ProfilePage({ params }: Props) {
     profile.services.length > 0 && { id: "xidmetler", label: t.services },
     profile.portfolio.length > 0 && { id: "isler", label: t.portfolio },
     profile.about && { id: "haqqimda", label: t.about },
+    profile.reviews.length > 0 && { id: "reyler", label: t.reviews },
   ].filter(Boolean) as { id: string; label: string }[];
 
   return (
@@ -216,6 +232,9 @@ export default async function ProfilePage({ params }: Props) {
                 </BadgeCheck>
               )}
             </h1>
+            {profile.ratingAvg !== null && profile.ratingCount > 0 && (
+              <RatingBadge value={profile.ratingAvg} count={profile.ratingCount} label={t.ratingLabel} className="mt-2 justify-center lg:justify-start" />
+            )}
             {(profile.profession || profile.city) && (
               <p className="mt-1 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm text-gray-500 lg:justify-start">
                 {profile.profession && <span className="font-medium text-[var(--brand)]">{profile.profession}</span>}
@@ -386,6 +405,35 @@ export default async function ProfilePage({ params }: Props) {
                 <div className="whitespace-pre-line rounded-2xl border border-gray-200 bg-white p-6 leading-relaxed text-gray-700">
                   {profile.about}
                 </div>
+              </section>
+            )}
+
+            {profile.reviews.length > 0 && (
+              <section>
+                <SectionHeading id="reyler" icon={Star} title={t.reviews} count={profile.ratingCount} />
+                <ul className="grid gap-3">
+                  {profile.reviews.map((review) => (
+                    <li key={review.id} className="rounded-2xl border border-gray-200 bg-white p-5">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <span className="flex items-center gap-2">
+                          <Stars value={review.rating} />
+                          <span className="font-medium">{maskName(review.customerName)}</span>
+                        </span>
+                        <time dateTime={review.createdAt.toISOString()} className="text-xs text-gray-400">
+                          {new Intl.DateTimeFormat(locale, { day: "2-digit", month: "short", year: "numeric" }).format(review.createdAt)}
+                        </time>
+                      </div>
+                      {review.service && <p className="mt-1 text-xs text-gray-500">{review.service.title}</p>}
+                      {review.comment && <p className="mt-2 whitespace-pre-line text-gray-700">{review.comment}</p>}
+                      {review.reply && (
+                        <div className="mt-3 rounded-xl bg-gray-50 p-3 text-sm">
+                          <p className="font-medium text-gray-700">{t.sellerReply}</p>
+                          <p className="mt-1 whitespace-pre-line text-gray-600">{review.reply}</p>
+                        </div>
+                      )}
+                    </li>
+                  ))}
+                </ul>
               </section>
             )}
 

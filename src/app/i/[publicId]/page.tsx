@@ -3,7 +3,9 @@ import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { getPublicInvoice } from "@/lib/invoices";
 import { formatMoney } from "@/lib/money";
+import { reviewableInvoice } from "@/lib/reviews";
 import { ClaimPaidButton, CopyValue } from "./ClaimPaidButton";
+import { ReviewForm } from "./ReviewForm";
 
 const STATUS_LABEL = {
   DRAFT: "Qaralama",
@@ -26,6 +28,8 @@ export default async function InvoicePage({ params }: { params: Promise<{ public
 
   const { profile } = invoice;
   const payable = ["SENT", "VIEWED", "OVERDUE"].includes(invoice.status);
+  // Ödəniş təsdiqləndikdən sonra müştəri bir dəfə rəy yaza bilər (FR-KAT-09)
+  const { invoice: reviewable, existing: review } = await reviewableInvoice(publicId);
 
   return (
     <main
@@ -67,6 +71,13 @@ export default async function InvoicePage({ params }: { params: Promise<{ public
           </div>
         )}
         {/* TODO(M5): ONLINE / BOTH üçün gateway düyməsi */}
+
+        {reviewable && <ReviewForm publicId={invoice.publicId} sellerName={profile.displayName} />}
+        {review && (
+          <p className="mt-6 rounded-xl bg-gray-50 p-4 text-sm text-gray-600">
+            Bu faktura üçün {review.rating} ulduzlu rəyiniz qeydə alınıb. Təşəkkür edirik!
+          </p>
+        )}
 
         <a
           href={`/api/invoices/${invoice.publicId}/pdf`}

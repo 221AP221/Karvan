@@ -154,13 +154,26 @@ model Profile {
   bankName    String?
   accountName String?
 
-  socialLinks SocialLink[]
-  portfolio   PortfolioItem[]
-  media       Media[]
-  services    Service[]
-  orders      Order[]
-  invoices    Invoice[]
-  events      ProfileEvent[]
+  socialLinks   SocialLink[]
+  portfolio     PortfolioItem[]
+  media         Media[]
+  services      Service[]
+  orders        Order[]
+  invoices      Invoice[]
+  events        ProfileEvent[]
+  reviews       Review[]
+  notifications Notification[]
+
+  // Reytinq xülasəsi: kataloqda sıralama və satıcı səhifəsi üçün saxlanılır (rəy əlavə olunanda yenilənir)
+  ratingAvg   Float? // 1.0 - 5.0
+  ratingCount Int    @default(0)
+
+  // Bildiriş ayarları: hansı hadisə hansı kanalla getsin və avtomatikmi
+  notifyMode     NotifyMode            @default(AUTO)
+  notifyChannels NotificationChannel[] @default([EMAIL])
+  notifyEvents   NotificationEvent[]   @default([ORDER_NEW, PAYMENT_CLAIMED, REVIEW_NEW])
+  notifyEmail    String? // boşdursa hesabın e-poçtu
+  notifyPhone    String? // boşdursa profilin nömrəsi
 }
 
 model SocialLink {
@@ -219,7 +232,8 @@ model Service {
   position       Int       @default(0)
   createdAt      DateTime  @default(now())
 
-  orders Order[]
+  orders  Order[]
+  reviews Review[]
 
   @@index([isActive, category])
 }
@@ -269,6 +283,7 @@ model Invoice {
   items     InvoiceItem[]
   payments  Payment[]
   reminders Reminder[]
+  review    Review?
 
   @@unique([profileId, number])
   @@index([profileId, status])
@@ -403,6 +418,74 @@ model SubscriptionPayment {
 
   @@index([status, createdAt])
   @@index([userId, createdAt])
+}
+
+// Müştəri rəyi: yalnız ödənilmiş fakturaya görə yazıla bilər (bir faktura — bir rəy)
+model Review {
+  id           String    @id @default(cuid())
+  profileId    String
+  profile      Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  invoiceId    String    @unique
+  invoice      Invoice   @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  serviceId    String? //  rəyin aid olduğu xidmət (sifarişdən gələndə)
+  service      Service?  @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+  rating       Int //      1-5
+  comment      String?
+  customerName String //   fakturadakı ad; səhifədə qısaldılmış göstərilir
+  reply        String? //  satıcının cavabı
+  repliedAt    DateTime?
+  hidden       Boolean   @default(false) // admin moderasiyası
+  hiddenReason String?
+  createdAt    DateTime  @default(now())
+
+  @@index([profileId, hidden, createdAt])
+  @@index([serviceId])
+}
+
+enum NotifyMode {
+  AUTO //   hadisə baş verən kimi göndərilir
+  MANUAL // növbəyə düşür, satıcı paneldən göndərir
+}
+
+enum NotificationChannel {
+  EMAIL
+  SMS
+  PUSH
+}
+
+enum NotificationEvent {
+  ORDER_NEW //        yeni sifariş
+  PAYMENT_CLAIMED //  müştəri "Ödədim" bildirdi
+  PAYMENT_CONFIRMED // ödəniş təsdiqləndi
+  REVIEW_NEW //       yeni rəy
+}
+
+enum NotificationStatus {
+  QUEUED //  göndərilməyi gözləyir (manual rejim və ya növbə)
+  SENT
+  FAILED
+  SKIPPED // kanal qoşulmayıb
+}
+
+// Bildiriş növbəsi və jurnalı: avtomatik və manual göndərmə eyni cədvəldən keçir
+model Notification {
+  id        String              @id @default(cuid())
+  profileId String
+  profile   Profile             @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  event     NotificationEvent
+  channel   NotificationChannel
+  status    NotificationStatus  @default(QUEUED)
+  mode      NotifyMode
+  target    String? //            e-poçt ünvanı və ya nömrə
+  title     String
+  body      String
+  linkPath  String? //            panelin müvafiq səhifəsi
+  entityId  String? //            sifariş / faktura / rəy id-si
+  error     String?
+  createdAt DateTime            @default(now())
+  sentAt    DateTime?
+
+  @@index([profileId, status, createdAt])
 }
 
 enum DiscountType {

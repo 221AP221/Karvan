@@ -2,11 +2,13 @@ import { ArrowRight, BadgeCheck, Clock, MapPin, Search, SearchX, SlidersHorizont
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Header } from "@/components/landing/Header";
+import { Stars } from "@/components/Rating";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import type { Prisma } from "@/generated/prisma/client";
 import { CATALOG_PATH, HOME_PATH, LOCALES, type Locale, OG_LOCALE } from "@/i18n/config";
 import { type Dict, getDictionary } from "@/i18n/server";
 import { db } from "@/lib/db";
+import { formatRating } from "@/lib/reviews";
 import { CURRENCIES, formatMoney, isCurrency } from "@/lib/money";
 import { PLAN_LIMITS } from "@/lib/plans";
 import { absoluteUrl, breadcrumbs, clamp, fill, jsonLdScript } from "@/lib/seo";
@@ -15,7 +17,7 @@ import { SERVICE_CATEGORIES, localizedCategory } from "@/lib/services";
 import { AutoSubmit } from "./AutoSubmit";
 
 const PAGE_SIZE = 24;
-const SORTS = ["recommended", "new", "priceAsc", "priceDesc"] as const;
+const SORTS = ["recommended", "rating", "new", "priceAsc", "priceDesc"] as const;
 type Sort = (typeof SORTS)[number];
 
 // Kataloqun indeksləşən səhifələri: əsas səhifə, sahə və sahə+şəhər. Qalan filtr birləşmələri (axtarış, qiymət,
@@ -138,7 +140,9 @@ export async function CatalogPage({ locale, searchParams }: { locale: Locale; se
   }
 
   const orderBy: Prisma.ServiceOrderByWithRelationInput[] =
-    sort === "new"
+    sort === "rating"
+      ? [{ profile: { ratingAvg: { sort: "desc", nulls: "last" } } }, { profile: { ratingCount: "desc" } }, { createdAt: "desc" }]
+      : sort === "new"
       ? [{ createdAt: "desc" }]
       : sort === "priceAsc"
         ? [{ amountQepik: { sort: "asc", nulls: "last" } }]
@@ -156,7 +160,7 @@ export async function CatalogPage({ locale, searchParams }: { locale: Locale; se
       take: PAGE_SIZE,
       include: {
         profile: {
-          select: { username: true, displayName: true, profession: true, city: true, avatarUrl: true, theme: true, user: { select: { subscription: { select: { plan: true } } } } },
+          select: { username: true, displayName: true, profession: true, city: true, avatarUrl: true, theme: true, ratingAvg: true, ratingCount: true, user: { select: { subscription: { select: { plan: true } } } } },
         },
       },
     }),
@@ -321,6 +325,13 @@ export async function CatalogPage({ locale, searchParams }: { locale: Locale; se
                           <span className="truncate">{s.profile.displayName}</span>
                           {limits.verified && <BadgeCheck size={15} className="shrink-0 fill-sky-500 text-white" aria-label={t.verifiedBadge} />}
                         </p>
+                        {s.profile.ratingAvg !== null && s.profile.ratingCount > 0 && (
+                          <span className="mt-0.5 flex items-center gap-1 text-xs text-gray-600 dark:text-gray-300">
+                            <Stars value={s.profile.ratingAvg} size={12} />
+                            <span className="font-semibold tabular-nums">{formatRating(s.profile.ratingAvg)}</span>
+                            <span className="text-gray-400">({s.profile.ratingCount})</span>
+                          </span>
+                        )}
                         <p className="flex items-center gap-1 truncate text-xs text-gray-500 dark:text-gray-400">
                           {s.profile.profession}
                           {s.profile.city && (

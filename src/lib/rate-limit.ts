@@ -67,6 +67,7 @@ export const LIMITS = {
   media: { max: 40, windowMs: 10 * 60_000 },
   ai: { max: 20, windowMs: 60_000 },
   chat: { max: 15, windowMs: 60_000 },
+  review: { max: 5, windowMs: 10 * 60_000 },
   login: { max: 12, windowMs: 10 * 60_000 },
   signup: { max: 5, windowMs: 60 * 60_000 },
   passwordReset: { max: 5, windowMs: 60 * 60_000 },

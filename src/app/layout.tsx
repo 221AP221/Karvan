@@ -3,6 +3,7 @@ import "@fontsource-variable/geologica";
 import "@fontsource-variable/onest";
 import "./globals.css";
 import { NavigationTracker } from "@/components/BackButton";
+import { InlineScript } from "@/components/InlineScript";
 import { ChatWidget } from "@/components/site/ChatWidget";
 import { CookieNotice } from "@/components/site/CookieNotice";
 import { SITE_URL } from "@/i18n/config";
@@ -25,7 +26,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang={locale} suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+        <InlineScript html={THEME_SCRIPT} />
       </head>
       <body className="min-h-screen antialiased">
         <NavigationTracker />

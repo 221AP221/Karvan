@@ -1,7 +1,7 @@
 import "@fontsource-variable/ibm-plex-sans";
 import "@fontsource/ibm-plex-mono/400.css";
 import "@fontsource/ibm-plex-mono/500.css";
-import { Settings, CreditCard, ExternalLink, FileText, LayoutDashboard, LayoutGrid, LogOut, ScrollText, Users, Ticket } from "lucide-react";
+import { Settings, CreditCard, ExternalLink, FileText, LayoutDashboard, LayoutGrid, LogOut, ScrollText, Users, Ticket, Star } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
@@ -17,6 +17,7 @@ const NAV = [
   { href: "/admin/services", label: "Xidmətlər", icon: LayoutGrid },
   { href: "/admin/payments", label: "Ödənişlər", icon: CreditCard },
   { href: "/admin/campaigns", label: "Kampaniyalar", icon: Ticket },
+  { href: "/admin/reviews", label: "Rəylər", icon: Star },
   { href: "/admin/invoices", label: "Fakturalar", icon: FileText },
   { href: "/admin/logs", label: "Jurnal", icon: ScrollText },
   { href: "/admin/settings", label: "Parametrlər", icon: Settings },

@@ -100,6 +100,8 @@ export const ACTION_LABELS: Record<string, string> = {
   coupon_update: "Endirim kodunu dəyişdi",
   coupon_toggle: "Endirim kodunu aktiv/deaktiv etdi",
   coupon_delete: "Endirim kodunu sildi",
+  review_hide: "Rəyi gizlətdi",
+  review_show: "Rəyi bərpa etdi",
   block: "Hesab bloklandı",
   unblock: "Blok götürüldü",
   delete_user: "Hesab silindi",

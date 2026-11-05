@@ -353,6 +353,11 @@ export const tr: typeof az = {
     language: "Dil",
     pending: "Talebiniz gönderildi. Satıcı fiyatı onaylar onaylamaz fatura size iletilecek.",
     cancel: "İptal",
+    reviews: "Yorumlar",
+    review: "yorum",
+    noReviews: "Henüz yorum yok",
+    sellerReply: "Satıcının yanıtı",
+    ratingLabel: "yorum",
   },
 
   footer: {
@@ -432,6 +437,7 @@ export const tr: typeof az = {
       new: "En yeni",
       priceAsc: "Önce en ucuz",
       priceDesc: "Önce en pahalı",
+      rating: "Puana göre",
     },
     filters: "Filtreler",
     reset: "Sıfırla",

@@ -354,6 +354,11 @@ export const ru: typeof az = {
     language: "Язык",
     pending: "Запрос отправлен. Как только продавец подтвердит цену, счёт придёт вам.",
     cancel: "Отмена",
+    reviews: "Отзывы",
+    review: "отзыв",
+    noReviews: "Отзывов пока нет",
+    sellerReply: "Ответ продавца",
+    ratingLabel: "отзыв.",
   },
 
   footer: {
@@ -432,6 +437,7 @@ export const ru: typeof az = {
       new: "Новые",
       priceAsc: "Сначала дешёвые",
       priceDesc: "Сначала дорогие",
+      rating: "По рейтингу",
     },
     filters: "Фильтры",
     reset: "Сбросить",

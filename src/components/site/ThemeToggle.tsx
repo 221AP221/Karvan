@@ -1,11 +1,21 @@
 "use client";
 
 import { Moon, Sun } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 
 // İşıqlı/qaranlıq rejim. Seçim brauzerdə yadda qalır; heç seçilməyibsə sistem ayarı tətbiq olunur (layout-dakı skript).
 export function ThemeToggle({ labels, className = "" }: { labels: { light: string; dark: string }; className?: string }) {
   const [dark, setDark] = useState<boolean | null>(null);
+
+  // İnkişaf rejimində React yenidən qoşulanda <html>-in sinfini təmizləyir: seçimi geri qaytarırıq
+  // (produksiyada təsiri yoxdur) — next/docs: preventing-flash-before-hydration
+  useLayoutEffect(() => {
+    try {
+      const saved = localStorage.getItem("theme");
+      const isDark = saved ? saved === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.classList.toggle("dark", isDark);
+    } catch {}
+  }, []);
 
   useEffect(() => setDark(document.documentElement.classList.contains("dark")), []);
 

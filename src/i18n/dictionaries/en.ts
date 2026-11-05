@@ -356,6 +356,11 @@ export const en: typeof az = {
     language: "Language",
     pending: "Your request has been sent. As soon as the seller confirms the price, you will receive the invoice.",
     cancel: "Cancel",
+    reviews: "Reviews",
+    review: "review",
+    noReviews: "No reviews yet",
+    sellerReply: "Seller's reply",
+    ratingLabel: "reviews",
   },
 
   footer: {
@@ -434,6 +439,7 @@ export const en: typeof az = {
       new: "Newest",
       priceAsc: "Price: low to high",
       priceDesc: "Price: high to low",
+      rating: "By rating",
     },
     filters: "Filters",
     reset: "Reset",

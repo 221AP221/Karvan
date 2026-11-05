@@ -15,6 +15,8 @@ const NAV = [
   { href: "/dashboard/invoices", label: "Fakturalar" },
   { href: "/dashboard/services", label: "Xidmətlər" },
   { href: "/dashboard/analytics", label: "Analitika" },
+  { href: "/dashboard/reviews", label: "Rəylər" },
+  { href: "/dashboard/notifications", label: "Bildirişlər" },
   { href: "/dashboard/profile", label: "Səhifəm" },
   { href: "/dashboard/billing", label: "Abunəlik" },
   { href: "/dashboard/settings", label: "Parametrlər" },

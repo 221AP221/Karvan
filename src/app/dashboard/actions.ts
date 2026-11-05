@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { requireProfile } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { notify } from "@/lib/notifications";
 import { deleteMediaByUrl, ownedMediaUrl } from "@/lib/media";
 import { PLAN_LIMITS } from "@/lib/plans";
 import { InvoiceLimitError, createInvoice } from "@/lib/invoices";
@@ -216,7 +217,17 @@ export async function markInvoicePaid(id: string) {
     }),
   ]);
   await logActivity({ userId: profile.userId, email: profile.user.email, action: "invoice_paid", details: invoice.number });
+  // Ödəniş təsdiqləndi: satıcıya qeyd, müştəriyə isə faktura səhifəsində rəy forması açılır
+  await notify({
+    profileId: profile.id,
+    event: "PAYMENT_CONFIRMED",
+    title: `Ödəniş təsdiqləndi: ${invoice.number}`,
+    body: `${invoice.customerName} üzrə ${invoice.number} nömrəli faktura ödənilmiş kimi işarələndi. Müştəri indi faktura səhifəsində rəy yaza bilər.`,
+    linkPath: "/dashboard/invoices",
+    entityId: invoice.id,
+  });
   revalidatePath(`/dashboard/invoices/${id}`);
+  revalidatePath(`/i/${invoice.publicId}`);
 }
 
 export async function cancelInvoice(id: string) {
