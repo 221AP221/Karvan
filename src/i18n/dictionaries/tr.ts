@@ -257,7 +257,7 @@ export const tr: typeof az = {
           "Pro'daki her şey",
           "Sınırsız fatura ve hizmet",
           "Katalogda öne çıkma ve “Öne çıkan” rozeti",
-          "5 ekip üyesi (yakında)",
+          "5 ekip üyesi (sahip dahil)",
           "Gelişmiş analitik ve Excel rapor",
           "Öncelikli destek",
           "Yapay zekâ: ayda 1000 istek",

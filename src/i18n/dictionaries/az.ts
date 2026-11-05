@@ -261,7 +261,7 @@ export const az = {
           "Pro-dakı hər şey",
           "Limitsiz faktura və xidmət",
           "Kataloqda önə çıxma və “Seçilmiş” nişanı",
-          "5 komanda üzvü (tezliklə)",
+          "5 komanda üzvü (sahib daxil)",
           "Ətraflı analitika və Excel hesabat",
           "Prioritet dəstək",
           "AI: ayda 1000 sorğu",

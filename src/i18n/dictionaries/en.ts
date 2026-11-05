@@ -260,7 +260,7 @@ export const en: typeof az = {
           "Everything in Pro",
           "Unlimited invoices and services",
           "Featured placement and “Featured” badge in the directory",
-          "5 team members (soon)",
+          "5 team members (owner included)",
           "Advanced analytics and Excel reports",
           "Priority support",
           "AI: 1000 requests per month",
