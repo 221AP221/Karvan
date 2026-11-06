@@ -23,8 +23,11 @@ const layout = existsSync("src/app/dashboard/layout.tsx") ? readFileSync("src/ap
 
 console.log("\nBaza:");
 if (!process.env.DATABASE_URL) {
-  const { LOCAL_DATABASE_URL } = await import("../src/lib/local-db.ts");
-  console.log(`  · lokal baza: ${LOCAL_DATABASE_URL.replace(/\/\/[^@]*@/, "//")}`);
+  const { LOCAL_DATABASE_URL, findLocalDatabases } = await import("../src/lib/local-db.ts");
+  const all = findLocalDatabases();
+  if (!all.length) bad("`prisma dev` bazası tapılmadı (server.json yoxdur) — 51214 portu sınanacaq");
+  for (const d of all) console.log(`  · tapıldı: ${d.name} → ${d.url.replace(/\/\/[^@]*@/, "//")}`);
+  console.log(`  · işlənən ünvan: ${LOCAL_DATABASE_URL.replace(/\/\/[^@]*@/, "//")}`);
 }
 {
   try {
