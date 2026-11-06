@@ -17,8 +17,8 @@
     "db:migrate": "prisma migrate dev",
     "postinstall": "prisma generate",
     "test:e2e": "node e2e/smoke.cjs",
-    "db:backup": "node scripts/db-backup.mjs",
-    "doctor": "node scripts/doctor.mjs"
+    "db:backup": "tsx scripts/db-backup.mjs",
+    "doctor": "tsx scripts/doctor.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.3.0",

@@ -22,6 +22,10 @@ const layout = existsSync("src/app/dashboard/layout.tsx") ? readFileSync("src/ap
 (layout.includes("/dashboard/team") ? ok : bad)("Panel menyusunda Komanda bəndi");
 
 console.log("\nBaza:");
+if (!process.env.DATABASE_URL) {
+  const { LOCAL_DATABASE_URL } = await import("../src/lib/local-db.ts");
+  console.log(`  · lokal baza: ${LOCAL_DATABASE_URL.replace(/\/\/[^@]*@/, "//")}`);
+}
 {
   try {
     if (!process.env.DATABASE_URL) {

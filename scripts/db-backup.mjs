@@ -12,8 +12,9 @@ const args = Object.fromEntries(
   }),
 );
 
-// DATABASE_URL yoxdursa, lokal inkişaf bazası (prisma dev) götürülür — src/lib/local-db.ts ilə eyni
-const LOCAL_DATABASE_URL = "postgres://postgres:postgres@localhost:51214/template1?sslmode=disable";
+// DATABASE_URL yoxdursa, lokal inkişaf bazası (prisma dev) götürülür.
+// Portu özümüz təxmin etmirik: src/lib/local-db.ts onu serverin server.json faylından oxuyur.
+const { LOCAL_DATABASE_URL } = await import("../src/lib/local-db.ts");
 const url = process.env.DATABASE_URL || LOCAL_DATABASE_URL;
 if (!process.env.DATABASE_URL) {
   console.log("DATABASE_URL yoxdur — lokal inkişaf bazasının nüsxəsi götürülür.");
