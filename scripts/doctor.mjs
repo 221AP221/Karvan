@@ -38,6 +38,9 @@ console.log("\nBaza:");
       const name = text.match(/The `([^`]+)` migration started/)?.[1] ?? "<miqrasiya_adı>";
       console.log(`    npx prisma migrate resolve --rolled-back ${name}`);
       console.log("    npx prisma migrate deploy");
+    } else if (text.includes("P1001")) {
+      bad("Baza işləmir. Ayrı pəncərədə qaldırın, pəncərəni açıq saxlayın:");
+      console.log("    npx prisma dev -n karvan");
     } else {
       bad("Baza ilə əlaqə yoxdur və ya miqrasiya statusu oxunmadı");
       console.log("    " + text.trim().split("\n").slice(0, 4).join("\n    "));
