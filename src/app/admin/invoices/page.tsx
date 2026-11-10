@@ -80,7 +80,7 @@ export default async function AdminInvoices({ searchParams }: { searchParams: Se
                   </Link>
                 </td>
                 <td className={td}>
-                  <Link href={`/admin/users/${i.profile.userId}`} className="hover:underline">
+                  <Link href={`/admin/users/${i.profile.userId}`} prefetch={false} className="hover:underline">
                     {i.profile.displayName}
                   </Link>
                 </td>

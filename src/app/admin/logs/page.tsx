@@ -97,7 +97,7 @@ export default async function AdminLogs({ searchParams }: { searchParams: Search
                   <td className={`${td} whitespace-nowrap text-xs tabular-nums text-gray-500`}>{dateTime(a.createdAt)}</td>
                   <td className={td}>
                     {a.userId && existing.has(a.userId) ? (
-                      <Link href={`/admin/users/${a.userId}`} className="hover:underline">
+                      <Link href={`/admin/users/${a.userId}`} prefetch={false} className="hover:underline">
                         {a.email ?? a.userId}
                       </Link>
                     ) : (

@@ -32,8 +32,15 @@ const SETTINGS = { href: "/dashboard/settings", key: "settings" } as const;
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const profile = await requireProfile();
-  const t = getDictionary(await getLocale()).panel;
-  const pending = await db.order.count({ where: { profileId: profile.id, status: "PENDING_APPROVAL" } });
+  // Başlığın bütün məlumatı bir anda istənilir: lokal bazada sorğular növbəyə düzülür,
+  // ardıcıl gözləmək hər keçidə əlavə onlarla millisaniyə yazırdı.
+  const [locale, pending, memberships, impersonating] = await Promise.all([
+    getLocale(),
+    db.order.count({ where: { profileId: profile.id, status: "PENDING_APPROVAL" } }),
+    workspacesFor(profile.actor.id),
+    isImpersonating(),
+  ]);
+  const t = getDictionary(locale).panel;
 
   // Rolu görmədiyi bölmələr menyuda göstərilmir
   const nav = NAV.filter((item) => {
@@ -45,12 +52,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   // İş sahələri: öz səhifəsi + aktiv üzvlüklər
   const own = profile.isOwner ? { profileId: profile.id, username: profile.username, displayName: profile.displayName, role: "OWNER", isOwn: true } : null;
-  const memberships = await workspacesFor(profile.actor.id);
   const workspaces = [
     ...(own ? [own] : memberships.filter((w) => w.role === "OWNER").map((w) => ({ ...w, isOwn: true }))),
     ...memberships.filter((w) => w.role !== "OWNER" && w.status === "ACTIVE").map((w) => ({ ...w, isOwn: false })),
   ].map((w) => ({ profileId: w.profileId, username: w.username, displayName: w.displayName, role: w.role, isOwn: w.isOwn, isCurrent: w.profileId === profile.id }));
-  const impersonating = await isImpersonating();
   const brand = (profile.theme as { primary?: string } | null)?.primary;
 
   return (

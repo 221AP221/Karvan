@@ -42,18 +42,36 @@ export type ReviewableInvoice = {
 };
 
 /** Faktura rəy üçün açıqdırmı: ödənilib və hələ rəy yazılmayıb. */
-export async function reviewableInvoice(publicId: string): Promise<{ invoice: ReviewableInvoice | null; existing: { rating: number; comment: string | null } | null }> {
-  const invoice = await db.invoice.findUnique({
-    where: { publicId },
-    select: {
-      id: true,
-      profileId: true,
-      customerName: true,
-      status: true,
-      order: { select: { serviceId: true } },
-      review: { select: { rating: true, comment: true } },
-    },
-  });
+/**
+ * Müştəri bu faktura üçün rəy yaza bilərmi?
+ * Faktura artıq yüklənibsə (ictimai səhifə), onu ötürün: əlavə sorğu getmir.
+ */
+type LoadedInvoice = {
+  id: string;
+  profileId: string;
+  customerName: string;
+  status: string;
+  order: { serviceId: string | null } | null;
+  review: { rating: number; comment: string | null } | null;
+};
+
+export async function reviewableInvoice(
+  publicIdOrInvoice: string | LoadedInvoice,
+): Promise<{ invoice: ReviewableInvoice | null; existing: { rating: number; comment: string | null } | null }> {
+  const invoice =
+    typeof publicIdOrInvoice === "string"
+      ? await db.invoice.findUnique({
+          where: { publicId: publicIdOrInvoice },
+          select: {
+            id: true,
+            profileId: true,
+            customerName: true,
+            status: true,
+            order: { select: { serviceId: true } },
+            review: { select: { rating: true, comment: true } },
+          },
+        })
+      : publicIdOrInvoice;
   if (!invoice) return { invoice: null, existing: null };
   if (invoice.review) return { invoice: null, existing: invoice.review };
   if (invoice.status !== "PAID") return { invoice: null, existing: null };

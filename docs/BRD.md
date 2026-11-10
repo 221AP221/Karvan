@@ -1117,11 +1117,14 @@ Təsnifat ISO/IEC 25010 keyfiyyət modelinə uyğundur. Hər NFR ölçülə bil�
 
 | # | Tələb | Hədəf | Ölçülmüş | Vəz. |
 |---|---|---|---|---|
-| NFR-PER-01 | İctimai səhifənin server cavab müddəti | < 2 s | 0,10-0,23 s (produksiya rejimi, lokal) | ✅ |
+| NFR-PER-01 | İctimai səhifənin server cavab müddəti | < 2 s | 0,06-0,19 s (produksiya rejimi, lokal) | ✅ |
 | NFR-PER-02 | PDF fakturanın yaradılma müddəti | < 3 s | 0,11-0,77 s | ✅ |
 | NFR-PER-03 | Kataloq axtarışının cavab müddəti (24 nəticə) | < 2 s | Hədd daxilində | ✅ |
 | NFR-PER-04 | Analitika səhifəsinin yüklənməsi (90 günlük dövr) | < 3 s | Hədd daxilində | ✅ |
 | NFR-PER-05 | Eyni anda 100 aktiv istifadəçidə deqradasiya olmamalıdır | A/B yük testi | ⬜ Yük testi aparılmayıb | 🟡 |
+| NFR-PER-06 | Panel bölmələri arasında keçiddə ekran dərhal cavab verməlidir | < 0,3 s-də görünən cavab | 0,07-0,11 s-də boş sxem (`loading.tsx`) | ✅ |
+| NFR-PER-07 | Panel səhifəsinin server cavab müddəti | < 1 s | 0,09-0,25 s (produksiya rejimi, lokal) | ✅ |
+| NFR-PER-08 | Son 30 saniyədə açılmış panel səhifəsinə qayıdış serverə sorğusuz olmalıdır | — | 0,05-0,10 s (müştəri keşi) | ✅ |
 
 ### 17.2 İstifadə rahatlığı — `NFR-USE`
 

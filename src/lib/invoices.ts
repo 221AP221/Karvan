@@ -79,6 +79,9 @@ export function getPublicInvoice(publicId: string) {
     include: {
       items: { orderBy: { position: "asc" } },
       profile: { include: { user: { select: { subscription: { select: { plan: true } } } } } },
+      // Rəy forması eyni səhifədədir: ikinci dəfə soruşmamaq üçün buradaca gətirilir
+      order: { select: { serviceId: true } },
+      review: { select: { rating: true, comment: true } },
     },
   });
 }

@@ -52,7 +52,16 @@ export default async function Orders({ searchParams }: { searchParams: SearchPar
   };
 
   const [orders, services, counts] = await Promise.all([
-    db.order.findMany({ where, include: { service: true, invoice: true }, orderBy: { createdAt: "desc" }, take: 100 }),
+    // Yalnız ekranda işlənən sahələr: 100 sifarişin bütün sütunlarını daşımağa ehtiyac yoxdur
+    db.order.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+      take: 100,
+      include: {
+        service: { select: { title: true, amountQepik: true, currency: true } },
+        invoice: { select: { id: true, number: true, totalQepik: true, currency: true, status: true, dueAt: true } },
+      },
+    }),
     db.service.findMany({ where: { profileId: profile.id }, select: { id: true, title: true }, orderBy: { position: "asc" } }),
     db.order.groupBy({ by: ["status"], where: { profileId: profile.id }, _count: true }),
   ]);
@@ -128,7 +137,7 @@ export default async function Orders({ searchParams }: { searchParams: SearchPar
                   )}
                 </div>
                 {order.invoice && (
-                  <Link href={`/dashboard/invoices/${order.invoice.id}`} className="flex flex-col items-end gap-1 rounded-xl px-3 py-2 text-right hover:bg-gray-50">
+                  <Link href={`/dashboard/invoices/${order.invoice.id}`} prefetch={false} className="flex flex-col items-end gap-1 rounded-xl px-3 py-2 text-right hover:bg-gray-50">
                     <span className="font-mono text-xs text-gray-500">{order.invoice.number}</span>
                     <span className="font-semibold">{formatMoney(order.invoice.totalQepik, order.invoice.currency)}</span>
                     <StatusBadge status={effectiveStatus(order.invoice)} words={dict.common} />

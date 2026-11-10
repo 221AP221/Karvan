@@ -53,11 +53,22 @@ export default async function Invoices({ searchParams }: { searchParams: SearchP
     ],
   };
 
-  const keys = Object.keys(STATUS_FILTERS);
-  const [invoices, ...counts] = await Promise.all([
+  // Statuslar üzrə saylar bir qruplaşdırma ilə alınır (əvvəl hər status üçün ayrıca COUNT gedirdi).
+  // Gecikmə statusda yazılmır, tarixdən hesablanır — ona görə yalnız o, ayrıca sayılır.
+  const [invoices, byStatus, lateCount] = await Promise.all([
     db.invoice.findMany({ where, orderBy: { issuedAt: "desc" }, take: 200 }),
-    ...keys.map((k) => db.invoice.count({ where: { AND: [base, STATUS_FILTERS[k].where(now)] } })),
+    db.invoice.groupBy({ by: ["status"], where: base, _count: { _all: true } }),
+    db.invoice.count({ where: { ...base, status: { in: ["SENT", "VIEWED"] }, dueAt: { lt: now } } }),
   ]);
+  const keys = Object.keys(STATUS_FILTERS);
+  const byKey = (status: string) => byStatus.find((r) => r.status === status)?._count._all ?? 0;
+  const counts: Record<string, number> = {
+    waiting: byKey("SENT") + byKey("VIEWED") - lateCount,
+    claimed: byKey("CLAIMED_PAID"),
+    overdue: byKey("OVERDUE") + lateCount,
+    paid: byKey("PAID"),
+    cancelled: byKey("CANCELLED"),
+  };
 
   return (
     <div>
@@ -72,7 +83,7 @@ export default async function Invoices({ searchParams }: { searchParams: SearchP
       </div>
 
       <div className="mb-5 grid grid-cols-2 gap-3 md:grid-cols-5">
-        {keys.map((k, i) => (
+        {keys.map((k) => (
           <Link
             key={k}
             href={status === k ? "/dashboard/invoices" : `/dashboard/invoices?status=${k}`}
@@ -80,7 +91,7 @@ export default async function Invoices({ searchParams }: { searchParams: SearchP
             className={`rounded-2xl border bg-white p-4 transition hover:border-[var(--brand)] ${status === k ? "border-[var(--brand)] ring-2 ring-[var(--brand)]/15" : "border-gray-200"}`}
           >
             <p className="text-xs text-gray-500">{STATUS_FILTERS[k].label}</p>
-            <p className={`mt-1 text-2xl font-semibold ${k === "overdue" && counts[i] ? "text-red-600" : ""}`}>{counts[i]}</p>
+            <p className={`mt-1 text-2xl font-semibold ${k === "overdue" && counts[k] ? "text-red-600" : ""}`}>{counts[k]}</p>
           </Link>
         ))}
       </div>

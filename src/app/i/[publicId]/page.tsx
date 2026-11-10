@@ -29,7 +29,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ public
   const { profile } = invoice;
   const payable = ["SENT", "VIEWED", "OVERDUE"].includes(invoice.status);
   // Ödəniş təsdiqləndikdən sonra müştəri bir dəfə rəy yaza bilər (FR-KAT-09)
-  const { invoice: reviewable, existing: review } = await reviewableInvoice(publicId);
+  const { invoice: reviewable, existing: review } = await reviewableInvoice(invoice);
 
   return (
     <main

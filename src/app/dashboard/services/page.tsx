@@ -102,7 +102,7 @@ export default async function Services({ searchParams }: { searchParams: SearchP
                         </div>
                       </div>
                       <div className="flex gap-1">
-                        <Link href={`/dashboard/services/${s.id}`} aria-label={t.edit} title={t.edit} className="grid h-9 w-9 place-items-center rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-900">
+                        <Link href={`/dashboard/services/${s.id}`} prefetch={false} aria-label={t.edit} title={t.edit} className="grid h-9 w-9 place-items-center rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-900">
                           <Pencil size={16} strokeWidth={1.75} aria-hidden />
                         </Link>
                         <form action={toggleService.bind(null, s.id)}>

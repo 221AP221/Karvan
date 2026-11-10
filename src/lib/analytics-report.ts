@@ -44,7 +44,7 @@ export async function buildReport(profileId: string, period: Period, now = new D
   const start = new Date(today.getTime() - (period - 1) * DAY);
   const prevStart = new Date(start.getTime() - period * DAY);
 
-  const [events, orders, issued, paid, openInvoices, earlierCustomers, services] = await Promise.all([
+  const [events, orders, issued, paid, openInvoices, services] = await Promise.all([
     db.profileEvent.findMany({
       where: { profileId, createdAt: { gte: prevStart, lte: end } },
       select: { type: true, visitorId: true, source: true, device: true, target: true, createdAt: true },
@@ -72,7 +72,6 @@ export async function buildReport(profileId: string, period: Period, now = new D
       where: { profileId, status: { in: OPEN_STATUSES } },
       select: { totalQepik: true, currency: true, status: true, dueAt: true },
     }),
-    db.order.findMany({ where: { profileId, createdAt: { lt: start } }, select: { customerPhone: true }, distinct: ["customerPhone"] }),
     db.service.findMany({ where: { profileId }, select: { id: true, title: true } }),
   ]);
 
@@ -125,9 +124,17 @@ export async function buildReport(profileId: string, period: Period, now = new D
     if (inv.status === "OVERDUE" || (inv.dueAt && inv.dueAt < now)) add(overdue, inv.currency, inv.totalQepik);
   }
 
-  // Müştərilər: dövrdən əvvəl də sifariş vermiş nömrələr "qayıdan" sayılır
-  const before = new Set(earlierCustomers.map((c) => c.customerPhone));
+  // Müştərilər: dövrdən əvvəl də sifariş vermiş nömrələr "qayıdan" sayılır.
+  // Yalnız bu dövrün nömrələrini soruşuruq — bütün tarixçəni çəkmək səhifəni illər keçdikcə yavaşladırdı.
   const customers = new Set(cur.orders.map((o) => o.customerPhone));
+  const earlier = customers.size
+    ? await db.order.findMany({
+        where: { profileId, createdAt: { lt: start }, customerPhone: { in: [...customers] } },
+        select: { customerPhone: true },
+        distinct: ["customerPhone"],
+      })
+    : [];
+  const before = new Set(earlier.map((c) => c.customerPhone));
   const returningCustomers = [...customers].filter((c) => before.has(c)).length;
   const repeatInPeriod = [...customers].filter((c) => cur.orders.filter((o) => o.customerPhone === c).length > 1).length;
 

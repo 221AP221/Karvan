@@ -308,6 +308,8 @@ export async function CatalogPage({ locale, searchParams }: { locale: Locale; se
                 <li key={s.id}>
                   <Link
                     href={`/${s.profile.username}#xidmetler`}
+                    // Kataloqda onlarla kart olur: hamısını öncədən yükləmək serverə lazımsız yük verir
+                    prefetch={false}
                     className={`group flex h-full flex-col rounded-3xl border bg-white p-5 transition duration-300 hover:-translate-y-1 hover:shadow-xl dark:bg-white/[0.03] ${
                       limits.featured ? "border-amber-300/80 shadow-lg shadow-amber-500/10 dark:border-amber-400/30" : "border-gray-200 hover:border-violet-200 dark:border-white/10 dark:hover:border-violet-400/30"
                     }`}

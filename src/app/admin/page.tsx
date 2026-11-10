@@ -135,7 +135,7 @@ export default async function AdminOverview() {
                 {recent.map((u) => (
                   <tr key={u.id} className="border-t border-gray-100">
                     <td className={td}>
-                      <Link href={`/admin/users/${u.id}`} className="font-medium hover:underline">
+                      <Link href={`/admin/users/${u.id}`} prefetch={false} className="font-medium hover:underline">
                         {u.profile?.displayName || [u.firstName, u.lastName].filter(Boolean).join(" ") || u.email}
                       </Link>
                       <span className="block text-xs text-gray-500">{u.email}</span>
@@ -165,7 +165,7 @@ export default async function AdminOverview() {
                 {topRows.map((r) => (
                   <tr key={r.profileId} className="border-t border-gray-100">
                     <td className={td}>
-                      <Link href={`/admin/users/${r.profile?.userId}`} className="font-medium hover:underline">
+                      <Link href={`/admin/users/${r.profile?.userId}`} prefetch={false} className="font-medium hover:underline">
                         {r.profile?.displayName}
                       </Link>
                       <span className="block text-xs text-gray-500">@{r.profile?.username}</span>
