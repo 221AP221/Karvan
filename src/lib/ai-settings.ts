@@ -1,6 +1,6 @@
 import { type AiConfig, KEY_NAMES, resolveAiConfig } from "@/lib/ai-provider";
 import { db } from "@/lib/db";
-import { decrypt, encrypt } from "@/lib/secrets";
+import { decryptDetailed, encrypt } from "@/lib/secrets";
 
 // Admin paneldə yazılmış AI ayarı (bazada, şifrələnmiş). Varsa .env-dən üstündür: bir dəfə yazılır, sayt hər dəfə özü işləyir.
 export type StoredAi = { provider: string; apiKey?: string; model?: string };
@@ -9,15 +9,24 @@ export type StoredAi = { provider: string; apiKey?: string; model?: string };
 export const settingsReady = () => typeof db.appSetting !== "undefined";
 export const STALE_CLIENT = "Sayt yeni versiyaya uyğun deyil. Saytı dayandırıb (Ctrl+C) yenidən işə salın: npm run dev (baza və Prisma avtomatik yenilənəcək).";
 
-let cache: { at: number; value: StoredAi | null } | undefined;
+let cache: { at: number; value: StoredAi | null; unreadable: boolean } | undefined;
+
+/** Bazada ayar var, amma açılmır (APP_SECRET dəyişib): admin paneldə bunu demək lazımdır. */
+export async function storedAiUnreadable(): Promise<boolean> {
+  await getStoredAi();
+  return cache?.unreadable ?? false;
+}
 
 export async function getStoredAi(): Promise<StoredAi | null> {
   if (cache && Date.now() - cache.at < 30_000) return cache.value;
   if (!settingsReady()) return null;
   const row = await db.appSetting.findUnique({ where: { key: "ai" } }).catch(() => null);
-  const json = row ? decrypt(row.value) : null;
-  const value = json ? (JSON.parse(json) as StoredAi) : null;
-  cache = { at: Date.now(), value };
+  const opened = row ? decryptDetailed(row.value) : null;
+  const value = opened ? (JSON.parse(opened.text) as StoredAi) : null;
+  cache = { at: Date.now(), value, unreadable: Boolean(row) && !opened };
+
+  // Köhnə açarla yazılmış ayar: cari açarla yenidən saxlayırıq ki, bir dəfədən sonra sürətli açılsın
+  if (opened?.legacy && value) await saveStoredAi(value).catch(() => {});
   return value;
 }
 

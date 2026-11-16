@@ -152,8 +152,9 @@ const BASE = process.env.BASE_URL ?? "http://localhost:3000";
   await seller.goto(BASE + "/dashboard/invoices/new");
   await seller.fill("textarea", "Səbinə, 2 makiyaj 40 manatdan");
   await seller.click("button:has-text('Fakturaya çevir')");
-  await seller.waitForSelector("text=AI köməkçi hazırda əlçatan deyil");
-  step("AI açarı olmadan xəta mesajı göstərildi");
+  // Açar yazılmayıbsa mesaj konkret olmalıdır: "sonra cəhd edin" demək yanıldıcıdır
+  await seller.waitForSelector("text=AI köməkçi hələ qoşulmayıb");
+  step("AI açarı olmadan aydın mesaj göstərildi");
 
   // 9. Limit: 5-ci fakturadan sonra
   for (let i = 0; i < 3; i++) {

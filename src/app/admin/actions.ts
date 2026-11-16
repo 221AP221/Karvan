@@ -323,7 +323,12 @@ export async function saveAiSettings(_: FormState, form: FormData): Promise<Form
   // Boş buraxılıbsa, eyni təminatçının saxlanmış açarı qalır
   const apiKey = typed || (previous?.provider === provider ? previous.apiKey : undefined);
   if (provider !== "ollama" && (!apiKey || apiKey.length < 10)) return { error: "Açarı yapışdırın (ən azı 10 simvol)" };
-  await saveStoredAi({ provider, apiKey: provider === "ollama" ? undefined : apiKey, model: String(form.get("model") ?? "").trim() || undefined });
+  try {
+    await saveStoredAi({ provider, apiKey: provider === "ollama" ? undefined : apiKey, model: String(form.get("model") ?? "").trim() || undefined });
+  } catch (error) {
+    // Ən çox rast gəlinən hal: APP_SECRET yoxdur (serverdə mühit dəyişəni verilməyib)
+    return { error: error instanceof Error ? error.message : "Ayar saxlanılmadı" };
+  }
   await logAdmin(admin, "ai_settings", "service", "ai", `təminatçı: ${provider}`);
   revalidatePath("/admin/settings");
   return { ok: true };

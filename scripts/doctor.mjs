@@ -55,6 +55,21 @@ if (!process.env.DATABASE_URL) {
   }
 }
 
+console.log("\nAI köməkçi:");
+try {
+  const { ensureSecret } = await import("./ensure-secret.mjs");
+  ensureSecret();
+  const { getAiConfig } = await import("../src/lib/ai-settings.ts");
+  const cfg = await getAiConfig();
+  if (!cfg) {
+    bad("qoşulmayıb — admin paneldə Parametrlər → AI bölməsində açar yazın");
+    console.log("    (Groq pulsuzdur: https://console.groq.com/keys)");
+  } else if (cfg.kind === "anthropic") ok("Claude qoşulub");
+  else ok(`${cfg.name} · model: ${cfg.model}`);
+} catch (error) {
+  bad(`yoxlanmadı: ${String(error).split("\n")[0]}`);
+}
+
 console.log("\nServer:");
 try {
   const res = await fetch("http://localhost:3000/api/health", { signal: AbortSignal.timeout(3000) });

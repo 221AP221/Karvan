@@ -1,5 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { AiError, AiSetupError, type ChatTurn, chatWithOpenAi, explainMissingAi } from "@/lib/ai-provider";
+import { AiError, AiNotConfiguredError, AiSetupError, type ChatTurn, chatWithOpenAi, explainMissingAi } from "@/lib/ai-provider";
 import { getAiConfig } from "@/lib/ai-settings";
 import { MONTHLY } from "@/lib/billing";
 import { PLAN_LIMITS } from "@/lib/plans";
@@ -71,7 +71,7 @@ export const CHAT_UNAVAILABLE = "AI köməkçi hazırda əlçatan deyil. Sualın
 
 export async function answer(turns: ChatTurn[], context?: { role: "visitor" | "seller"; plan?: string }): Promise<string> {
   const config = await getAiConfig();
-  if (!config) throw new AiSetupError(explainMissingAi());
+  if (!config) throw new AiNotConfiguredError(explainMissingAi());
 
   const who =
     context?.role === "seller"

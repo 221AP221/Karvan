@@ -1,7 +1,7 @@
 import { Bot } from "lucide-react";
 import type { Metadata } from "next";
 import { requireAdmin } from "@/lib/admin";
-import { STALE_CLIENT, getAiConfig, getStoredAi, settingsReady } from "@/lib/ai-settings";
+import { STALE_CLIENT, getAiConfig, getStoredAi, settingsReady, storedAiUnreadable } from "@/lib/ai-settings";
 import { PageTitle, card } from "../ui";
 import { AiSettingsForm } from "./AiSettingsForm";
 
@@ -9,7 +9,7 @@ export const metadata: Metadata = { title: "Parametrlər" };
 
 export default async function AdminSettings() {
   const admin = await requireAdmin();
-  const [stored, active] = await Promise.all([getStoredAi(), getAiConfig()]);
+  const [stored, active, unreadable] = await Promise.all([getStoredAi(), getAiConfig(), storedAiUnreadable()]);
   return (
     <div>
       <PageTitle title="Parametrlər" text="Sistem ayarları: bir dəfə yazılır, sayt hər dəfə özü işləyir" />
@@ -29,6 +29,11 @@ export default async function AdminSettings() {
             </p>
           </div>
         </div>
+        {unreadable && (
+          <p role="alert" className="mt-5 rounded-lg bg-amber-50 p-3 text-sm text-amber-900">
+            Saxlanılmış AI açarı oxunmur: APP_SECRET dəyişib və ya .env faylı yenisi ilə əvəzlənib. Açarı aşağıda bir daha yazın.
+          </p>
+        )}
         {!settingsReady() ? (
           <p role="alert" className="mt-5 rounded-lg bg-amber-50 p-3 text-sm text-amber-900">{STALE_CLIENT}</p>
         ) : admin.role === "SUPER_ADMIN" ? (

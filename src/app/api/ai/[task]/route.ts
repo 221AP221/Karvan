@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import {
   AiError,
+  AiNotConfiguredError,
   AiSetupError,
   draftPaymentReminder,
   generateServiceDescriptions,
@@ -97,6 +98,13 @@ export async function POST(request: Request, { params }: { params: Promise<{ tas
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: "Məlumatlar düzgün deyil" }, { status: 400 });
+    }
+    // Açar ümumiyyətlə yazılmayıbsa, "sonra cəhd edin" demək yanlışdır: heç nə dəyişməyəcək
+    if (error instanceof AiNotConfiguredError && profile.user.role === "USER") {
+      return NextResponse.json(
+        { error: "AI köməkçi hələ qoşulmayıb. Sayt sahibi admin paneldə Parametrlər → AI bölməsində açar yazmalıdır." },
+        { status: 503 },
+      );
     }
     if (error instanceof AiSetupError && profile.user.role === "USER") {
       return NextResponse.json({ error: "AI köməkçi hazırda əlçatan deyil. Bir az sonra yenidən cəhd edin." }, { status: 503 });

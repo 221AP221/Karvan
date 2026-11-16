@@ -1,8 +1,11 @@
 import { z } from "zod";
 
 export class AiError extends Error {}
-// Quraşdırma problemi (açar yoxdur/yanlışdır): detalı yalnız admin görür, satıcıya sadə mesaj göstərilir
+// Quraşdırma problemi (açar yanlışdır, icazə yoxdur): detalı yalnız admin görür
 export class AiSetupError extends AiError {}
+// AI ümumiyyətlə qoşulmayıb. Bunu gizlətmək mənasızdır: istifadəçi "sonra yenidən cəhd edin"
+// mesajını görüb gözləyir, halbuki açar yazılmayana qədər heç nə dəyişmir.
+export class AiNotConfiguredError extends AiSetupError {}
 
 // AI təminatçıları. Hamısı yalnız mətn generasiyası üçündür. Pulsuz seçimlər OpenAI formatını (chat/completions)
 // dəstəkləyir, ona görə bir adapter hamısına xidmət edir. Model adlarını təminatçının cari siyahısından yoxlayın
