@@ -14,7 +14,9 @@ type OpenAiConfig = { kind: "openai"; name: string; baseUrl: string; model: stri
 export type AiConfig = { kind: "anthropic" } | OpenAiConfig;
 
 const PRESETS: Record<string, { baseUrl: string; model: string; keyEnv: string | null }> = {
-  groq: { baseUrl: "https://api.groq.com/openai/v1", model: "llama-3.3-70b-versatile", keyEnv: "GROQ_API_KEY" },
+  // Qeyd: Groq köhnə modelləri bağlayır (llama-3.3-70b-versatile 2026-cı ilin avqustunda ləğv olundu).
+  // Model adı köhnəlsə, admin paneldə "AI-ı yoxla" düyməsi mövcud adları sadalayır.
+  groq: { baseUrl: "https://api.groq.com/openai/v1", model: "openai/gpt-oss-120b", keyEnv: "GROQ_API_KEY" },
   gemini: { baseUrl: "https://generativelanguage.googleapis.com/v1beta/openai", model: "gemini-2.5-flash", keyEnv: "GEMINI_API_KEY" },
   openrouter: { baseUrl: "https://openrouter.ai/api/v1", model: "meta-llama/llama-3.3-70b-instruct:free", keyEnv: "OPENROUTER_API_KEY" },
   // xAI (Grok): OpenAI formatındadır, ona görə eyni adapter işləyir. Model adları tez-tez dəyişir —
@@ -70,6 +72,25 @@ export function extractJson(text: string): unknown {
   return JSON.parse(cleaned.slice(start, end + 1));
 }
 
+
+/**
+ * Təminatçının öz izahını cavabdan çıxarır: "model decommissioned", "insufficient credits" kimi
+ * səbəblər yalnız orada yazılır. Bunu gizlətmək diaqnozu çətinləşdirirdi.
+ */
+async function providerMessage(res: Response): Promise<string> {
+  const text = await res.text().catch(() => "");
+  if (!text) return "";
+  try {
+    const body = JSON.parse(text) as { error?: { message?: string; code?: string } | string; message?: string };
+    const raw = typeof body.error === "string" ? body.error : (body.error?.message ?? body.message ?? "");
+    const code = typeof body.error === "object" ? body.error?.code : undefined;
+    const message = [raw, code && !raw.includes(code) ? `(${code})` : ""].filter(Boolean).join(" ").trim();
+    return message.slice(0, 200);
+  } catch {
+    return text.slice(0, 200);
+  }
+}
+
 async function chat(cfg: OpenAiConfig, messages: { role: string; content: string }[], jsonMode: boolean) {
   const res = await fetch(`${cfg.baseUrl}/chat/completions`, {
     method: "POST",
@@ -106,9 +127,10 @@ export async function generateWithOpenAi<T extends z.ZodType>(cfg: OpenAiConfig,
       jsonMode = false; // bəzi modellər response_format-ı dəstəkləmir
       continue;
     }
-    if (res.status === 401 || res.status === 403) throw new AiSetupError("AI açarı yanlışdır və ya icazəsi yoxdur. Admin paneldə Parametrlər → AI bölməsində yeniləyin.");
+    if (res.status === 401 || res.status === 403)
+      throw new AiSetupError(`AI açarı yanlışdır və ya icazəsi yoxdur. Admin paneldə Parametrlər → AI bölməsində yeniləyin. ${await providerMessage(res)}`.trim());
     if (res.status === 429) throw new AiError("AI xidməti hazırda məşğuldur (pulsuz limit dolub). Bir az sonra yenidən cəhd edin.");
-    if (!res.ok) throw new AiError(`AI xidməti xəta qaytardı (${res.status}).`);
+    if (!res.ok) throw new AiError(`AI xidməti xəta qaytardı (${res.status}). ${await providerMessage(res)}`.trim());
 
     const data = (await res.json().catch(() => null)) as { choices?: { message?: { content?: string } }[] } | null;
     const content = data?.choices?.[0]?.message?.content ?? "";
@@ -133,12 +155,30 @@ export async function chatWithOpenAi(cfg: OpenAiConfig, system: string, turns: C
   } catch {
     throw new AiError("AI xidmətinə qoşulmaq alınmadı.");
   }
-  if (res.status === 401 || res.status === 403) throw new AiSetupError("AI açarı yanlışdır və ya icazəsi yoxdur.");
+  if (res.status === 401 || res.status === 403) throw new AiSetupError(`AI açarı yanlışdır və ya icazəsi yoxdur. ${await providerMessage(res)}`.trim());
   if (res.status === 429) throw new AiError("AI xidməti hazırda məşğuldur. Bir az sonra yenidən yazın.");
-  if (!res.ok) throw new AiError(`AI xidməti xəta qaytardı (${res.status}).`);
+  if (!res.ok) throw new AiError(`AI xidməti xəta qaytardı (${res.status}). ${await providerMessage(res)}`.trim());
 
   const data = (await res.json().catch(() => null)) as { choices?: { message?: { content?: string } }[] } | null;
   const text = data?.choices?.[0]?.message?.content?.trim();
   if (!text) throw new AiError("AI cavab qaytarmadı.");
   return text;
+}
+
+/**
+ * Təminatçının mövcud model adlarını soruşur. Model adları tez-tez dəyişir; əlimizdə sabit siyahı
+ * saxlamaq əvəzinə lazım olanda özündən soruşuruq (OpenAI formatında /models hamısında var).
+ */
+export async function listModels(cfg: OpenAiConfig): Promise<string[]> {
+  try {
+    const res = await fetch(`${cfg.baseUrl}/models`, {
+      headers: cfg.apiKey ? { Authorization: `Bearer ${cfg.apiKey}` } : {},
+      signal: AbortSignal.timeout(15_000),
+    });
+    if (!res.ok) return [];
+    const data = (await res.json()) as { data?: { id?: string }[] };
+    return (data.data ?? []).map((m) => m.id).filter((id): id is string => Boolean(id)).sort();
+  } catch {
+    return [];
+  }
 }

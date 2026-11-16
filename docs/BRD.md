@@ -751,6 +751,8 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 | FR-AI-14 | Admin paneldə yazılmış AI açarı saytın yenidən başladılmasından sonra da işləməlidir (produksiya rejimi daxil) | M | T | ✅ Şifrələmə açarı (`APP_SECRET`) ilk işə salmada yaradılıb `.env`-ə yazılır |
 | FR-AI-15 | Açar ümumiyyətlə yazılmayıbsa, satıcıya "sonra cəhd edin" yox, nə edilməli olduğu bildirilməlidir | S | T | ✅ |
 | FR-AI-16 | Saxlanılmış açar oxunmursa (şifrələmə açarı dəyişib), admin paneldə bu açıq yazılmalıdır | S | T | ✅ |
+| FR-AI-17 | Təminatçının xəta izahı (model ləğv olunub, açar yanlışdır, balans yoxdur) istifadəçiyə ötürülməlidir | S | T | ✅ |
+| FR-AI-18 | Model adı köhnəlibsə, "AI-ı yoxla" təminatçıdan cari model siyahısını alıb göstərməlidir | S | T | ✅ |
 
 ### 13.10 Abunəlik və monetizasiya — `FR-ABN`
 
@@ -874,7 +876,7 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 | FR-FAK | 13 | 13 | 0 | 0 |
 | FR-ODN | 6 | 4 | 0 | 2 |
 | FR-ANL | 10 | 10 | 0 | 0 |
-| FR-AI | 16 | 16 | 0 | 0 |
+| FR-AI | 18 | 18 | 0 | 0 |
 | FR-ABN | 15 | 15 | 0 | 0 |
 | FR-ADM | 17 | 17 | 0 | 0 |
 | FR-DIL | 6 | 5 | 1 | 0 |
@@ -882,7 +884,7 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 | FR-BLD | 7 | 4 | 2 | 1 |
 | FR-REY | 7 | 7 | 0 | 0 |
 | FR-KMD | 12 | 12 | 0 | 0 |
-| **Cəmi** | **163** | **155 (95%)** | **5 (3%)** | **3 (2%)** |
+| **Cəmi** | **165** | **157 (95%)** | **5 (3%)** | **3 (2%)** |
 
 Lansı bloklayan `M` prioritetli açıq tələb yoxdur; 🟡 vəziyyətli FR-HES-06 və FR-BLD-02 IR-03-ün (e-poçt provayderi) bağlanması ilə həll olunur.
 

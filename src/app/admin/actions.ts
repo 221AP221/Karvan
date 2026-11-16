@@ -8,7 +8,8 @@ import { setPlanKeepingTime } from "@/lib/billing";
 import { COUPON_RE, normalizeCode } from "@/lib/coupons";
 import { refreshRating } from "@/lib/reviews";
 import { pingAi } from "@/lib/ai";
-import { STALE_CLIENT, getStoredAi, saveStoredAi, settingsReady } from "@/lib/ai-settings";
+import { listModels } from "@/lib/ai-provider";
+import { STALE_CLIENT, getAiConfig, getStoredAi, saveStoredAi, settingsReady } from "@/lib/ai-settings";
 import { hashPassword, startImpersonation } from "@/lib/auth";
 import { activatePayment } from "@/lib/billing";
 import { db } from "@/lib/db";
@@ -340,7 +341,16 @@ export async function testAi(): Promise<{ ok: boolean; message: string }> {
     const reply = await pingAi();
     return { ok: true, message: `AI cavab verdi: “${reply}”` };
   } catch (error) {
-    return { ok: false, message: error instanceof Error ? error.message : "AI cavab vermədi" };
+    const message = error instanceof Error ? error.message : "AI cavab vermədi";
+    // Model adı köhnəlibsə, təminatçıdan cari siyahını alıb göstəririk: admin özü seçə bilsin
+    const config = await getAiConfig().catch(() => null);
+    if (config?.kind === "openai" && /model|404|400/i.test(message)) {
+      const models = await listModels(config);
+      if (models.length) {
+        return { ok: false, message: `${message}\n\nMövcud modellər: ${models.slice(0, 12).join(", ")}${models.length > 12 ? " …" : ""}` };
+      }
+    }
+    return { ok: false, message };
   }
 }
 
