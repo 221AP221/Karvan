@@ -65,7 +65,29 @@ try {
     bad("qoşulmayıb — admin paneldə Parametrlər → AI bölməsində açar yazın");
     console.log("    (Groq pulsuzdur: https://console.groq.com/keys)");
   } else if (cfg.kind === "anthropic") ok("Claude qoşulub");
-  else ok(`${cfg.name} · model: ${cfg.model}`);
+  else {
+    ok(`${cfg.name} · model: ${cfg.model}`);
+    // Ayar var, amma ünvana çatırıqmı? Ən çox rast gələn problem elə buradadır.
+    const host = new URL(cfg.baseUrl).host;
+    try {
+      const res = await fetch(`${cfg.baseUrl}/models`, {
+        headers: cfg.apiKey ? { Authorization: `Bearer ${cfg.apiKey}` } : {},
+        signal: AbortSignal.timeout(15000),
+      });
+      if (res.ok) {
+        const data = await res.json().catch(() => ({}));
+        const ids = (data.data ?? []).map((m) => m.id).filter(Boolean);
+        ok(`${host} cavab verir${ids.length ? ` · ${ids.length} model` : ""}`);
+        if (ids.length && !ids.includes(cfg.model)) {
+          bad(`"${cfg.model}" siyahıda yoxdur. Mövcud: ${ids.slice(0, 8).join(", ")}`);
+        }
+      } else if (res.status === 401 || res.status === 403) bad(`${host}: açar qəbul edilmədi (${res.status})`);
+      else bad(`${host}: ${res.status} qaytardı`);
+    } catch (error) {
+      const code = error?.cause?.code ?? error?.name ?? "";
+      bad(`${host} ünvanına çatmaq olmur${code ? ` (${code})` : ""}`);
+    }
+  }
 } catch (error) {
   bad(`yoxlanmadı: ${String(error).split("\n")[0]}`);
 }

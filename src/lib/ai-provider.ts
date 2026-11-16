@@ -107,6 +107,38 @@ async function chat(cfg: OpenAiConfig, messages: { role: string; content: string
   return res;
 }
 
+/**
+ * Qoşulma uğursuz olanda hansı ünvana və niyə çatmadığımızı yazır.
+ * "İnterneti yoxlayın" tək başına az şey deyir: ən çox rast gələn hallar ayrıca izah olunur.
+ */
+function connectionError(cfg: OpenAiConfig, error: unknown): AiError {
+  const host = (() => {
+    try {
+      return new URL(cfg.baseUrl).host;
+    } catch {
+      return cfg.baseUrl || "(ünvan boşdur)";
+    }
+  })();
+  const cause = (error as { cause?: { code?: string } })?.cause?.code ?? (error as { code?: string })?.code ?? "";
+  const name = (error as { name?: string })?.name ?? "";
+
+  if (name === "TimeoutError" || cause === "UND_ERR_CONNECT_TIMEOUT") {
+    return new AiError(`${host} ünvanı vaxtında cavab vermədi. Şəbəkə yavaşdırsa, bir az sonra yenidən yoxlayın.`);
+  }
+  if (cause === "ECONNREFUSED") {
+    return new AiSetupError(
+      `${host} qoşulmanı qəbul etmir. Lokal model (Ollama) seçilibsə, o, işləməlidir; əks halda admin paneldə düzgün təminatçını seçin.`,
+    );
+  }
+  if (cause === "ENOTFOUND" || cause === "EAI_AGAIN") {
+    return new AiError(`${host} ünvanı tapılmadı: internet və ya DNS problemi ola bilər.`);
+  }
+  if (cause.startsWith("CERT_") || cause === "SELF_SIGNED_CERT_IN_CHAIN" || cause === "UNABLE_TO_VERIFY_LEAF_SIGNATURE") {
+    return new AiError(`${host} ilə təhlükəsiz bağlantı qurulmadı (sertifikat): korporativ şəbəkə və ya antivirus mane ola bilər.`);
+  }
+  return new AiError(`${host} ünvanına qoşulmaq alınmadı${cause ? ` (${cause})` : ""}. İnterneti və təminatçı ayarını yoxlayın.`);
+}
+
 export async function generateWithOpenAi<T extends z.ZodType>(cfg: OpenAiConfig, schema: T, system: string, prompt: string): Promise<z.infer<T>> {
   const jsonSchema = JSON.stringify(z.toJSONSchema(schema));
   const messages = [
@@ -120,8 +152,8 @@ export async function generateWithOpenAi<T extends z.ZodType>(cfg: OpenAiConfig,
     let res: Response;
     try {
       res = await chat(cfg, attempt === 0 || !lastProblem ? messages : [...messages, { role: "user", content: `Əvvəlki cavab düzgün deyildi (${lastProblem}). Yalnız sxemə uyğun JSON qaytar.` }], jsonMode);
-    } catch {
-      throw new AiError("AI xidmətinə qoşulmaq alınmadı. İnterneti və ya AI_BASE_URL-i yoxlayın.");
+    } catch (error) {
+      throw connectionError(cfg, error);
     }
     if (res.status === 400 && jsonMode) {
       jsonMode = false; // bəzi modellər response_format-ı dəstəkləmir
@@ -152,8 +184,8 @@ export async function chatWithOpenAi(cfg: OpenAiConfig, system: string, turns: C
   let res: Response;
   try {
     res = await chat(cfg, [{ role: "system", content: system }, ...turns], false);
-  } catch {
-    throw new AiError("AI xidmətinə qoşulmaq alınmadı.");
+  } catch (error) {
+    throw connectionError(cfg, error);
   }
   if (res.status === 401 || res.status === 403) throw new AiSetupError(`AI açarı yanlışdır və ya icazəsi yoxdur. ${await providerMessage(res)}`.trim());
   if (res.status === 429) throw new AiError("AI xidməti hazırda məşğuldur. Bir az sonra yenidən yazın.");
