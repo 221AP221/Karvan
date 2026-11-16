@@ -86,6 +86,20 @@ try {
     } catch (error) {
       const code = error?.cause?.code ?? error?.name ?? "";
       bad(`${host} ünvanına çatmaq olmur${code ? ` (${code})` : ""}`);
+      // Antivirus/korporativ şəbəkə HTTPS-i öz sertifikatı ilə əvəz edir: brauzer qəbul edir, Node yox
+      if (String(code).startsWith("CERT_") || ["SELF_SIGNED_CERT_IN_CHAIN", "UNABLE_TO_VERIFY_LEAF_SIGNATURE", "DEPTH_ZERO_SELF_SIGNED_CERT"].includes(code)) {
+        const { systemCaSupported } = await import("./node-flags.mjs");
+        console.log("    Səbəb: şəbəkədəki antivirus/proksi sertifikatı əvəz edir.");
+        if (systemCaSupported()) {
+          console.log("    `npm run dev` artıq Windows sertifikat anbarını işlədir — saytı yenidən başladın.");
+          console.log("    Davam edərsə, antivirusun HTTPS yoxlamasını söndürün və ya onun kök sertifikatını");
+          console.log("    fayla çıxarıb bu dəyişəni verin: NODE_EXTRA_CA_CERTS=C:\\yol\\sertifikat.pem");
+        } else {
+          console.log("    Node-un bu versiyası sistem anbarını oxuya bilmir. İki yoldan biri:");
+          console.log("      1) Node-u 22.15+ və ya 24 versiyasına yeniləyin (nodejs.org), sonra `npm run dev`");
+          console.log("      2) Antivirusun kök sertifikatını fayla çıxarıb: NODE_EXTRA_CA_CERTS=C:\\yol\\sertifikat.pem");
+        }
+      }
     }
   }
 } catch (error) {
