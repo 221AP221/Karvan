@@ -31,6 +31,7 @@ import { PLAN_LIMITS } from "@/lib/plans";
 import { param, type SearchParams } from "@/lib/search-params";
 import { PLATFORM_BY_KEY } from "@/lib/social";
 import { CopyLink } from "../invoices/[id]/client";
+import { AiInsights } from "./AiInsights";
 import { BarChart } from "./charts";
 
 export const metadata: Metadata = { title: "Analitika" };
@@ -234,6 +235,9 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Se
           {t.noEvents}
         </p>
       )}
+
+      {/* AI təhlili: rəqəmləri oxuyub müşahidə, risk və plan verir */}
+      {r.hasEvents && <AiInsights period={period} words={t} />}
 
       {/* Satış */}
       <section>

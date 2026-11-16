@@ -181,3 +181,43 @@ export async function pingAi() {
   const { reply } = await generate(z.object({ reply: z.string() }), "Yalnız JSON qaytar.", 'reply sahəsinə "ok" sözünü yaz.', "low");
   return reply;
 }
+
+// AI-5: analitika şərhi — rəqəmləri oxuyub nə etmək lazım olduğunu deyir
+
+export const AnalyticsAdviceSchema = z.object({
+  headline: z.string().describe("Bir cümlə: dövrün ümumi mənzərəsi"),
+  insights: z
+    .array(z.object({ title: z.string(), detail: z.string().describe("Rəqəmə istinad edən 1-2 cümlə") }))
+    .min(2)
+    .max(4)
+    .describe("Rəqəmlərdən çıxan müşahidələr"),
+  risks: z
+    .array(z.object({ title: z.string(), detail: z.string() }))
+    .max(3)
+    .describe("Diqqət tələb edən məqamlar; yoxdursa boş siyahı"),
+  actions: z
+    .array(
+      z.object({
+        title: z.string().describe("Konkret addım"),
+        detail: z.string().describe("Niyə və necə"),
+        effort: z.enum(["asan", "orta", "çətin"]),
+      }),
+    )
+    .min(2)
+    .max(4)
+    .describe("Növbəti dövr üçün plan"),
+  forecast: z.string().describe("Mövcud sürət davam edərsə növbəti dövrdə nə gözlənilir; şərtli dillə"),
+});
+export type AnalyticsAdvice = z.infer<typeof AnalyticsAdviceSchema>;
+
+export function analyzeAnalytics(input: { periodDays: number; data: unknown }) {
+  return generate(
+    AnalyticsAdviceSchema,
+    `Sən kiçik biznes üçün məlumat analitikisən. Satıcı sosial şəbəkədə xidmət satır (link-in-bio, sifariş, faktura).
+Dil: Azərbaycan dili, sadə və konkret. Rəqəmləri verilən məlumatdan götür, uydurma.
+Məlumat azdırsa (ziyarətçi və ya sifariş sayı kiçikdirsə), bunu açıq de və nəticəni şərtli dillə yaz.
+Proqnozda dəqiq rəqəm vermək əvəzinə diapazon və şərt göstər. Pul məbləğləri qəpiklə verilir: 100 qəpik = 1 AZN.`,
+    `Dövr: son ${input.periodDays} gün\nMəlumat (JSON):\n${JSON.stringify(input.data)}`,
+    "medium",
+  );
+}

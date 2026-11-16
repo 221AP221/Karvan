@@ -83,15 +83,20 @@ export default async function DashboardLayout({ children }: { children: React.Re
             <Link href={`/${profile.username}`} target="_blank" className="hidden text-gray-600 sm:inline">
               /{profile.username} ↗
             </Link>
-            {can(profile.role, "account") && (
-              <Link href={SETTINGS.href} className="text-gray-600 hover:text-gray-900" title={t.nav[SETTINGS.key]}>
-                <Settings size={17} aria-hidden />
-                <span className="sr-only">{t.nav[SETTINGS.key]}</span>
-              </Link>
-            )}
             <form action={logout}>
               <button className="text-gray-500 hover:text-gray-900">{t.shell.logout}</button>
             </form>
+            {/* Parametrlər sətrin ən sağında: menyu bir sətirdə qalır, ikon isə göz önündədir */}
+            {can(profile.role, "account") && (
+              <Link
+                href={SETTINGS.href}
+                title={t.nav[SETTINGS.key]}
+                className="grid h-9 w-9 place-items-center rounded-full text-gray-500 transition hover:bg-gray-100 hover:text-gray-900"
+              >
+                <Settings size={18} aria-hidden />
+                <span className="sr-only">{t.nav[SETTINGS.key]}</span>
+              </Link>
+            )}
           </div>
         </div>
         <nav className="mx-auto flex max-w-4xl flex-wrap gap-x-1 gap-y-0.5 px-4 pb-2 text-sm">

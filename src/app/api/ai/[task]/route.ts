@@ -5,6 +5,7 @@ import {
   AiError,
   AiNotConfiguredError,
   AiSetupError,
+  analyzeAnalytics,
   draftPaymentReminder,
   generateServiceDescriptions,
   parseInvoiceText,
@@ -18,6 +19,7 @@ import { invoiceUrl } from "@/lib/invoices";
 import { formatMoney } from "@/lib/money";
 import { PLAN_LIMITS, startOfMonth } from "@/lib/plans";
 import { LIMITS, rateLimit, tooMany } from "@/lib/rate-limit";
+import { PERIODS, type Period, buildReport } from "@/lib/analytics-report";
 
 const inputs = {
   "parse-invoice": z.object({ text: z.string().min(3).max(2000) }),
@@ -27,12 +29,43 @@ const inputs = {
     niche: z.string().max(100).optional(),
   }),
   theme: z.object({ bio: z.string().max(500), niche: z.string().max(100) }),
+  analytics: z.object({ period: z.coerce.number().int().refine((n) => PERIODS.includes(n as Period), "Dövr düzgün deyil") }),
   reminder: z.object({
     invoiceId: z.string(),
     channel: z.enum(["WHATSAPP", "SMS", "EMAIL"]),
     tone: z.enum(["friendly", "neutral", "firm"]).default("friendly"),
   }),
 };
+
+/** AI-a yalnız lazım olan rəqəmlər göndərilir: qrafiklərin bütün nöqtələri deyil. */
+function compactReport(r: Awaited<ReturnType<typeof buildReport>>) {
+  return {
+    satis: {
+      gelirQepik: r.sales.revenueAzn,
+      gelirEvvelkiDovrQepik: r.sales.revenueAznPrev,
+      sifaris: r.sales.orders,
+      sifarisEvvelkiDovr: r.sales.ordersPrev,
+      ortaCekQepik: r.sales.avgOrder,
+      odenilmeFaizi: r.sales.paidRate,
+      odenisSaat: r.sales.payHours,
+      gozleyenSifaris: r.sales.pendingApproval,
+      aciqFakturaQepik: r.sales.outstanding.AZN ?? 0,
+      gecikmisQepik: r.sales.overdue.AZN ?? 0,
+    },
+    auditoriya: {
+      baxis: r.audience.views,
+      ziyaretci: r.audience.visitors,
+      ziyaretciEvvelkiDovr: r.audience.visitorsPrev,
+      konversiyaFaizi: r.audience.conversion,
+      mobilFaizi: r.audience.mobileShare,
+      telefonKliki: r.audience.phoneClicks,
+    },
+    musteriler: r.customers,
+    qif: r.funnel.map((f) => ({ addim: f.label, say: f.value })),
+    menbeler: r.sources.map((s) => ({ ad: s.label, ziyaretci: s.visitors, sifaris: s.orders, gelirQepik: s.revenue })),
+    xidmetler: r.topServices.map((s) => ({ ad: s.title, acilis: s.opens, sifaris: s.orders, gelirQepik: s.revenue })),
+  };
+}
 
 export async function POST(request: Request, { params }: { params: Promise<{ task: string }> }) {
   const profile = await getCurrentProfile();
@@ -75,6 +108,12 @@ export async function POST(request: Request, { params }: { params: Promise<{ tas
         return NextResponse.json({ variants: await generateServiceDescriptions(inputs["describe-service"].parse(body)) });
       case "theme":
         return NextResponse.json(await suggestTheme(inputs.theme.parse(body)));
+      case "analytics": {
+        const { period } = inputs.analytics.parse(body);
+        // Rəqəmlər serverdə yenidən hesablanır: müştəridən gələn hesabata güvənmirik
+        const report = await buildReport(profile.id, period as Period);
+        return NextResponse.json(await analyzeAnalytics({ periodDays: period, data: compactReport(report) }));
+      }
       case "reminder": {
         const { invoiceId, channel, tone } = inputs.reminder.parse(body);
         const invoice = await db.invoice.findFirst({ where: { id: invoiceId, profileId: profile.id } });
