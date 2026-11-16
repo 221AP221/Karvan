@@ -75,6 +75,18 @@ Demo giriş: `demo@karvan.az` / `demo12345` · demo səhifə: http://localhost:3
 
 Öz PostgreSQL bazanızı istifadə etmək üçün `.env` faylında `DATABASE_URL` yazın (bax: `.env.example`). AI funksiyaları üçün `ANTHROPIC_API_KEY` lazımdır; onsuz da tətbiq işləyir, sadəcə AI düymələri xəbərdarlıq göstərir.
 
+### Yeni versiyanı quraşdırmaq (Windows)
+
+Yeni `karvan.zip` gələndə qovluğu yenisi ilə əvəz etməyə ehtiyac yoxdur — `scripts\yenile.cmd`
+faylını bir dəfə Masaüstünə kopyalayın və hər dəfə onun üstünə iki dəfə klikləyin. Skript:
+
+1. işləyən serveri dayandırır (açıq fayl kilidləri açılma zamanı arxivi yarımçıq qoyurdu),
+2. Masaüstü və Downloads qovluğundakı **ən yeni** `karvan*.zip` faylını tapır və tarixini yazır,
+3. arxivi müvəqqəti qovluğa açıb layihənin üzərinə köçürür (`.env` və məlumatlarınıza toxunmur),
+4. `.next` keşini silir, `npm install` işlədir və saytı qaldırır.
+
+Qovluğun adı `karvan` deyilsə, arqument kimi verin: `yenile.cmd karvan6`.
+
 Tam axın testi (Playwright quraşdırılmış olmalıdır):
 
 ```bash
