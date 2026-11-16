@@ -232,12 +232,26 @@ export default async function ProfilePage({ params }: Props) {
                 </BadgeCheck>
               )}
             </h1>
+            {/* Reytinq rəylər bölməsinə aparır */}
             {profile.ratingAvg !== null && profile.ratingCount > 0 && (
-              <RatingBadge value={profile.ratingAvg} count={profile.ratingCount} label={t.ratingLabel} className="mt-2 justify-center lg:justify-start" />
+              <a
+                href="#reyler"
+                className="mt-2 inline-flex rounded-lg transition hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
+              >
+                <RatingBadge value={profile.ratingAvg} count={profile.ratingCount} label={t.ratingLabel} className="justify-center lg:justify-start" />
+              </a>
             )}
             {(profile.profession || profile.city) && (
               <p className="mt-1 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm text-gray-500 lg:justify-start">
-                {profile.profession && <span className="font-medium text-[var(--brand)]">{profile.profession}</span>}
+                {/* Peşə: kataloqda eyni sahədəki digər satıcılar */}
+                {profile.profession && (
+                  <Link
+                    href={`${CATALOG_PATH[locale]}?q=${encodeURIComponent(profile.profession)}`}
+                    className="font-medium text-[var(--brand)] underline-offset-4 hover:underline"
+                  >
+                    {profile.profession}
+                  </Link>
+                )}
                 {profile.city && (
                   <span className="inline-flex items-center gap-1">
                     <MapPin size={14} strokeWidth={1.75} aria-hidden /> {profile.city}

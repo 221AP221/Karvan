@@ -630,6 +630,8 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 | FR-SEH-09 | Pro və Pro Max hesablarda adın yanında təsdiqlənmiş nişanı göstərilməlidir | S | SH-SAT-08 | D | ✅ |
 | FR-SEH-10 | Bloklanmış hesabın səhifəsi 404 qaytarmalı, bloklanmış xidmət səhifədə görünməməlidir | M | SH-ADM-03 | T | ✅ |
 | FR-SEH-11 | Satıcı səhifəsinin interfeysi çoxdilli olmalıdır | C | SH-SAT-09, BR-11 | T | ✅ 4 dil; ziyarətçi səhifədəki seçicidən dili dəyişir, satıcının mətnləri olduğu kimi qalır |
+| FR-SEH-12 | Reytinq nişanı rəylər bölməsinə aparmalıdır | C | SH-MUS-02 | T | ✅ |
+| FR-SEH-13 | Peşə adı kataloqda eyni sahədəki satıcıların axtarışına aparmalıdır | C | BR-06 | T | ✅ |
 
 ### 13.3 Xidmətlər — `FR-XID`
 
@@ -871,7 +873,7 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 | Modul | Cəmi | ✅ | 🟡 | ⬜ |
 |---|---|---|---|---|
 | FR-HES | 11 | 10 | 1 | 0 |
-| FR-SEH | 11 | 11 | 0 | 0 |
+| FR-SEH | 13 | 13 | 0 | 0 |
 | FR-XID | 6 | 6 | 0 | 0 |
 | FR-KAT | 9 | 9 | 0 | 0 |
 | FR-SIF | 9 | 8 | 1 | 0 |
@@ -886,7 +888,7 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 | FR-BLD | 7 | 4 | 2 | 1 |
 | FR-REY | 7 | 7 | 0 | 0 |
 | FR-KMD | 12 | 12 | 0 | 0 |
-| **Cəmi** | **167** | **159 (95%)** | **5 (3%)** | **3 (2%)** |
+| **Cəmi** | **169** | **161 (95%)** | **5 (3%)** | **3 (2%)** |
 
 Lansı bloklayan `M` prioritetli açıq tələb yoxdur; 🟡 vəziyyətli FR-HES-06 və FR-BLD-02 IR-03-ün (e-poçt provayderi) bağlanması ilə həll olunur.
 
