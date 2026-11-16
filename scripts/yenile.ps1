@@ -26,11 +26,24 @@ Write-Host "=== KARVAN YENİLƏNMƏSİ ===" -ForegroundColor Cyan
 Write-Host ""
 
 # --- 1. Layihə qovluğu ---
-$yol = $Proje
-if (-not (Test-Path -LiteralPath (Join-Path $yol "package.json"))) {
-  $yol = Join-Path ([Environment]::GetFolderPath("Desktop")) $Proje
+# Ardıcıllıq: verilən ad/yol → Masaüstündə həmin ad → Masaüstündəki ən son işlənmiş
+# karvan* qovluğu. Beləcə qovluğun adı nə olursa olsun (karvan, karvan6...) işləyir
+# və hər dəfə yeni qovluq yaratmağa ehtiyac qalmır.
+$masaustu = [Environment]::GetFolderPath("Desktop")
+$namizedler = @($Proje, (Join-Path $masaustu $Proje))
+$yol = $namizedler | Where-Object { Test-Path -LiteralPath (Join-Path $_ "package.json") } | Select-Object -First 1
+
+if (-not $yol) {
+  $tapilan = Get-ChildItem -LiteralPath $masaustu -Directory -ErrorAction SilentlyContinue |
+    Where-Object { $_.Name -like "karvan*" -and (Test-Path -LiteralPath (Join-Path $_.FullName "package.json")) } |
+    Sort-Object LastWriteTime -Descending | Select-Object -First 1
+  if ($tapilan) {
+    $yol = $tapilan.FullName
+    Write-Host "Qeyd: '$Proje' tapılmadı, Masaüstündəki ən son layihə götürüldü." -ForegroundColor Yellow
+  }
 }
-if (-not (Test-Path -LiteralPath (Join-Path $yol "package.json"))) {
+
+if (-not $yol) {
   Problem "Layihə qovluğu tapılmadı: $Proje"
   Info "    Qovluğun adını verin, məsələn:  yenile.cmd karvan6"
   return
