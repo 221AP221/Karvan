@@ -1,0 +1,63 @@
+databases:
+  - name: karvan-db
+    plan: free
+    databaseName: karvan
+    user: karvan
+
+services:
+  - type: web
+    name: karvan
+    runtime: node
+    plan: free
+    region: frankfurt
+    buildCommand: npm install && npm run build
+    preDeployCommand: npx prisma migrate deploy
+    startCommand: npm start
+    autoDeploy: true
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: karvan-db
+          property: connectionString
+      - key: APP_SECRET
+        generateValue: true
+      - key: NEXT_PUBLIC_APP_URL
+        fromService:
+          type: web
+          name: karvan
+          property: host
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: NODE_ENV
+        value: production
+      # Aşağıdakılar könüllüdür — doldurmasanız, həmin funksiyalar sadəcə söndürülmüş qalır
+      # (AI → admin paneldən sonradan əlavə edilə bilər, ödəniş/bildiriş/CRON Render panelindən yazılır):
+      - key: AI_PROVIDER
+        value: ""
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: EMAIL_FROM
+        sync: false
+      - key: PAYMENT_GATEWAY
+        value: ""
+      - key: EPOINT_PUBLIC_KEY
+        sync: false
+      - key: EPOINT_PRIVATE_KEY
+        sync: false
+      - key: PAYRIFF_SECRET_KEY
+        sync: false
+      - key: SANDBOX_SECRET
+        sync: false
+      - key: BILLING_IBAN
+        sync: false
+      - key: BILLING_VOEN
+        sync: false
+      - key: CRON_SECRET
+        generateValue: true
