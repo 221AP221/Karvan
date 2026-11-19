@@ -3,6 +3,7 @@ import "@fontsource-variable/geologica";
 import "@fontsource-variable/onest";
 import "./globals.css";
 import { NavigationTracker } from "@/components/BackButton";
+import { InitialLoader } from "@/components/InitialLoader";
 import { InlineScript } from "@/components/InlineScript";
 import { ChatWidget } from "@/components/site/ChatWidget";
 import { CookieNotice } from "@/components/site/CookieNotice";
@@ -29,6 +30,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <InlineScript html={THEME_SCRIPT} />
       </head>
       <body className="min-h-screen antialiased">
+        <InitialLoader />
         <NavigationTracker />
         {children}
         <CookieNotice text={notice.text} accept={notice.accept} more={notice.more} href="/cookie" />
