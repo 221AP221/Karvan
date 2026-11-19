@@ -94,7 +94,7 @@ export function CheckoutForm({ plan, planName, prices, amounts, reference, bank,
                 { key: "card" as const, label: "Bank kartı", icon: CreditCard },
                 { key: "transfer" as const, label: "Bank köçürməsi", icon: Building2 },
               ].map(({ key, label, icon: Icon }) => (
-                <button key={key} type="button" disabled={key === "card" && !cardAvailable} title={key === "card" && !cardAvailable ? "Kart ödənişi tezliklə" : undefined} onClick={() => setMethod(key)} className={`flex items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-40 ${method === key ? "bg-white shadow-sm" : "text-gray-500 hover:text-gray-800"}`}>
+                <button key={key} type="button" disabled={key === "card" && !cardAvailable} title={key === "card" && !cardAvailable ? "Kart ödənişi hazırda bağlıdır, bank köçürməsi ilə davam edin" : undefined} onClick={() => setMethod(key)} className={`flex items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-40 ${method === key ? "bg-white shadow-sm" : "text-gray-500 hover:text-gray-800"}`}>
                   <Icon size={16} aria-hidden /> {label}
                 </button>
               ))}

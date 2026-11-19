@@ -244,7 +244,6 @@ export const tr: typeof az = {
           "Ayda 100 fatura",
           "30 hizmet",
           "Karvan yazısı olmadan",
-          "Kartla online ödeme (yakında)",
           "Yapay zekâ: ayda 200 istek",
         ],
       },

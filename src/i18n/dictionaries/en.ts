@@ -247,7 +247,6 @@ export const en: typeof az = {
           "100 invoices per month",
           "30 services",
           "No Karvan branding",
-          "Online card payments from customers (soon)",
           "AI: 200 requests per month",
         ],
       },

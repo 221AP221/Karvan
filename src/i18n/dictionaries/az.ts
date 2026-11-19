@@ -248,7 +248,6 @@ export const az = {
           "Ayda 100 faktura",
           "30 xidmət",
           "Karvan yazısı olmadan",
-          "Müştəridən onlayn kartla ödəniş (tezliklə)",
           "AI: ayda 200 sorğu",
         ],
       },
