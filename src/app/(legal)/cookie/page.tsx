@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { DataTable, DraftNotice, LegalHeader, Section } from "../ui";
+import { DataTable, LegalHeader, Section } from "../ui";
 
 export const metadata: Metadata = {
   title: "Cookie siyasəti — Karvan",
@@ -12,7 +12,6 @@ export const metadata: Metadata = {
 export default function Cookies() {
   return (
     <>
-      <DraftNotice />
       <LegalHeader
         title="Cookie siyasəti"
         intro="Cookie — brauzerinizdə saxlanılan kiçik qeyddir. Karvan yalnız platformanın işləməsi və satıcıya anonim statistika göstərmək üçün lazım olan qeydlərdən istifadə edir; reklam izləyicisi yoxdur."

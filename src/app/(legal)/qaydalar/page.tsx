@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bullets, DraftNotice, LegalHeader, Section } from "../ui";
+import { Bullets, LegalHeader, Section } from "../ui";
 
 export const metadata: Metadata = {
   title: "İstifadə şərtləri — Karvan",
@@ -11,7 +11,6 @@ export const metadata: Metadata = {
 export default function Terms() {
   return (
     <>
-      <DraftNotice />
       <LegalHeader
         title="İstifadə şərtləri"
         intro="Bu şərtlər Karvan platformasından (karvan.az) istifadə qaydalarını, tərəflərin hüquq və öhdəliklərini müəyyən edir. Hesab yaradaraq siz bu şərtləri qəbul etmiş sayılırsınız."

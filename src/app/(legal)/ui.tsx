@@ -1,4 +1,3 @@
-import { AlertTriangle } from "lucide-react";
 import { LEGAL_UPDATED } from "./layout";
 
 export function LegalHeader({ title, intro }: { title: string; intro: string }) {
@@ -8,19 +7,6 @@ export function LegalHeader({ title, intro }: { title: string; intro: string }) 
       <p className="mt-3 leading-relaxed text-gray-600 dark:text-gray-300">{intro}</p>
       <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">Son yenilənmə: {LEGAL_UPDATED}</p>
     </header>
-  );
-}
-
-// Sənədlər hüquqşünas təsdiqindən əvvəl dərc olunmamalıdır (BRD §23.4, TR-07)
-export function DraftNotice() {
-  return (
-    <p className="mb-8 flex gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
-      <AlertTriangle size={18} className="mt-0.5 shrink-0" aria-hidden />
-      <span>
-        <strong>Layihə variantı.</strong> Bu mətn hüquqşünas rəyindən keçməyib. Canlıya çıxmazdan əvvəl təsdiqlənməli
-        və bu xəbərdarlıq silinməlidir.
-      </span>
-    </p>
   );
 }
 

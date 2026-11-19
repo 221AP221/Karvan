@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Bullets, DataTable, DraftNotice, LegalHeader, Section } from "../ui";
+import { Bullets, DataTable, LegalHeader, Section } from "../ui";
 
 export const metadata: Metadata = {
   title: "Məxfilik siyasəti — Karvan",
@@ -12,7 +12,6 @@ export const metadata: Metadata = {
 export default function Privacy() {
   return (
     <>
-      <DraftNotice />
       <LegalHeader
         title="Məxfilik siyasəti"
         intro="Bu sənəd Karvanın hansı məlumatları topladığını, bu məlumatların nə üçün istifadə olunduğunu, nə qədər saxlandığını və istifadəçinin hansı hüquqlara malik olduğunu izah edir."
