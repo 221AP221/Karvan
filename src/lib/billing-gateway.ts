@@ -134,7 +134,12 @@ const payriff: BillingGateway = {
 
 // Test gateway: real gateway ilə eyni yol (yönləndirmə + imzalı webhook + eyni aktivləşmə). Fərq yalnız ondadır ki,
 // ödəniş səhifəsi /pay/sandbox-dır və yalnız test kartlarını qəbul edir, pul çıxılmır.
+//
+// Defolt gizli söz yalnız lokal inkişaf üçündür (kodda açıq yazılıb, sirr deyil). Production-da kimsə
+// PAYMENT_GATEWAY=sandbox təyin etsə, SANDBOX_SECRET də yazılmayıbsa, imza istənilən şəxs tərəfindən
+// hesablana bilər və pulsuz "ödəniş" göndərilə bilər — ona görə belə halda gateway ümumiyyətlə işə düşmür.
 const sandboxSecret = () => process.env.SANDBOX_SECRET ?? "karvan-sandbox-secret";
+const sandboxSafe = () => process.env.SANDBOX_SECRET || process.env.NODE_ENV !== "production";
 export const sandboxSign = (data: string) => createHmac("sha256", sandboxSecret()).update(data).digest("hex");
 
 const sandbox: BillingGateway = {
@@ -154,6 +159,7 @@ const sandbox: BillingGateway = {
 };
 
 export function sandboxEnabled() {
+  if (!sandboxSafe()) return false;
   return process.env.PAYMENT_GATEWAY === "sandbox" || (!process.env.PAYMENT_GATEWAY && process.env.NODE_ENV !== "production");
 }
 

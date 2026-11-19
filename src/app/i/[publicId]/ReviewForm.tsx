@@ -2,11 +2,23 @@
 
 import { Check, Star } from "lucide-react";
 import { startTransition, useActionState, useState } from "react";
+import { fill } from "@/lib/seo";
 import { submitReview } from "./actions";
 
 const COMMENT_MAX = 600;
 
-export function ReviewForm({ publicId, sellerName }: { publicId: string; sellerName: string }) {
+type Words = {
+  rateService: string;
+  rateHint: string;
+  star: string;
+  commentPlaceholder: string;
+  send: string;
+  sending: string;
+  thanks: string;
+  thanksHint: string;
+};
+
+export function ReviewForm({ publicId, sellerName, words }: { publicId: string; sellerName: string; words: Words }) {
   const [state, action, pending] = useActionState(submitReview, undefined);
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
@@ -16,9 +28,9 @@ export function ReviewForm({ publicId, sellerName }: { publicId: string; sellerN
     return (
       <div className="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">
         <p className="flex items-center gap-2 font-medium">
-          <Check size={16} aria-hidden /> Rəyiniz üçün təşəkkür edirik!
+          <Check size={16} aria-hidden /> {words.thanks}
         </p>
-        <p className="mt-1">Rəyiniz {sellerName} səhifəsində göstəriləcək.</p>
+        <p className="mt-1">{fill(words.thanksHint, { seller: sellerName })}</p>
       </div>
     );
   }
@@ -37,8 +49,8 @@ export function ReviewForm({ publicId, sellerName }: { publicId: string; sellerN
       }}
       className="mt-6 rounded-xl border border-gray-200 p-4"
     >
-      <p className="font-medium">Xidməti qiymətləndirin</p>
-      <p className="mt-0.5 text-sm text-gray-500">Rəyiniz {sellerName} səhifəsində görünəcək.</p>
+      <p className="font-medium">{words.rateService}</p>
+      <p className="mt-0.5 text-sm text-gray-500">{fill(words.rateHint, { seller: sellerName })}</p>
 
       <div className="mt-3 flex gap-1" onMouseLeave={() => setHover(0)}>
         {[1, 2, 3, 4, 5].map((n) => (
@@ -47,7 +59,7 @@ export function ReviewForm({ publicId, sellerName }: { publicId: string; sellerN
             type="button"
             onClick={() => setRating(n)}
             onMouseEnter={() => setHover(n)}
-            aria-label={`${n} ulduz`}
+            aria-label={fill(words.star, { n })}
             aria-pressed={rating === n}
             className="p-1 transition hover:scale-110"
           >
@@ -66,7 +78,7 @@ export function ReviewForm({ publicId, sellerName }: { publicId: string; sellerN
         onChange={(e) => setComment(e.target.value)}
         rows={3}
         maxLength={COMMENT_MAX}
-        placeholder="Nə bəyəndiniz? (könüllü)"
+        placeholder={words.commentPlaceholder}
         className="mt-3 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/15"
       />
 
@@ -80,7 +92,7 @@ export function ReviewForm({ publicId, sellerName }: { publicId: string; sellerN
         disabled={pending || rating === 0}
         className="mt-3 w-full rounded-full bg-[var(--brand)] py-2.5 font-medium text-white transition hover:opacity-90 disabled:opacity-50"
       >
-        {pending ? "Göndərilir..." : "Rəyi göndər"}
+        {pending ? words.sending : words.send}
       </button>
     </form>
   );

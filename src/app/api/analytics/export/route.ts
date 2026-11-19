@@ -1,6 +1,7 @@
 import { getCurrentProfile } from "@/lib/auth";
 import { PERIODS, buildReport, type Period } from "@/lib/analytics-report";
 import { PLAN_LIMITS } from "@/lib/plans";
+import { can } from "@/lib/team";
 
 const cell = (v: string | number) => {
   const s = String(v);
@@ -12,6 +13,8 @@ const money = (q: number) => (q / 100).toFixed(2);
 export async function GET(request: Request) {
   const profile = await getCurrentProfile();
   if (!profile) return new Response("Unauthorized", { status: 401 });
+  // Komanda üzvü analitika səhifəsini görmürsə, bu endpoint-dən də çıxarmamalı (icazə matrisi)
+  if (!can(profile.role, "analytics")) return new Response("İcazəniz yoxdur", { status: 403 });
   if (!PLAN_LIMITS[profile.user.subscription?.plan ?? "FREE"].reports) return new Response("Pro Max tələb olunur", { status: 403 });
 
   const raw = Number(new URL(request.url).searchParams.get("p"));

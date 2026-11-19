@@ -20,6 +20,7 @@ import { formatMoney } from "@/lib/money";
 import { PLAN_LIMITS, startOfMonth } from "@/lib/plans";
 import { LIMITS, rateLimit, tooMany } from "@/lib/rate-limit";
 import { PERIODS, type Period, buildReport } from "@/lib/analytics-report";
+import { can } from "@/lib/team";
 
 const inputs = {
   "parse-invoice": z.object({ text: z.string().min(3).max(2000) }),
@@ -70,6 +71,8 @@ function compactReport(r: Awaited<ReturnType<typeof buildReport>>) {
 export async function POST(request: Request, { params }: { params: Promise<{ task: string }> }) {
   const profile = await getCurrentProfile();
   if (!profile) return NextResponse.json({ error: "Daxil olun" }, { status: 401 });
+  // İcazə matrisinə görə STAFF AI köməkçisindən istifadə edə bilmir (panelin özündə də gizlidir)
+  if (!can(profile.role, "ai")) return NextResponse.json({ error: "İcazəniz yoxdur" }, { status: 403 });
 
   const task = (await params).task;
   if (!(task in inputs)) return NextResponse.json({ error: "Naməlum əməliyyat" }, { status: 404 });

@@ -5,10 +5,10 @@
 | **Məhsul** | Karvan — sosial şəbəkədə xidmət satanlar üçün link-in-bio, sifariş, faktura və ödəniş izləmə platforması |
 | **Domen** | karvan.az |
 | **Sənəd kodu** | KRV-BRD-002 |
-| **Versiya** | 2.1 (baseline) |
+| **Versiya** | 2.2 (baseline) |
 | **Sənədin statusu** | Təsdiqə təqdim olunur |
 | **Məhsulun statusu** | Beta-ya hazır — buraxılış şərtləri §26 |
-| **Baseline tarixi** | 05 noyabr 2026 |
+| **Baseline tarixi** | 19 noyabr 2026 |
 | **Növbəti baxış** | Lansdan 30 gün sonra (§27) |
 | **Hazırladı** | Biznes analitikası |
 | **Əhatə olunan bazar** | Azərbaycan (əsas) · Türkiyə, Gürcüstan, Qazaxıstan (hazırlıq) |
@@ -40,7 +40,8 @@ Bu sənəd **nə** tələb olunduğunu müəyyən edir, **necə** reallaşdırı
 |---|---|---|---|---|
 | 1.0 | 2026-08 | PRD — ilkin məhsul konsepti | Məhsul | Əvəzlənib |
 | **2.0** | **2026-11-03** | **BABOK strukturuna keçid: tələb səviyyələri ayrıldı, biznes əsaslandırması, izlənilənlik matrisi, risk reyestri, UAT planı, keçid tələbləri və dəyişiklik idarəetməsi əlavə olundu** | Biznes analitikası | Əvəzlənib |
-| **2.1** | **2026-11-05** | **Rəylər və reytinq (FR-REY), bildirişlər (FR-BLD-05…07), Pro Max komanda üzvləri (FR-KMD) və rol-icazə matrisi əlavə olundu; panel çoxdilli edildi** | **Biznes analitikası** | **Cari baseline** |
+| **2.1** | **2026-11-05** | **Rəylər və reytinq (FR-REY), bildirişlər (FR-BLD-05…07), Pro Max komanda üzvləri (FR-KMD) və rol-icazə matrisi əlavə olundu; panel çoxdilli edildi** | Biznes analitikası | Əvəzlənib |
+| **2.2** | **2026-11-19** | **5 sahəli paralel audit (təhlükəsizlik, məlumat modeli, performans, UX/i18n, testlər) və tapılan qüsurların düzəlişi: icazə matrisi API-lərdə, komanda dəvətində yarış şərti, sandbox açarı, hesaba bağlı giriş limiti, ictimai faktura səhifəsinin 4 dildə edilməsi (NFR-SEC-11…15, FR-ODN-07…08)** | **Biznes analitikası** | **Cari baseline** |
 
 ### 0.4 Təsdiq və imza
 
@@ -700,6 +701,8 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 | FR-ODN-04 | Müştərinin ödənişi platformadan keçməməli, birbaşa satıcının hesabına getməli və komissiya tutulmamalıdır | M | BR-08 | İ | ✅ |
 | FR-ODN-05 | Müştəri fakturanı kartla onlayn ödəyə bilməlidir | W | SH-MUS-04 | — | ⬜ v1.2 — §31 S3 |
 | FR-ODN-06 | Ödəniş qəbzinin şəkli yüklənib avtomatik yoxlanmalıdır | W | SH-SAT-06 | — | ⬜ |
+| FR-ODN-07 | İctimai faktura səhifəsi (kart, "Ödədim" düyməsi, rəy forması) ziyarətçinin dilinə uyğun olmalıdır | M | SH-MUS-02, FR-DIL | T | ✅ 4 dil (`invoicePublic`) |
+| FR-ODN-08 | "Ödədim" bildirişi göndərilə bilməsə, müştəriyə xəta göstərilməli, səssiz uğursuzluq olmamalıdır | M | NFR-REL-03 | T | ✅ |
 
 ### 13.16 Rəylər və reytinq — `FR-REY`
 
@@ -878,7 +881,7 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 | FR-KAT | 9 | 9 | 0 | 0 |
 | FR-SIF | 9 | 8 | 1 | 0 |
 | FR-FAK | 13 | 13 | 0 | 0 |
-| FR-ODN | 6 | 4 | 0 | 2 |
+| FR-ODN | 8 | 6 | 0 | 2 |
 | FR-ANL | 10 | 10 | 0 | 0 |
 | FR-AI | 20 | 20 | 0 | 0 |
 | FR-ABN | 15 | 15 | 0 | 0 |
@@ -888,7 +891,7 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 | FR-BLD | 7 | 4 | 2 | 1 |
 | FR-REY | 7 | 7 | 0 | 0 |
 | FR-KMD | 12 | 12 | 0 | 0 |
-| **Cəmi** | **169** | **161 (95%)** | **5 (3%)** | **3 (2%)** |
+| **Cəmi** | **171** | **163 (95%)** | **5 (3%)** | **3 (2%)** |
 
 Lansı bloklayan `M` prioritetli açıq tələb yoxdur; 🟡 vəziyyətli FR-HES-06 və FR-BLD-02 IR-03-ün (e-poçt provayderi) bağlanması ilə həll olunur.
 
@@ -1166,6 +1169,11 @@ Təsnifat ISO/IEC 25010 keyfiyyət modelinə uyğundur. Hər NFR ölçülə bil�
 | NFR-SEC-08 | İstifadəçi daxil etdiyi linklərdə yalnız `http(s)` və `mailto` sxemlərinə icazə verilməlidir | ✅ |
 | NFR-SEC-09 | Xarici xidmət açarları şifrələnmiş saxlanılmalı, interfeysdə yenidən göstərilməməlidir | ✅ |
 | NFR-SEC-10 | İctimai formalar və AI endpoint-ləri IP əsaslı sürət məhdudiyyəti ilə qorunmalıdır | ✅ Sifariş, "Ödədim", şəkil yükləmə, analitika, AI, giriş, qeydiyyat və şifrə bərpası üzrə limit (`src/lib/rate-limit.ts`) |
+| NFR-SEC-11 | Analitika və AI API-ləri icazə matrisini keçməməlidir: STAFF rolu bu bölmələrə sərhəddi panelin özündə olduğu kimi API-də də hiss etməlidir | ✅ `requirePermission`/`can()` həm səhifədə, həm `/api/analytics/export` və `/api/ai/[task]`-da |
+| NFR-SEC-12 | Komanda üzvü limiti paralel dəvətlərdə aşılmamalıdır | ✅ Profil sətri kilidlənir (`FOR UPDATE`), faktura nömrələməsi ilə eyni nümunə |
+| NFR-SEC-13 | Test (sandbox) ödəniş şlüzü production-da yalnız açıq gizli sözlə işə düşməlidir | ✅ `SANDBOX_SECRET` yazılmayıbsa, production-da sandbox tamamilə bağlıdır |
+| NFR-SEC-14 | Giriş cəhdi limiti IP saxtalaşdırılsa belə hesabı qorumalıdır | ✅ IP-dən asılı olmayan, hesaba bağlı ikinci qat limit (`loginByAccount`) |
+| NFR-SEC-15 | Sürət limitində istifadə olunan IP mənbəyi mümkün qədər etibarlı başlıqdan götürülməlidir | ✅ `cf-connecting-ip`/`x-real-ip` `x-forwarded-for`-dan əvvəl yoxlanılır |
 
 ### 17.5 Məxfilik — `NFR-PRV`
 

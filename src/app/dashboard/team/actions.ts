@@ -29,16 +29,6 @@ export async function inviteMember(_: FormState, form: FormData): Promise<FormSt
   if (!ROLES.includes(role)) return { error: "Rol düzgün deyil" };
   if (email === profile.user.email) return { error: "Bu, sizin öz hesabınızdır" };
 
-  const current = await db.membership.count({ where: { profileId: profile.id, status: { in: ["ACTIVE", "INVITED"] } } });
-  if (current >= limit) {
-    return {
-      error:
-        limit <= 1
-          ? "Komanda üzvü yalnız Pro Max tarifində əlavə olunur"
-          : `Tarifinizdə ən çoxu ${limit} nəfər ola bilər (sahib daxil). Əvvəlcə kimisə çıxarın.`,
-    };
-  }
-
   const existing = await db.membership.findFirst({ where: { profileId: profile.id, invitedEmail: email } });
   if (existing) return { error: "Bu ünvana artıq dəvət göndərilib" };
 
@@ -46,17 +36,33 @@ export async function inviteMember(_: FormState, form: FormData): Promise<FormSt
   const invitee = await db.user.findUnique({ where: { email }, select: { id: true } });
   const token = randomBytes(24).toString("base64url");
 
-  await db.membership.create({
-    data: {
-      profileId: profile.id,
-      role,
-      status: "INVITED",
-      invitedEmail: email,
-      inviteToken: sha256(token),
-      inviteExpiry: new Date(Date.now() + INVITE_DAYS * 86_400_000),
-      invitedBy: profile.user.email,
-    },
+  // Profil sətri kilidlənir ki, iki eyni anlı dəvət say yoxlamasını eyni anda keçib yer limitini aşmasın
+  // (createInvoice-dakı eyni nümunə).
+  const limitExceeded = await db.$transaction(async (tx) => {
+    await tx.$queryRaw`SELECT id FROM "Profile" WHERE id = ${profile.id} FOR UPDATE`;
+    const current = await tx.membership.count({ where: { profileId: profile.id, status: { in: ["ACTIVE", "INVITED"] } } });
+    if (current >= limit) return true;
+    await tx.membership.create({
+      data: {
+        profileId: profile.id,
+        role,
+        status: "INVITED",
+        invitedEmail: email,
+        inviteToken: sha256(token),
+        inviteExpiry: new Date(Date.now() + INVITE_DAYS * 86_400_000),
+        invitedBy: profile.user.email,
+      },
+    });
+    return false;
   });
+  if (limitExceeded) {
+    return {
+      error:
+        limit <= 1
+          ? "Komanda üzvü yalnız Pro Max tarifində əlavə olunur"
+          : `Tarifinizdə ən çoxu ${limit} nəfər ola bilər (sahib daxil). Əvvəlcə kimisə çıxarın.`,
+    };
+  }
 
   const link = inviteUrl(token);
   await sendEmail({

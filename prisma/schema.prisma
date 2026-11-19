@@ -102,6 +102,8 @@ model User {
   sessions       Session[]
   passwordResets PasswordReset[]
   billing        SubscriptionPayment[]
+
+  @@index([createdAt])
 }
 
 model PasswordReset {
@@ -263,6 +265,7 @@ model Order {
   invoice Invoice?
 
   @@index([profileId, status])
+  @@index([profileId, createdAt])
 }
 
 model Invoice {

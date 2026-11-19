@@ -40,7 +40,16 @@ export function rateLimit(key: string, max: number, windowMs: number): RateLimit
 
 export async function clientIp() {
   const h = await headers();
-  return h.get("x-forwarded-for")?.split(",")[0]?.trim() || h.get("x-real-ip") || "local";
+  // `x-forwarded-for`-un İLK dəyəri müştərinin özü tərəfindən yazıla bilər (bəzi quraşdırmalarda
+  // proksi onu əlavə etmir, üzərinə yazır) — kor-koranə ona güvənmək limiti saxtalaşdırılan başlıqla
+  // keçməyə imkan verir. `cf-connecting-ip` (Cloudflare) və `x-real-ip` (adətən nginx `$remote_addr`-ı
+  // özü yazır, müştəri dəyişə bilmir) daha etibarlıdır, ona görə əvvəlcə onlara baxırıq.
+  return (
+    h.get("cf-connecting-ip") ||
+    h.get("x-real-ip") ||
+    h.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    "local"
+  );
 }
 
 /** Verilmiş ad üçün IP-yə görə limit; nəticə `ok: false` olanda sorğu rədd edilməlidir. */
@@ -69,6 +78,8 @@ export const LIMITS = {
   chat: { max: 15, windowMs: 60_000 },
   review: { max: 5, windowMs: 10 * 60_000 },
   login: { max: 12, windowMs: 10 * 60_000 },
+  // IP-dən asılı olmayan ikinci qat: hədəf hesab sabit qalır, IP saxtalaşdırılsa belə bu limit keçilmir
+  loginByAccount: { max: 8, windowMs: 10 * 60_000 },
   signup: { max: 5, windowMs: 60 * 60_000 },
   passwordReset: { max: 5, windowMs: 60 * 60_000 },
 } as const;

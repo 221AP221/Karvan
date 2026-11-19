@@ -12,7 +12,7 @@ import { refreshRating } from "@/lib/reviews";
 import { deleteMediaByUrl, ownedMediaUrl } from "@/lib/media";
 import { PLAN_LIMITS } from "@/lib/plans";
 import { InvoiceLimitError, createInvoice } from "@/lib/invoices";
-import { aznToQepik, isCurrency } from "@/lib/money";
+import { aznToQepik, formatMoney, isCurrency } from "@/lib/money";
 import { SERVICE_CATEGORIES } from "@/lib/services";
 
 import { type FormState, firstError } from "@/lib/forms";
@@ -259,13 +259,20 @@ export async function deleteInvoice(id: string) {
   const profile = await requirePermission("invoices");
   const invoice = await db.invoice.findFirst({
     where: { id, profileId: profile.id },
-    select: { id: true, number: true, publicId: true, review: { select: { id: true } } },
+    select: { id: true, number: true, publicId: true, status: true, totalQepik: true, currency: true, review: { select: { id: true } } },
   });
   if (!invoice) return;
   await db.invoice.delete({ where: { id: invoice.id } });
   // Rəy də silindi: satıcının reytinqi yenidən hesablanır
   if (invoice.review) await refreshRating(profile.id);
-  await logActivity({ userId: profile.userId, email: profile.user.email, profileId: profile.id, actor: profile.actor, action: "invoice_delete", details: invoice.number });
+  // Silinmə (xüsusən ödənilmiş fakturada, bax FR-FAK-11) geri qaytarılmır: məbləğ və rəyin
+  // olub-olmaması jurnalda qalır ki, sonradan "niyə gəlir dəyişdi" sualına cavab tapılsın.
+  const details = [
+    invoice.number,
+    invoice.status === "PAID" ? `ÖDƏNİLMİŞ · ${formatMoney(invoice.totalQepik, invoice.currency)}` : null,
+    invoice.review ? "rəy də silindi" : null,
+  ].filter(Boolean).join(" · ");
+  await logActivity({ userId: profile.userId, email: profile.user.email, profileId: profile.id, actor: profile.actor, action: "invoice_delete", details });
   revalidatePath("/dashboard/invoices");
   revalidatePath("/dashboard");
   revalidatePath(`/i/${invoice.publicId}`);

@@ -10,7 +10,7 @@ import { type Dict, getDictionary, getLocale } from "@/i18n/server";
 import type { FormState } from "@/lib/forms";
 import { sendEmail } from "@/lib/notify";
 import { normalizePhone } from "@/lib/phone";
-import { LIMITS, limitByIp } from "@/lib/rate-limit";
+import { LIMITS, limitByIp, rateLimit } from "@/lib/rate-limit";
 import { checkoutPath } from "@/lib/plan-intent";
 import { findValidReset, hashResetToken as sha256 } from "@/lib/password-reset";
 import { TERMS_VERSION } from "@/lib/terms";
@@ -115,6 +115,11 @@ export async function login(_: AuthState, form: FormData): Promise<AuthState> {
   // Şifrə seçmə hücumlarına qarşı IP üzrə limit (NFR-SEC-10)
   if (!(await limitByIp("login", LIMITS.login.max, LIMITS.login.windowMs)).ok) return fail((await errors()).tooMany);
   const email = String(form.get("email") ?? "").trim().toLowerCase();
+  // IP başlığı saxtalaşdırıla bilər: eyni hesaba qarşı hücum IP dəyişdirməklə bu limiti keçməsin deyə
+  // ayrıca, hesaba bağlı limit də qoyulur.
+  if (!rateLimit(`login-account:${email}`, LIMITS.loginByAccount.max, LIMITS.loginByAccount.windowMs).ok) {
+    return fail((await errors()).tooMany);
+  }
   const password = String(form.get("password") ?? "");
   const user = await db.user.findUnique({ where: { email }, include: { profile: { select: { id: true } } } });
   if (!user?.passwordHash || !(await verifyPassword(password, user.passwordHash))) {
