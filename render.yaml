@@ -10,8 +10,10 @@ services:
     runtime: node
     plan: free
     region: frankfurt
-    buildCommand: npm install && npx prisma migrate deploy && npm run build
-    startCommand: npm start
+    buildCommand: npm install && npm run build
+    # Pulsuz planda build mühiti bazaya çıxa bilmir, yalnız runtime çıxa bilir —
+    # ona görə migrasiya burada, hər başlamadan əvvəl işləyir (idempotentdir, zərəri yoxdur)
+    startCommand: npx prisma migrate deploy && npm start
     autoDeploy: true
     envVars:
       - key: DATABASE_URL
