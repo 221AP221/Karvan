@@ -3,8 +3,9 @@ import { CATALOG_PATH, HOME_PATH, LOCALES, SITE_URL } from "@/i18n/config";
 import { db } from "@/lib/db";
 import { SERVICE_CATEGORIES } from "@/lib/services";
 
-// Yeni satıcılar və xidmətlər saatda bir dəfə sitemap-a düşür
-export const revalidate = 3600;
+// Bazaya sorğu atır: tikinti zamanı deyil, hər sorğuda generasiya olunur (bəzi host-larda
+// build mühiti bazaya çıxa bilmir — statik prerender zamanı bu, build-i sındırardı)
+export const dynamic = "force-dynamic";
 
 const url = (path: string) => `${SITE_URL}${path === "/" ? "" : path}`;
 
