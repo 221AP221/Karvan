@@ -20,7 +20,7 @@ export async function requireSuperAdmin() {
   return user;
 }
 
-export async function logAdmin(admin: { email: string | null }, action: string, targetType: "user" | "service" | "coupon", targetId: string, details?: string | null) {
+export async function logAdmin(admin: { email: string | null }, action: string, targetType: "user" | "service" | "coupon" | "membership", targetId: string, details?: string | null) {
   await db.adminLog.create({ data: { adminEmail: admin.email ?? "?", action, targetType, targetId, details } });
 }
 

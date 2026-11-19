@@ -473,3 +473,19 @@ export async function toggleReviewVisibility(_: FormState, form: FormData): Prom
   revalidatePath(`/${review.profile.username}`);
   return { ok: true };
 }
+
+// ---- Komanda üzvləri (bax: src/lib/team.ts — eyni qaydalar panelin özündə də tətbiq olunur)
+
+/** Mübahisə və ya sui-istifadə halında admin üzvü komandadan çıxarır (sahib edə biləcəyi əməliyyatın eynisi). */
+export async function removeMembership(id: string) {
+  const admin = await requireAdmin();
+  const membership = await db.membership.findUnique({
+    where: { id },
+    select: { id: true, invitedEmail: true, role: true, profileId: true, profile: { select: { username: true } } },
+  });
+  if (!membership || membership.role === "OWNER") return;
+  await db.membership.delete({ where: { id } });
+  await logAdmin(admin, "membership_remove", "membership", id, `${membership.invitedEmail} · @${membership.profile.username}`);
+  revalidatePath("/admin/team");
+  revalidatePath("/dashboard/team");
+}

@@ -10,17 +10,17 @@ import { formatMoney } from "@/lib/money";
 import { PLAN_NAMES } from "@/lib/plans";
 import { type SearchParams, param } from "@/lib/search-params";
 import { confirmBillingPayment, rejectBillingPayment } from "../actions";
-import { Kpi, Pager, PageTitle, card, dateTime, hrefWith, td, th } from "../ui";
+import { Badge, Kpi, Pager, PageTitle, card, dateTime, hrefWith, td, th } from "../ui";
 
 export const metadata: Metadata = { title: "Ödənişlər" };
 
 const PAGE = 40;
-const STATUS: Record<BillingStatus, { label: string; cls: string }> = {
-  PENDING: { label: "Gözləyir", cls: "bg-amber-100 text-amber-800" },
-  PAID: { label: "Ödənilib", cls: "bg-sky-100 text-sky-800" },
-  ACTIVATED: { label: "Aktivləşdi", cls: "bg-emerald-100 text-emerald-800" },
-  REJECTED: { label: "Rədd edildi", cls: "bg-red-100 text-red-800" },
-  FAILED: { label: "Alınmadı", cls: "bg-gray-100 text-gray-600" },
+const STATUS: Record<BillingStatus, { label: string; tone: "warning" | "info" | "success" | "danger" | "neutral" }> = {
+  PENDING: { label: "Gözləyir", tone: "warning" },
+  PAID: { label: "Ödənilib", tone: "info" },
+  ACTIVATED: { label: "Aktivləşdi", tone: "success" },
+  REJECTED: { label: "Rədd edildi", tone: "danger" },
+  FAILED: { label: "Alınmadı", tone: "neutral" },
 };
 
 export default async function AdminPayments({ searchParams }: { searchParams: SearchParams }) {
@@ -85,7 +85,7 @@ export default async function AdminPayments({ searchParams }: { searchParams: Se
                 <td className={td}>{PLAN_NAMES[p.plan]} · {p.months === 12 ? "illik" : "aylıq"}</td>
                 <td className={td}>{p.method === "CARD" ? `Kart${p.provider ? ` · ${p.provider}` : ""}` : "Köçürmə"}{p.provider === "sandbox" && <span className="ml-1 text-xs text-sky-700">(test)</span>}</td>
                 <td className={`${td} text-right font-medium`}>{formatMoney(p.amountQepik, "AZN")}</td>
-                <td className={td}><span className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS[p.status].cls}`}>{STATUS[p.status].label}</span></td>
+                <td className={td}><Badge tone={STATUS[p.status].tone}>{STATUS[p.status].label}</Badge></td>
                 <td className={`${td} text-right text-xs text-gray-500`}>{dateTime(p.createdAt)}</td>
                 <td className={`${td} text-right`}>
                   {p.status === "PENDING" && p.method === "BANK_TRANSFER" && (

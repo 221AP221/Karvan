@@ -11,7 +11,8 @@ import { formatMoney } from "@/lib/money";
 import { formatPhone } from "@/lib/phone";
 import { categoryLabel } from "@/lib/services";
 import { impersonate, setRole, setServiceBlocked, unblockUser } from "../../actions";
-import { ACTION_LABELS, PageTitle, PlanBadge, StatusBadge, card, date, dateTime, td, th } from "../../ui";
+import { ROLE_LABELS, STATUS_LABELS as MEMBER_STATUS_LABELS } from "@/lib/team";
+import { ACTION_LABELS, Badge, PageTitle, PlanBadge, StatusBadge, card, date, dateTime, td, th } from "../../ui";
 import { BlockForm, DeleteForm, EditForm, PasswordAdminForm, PlanForm } from "./forms";
 import { QuickActions } from "./QuickActions";
 
@@ -45,10 +46,17 @@ export default async function AdminUser({ params }: { params: Promise<{ id: stri
   });
   if (!user) notFound();
 
-  const [paid, logs, activity] = await Promise.all([
+  const [paid, logs, activity, members] = await Promise.all([
     user.profile ? db.invoice.groupBy({ by: ["currency"], where: { profileId: user.profile.id, status: "PAID" }, _sum: { totalQepik: true } }) : [],
     db.adminLog.findMany({ where: { targetId: id }, orderBy: { createdAt: "desc" }, take: 20 }),
     db.activityLog.findMany({ where: { userId: id }, orderBy: { createdAt: "desc" }, take: 40 }),
+    user.profile
+      ? db.membership.findMany({
+          where: { profileId: user.profile.id, role: { not: "OWNER" } },
+          orderBy: [{ status: "asc" }, { invitedAt: "desc" }],
+          select: { id: true, role: true, status: true, invitedEmail: true, acceptedAt: true, invitedAt: true, user: { select: { firstName: true, lastName: true, email: true } } },
+        })
+      : [],
   ]);
   // İstifadəçinin öz fəaliyyəti və adminlərin ona etdiyi dəyişikliklər bir zaman xəttində
   const timeline = [
@@ -208,6 +216,43 @@ export default async function AdminUser({ params }: { params: Promise<{ id: stri
               {!p.invoices.length && <p className="p-5 text-sm text-gray-500">Faktura yoxdur.</p>}
             </section>
           )}
+
+          {p && members.length > 0 && (
+            <section className={card}>
+              <div className="flex items-center justify-between px-5 pt-5">
+                <h2 className="font-semibold">Komanda ({members.length})</h2>
+                <Link href={`/admin/team?q=${encodeURIComponent(p.username)}`} className="text-sm text-gray-500 hover:text-gray-900">
+                  Komanda bölməsində →
+                </Link>
+              </div>
+              <table className="mt-3 w-full text-sm">
+                <thead>
+                  <tr className="border-t border-gray-100">
+                    <th className={th}>Üzv</th>
+                    <th className={th}>Rol</th>
+                    <th className={th}>Status</th>
+                    <th className={`${th} text-right`}>Tarix</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {members.map((m) => (
+                    <tr key={m.id} className="border-t border-gray-100">
+                      <td className={td}>
+                        {[m.user?.firstName, m.user?.lastName].filter(Boolean).join(" ") || m.invitedEmail}
+                        <span className="block text-xs text-gray-500">{m.user?.email ?? m.invitedEmail}</span>
+                      </td>
+                      <td className={td}>{ROLE_LABELS[m.role]}</td>
+                      <td className={td}>
+                        <Badge tone={m.status === "ACTIVE" ? "success" : m.status === "SUSPENDED" ? "neutral" : "warning"}>{MEMBER_STATUS_LABELS[m.status]}</Badge>
+                      </td>
+                      <td className={`${td} text-right text-xs text-gray-500`}>{date(m.acceptedAt ?? m.invitedAt)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </section>
+          )}
+
           <section id="fealiyyet" className={`${card} scroll-mt-6`}>
             <div className="flex items-center justify-between px-5 pt-5">
               <h2 className="font-semibold">Fəaliyyət və jurnal</h2>

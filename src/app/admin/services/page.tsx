@@ -8,7 +8,7 @@ import { formatMoney } from "@/lib/money";
 import { type SearchParams, param } from "@/lib/search-params";
 import { SERVICE_CATEGORIES, categoryLabel } from "@/lib/services";
 import { setServiceBlocked } from "../actions";
-import { Pager, PageTitle, card, hrefWith, td, th } from "../ui";
+import { Badge, Pager, PageTitle, card, hrefWith, td, th } from "../ui";
 
 export const metadata: Metadata = { title: "Xidmətlər" };
 
@@ -92,13 +92,7 @@ export default async function AdminServices({ searchParams }: { searchParams: Se
                 <td className={`${td} text-right`}>{s.priceType === "FIXED" && s.amountQepik !== null ? formatMoney(s.amountQepik, s.currency) : "Razılaşma ilə"}</td>
                 <td className={`${td} text-right`}>{s._count.orders}</td>
                 <td className={td}>
-                  {s.blocked ? (
-                    <span className="rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-800">Bloklanıb</span>
-                  ) : s.isActive ? (
-                    <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-800">Aktiv</span>
-                  ) : (
-                    <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600">Gizli</span>
-                  )}
+                  {s.blocked ? <Badge tone="danger">Bloklanıb</Badge> : s.isActive ? <Badge tone="success">Aktiv</Badge> : <Badge tone="neutral">Gizli</Badge>}
                 </td>
                 <td className={`${td} text-right`}>
                   <form action={setServiceBlocked.bind(null, s.id, !s.blocked)}>

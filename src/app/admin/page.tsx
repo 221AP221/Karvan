@@ -1,4 +1,4 @@
-import { Ban, CircleDollarSign, Eye, Receipt, ScrollText, ShoppingBag, UserPlus, Users, Wallet } from "lucide-react";
+import { Ban, Bell, CircleDollarSign, Eye, Receipt, ScrollText, ShoppingBag, Sparkles, UserPlus, Users, UsersRound, Wallet } from "lucide-react";
 import Link from "next/link";
 import { BarChart } from "@/app/dashboard/analytics/charts";
 import { niceTop } from "@/lib/analytics-report";
@@ -6,7 +6,7 @@ import { ACTIVITY_LABELS } from "@/lib/activity";
 import { requireAdmin } from "@/lib/admin";
 import { db } from "@/lib/db";
 import { formatMoney } from "@/lib/money";
-import { PLAN_NAMES, PLAN_PRICES } from "@/lib/plans";
+import { PLAN_NAMES, PLAN_PRICES, startOfMonth } from "@/lib/plans";
 import { Kpi, PageTitle, PlanBadge, card, date, dateTime, td, th } from "./ui";
 
 const DAY = 86_400_000;
@@ -26,7 +26,7 @@ export default async function AdminOverview() {
   const d30 = new Date(today.getTime() - 29 * DAY);
   const d60 = new Date(d30.getTime() - 30 * DAY);
 
-  const [users, newUsers, prevUsers, blocked, activeSellers, plans, gmv, orders30, invoices30, views30, blockedServices, claimed, signups, top, recent] = await Promise.all([
+  const [users, newUsers, prevUsers, blocked, activeSellers, plans, gmv, orders30, invoices30, views30, blockedServices, claimed, signups, top, recent, teamSellers, notifFailed7d, aiRequests30] = await Promise.all([
     db.user.count({ where: { role: "USER" } }),
     db.user.count({ where: { role: "USER", createdAt: { gte: d30 } } }),
     db.user.count({ where: { role: "USER", createdAt: { gte: d60, lt: d30 } } }),
@@ -47,6 +47,9 @@ export default async function AdminOverview() {
       take: 6,
       select: { id: true, firstName: true, lastName: true, email: true, createdAt: true, subscription: { select: { plan: true } }, profile: { select: { username: true, displayName: true } } },
     }),
+    db.membership.groupBy({ by: ["profileId"], where: { role: { not: "OWNER" } } }),
+    db.notification.count({ where: { status: "FAILED", createdAt: { gte: new Date(now.getTime() - 7 * DAY) } } }),
+    db.activityLog.count({ where: { action: "ai_request", createdAt: { gte: startOfMonth() } } }),
   ]);
 
   const planCount = Object.fromEntries(PLANS.map((p) => [p, plans.find((x) => x.plan === p)?._count ?? 0])) as Record<(typeof PLANS)[number], number>;
@@ -78,14 +81,27 @@ export default async function AdminOverview() {
       <PageTitle title="İcmal" text="Platformanın son 30 günü" />
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Kpi icon={Users} label="İstifadəçilər" value={String(users)} hint={`${activeSellers} aktiv satıcı (xidməti var)`} href="/admin/users" />
-        <Kpi icon={UserPlus} label="Yeni qeydiyyat" value={String(newUsers)} hint={pct(newUsers, prevUsers)} />
-        <Kpi icon={CircleDollarSign} label="Təxmini MRR" value={formatMoney(mrr, "AZN")} hint={`${paid} ödənişli abunə (ödəniş qəbulu qoşulandan sonra)`} />
-        <Kpi icon={Wallet} label="Ödənilmiş dövriyyə" value={totals(gmv)} hint="Satıcıların müştərilərdən aldığı" />
-        <Kpi icon={ShoppingBag} label="Sifarişlər" value={String(orders30)} />
-        <Kpi icon={Receipt} label="Fakturalar" value={String(invoices30)} hint={claimed ? `${claimed} “Ödədim” təsdiq gözləyir` : undefined} href="/admin/invoices" />
-        <Kpi icon={Eye} label="Səhifə baxışları" value={String(views30)} />
-        <Kpi icon={Ban} label="Moderasiya" value={`${blocked} hesab · ${blockedServices} xidmət`} hint="Bloklanmış" href="/admin/users?status=blocked" />
+        <Kpi icon={Users} label="İstifadəçilər" value={String(users)} hint={`${activeSellers} aktiv satıcı (xidməti var)`} href="/admin/users" tone="info" />
+        <Kpi icon={UserPlus} label="Yeni qeydiyyat" value={String(newUsers)} trend={prevUsers ? ((newUsers - prevUsers) / prevUsers) * 100 : undefined} hint={newUsers && !prevUsers ? "əvvəlki dövrdə məlumat yoxdur" : undefined} tone="violet" />
+        <Kpi icon={CircleDollarSign} label="Təxmini MRR" value={formatMoney(mrr, "AZN")} hint={`${paid} ödənişli abunə (ödəniş qəbulu qoşulandan sonra)`} tone="money" />
+        <Kpi icon={Wallet} label="Ödənilmiş dövriyyə" value={totals(gmv)} hint="Satıcıların müştərilərdən aldığı" tone="money" />
+        <Kpi icon={ShoppingBag} label="Sifarişlər" value={String(orders30)} tone="brand" />
+        <Kpi icon={Receipt} label="Fakturalar" value={String(invoices30)} hint={claimed ? `${claimed} “Ödədim” təsdiq gözləyir` : undefined} href="/admin/invoices" tone={claimed ? "warn" : "neutral"} />
+        <Kpi icon={Eye} label="Səhifə baxışları" value={String(views30)} tone="info" />
+        <Kpi icon={Ban} label="Moderasiya" value={`${blocked} hesab · ${blockedServices} xidmət`} hint="Bloklanmış" href="/admin/users?status=blocked" tone={blocked || blockedServices ? "danger" : "neutral"} />
+      </div>
+
+      <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <Kpi icon={UsersRound} label="Komandalı satıcı" value={String(teamSellers.length)} hint="Pro Max-da əlavə üzvlər" href="/admin/team" tone="violet" />
+        <Kpi
+          icon={Bell}
+          label="Bildiriş uğursuzluğu (7 gün)"
+          value={String(notifFailed7d)}
+          hint={notifFailed7d ? "Bildirişlər bölməsinə baxın" : "Problem yoxdur"}
+          href="/admin/notifications"
+          tone={notifFailed7d ? "danger" : "money"}
+        />
+        <Kpi icon={Sparkles} label="AI sorğuları (bu ay)" value={String(aiRequests30)} href="/admin/ai" tone="brand" />
       </div>
 
       <div className="mt-4 grid gap-4 lg:grid-cols-[1.6fr_1fr] [&>*]:min-w-0">

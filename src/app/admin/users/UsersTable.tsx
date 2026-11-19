@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState, useTransition } from "react";
 import { type BulkResult, bulkBlock, bulkEndSessions, bulkSetPlan, bulkUnblock, stepPlan } from "../actions";
+import { PlanBadge, StatusBadge } from "../ui";
 
 export type UserRow = {
   id: string;
@@ -20,8 +21,6 @@ export type UserRow = {
   created: string;
 };
 
-const PLAN_NAMES = { FREE: "Pulsuz", PRO: "Pro", PRO_MAX: "Pro Max" };
-const PLAN_STYLE = { FREE: "bg-gray-100 text-gray-700", PRO: "bg-violet-100 text-violet-800", PRO_MAX: "bg-amber-100 text-amber-900" };
 const REASONS = ["Saxta elanlar", "Müştəri şikayətləri", "Spam", "Ödəniş fırıldaqçılığı", "Qaydalara zidd məzmun"];
 
 const iconBtn =
@@ -157,19 +156,13 @@ export function UsersTable({ rows }: { rows: UserRow[] }) {
                     </span>
                   </td>
                   <td className="px-3 py-3">
-                    <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${PLAN_STYLE[u.plan]}`}>{PLAN_NAMES[u.plan]}</span>
+                    <PlanBadge plan={u.plan} />
                   </td>
                   <td className="px-3 py-3 text-right">{u.services}</td>
                   <td className="px-3 py-3 text-right">{u.orders}</td>
                   <td className="px-3 py-3 text-right">{u.invoices}</td>
                   <td className="px-3 py-3">
-                    {u.admin ? (
-                      <span className="rounded-full bg-gray-900 px-2 py-0.5 text-xs font-medium text-white">Admin</span>
-                    ) : u.blocked ? (
-                      <span className="rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-800">Bloklanıb</span>
-                    ) : (
-                      <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-800">Aktiv</span>
-                    )}
+                    <StatusBadge blocked={u.blocked} admin={u.admin} />
                   </td>
                   <td className="px-3 py-3 text-right text-xs text-gray-500">{u.created}</td>
                   <td className="px-4 py-2">
