@@ -29,7 +29,7 @@ function cards(t: PhoneText) {
       value: t.cards.orderValue,
     },
     {
-      position: "-right-28 top-[42%] hidden sm:block",
+      position: "-right-28 top-[52%] hidden sm:block",
       speed: -110,
       className: "border border-gray-200 bg-white/95",
       icon: <IconBadge icon={FileText} size="sm" tone="info" />,

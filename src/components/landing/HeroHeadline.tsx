@@ -67,7 +67,7 @@ export function HeroHeadline({ lead, words, className = "" }: { lead: string[]; 
           </span>
         ))}
       </span>{" "}
-      <span className="grid justify-items-center overflow-hidden pb-[0.14em] lg:justify-items-start">
+      <span className="grid justify-items-center overflow-hidden pt-[0.18em] pb-[0.14em] lg:justify-items-start">
         {[words[0], ""].map((word, i) => (
           <span
             key={i}
