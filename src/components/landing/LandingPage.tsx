@@ -47,7 +47,6 @@ import { SmoothScroll } from "@/components/landing/SmoothScroll";
 import { StepsTimeline } from "@/components/landing/StepsTimeline";
 import Magnet from "@/components/reactbits/Magnet";
 import ScrollReveal from "@/components/reactbits/ScrollReveal";
-import SpotlightCard from "@/components/reactbits/SpotlightCard";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { CATALOG_PATH, HOME_PATH, type Locale, SITE_URL } from "@/i18n/config";
 import type { Dict } from "@/i18n/server";
@@ -135,17 +134,18 @@ function StructuredData({ t, locale }: { t: Dict; locale: Locale }) {
 }
 
 // "Əvvəl": DM yazışması
+// Qutu/kart yoxdur — birbaşa səhifə fonunda, xətlərlə (rule) ayrılmış açıq kompozisiya.
 function ChatMock({ t }: { t: Dict["compare"] }) {
   return (
-    <div className="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.03]">
-      <div className="mb-4 flex items-center gap-3 border-b border-gray-100 pb-4 dark:border-white/10">
+    <div>
+      <div className="flex items-center gap-3 border-b border-gray-200 pb-4 dark:border-white/10">
         <span className="grid h-9 w-9 place-items-center rounded-full bg-gray-900 text-xs font-bold text-white dark:bg-white dark:text-gray-900">N</span>
         <div className="leading-tight">
           <p className="text-sm font-semibold">nermin.a</p>
           <p className="text-xs text-gray-400">Direct</p>
         </div>
       </div>
-      <ul className="flex flex-col gap-2 text-sm">
+      <ul className="flex flex-col gap-2 pt-4 text-sm">
         {t.chat.map((m, i) => (
           <li key={i} className={`max-w-[80%] rounded-2xl px-3.5 py-2 ${m.me ? "self-end rounded-br-md bg-gray-900 text-white dark:bg-white/15" : "self-start rounded-bl-md bg-gray-100 text-gray-800 dark:bg-white/10 dark:text-gray-100"}`}>
             {m.text}
@@ -157,7 +157,7 @@ function ChatMock({ t }: { t: Dict["compare"] }) {
           <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-gray-400" />
         </li>
       </ul>
-      <ul className="mt-5 flex flex-col divide-y divide-gray-100 border-t border-gray-100 dark:divide-white/10 dark:border-white/10">
+      <ul className="mt-5 flex flex-col divide-y divide-gray-100 border-t border-gray-200 dark:divide-white/10 dark:border-white/10">
         {t.beforePoints.map((p) => (
           <li key={p} className="flex items-center gap-2.5 py-2.5 text-sm text-gray-500 dark:text-gray-400">
             <X size={14} strokeWidth={2.5} className="shrink-0 text-red-400" aria-hidden /> {p}
@@ -168,40 +168,38 @@ function ChatMock({ t }: { t: Dict["compare"] }) {
   );
 }
 
-// "Karvan ilə": faktura kartı
+// "Karvan ilə": qutu yoxdur — kağız qəbz kimi, sadəcə xətlərlə bölünmüş sətirlər.
 function InvoiceMock({ t }: { t: Dict["compare"] }) {
   return (
-    <div className="relative rounded-3xl border border-emerald-200/70 bg-gradient-to-b from-emerald-50/70 to-white p-5 shadow-xl shadow-emerald-900/5 dark:border-emerald-400/20 dark:from-emerald-500/10 dark:to-transparent">
-      <div className="rounded-2xl bg-white p-5 text-gray-900 shadow-lg shadow-gray-900/5 ring-1 ring-gray-100">
-        <div className="flex items-start justify-between">
-          <div>
-            <p className="text-xs uppercase tracking-wider text-gray-400">{t.invoice.label}</p>
-            <p className="font-mono text-sm font-semibold">LEY-2026-0042</p>
-          </div>
-          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold text-emerald-700">
-            <CheckCheck size={13} strokeWidth={2.5} aria-hidden /> {t.invoice.status}
-          </span>
+    <div>
+      <div className="flex items-start justify-between border-b border-gray-200 pb-4 dark:border-white/10">
+        <div>
+          <p className="text-xs uppercase tracking-wider text-gray-400">{t.invoice.label}</p>
+          <p className="font-mono text-sm font-semibold">LEY-2026-0042</p>
         </div>
-        <div className="mt-4 flex justify-between border-b border-dashed border-gray-200 pb-3 text-sm">
-          <span>{t.invoice.service}</span>
-          <span className="tabular-nums">40,00 AZN</span>
-        </div>
-        <div className="mt-3 flex items-end justify-between">
-          <span className="text-sm text-gray-500">{t.invoice.total}</span>
-          <span className="text-2xl font-bold tabular-nums">40,00 AZN</span>
-        </div>
-        <div className="mt-4 flex items-center gap-3">
-          <span className="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-gray-900 text-white">
-            <QrCode size={28} strokeWidth={1.6} aria-hidden />
-          </span>
-          <span className="text-xs leading-relaxed text-gray-500">Kapital Bank · 4169 •••• 1234 · IBAN AZ21••••</span>
-        </div>
+        <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold text-emerald-700">
+          <CheckCheck size={13} strokeWidth={2.5} aria-hidden /> {t.invoice.status}
+        </span>
       </div>
-      <div className="mx-3 -mt-2 flex items-center justify-between gap-3 rounded-b-2xl bg-gray-900 px-4 pb-3 pt-5 text-sm text-white">
-        <span className="text-white/80">{t.invoice.claimed}</span>
-        <span className="rounded-full bg-emerald-500 px-3 py-1 text-xs font-semibold">{t.invoice.confirm}</span>
+      <div className="flex justify-between border-b border-dashed border-gray-200 py-3 text-sm dark:border-white/10">
+        <span>{t.invoice.service}</span>
+        <span className="tabular-nums">40,00 AZN</span>
       </div>
-      <ul className="mt-5 flex flex-col divide-y divide-emerald-100 border-t border-emerald-100 dark:divide-emerald-400/10 dark:border-emerald-400/10">
+      <div className="flex items-end justify-between py-3">
+        <span className="text-sm text-gray-500">{t.invoice.total}</span>
+        <span className="text-2xl font-bold tabular-nums">40,00 AZN</span>
+      </div>
+      <div className="flex items-center gap-3 border-t border-gray-200 pt-4 dark:border-white/10">
+        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-gray-900 text-white">
+          <QrCode size={28} strokeWidth={1.6} aria-hidden />
+        </span>
+        <span className="text-xs leading-relaxed text-gray-500">Kapital Bank · 4169 •••• 1234 · IBAN AZ21••••</span>
+      </div>
+      <div className="mt-5 flex items-center justify-between gap-3 border-y border-gray-200 py-3 text-sm dark:border-white/10">
+        <span className="text-gray-700 dark:text-gray-300">{t.invoice.claimed}</span>
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-600 px-3 py-1 text-xs font-semibold text-white">{t.invoice.confirm}</span>
+      </div>
+      <ul className="flex flex-col divide-y divide-gray-100 dark:divide-white/10">
         {t.afterPoints.map((p) => (
           <li key={p} className="flex items-center gap-2.5 py-2.5 text-sm text-gray-700 dark:text-gray-300">
             <Check size={14} strokeWidth={2.75} className="shrink-0 text-emerald-600" aria-hidden /> {p}
@@ -386,23 +384,20 @@ export function LandingPage({ locale, t }: { locale: Locale; t: Dict }) {
             <Appear delay={0.1} className="mt-14">
               <AiDemo t={t.ai.demo} />
             </Appear>
-            {/* Tək panel, daxildə incə ayırıcılarla. İkonlar brendin solid pinkində, dolğun — bənövşəyi
-                "dark mode AI" ştampı əvəzinə Karvan-ın öz rənginə əsaslanan, daha özgüvənli vurğu. */}
-            <Appear delay={0.15} className="mt-12">
-              <SpotlightCard theme="dark" spotlightColor="rgba(236, 28, 140, 0.22)" className="grid gap-10 rounded-3xl p-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-0 lg:divide-x lg:divide-white/10">
-                {t.ai.items.map((f, i) => {
-                  const Icon = AI_ICONS[i];
-                  return (
-                    <div key={f.title} className="lg:px-8 lg:first:pl-0 lg:last:pr-0">
-                      <span className="grid h-12 w-12 place-items-center rounded-2xl bg-[var(--brand)] text-white shadow-[0_10px_24px_-8px_rgba(236,28,140,0.6)]">
-                        <Icon size={22} strokeWidth={1.9} aria-hidden />
-                      </span>
-                      <h3 className="mt-5 font-display text-xl font-bold tracking-tight">{f.title}</h3>
-                      <p className="mt-2 text-sm text-gray-400">{f.text}</p>
-                    </div>
-                  );
-                })}
-              </SpotlightCard>
+            {/* Qutu yoxdur — 4 imkan birbaşa qaranlıq fonda, yalnız incə şaquli xətlərlə ayrılıb. */}
+            <Appear stagger={0.1} delay={0.1} className="mt-16 grid gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-0 lg:divide-x lg:divide-white/10">
+              {t.ai.items.map((f, i) => {
+                const Icon = AI_ICONS[i];
+                return (
+                  <div key={f.title} className="lg:px-8 lg:first:pl-0 lg:last:pr-0">
+                    <span className="grid h-12 w-12 place-items-center rounded-2xl bg-[var(--brand)] text-white shadow-[0_10px_24px_-8px_rgba(236,28,140,0.6)]">
+                      <Icon size={22} strokeWidth={1.9} aria-hidden />
+                    </span>
+                    <h3 className="mt-5 font-display text-xl font-bold tracking-tight">{f.title}</h3>
+                    <p className="mt-2 text-sm text-gray-400">{f.text}</p>
+                  </div>
+                );
+              })}
             </Appear>
           </div>
         </section>
