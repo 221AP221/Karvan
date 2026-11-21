@@ -318,17 +318,23 @@ export function LandingPage({ locale, t }: { locale: Locale; t: Dict }) {
           </Appear>
         </section>
 
-        {/* Fərq: DM yazışması və Karvan fakturası */}
+        {/* Fərq: DM yazışması kiçik və solğun qalır, Karvan fakturası böyük, canlı və önə çıxmış görünür —
+            tərəzinin hansı tərəfə əyildiyi mətn oxunmadan, kompozisiyadan özü görünsün deyə. */}
         <section className="mx-auto max-w-6xl px-4 pb-28">
           <SectionTitle eyebrow={t.compare.eyebrow} title={t.compare.title} />
-          <div className="mt-14 grid items-start gap-6 md:grid-cols-2">
-            <Appear>
-              <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-red-500 dark:text-red-400">{t.compare.before}</p>
-              <ChatMock t={t.compare} />
+          <div className="mt-14 grid items-center gap-8 lg:grid-cols-12 lg:gap-6">
+            <Appear className="lg:col-span-5">
+              <div className="grayscale-[60%] saturate-50 opacity-75 lg:origin-top-right lg:scale-[0.94]">
+                <p className="mb-3 text-sm font-medium uppercase tracking-wider text-gray-400">{t.compare.before}</p>
+                <ChatMock t={t.compare} />
+              </div>
             </Appear>
-            <Appear delay={0.1}>
-              <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">{t.compare.after}</p>
-              <InvoiceMock t={t.compare} />
+            <Appear delay={0.1} className="lg:col-span-7">
+              <div className="relative lg:origin-top-left lg:scale-[1.05]">
+                <div aria-hidden className="absolute -inset-6 -z-10 rounded-[2.5rem] bg-[var(--brand)]/10 blur-2xl" />
+                <p className="mb-3 text-base font-bold uppercase tracking-wider text-[var(--brand)]">{t.compare.after}</p>
+                <InvoiceMock t={t.compare} />
+              </div>
             </Appear>
           </div>
         </section>
@@ -380,16 +386,22 @@ export function LandingPage({ locale, t }: { locale: Locale; t: Dict }) {
             <Appear delay={0.1} className="mt-14">
               <AiDemo t={t.ai.demo} />
             </Appear>
-            {/* Tək panel, daxildə incə ayırıcılarla — 4 ayrı eyni-ölçülü qutu əvəzinə vahid tərkib */}
+            {/* Tək panel, daxildə incə ayırıcılarla. İkonlar brendin solid pinkində, dolğun — bənövşəyi
+                "dark mode AI" ştampı əvəzinə Karvan-ın öz rənginə əsaslanan, daha özgüvənli vurğu. */}
             <Appear delay={0.15} className="mt-12">
-              <SpotlightCard theme="dark" spotlightColor="rgba(255, 148, 200, 0.18)" className="grid gap-8 rounded-3xl p-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-0 lg:divide-x lg:divide-white/10">
-                {t.ai.items.map((f, i) => (
-                  <div key={f.title} className="lg:px-8 lg:first:pl-0 lg:last:pr-0">
-                    <IconBadge icon={AI_ICONS[i]} size="sm" tone="dark" />
-                    <h3 className="mt-4 font-semibold">{f.title}</h3>
-                    <p className="mt-2 text-sm text-gray-400">{f.text}</p>
-                  </div>
-                ))}
+              <SpotlightCard theme="dark" spotlightColor="rgba(236, 28, 140, 0.22)" className="grid gap-10 rounded-3xl p-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-0 lg:divide-x lg:divide-white/10">
+                {t.ai.items.map((f, i) => {
+                  const Icon = AI_ICONS[i];
+                  return (
+                    <div key={f.title} className="lg:px-8 lg:first:pl-0 lg:last:pr-0">
+                      <span className="grid h-12 w-12 place-items-center rounded-2xl bg-[var(--brand)] text-white shadow-[0_10px_24px_-8px_rgba(236,28,140,0.6)]">
+                        <Icon size={22} strokeWidth={1.9} aria-hidden />
+                      </span>
+                      <h3 className="mt-5 font-display text-xl font-bold tracking-tight">{f.title}</h3>
+                      <p className="mt-2 text-sm text-gray-400">{f.text}</p>
+                    </div>
+                  );
+                })}
               </SpotlightCard>
             </Appear>
           </div>
