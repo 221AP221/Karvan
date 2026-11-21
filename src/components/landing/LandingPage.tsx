@@ -18,7 +18,6 @@ import {
   LayoutGrid,
   Link2,
   Megaphone,
-  MessageCircle,
   Palette,
   PenTool,
   Plus,
@@ -32,7 +31,6 @@ import {
   Sparkles,
   TrendingUp,
   Wallet,
-  WandSparkles,
   X,
 } from "lucide-react";
 import Link from "next/link";
@@ -56,7 +54,6 @@ import { jsonLdScript } from "@/lib/seo";
 const NICHE_ICONS = [Brush, GraduationCap, PenTool, Megaphone, Camera, Hand, Dumbbell, Brain, Briefcase, Send, Clapperboard, Languages];
 const STEP_ICONS = [Palette, Link2, Receipt, TrendingUp];
 const FEATURE_ICONS = [Smartphone, ShoppingBag, FileText, Wallet, ChartColumn, LayoutGrid];
-const AI_ICONS = [WandSparkles, PenTool, Palette, MessageCircle];
 const PLAN_KEYS = ["FREE", "PRO", "PRO_MAX"] as const;
 const PLAN_ICONS = [Rocket, BadgeCheck, Crown];
 
@@ -383,21 +380,6 @@ export function LandingPage({ locale, t }: { locale: Locale; t: Dict }) {
             <SectionTitle dark eyebrow={<><Sparkles size={16} strokeWidth={1.75} aria-hidden /> {t.ai.eyebrow}</>} title={t.ai.title} text={t.ai.text} />
             <Appear delay={0.1} className="mt-14">
               <AiDemo t={t.ai.demo} />
-            </Appear>
-            {/* Qutu yoxdur — 4 imkan birbaşa qaranlıq fonda, yalnız incə şaquli xətlərlə ayrılıb. */}
-            <Appear stagger={0.1} delay={0.1} className="mt-16 grid gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-0 lg:divide-x lg:divide-white/10">
-              {t.ai.items.map((f, i) => {
-                const Icon = AI_ICONS[i];
-                return (
-                  <div key={f.title} className="lg:px-8 lg:first:pl-0 lg:last:pr-0">
-                    <span className="grid h-12 w-12 place-items-center rounded-2xl bg-[var(--brand)] text-white shadow-[0_10px_24px_-8px_rgba(236,28,140,0.6)]">
-                      <Icon size={22} strokeWidth={1.9} aria-hidden />
-                    </span>
-                    <h3 className="mt-5 font-display text-xl font-bold tracking-tight">{f.title}</h3>
-                    <p className="mt-2 text-sm text-gray-400">{f.text}</p>
-                  </div>
-                );
-              })}
             </Appear>
           </div>
         </section>
