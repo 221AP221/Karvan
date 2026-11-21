@@ -35,6 +35,7 @@ import {
 import Link from "next/link";
 import { AiDemo } from "@/components/landing/AiDemo";
 import { Appear } from "@/components/landing/Appear";
+import { FeatureCard } from "@/components/landing/FeatureCard";
 import { Header } from "@/components/landing/Header";
 import { HeroHeadline } from "@/components/landing/HeroHeadline";
 import { HeroPhone } from "@/components/landing/HeroPhone";
@@ -336,28 +337,13 @@ export function LandingPage({ locale, t }: { locale: Locale; t: Dict }) {
             {t.features.items.map((f, i) => {
               const lead = i === 0 || i === 3;
               return (
-                <div
+                <FeatureCard
                   key={f.title}
-                  className={`group flex h-full min-h-[200px] flex-col items-center justify-center rounded-3xl border p-7 text-center transition duration-300 hover:-translate-y-1 hover:shadow-xl ${
-                    lead
-                      ? "border-pink-200/70 bg-gradient-to-br from-pink-50 to-white hover:border-pink-300 hover:shadow-pink-500/10 sm:col-span-2 dark:border-pink-400/20 dark:from-pink-500/[0.07] dark:to-transparent"
-                      : "border-gray-200 bg-white hover:border-violet-200 hover:shadow-violet-500/10 dark:border-white/10 dark:bg-white/[0.03] dark:hover:border-violet-400/30"
-                  }`}
-                >
-                  <span className="transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-110">
-                    <IconBadge icon={FEATURE_ICONS[i]} tone="solid" size={lead ? "lg" : "md"} />
-                  </span>
-                  <h3
-                    className={`mt-5 translate-y-1 font-semibold opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 ${lead ? "text-xl" : "text-lg"}`}
-                  >
-                    {f.title}
-                  </h3>
-                  <p
-                    className={`mt-2 translate-y-1 text-gray-600 opacity-0 transition-all delay-100 duration-300 group-hover:translate-y-0 group-hover:opacity-100 dark:text-gray-400 ${lead ? "max-w-md" : ""}`}
-                  >
-                    {f.text}
-                  </p>
-                </div>
+                  icon={<IconBadge icon={FEATURE_ICONS[i]} tone="solid" size={lead ? "lg" : "md"} />}
+                  title={f.title}
+                  text={f.text}
+                  lead={lead}
+                />
               );
             })}
           </Appear>
