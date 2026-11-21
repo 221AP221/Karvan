@@ -71,7 +71,7 @@ export async function sendAllQueued(): Promise<FormState> {
   }
   revalidatePath("/dashboard/notifications");
   if (queued.length === 0) return { error: "Növbədə bildiriş yoxdur" };
-  return sent > 0 ? { ok: true } : { error: "Heç biri göndərilmədi — kanal provayderi qoşulmayıb" };
+  return sent > 0 ? { ok: true } : { error: "Heç biri göndərilmədi — kanal hazırda bağlıdır" };
 }
 
 /** Növbədəki bildirişi siyahıdan çıxarır. */

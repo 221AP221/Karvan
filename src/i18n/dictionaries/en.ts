@@ -15,7 +15,7 @@ export const en: typeof az = {
   meta: {
     title: "Link in bio page and online invoices — Karvan",
     description:
-      "One link for your Instagram and TikTok bio: services, prices, an order form and automatic PDF invoices. Track payments. Start free, no commission on sales.",
+      "One link for your social media bio: services, prices, an order form and automatic PDF invoices. Track payments. Start free, no commission on sales.",
     keywords: [
       "link in bio",
       "link in bio page",
@@ -42,7 +42,7 @@ export const en: typeof az = {
   hero: {
     lead: ["Your profile", "link"],
     words: ["sells for you", "sends invoices", "tracks payments"],
-    text: "Put one link in your Instagram and TikTok bio. Customers see your prices, order in one click, the invoice goes out automatically and the payment shows up in your dashboard.",
+    text: "Put one link in your social media bio. Customers see your prices, order in one click, the invoice goes out automatically and the payment shows up in your dashboard.",
     primary: "Create your free page",
     secondary: "See the live demo",
     note: "No card needed · Ready in 3 minutes · No commission",
@@ -139,7 +139,7 @@ export const en: typeof az = {
       },
       {
         title: "Put the link in your bio",
-        text: "Share it on Instagram, TikTok, WhatsApp and Telegram. Customers pick a service and place an order.",
+        text: "Share it on your social media. Customers pick a service and place an order.",
       },
       {
         title: "The invoice sends itself",
@@ -355,7 +355,7 @@ export const en: typeof az = {
       invoiceLimit: "Invoice limit",
       unlimited: "Unlimited",
       yourPage: "Your page",
-      bioHint: "Put this link in your Instagram and TikTok bio.",
+      bioHint: "Put this link in your social media bio.",
       recentInvoices: "Recent invoices",
       newInvoice: "+ New invoice",
       stepAvatar: "Upload a photo or logo",
@@ -550,7 +550,7 @@ export const en: typeof az = {
       manual: "Manual",
       manualText: "The notification waits in the queue and you press “Send”.",
       channels: "Channels",
-      noProvider: "no provider",
+      noProvider: "currently unavailable",
       channelsHint: "If a channel without a provider is selected, the notification is not lost — it stays in the log and can be sent later.",
       events: "Which events",
       notifyEmail: "Notification email",
@@ -601,6 +601,7 @@ export const en: typeof az = {
     name: "Your name",
     phone: "Your phone number",
     email: "Email (optional)",
+    emailHint: "If you add it, the payment receipt will be sent here.",
     note: "Note (optional)",
     submitOrder: "Get the invoice",
     submitAsk: "Send request",
@@ -760,7 +761,7 @@ export const en: typeof az = {
       passport: "Passport number",
       next: "Continue",
       username: "Page address",
-      usernameHint: "The link you will put in your Instagram bio",
+      usernameHint: "The link you will put in your social media bio",
       email: "Email",
       emailPlaceholder: "name@example.com",
       password: "Password",
@@ -860,6 +861,9 @@ export const en: typeof az = {
     copy: "Copy",
     copied: "Copied ✓",
     iPaid: "I paid",
+    iPaidConfirm: "Are you sure you want to tell the seller you've paid?",
+    iPaidYes: "Yes, notify them",
+    iPaidCancel: "Cancel",
     claimError: "Couldn't send. Check your connection and try again.",
     downloadPdf: "Download PDF",
     disclaimer: "This is a payment request, not an official tax document.",

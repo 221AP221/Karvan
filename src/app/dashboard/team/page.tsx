@@ -116,7 +116,7 @@ export default async function TeamPage() {
 
       <p className="flex items-start gap-2 text-xs text-gray-500">
         <Mail size={14} className="mt-0.5 shrink-0" aria-hidden />
-        E-poçt provayderi qoşulmayıbsa, dəvət məktubu getmir — dəvət linkini ekrandan kopyalayıb özünüz göndərə bilərsiniz.
+        Dəvət məktubu bəzən getməyə bilər — hər zaman linki özünüz kopyalayıb göndərə bilərsiniz.
       </p>
     </div>
   );

@@ -13,7 +13,7 @@ import { getDictionary, getLocale } from "@/i18n/server";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: { default: "Karvan — link-in-bio, sifariş və onlayn faktura", template: "%s | Karvan" },
-  description: "Instagram və TikTok-da xidmət satanlar üçün link-in-bio səhifə, sifariş formu, avtomatik PDF faktura və ödəniş izləmə.",
+  description: "Sosial şəbəkədə xidmət satanlar üçün link-in-bio səhifə, sifariş formu, avtomatik PDF faktura və ödəniş izləmə.",
   applicationName: "Karvan",
 };
 

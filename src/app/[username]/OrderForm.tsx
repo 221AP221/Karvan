@@ -88,6 +88,7 @@ export function OrderForm({ serviceId, serviceTitle, fixedPrice, t }: { serviceI
       <input name="customerName" required autoFocus placeholder={t.name} className={input} />
       <PhoneInput name="customerPhone" required label={t.phone} />
       <input name="customerEmail" type="email" placeholder={t.email} className={input} />
+      <p className="-mt-1 text-xs text-gray-500">{t.emailHint}</p>
       <textarea name="note" placeholder={t.note} rows={2} className={input} />
       {result && "error" in result && <p className="text-sm text-red-600">{result.error}</p>}
       <div className="flex gap-2">

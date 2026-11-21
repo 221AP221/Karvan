@@ -3,13 +3,16 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-type Words = { iPaid: string; claimError: string; copy: string; copied: string };
+type Words = { iPaid: string; iPaidConfirm: string; iPaidYes: string; iPaidCancel: string; claimError: string; copy: string; copied: string };
 
 export function ClaimPaidButton({ publicId, words }: { publicId: string; words: Words }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(false);
+  const [confirming, setConfirming] = useState(false);
 
+  // Faktura linki ictimaidir: başqasının yanlışlıqla/zərərlə basması ehtimalını azaltmaq üçün
+  // bir addım təsdiq lazımdır — satıcı real ödənişi hər halda bankda yoxlayıb özü təsdiqləyir.
   async function claim() {
     setBusy(true);
     setError(false);
@@ -20,17 +23,41 @@ export function ClaimPaidButton({ publicId, words }: { publicId: string; words: 
     } catch {
       // Pul məsələsində səssiz uğursuzluq olmamalıdır: müştəri bilməlidir ki, bildiriş getmədi
       setError(true);
+      setConfirming(false);
     } finally {
       setBusy(false);
     }
   }
 
+  if (confirming) {
+    return (
+      <div className="mt-4 rounded-xl border border-gray-200 bg-gray-50 p-3">
+        <p className="text-sm text-gray-700">{words.iPaidConfirm}</p>
+        <div className="mt-2 flex gap-2">
+          <button
+            onClick={claim}
+            disabled={busy}
+            className="flex-1 rounded-full bg-[var(--brand)] py-2 text-sm font-medium text-white disabled:opacity-60"
+          >
+            {words.iPaidYes}
+          </button>
+          <button
+            onClick={() => setConfirming(false)}
+            disabled={busy}
+            className="flex-1 rounded-full border border-gray-300 py-2 text-sm font-medium text-gray-700 disabled:opacity-60"
+          >
+            {words.iPaidCancel}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <button
-        onClick={claim}
-        disabled={busy}
-        className="mt-4 w-full rounded-full bg-[var(--brand)] py-2 font-medium text-white disabled:opacity-60"
+        onClick={() => setConfirming(true)}
+        className="mt-4 w-full rounded-full bg-[var(--brand)] py-2 font-medium text-white"
       >
         {words.iPaid}
       </button>

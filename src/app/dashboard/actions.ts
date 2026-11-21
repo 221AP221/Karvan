@@ -11,8 +11,9 @@ import { notify } from "@/lib/notifications";
 import { refreshRating } from "@/lib/reviews";
 import { deleteMediaByUrl, ownedMediaUrl } from "@/lib/media";
 import { PLAN_LIMITS } from "@/lib/plans";
-import { InvoiceLimitError, createInvoice } from "@/lib/invoices";
+import { InvoiceLimitError, createInvoice, invoiceUrl } from "@/lib/invoices";
 import { aznToQepik, formatMoney, isCurrency } from "@/lib/money";
+import { sendEmail } from "@/lib/notify";
 import { SERVICE_CATEGORIES } from "@/lib/services";
 
 import { type FormState, firstError } from "@/lib/forms";
@@ -218,6 +219,16 @@ export async function markInvoicePaid(id: string) {
     }),
   ]);
   await logActivity({ userId: profile.userId, email: profile.user.email, profileId: profile.id, actor: profile.actor, action: "invoice_paid", details: invoice.number });
+
+  // Müştəri e-poçt yazıbsa, ödəniş qəbzi ona da göndərilir (kanal qoşulmayıbsa, sakitcə ötürülür)
+  if (invoice.customerEmail) {
+    await sendEmail({
+      to: invoice.customerEmail,
+      subject: `Ödəniş qəbzi: ${invoice.number}`,
+      text: `Salam ${invoice.customerName}!\n\n${profile.displayName} tərəfindən ${invoice.number} nömrəli faktura üzrə ${formatMoney(invoice.totalQepik, invoice.currency)} ödənişiniz təsdiqləndi.\n\nFaktura: ${invoiceUrl(invoice.publicId)}`,
+    });
+  }
+
   // Ödəniş təsdiqləndi: satıcıya qeyd, müştəriyə isə faktura səhifəsində rəy forması açılır
   await notify({
     profileId: profile.id,

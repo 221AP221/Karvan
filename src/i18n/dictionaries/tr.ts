@@ -15,7 +15,7 @@ export const tr: typeof az = {
   meta: {
     title: "Link-in-bio sayfası ve online fatura — Karvan",
     description:
-      "Instagram ve TikTok biyografiniz için tek link: hizmetler, fiyatlar, sipariş formu ve otomatik PDF fatura. Ödemeleri takip edin. Ücretsiz başlayın, komisyon yok.",
+      "Sosyal medya biyografiniz için tek link: hizmetler, fiyatlar, sipariş formu ve otomatik PDF fatura. Ödemeleri takip edin. Ücretsiz başlayın, komisyon yok.",
     keywords: [
       "link in bio",
       "link-in-bio sayfası",
@@ -42,7 +42,7 @@ export const tr: typeof az = {
   hero: {
     lead: ["Profil", "linkiniz"],
     words: ["satış yapar", "fatura keser", "ödemeyi takip eder"],
-    text: "Instagram ve TikTok biyografinize tek bir link koyun. Müşteri fiyatı görür, tek tıkla sipariş verir, fatura kendiliğinden gider, ödeme panelinizde görünür.",
+    text: "Sosyal medya biyografinize tek bir link koyun. Müşteri fiyatı görür, tek tıkla sipariş verir, fatura kendiliğinden gider, ödeme panelinizde görünür.",
     primary: "Ücretsiz sayfa oluştur",
     secondary: "Canlı demoyu gör",
     note: "Kart gerekmez · 3 dakikada hazır · Komisyon yok",
@@ -139,7 +139,7 @@ export const tr: typeof az = {
       },
       {
         title: "Linki biyografinize koyun",
-        text: "Instagram, TikTok, WhatsApp ve Telegram'da paylaşın. Müşteri hizmeti seçer ve sipariş verir.",
+        text: "Sosyal medyanızda paylaşın. Müşteri hizmeti seçer ve sipariş verir.",
       },
       {
         title: "Fatura kendiliğinden gider",
@@ -352,7 +352,7 @@ export const tr: typeof az = {
       invoiceLimit: "Fatura limiti",
       unlimited: "Limitsiz",
       yourPage: "Sayfanız",
-      bioHint: "Bu bağlantıyı Instagram ve TikTok biyografinize ekleyin.",
+      bioHint: "Bu bağlantıyı sosyal medya biyografinize ekleyin.",
       recentInvoices: "Son faturalar",
       newInvoice: "+ Yeni fatura",
       stepAvatar: "Fotoğraf veya logo yükleyin",
@@ -547,7 +547,7 @@ export const tr: typeof az = {
       manual: "Manuel",
       manualText: "Bildirim sıraya girer, siz bakıp “Gönder” dersiniz.",
       channels: "Kanallar",
-      noProvider: "sağlayıcı yok",
+      noProvider: "şu an kapalı",
       channelsHint: "Sağlayıcısı bağlı olmayan kanal seçilirse bildirim kaybolmaz — kayıtta kalır ve sonra gönderilebilir.",
       events: "Hangi olaylar",
       notifyEmail: "Bildirim e-postası",
@@ -598,6 +598,7 @@ export const tr: typeof az = {
     name: "Adınız",
     phone: "Telefon numaranız",
     email: "E-posta (isteğe bağlı)",
+    emailHint: "Yazarsanız ödeme makbuzu buraya gönderilir.",
     note: "Not (isteğe bağlı)",
     submitOrder: "Faturayı al",
     submitAsk: "Talep gönder",
@@ -758,7 +759,7 @@ export const tr: typeof az = {
       passport: "Pasaport numarası",
       next: "Devam et",
       username: "Sayfa adresi",
-      usernameHint: "Instagram biyografinize koyacağınız link",
+      usernameHint: "Sosyal medya biyografinize koyacağınız link",
       email: "E-posta",
       emailPlaceholder: "ad@ornek.com",
       password: "Şifre",
@@ -858,6 +859,9 @@ export const tr: typeof az = {
     copy: "Kopyala",
     copied: "Kopyalandı ✓",
     iPaid: "Ödedim",
+    iPaidConfirm: "Satıcıya ödeme yaptığınızı bildirmek istediğinizden emin misiniz?",
+    iPaidYes: "Evet, bildir",
+    iPaidCancel: "Vazgeç",
     claimError: "Gönderilemedi. İnternet bağlantınızı kontrol edip tekrar deneyin.",
     downloadPdf: "PDF indir",
     disclaimer: "Bu bir ödeme talebidir, resmi vergi belgesi değildir.",

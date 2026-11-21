@@ -52,7 +52,7 @@ export function InviteForm() {
         <div className="mt-3 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm">
           <p className="font-medium text-emerald-900">Dəvət yaradıldı</p>
           <p className="mt-0.5 text-emerald-800">
-            E-poçt provayderi qoşulubsa, məktub getdi. Linki özünüz də göndərə bilərsiniz:
+            Dəvət linki hazırdır — istəsəniz özünüz də göndərə bilərsiniz:
           </p>
           <div className="mt-2 flex items-center gap-2">
             <code className="min-w-0 flex-1 truncate rounded-lg bg-white px-2.5 py-2 font-mono text-xs text-gray-700">{state.inviteLink}</code>

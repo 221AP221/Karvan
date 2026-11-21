@@ -15,7 +15,7 @@ export const az = {
   meta: {
     title: "Link-in-bio səhifə və onlayn faktura — Karvan",
     description:
-      "Instagram və TikTok bio-nuz üçün bir link: xidmətlər, qiymətlər, sifariş formu və avtomatik PDF faktura. Ödənişi izləyin. Pulsuz başlayın, komissiya yoxdur.",
+      "Sosial şəbəkə bio-nuz üçün bir link: xidmətlər, qiymətlər, sifariş formu və avtomatik PDF faktura. Ödənişi izləyin. Pulsuz başlayın, komissiya yoxdur.",
     keywords: [
       "link in bio",
       "link-in-bio səhifə",
@@ -43,7 +43,7 @@ export const az = {
   hero: {
     lead: ["Profil", "linkiniz"],
     words: ["satış edir", "faktura yazır", "ödənişi izləyir"],
-    text: "Instagram və TikTok bio-nuza bir link qoyun. Müştəri qiyməti görür, bir kliklə sifariş verir, faktura özü gedir, ödəniş paneldə görünür.",
+    text: "Sosial şəbəkə bio-nuza bir link qoyun. Müştəri qiyməti görür, bir kliklə sifariş verir, faktura özü gedir, ödəniş paneldə görünür.",
     primary: "Pulsuz səhifə yarat",
     secondary: "Canlı demoya bax",
     note: "Kart tələb olunmur · 3 dəqiqəyə hazır · Komissiya yoxdur",
@@ -140,7 +140,7 @@ export const az = {
       },
       {
         title: "Linki bio-ya qoyun",
-        text: "Instagram, TikTok, WhatsApp və Telegram-da paylaşın. Müştəri xidməti seçir və sifariş verir.",
+        text: "Sosial şəbəkələrinizdə paylaşın. Müştəri xidməti seçir və sifariş verir.",
       },
       {
         title: "Faktura özü gedir",
@@ -356,7 +356,7 @@ export const az = {
       invoiceLimit: "Faktura limiti",
       unlimited: "Limitsiz",
       yourPage: "Səhifəniz",
-      bioHint: "Bu linki Instagram və TikTok bio-nuza qoyun.",
+      bioHint: "Bu linki sosial şəbəkə bio-nuza qoyun.",
       recentInvoices: "Son fakturalar",
       newInvoice: "+ Yeni faktura",
       stepAvatar: "Şəkil və ya loqo yükləyin",
@@ -551,7 +551,7 @@ export const az = {
       manual: "Manual",
       manualText: "Bildiriş növbəyə düşür, siz baxıb “Göndər” basırsınız.",
       channels: "Kanallar",
-      noProvider: "provayder yoxdur",
+      noProvider: "hazırda bağlıdır",
       channelsHint: "Provayderi qoşulmamış kanal seçilsə, bildiriş itmir — jurnalda qalır və sonra göndərilə bilər.",
       events: "Hansı hadisələr",
       notifyEmail: "Bildiriş e-poçtu",
@@ -602,6 +602,7 @@ export const az = {
     name: "Adınız",
     phone: "Telefon nömrəniz",
     email: "E-poçt (könüllü)",
+    emailHint: "Yazsanız, ödəniş qəbzi buraya göndəriləcək.",
     note: "Qeyd (könüllü)",
     submitOrder: "Fakturanı al",
     submitAsk: "Sorğu göndər",
@@ -761,7 +762,7 @@ export const az = {
       passport: "Pasport nömrəsi",
       next: "Davam et",
       username: "Səhifə ünvanı",
-      usernameHint: "Instagram bio-nuza qoyacağınız link",
+      usernameHint: "Sosial şəbəkə bio-nuza qoyacağınız link",
       email: "E-poçt",
       emailPlaceholder: "ad@nümunə.az",
       password: "Şifrə",
@@ -861,6 +862,9 @@ export const az = {
     copy: "Kopyala",
     copied: "Kopyalandı ✓",
     iPaid: "Ödədim",
+    iPaidConfirm: "Satıcıya ödənişi bildirmək istədiyinizə əminsiniz?",
+    iPaidYes: "Bəli, bildir",
+    iPaidCancel: "Ləğv et",
     claimError: "Göndərmək alınmadı. İnternet bağlantınızı yoxlayıb yenidən cəhd edin.",
     downloadPdf: "PDF yüklə",
     disclaimer: "Ödəniş sorğusudur, rəsmi vergi sənədi deyil.",

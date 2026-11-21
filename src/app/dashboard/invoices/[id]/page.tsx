@@ -17,7 +17,7 @@ export default async function InvoiceDetail({ params }: { params: Promise<{ id: 
   const profile = await requireProfile();
   const invoice = await db.invoice.findFirst({
     where: { id: (await params).id, profileId: profile.id },
-    include: { items: { orderBy: { position: "asc" } }, payments: { orderBy: { createdAt: "desc" } } },
+    include: { items: { orderBy: { position: "asc" } }, payments: { orderBy: { createdAt: "desc" } }, order: { select: { createdAt: true } } },
   });
   if (!invoice) notFound();
 
@@ -61,6 +61,11 @@ export default async function InvoiceDetail({ params }: { params: Promise<{ id: 
               <p className="text-gray-500">Müştəri</p>
               <p className="font-medium">{invoice.customerName}</p>
               {invoice.customerPhone && <p className="text-gray-600">{invoice.customerPhone}</p>}
+              {invoice.order ? (
+                <p className="mt-1 text-xs text-gray-500">Sifariş tarixi: {date(invoice.order.createdAt)}</p>
+              ) : (
+                <p className="mt-1 text-xs text-gray-400">Appdə qeydiyyatda deyil</p>
+              )}
             </div>
             <div className="text-right">
               <p className="text-gray-500">Tarix</p>
