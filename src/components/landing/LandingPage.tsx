@@ -31,7 +31,6 @@ import {
   Sparkles,
   TrendingUp,
   Wallet,
-  X,
 } from "lucide-react";
 import Link from "next/link";
 import { AiDemo } from "@/components/landing/AiDemo";
@@ -154,13 +153,6 @@ function ChatMock({ t }: { t: Dict["compare"] }) {
           <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-gray-400" />
         </li>
       </ul>
-      <ul className="mt-5 flex flex-col divide-y divide-gray-100 border-t border-gray-200 dark:divide-white/10 dark:border-white/10">
-        {t.beforePoints.map((p) => (
-          <li key={p} className="flex items-center gap-2.5 py-2.5 text-sm text-gray-500 dark:text-gray-400">
-            <X size={14} strokeWidth={2.5} className="shrink-0 text-red-400" aria-hidden /> {p}
-          </li>
-        ))}
-      </ul>
     </div>
   );
 }
@@ -196,13 +188,6 @@ function InvoiceMock({ t }: { t: Dict["compare"] }) {
         <span className="text-gray-700 dark:text-gray-300">{t.invoice.claimed}</span>
         <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-600 px-3 py-1 text-xs font-semibold text-white">{t.invoice.confirm}</span>
       </div>
-      <ul className="flex flex-col divide-y divide-gray-100 dark:divide-white/10">
-        {t.afterPoints.map((p) => (
-          <li key={p} className="flex items-center gap-2.5 py-2.5 text-sm text-gray-700 dark:text-gray-300">
-            <Check size={14} strokeWidth={2.75} className="shrink-0 text-emerald-600" aria-hidden /> {p}
-          </li>
-        ))}
-      </ul>
     </div>
   );
 }
@@ -344,7 +329,7 @@ export function LandingPage({ locale, t }: { locale: Locale; t: Dict }) {
           </div>
         </section>
 
-        {/* İmkanlar: bento qrid — hər cərgədə bir önə çıxan, iki adi kart (eyni ölçülü altı qutu əvəzinə) */}
+        {/* İmkanlar: ilkin halda yalnız ikonlar görünür; üzərinə gələndə başlıq, sonra mətn bir-bir açılır. */}
         <section id="imkanlar" className="mx-auto max-w-6xl px-4 py-28">
           <SectionTitle eyebrow={t.features.eyebrow} title={t.features.title} text={t.features.text} />
           <Appear stagger={0.08} className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -353,17 +338,25 @@ export function LandingPage({ locale, t }: { locale: Locale; t: Dict }) {
               return (
                 <div
                   key={f.title}
-                  className={`group h-full rounded-3xl border p-7 transition duration-300 hover:-translate-y-1 hover:shadow-xl ${
+                  className={`group flex h-full min-h-[200px] flex-col items-center justify-center rounded-3xl border p-7 text-center transition duration-300 hover:-translate-y-1 hover:shadow-xl ${
                     lead
                       ? "border-pink-200/70 bg-gradient-to-br from-pink-50 to-white hover:border-pink-300 hover:shadow-pink-500/10 sm:col-span-2 dark:border-pink-400/20 dark:from-pink-500/[0.07] dark:to-transparent"
                       : "border-gray-200 bg-white hover:border-violet-200 hover:shadow-violet-500/10 dark:border-white/10 dark:bg-white/[0.03] dark:hover:border-violet-400/30"
                   }`}
                 >
-                  <span className="inline-block transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110">
+                  <span className="transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-110">
                     <IconBadge icon={FEATURE_ICONS[i]} tone="solid" size={lead ? "lg" : "md"} />
                   </span>
-                  <h3 className={`mt-5 font-semibold ${lead ? "text-xl" : "text-lg"}`}>{f.title}</h3>
-                  <p className={`mt-2 text-gray-600 dark:text-gray-400 ${lead ? "max-w-md" : ""}`}>{f.text}</p>
+                  <h3
+                    className={`mt-5 translate-y-1 font-semibold opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 ${lead ? "text-xl" : "text-lg"}`}
+                  >
+                    {f.title}
+                  </h3>
+                  <p
+                    className={`mt-2 translate-y-1 text-gray-600 opacity-0 transition-all delay-100 duration-300 group-hover:translate-y-0 group-hover:opacity-100 dark:text-gray-400 ${lead ? "max-w-md" : ""}`}
+                  >
+                    {f.text}
+                  </p>
                 </div>
               );
             })}
