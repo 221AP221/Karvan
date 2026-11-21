@@ -2,12 +2,14 @@ import { Plus } from "lucide-react";
 import Link from "next/link";
 import { FilterBar } from "@/components/FilterBar";
 import { InvoiceTable } from "@/components/InvoiceTable";
-import { buttonClass } from "@/components/ui";
+import { Pager, buttonClass, hrefWith } from "@/components/ui";
 import type { Prisma } from "@/generated/prisma/client";
 import { requireProfile } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { CURRENCIES } from "@/lib/money";
 import { type SearchParams, dayEnd, dayStart, param } from "@/lib/search-params";
+
+const PAGE_SIZE = 20;
 
 // Gecikmə cron gələnə qədər oxuma zamanı hesablanır (bax: effectiveStatus)
 const STATUS_FILTERS: Record<string, { label: string; where: (now: Date) => Prisma.InvoiceWhereInput }> = {
@@ -33,6 +35,7 @@ export default async function Invoices({ searchParams }: { searchParams: SearchP
   const currency = param(sp, "currency");
   const from = dayStart(param(sp, "from"));
   const to = dayEnd(param(sp, "to"));
+  const page = Math.max(1, Number(sp.page) || 1);
 
   const base: Prisma.InvoiceWhereInput = { profileId: profile.id };
   const where: Prisma.InvoiceWhereInput = {
@@ -55,11 +58,14 @@ export default async function Invoices({ searchParams }: { searchParams: SearchP
 
   // Statuslar üzrə saylar bir qruplaşdırma ilə alınır (əvvəl hər status üçün ayrıca COUNT gedirdi).
   // Gecikmə statusda yazılmır, tarixdən hesablanır — ona görə yalnız o, ayrıca sayılır.
-  const [invoices, byStatus, lateCount] = await Promise.all([
-    db.invoice.findMany({ where, orderBy: { issuedAt: "desc" }, take: 200 }),
+  const [invoices, total, byStatus, lateCount] = await Promise.all([
+    db.invoice.findMany({ where, orderBy: { issuedAt: "desc" }, skip: (page - 1) * PAGE_SIZE, take: PAGE_SIZE }),
+    db.invoice.count({ where }),
     db.invoice.groupBy({ by: ["status"], where: base, _count: { _all: true } }),
     db.invoice.count({ where: { ...base, status: { in: ["SENT", "VIEWED"] }, dueAt: { lt: now } } }),
   ]);
+  const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const pageHref = (n: number) => hrefWith("/dashboard/invoices", sp, { page: n > 1 ? String(n) : null });
   const keys = Object.keys(STATUS_FILTERS);
   const byKey = (status: string) => byStatus.find((r) => r.status === status)?._count._all ?? 0;
   const counts: Record<string, number> = {
@@ -97,7 +103,7 @@ export default async function Invoices({ searchParams }: { searchParams: SearchP
       </div>
 
       <FilterBar
-        total={invoices.length}
+        total={total}
         fields={[
           { type: "search", name: "q", placeholder: "Müştəri, faktura nömrəsi və ya telefon..." },
           { type: "select", name: "status", label: "Status", options: keys.map((k) => ({ value: k, label: STATUS_FILTERS[k].label })) },
@@ -107,6 +113,7 @@ export default async function Invoices({ searchParams }: { searchParams: SearchP
         ]}
       />
       <InvoiceTable invoices={invoices} emptyText={q || status || currency || from || to ? "Filtrə uyğun faktura tapılmadı." : "Hələ faktura yoxdur."} />
+      <Pager page={page} pages={pages} href={pageHref} />
     </div>
   );
 }

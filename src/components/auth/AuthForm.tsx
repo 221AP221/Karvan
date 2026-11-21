@@ -20,7 +20,7 @@ export function useAuthForm(action: Action) {
 export function AuthError({ message }: { message?: string }) {
   if (!message) return null;
   return (
-    <p role="alert" className="flex items-start gap-2 rounded-xl border border-red-100 bg-red-50 p-3 text-sm text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-300">
+    <p role="alert" className="flex items-start gap-2 text-sm font-medium text-red-600 dark:text-red-400">
       <AlertCircle size={17} className="mt-px shrink-0" aria-hidden /> {message}
     </p>
   );

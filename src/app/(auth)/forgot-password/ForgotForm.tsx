@@ -13,12 +13,12 @@ export function ForgotForm({ t, email, placeholder }: { t: Dict["auth"]["forgot"
   if (state?.ok) {
     return (
       <div className="mt-8">
-        <div className="flex flex-col items-center gap-3 rounded-2xl border border-emerald-100 bg-emerald-50 p-6 text-center">
-          <span className="grid h-12 w-12 place-items-center rounded-2xl bg-white text-emerald-600 ring-1 ring-emerald-200">
+        <div className="flex flex-col items-center gap-3 border-t border-gray-200 pt-6 text-center dark:border-white/10">
+          <span className="grid h-12 w-12 place-items-center rounded-2xl bg-emerald-50 text-emerald-600 ring-1 ring-emerald-200 dark:bg-emerald-500/10 dark:ring-emerald-400/20">
             <MailCheck size={24} strokeWidth={1.75} aria-hidden />
           </span>
-          <p className="font-semibold text-emerald-900">{t.sentTitle}</p>
-          <p className="text-sm text-emerald-800">{t.sentText}</p>
+          <p className="font-semibold text-gray-900 dark:text-white">{t.sentTitle}</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400">{t.sentText}</p>
         </div>
         {state.devLink && (
           <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
