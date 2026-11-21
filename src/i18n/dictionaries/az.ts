@@ -79,6 +79,7 @@ export const az = {
     "Video montajçılar",
     "Tərcüməçilər",
   ],
+  nichesMore: "Daha çoxları",
 
   stats: [
     { value: "3 dəq", label: "səhifə hazırdır" },

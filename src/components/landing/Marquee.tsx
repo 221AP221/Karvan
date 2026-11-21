@@ -1,7 +1,9 @@
-import type { LucideIcon } from "lucide-react";
+import { ArrowRight, type LucideIcon } from "lucide-react";
+import Link from "next/link";
 
 // İki sıra, əks istiqamətdə axan sahələr zolağı (CSS animasiyası, GPU ilə, bulanıqlıqsız).
-export function Marquee({ rows }: { rows: { label: string; icon: LucideIcon }[][] }) {
+// Hər sıranın sonunda "daha çoxları" linki dövr edərkən bir dəfə görünür (kataloqa aparır).
+export function Marquee({ rows, more }: { rows: { label: string; icon: LucideIcon }[][]; more?: { label: string; href: string } }) {
   return (
     <div className="flex flex-col gap-3 [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
       {rows.map((items, r) => (
@@ -23,6 +25,18 @@ export function Marquee({ rows }: { rows: { label: string; icon: LucideIcon }[][
                   {label}
                 </li>
               ))}
+              {more && (
+                <li aria-hidden={copy === 1 ? true : undefined}>
+                  <Link
+                    href={more.href}
+                    tabIndex={copy === 1 ? -1 : undefined}
+                    className="flex items-center gap-1.5 whitespace-nowrap rounded-full bg-gray-900 py-2 pl-5 pr-4 text-sm font-medium text-white shadow-sm transition hover:bg-gray-800 sm:text-[15px] dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100"
+                  >
+                    {more.label}
+                    <ArrowRight size={15} strokeWidth={2} aria-hidden />
+                  </Link>
+                </li>
+              )}
             </ul>
           ))}
         </div>

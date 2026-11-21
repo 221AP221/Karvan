@@ -79,6 +79,7 @@ export const ru: typeof az = {
     "Видеомонтажёры",
     "Переводчики",
   ],
+  nichesMore: "И многие другие",
 
   stats: [
     { value: "3 мин", label: "и страница готова" },

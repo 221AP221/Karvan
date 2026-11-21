@@ -78,6 +78,7 @@ export const tr: typeof az = {
     "Video editörleri",
     "Çevirmenler",
   ],
+  nichesMore: "Ve daha fazlası",
 
   stats: [
     { value: "3 dk", label: "sayfanız hazır" },

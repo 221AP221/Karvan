@@ -1,0 +1,14 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "bounce-easing",
+        "value": "animate-bounce (tailwind)",
+        "createdAt": "2026-11-21T10:20:39.341Z",
+        "reason": "typing-indicator dots: literal messenger-app convention (iMessage/WhatsApp), not decorative bounce"
+      }
+    ]
+  }
+}

@@ -139,7 +139,7 @@ function ChatMock({ t }: { t: Dict["compare"] }) {
   return (
     <div className="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.03]">
       <div className="mb-4 flex items-center gap-3 border-b border-gray-100 pb-4 dark:border-white/10">
-        <span className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-tr from-amber-400 via-pink-500 to-violet-600 text-xs font-bold text-white">N</span>
+        <span className="grid h-9 w-9 place-items-center rounded-full bg-gray-900 text-xs font-bold text-white dark:bg-white dark:text-gray-900">N</span>
         <div className="leading-tight">
           <p className="text-sm font-semibold">nermin.a</p>
           <p className="text-xs text-gray-400">Direct</p>
@@ -147,15 +147,20 @@ function ChatMock({ t }: { t: Dict["compare"] }) {
       </div>
       <ul className="flex flex-col gap-2 text-sm">
         {t.chat.map((m, i) => (
-          <li key={i} className={`max-w-[80%] rounded-2xl px-3.5 py-2 ${m.me ? "self-end rounded-br-md bg-violet-600 text-white" : "self-start rounded-bl-md bg-gray-100 text-gray-800 dark:bg-white/10 dark:text-gray-100"}`}>
+          <li key={i} className={`max-w-[80%] rounded-2xl px-3.5 py-2 ${m.me ? "self-end rounded-br-md bg-gray-900 text-white dark:bg-white/15" : "self-start rounded-bl-md bg-gray-100 text-gray-800 dark:bg-white/10 dark:text-gray-100"}`}>
             {m.text}
           </li>
         ))}
+        <li className="flex w-fit items-center gap-1 self-start rounded-2xl rounded-bl-md bg-gray-100 px-3.5 py-3 dark:bg-white/10" aria-hidden>
+          <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-gray-400 [animation-delay:-0.3s]" />
+          <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-gray-400 [animation-delay:-0.15s]" />
+          <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-gray-400" />
+        </li>
       </ul>
-      <ul className="mt-5 grid grid-cols-2 gap-2 text-sm">
+      <ul className="mt-5 flex flex-col divide-y divide-gray-100 border-t border-gray-100 dark:divide-white/10 dark:border-white/10">
         {t.beforePoints.map((p) => (
-          <li key={p} className="flex items-center gap-2 rounded-xl bg-red-50 px-3 py-2 text-red-700 dark:bg-red-500/10 dark:text-red-300">
-            <X size={14} strokeWidth={2.5} className="shrink-0" aria-hidden /> {p}
+          <li key={p} className="flex items-center gap-2.5 py-2.5 text-sm text-gray-500 dark:text-gray-400">
+            <X size={14} strokeWidth={2.5} className="shrink-0 text-red-400" aria-hidden /> {p}
           </li>
         ))}
       </ul>
@@ -196,10 +201,10 @@ function InvoiceMock({ t }: { t: Dict["compare"] }) {
         <span className="text-white/80">{t.invoice.claimed}</span>
         <span className="rounded-full bg-emerald-500 px-3 py-1 text-xs font-semibold">{t.invoice.confirm}</span>
       </div>
-      <ul className="mt-5 grid grid-cols-2 gap-2 text-sm">
+      <ul className="mt-5 flex flex-col divide-y divide-emerald-100 border-t border-emerald-100 dark:divide-emerald-400/10 dark:border-emerald-400/10">
         {t.afterPoints.map((p) => (
-          <li key={p} className="flex items-center gap-2 rounded-xl bg-emerald-100/70 px-3 py-2 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-200">
-            <Check size={14} strokeWidth={2.75} className="shrink-0" aria-hidden /> {p}
+          <li key={p} className="flex items-center gap-2.5 py-2.5 text-sm text-gray-700 dark:text-gray-300">
+            <Check size={14} strokeWidth={2.75} className="shrink-0 text-emerald-600" aria-hidden /> {p}
           </li>
         ))}
       </ul>
@@ -270,7 +275,10 @@ export function LandingPage({ locale, t }: { locale: Locale; t: Dict }) {
         </section>
 
         <section aria-label={t.features.eyebrow} className="border-y border-gray-100 bg-gray-50/80 py-8 dark:border-white/5 dark:bg-white/[0.02]">
-          <Marquee rows={[0, 6].map((start) => t.niches.slice(start, start + 6).map((label, i) => ({ label, icon: NICHE_ICONS[start + i] })))} />
+          <Marquee
+            rows={[0, 6].map((start) => t.niches.slice(start, start + 6).map((label, i) => ({ label, icon: NICHE_ICONS[start + i] })))}
+            more={{ label: t.nichesMore, href: catalog }}
+          />
         </section>
 
         {/* Rəqəmlər */}
@@ -372,14 +380,17 @@ export function LandingPage({ locale, t }: { locale: Locale; t: Dict }) {
             <Appear delay={0.1} className="mt-14">
               <AiDemo t={t.ai.demo} />
             </Appear>
-            <Appear stagger={0.1} className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {t.ai.items.map((f, i) => (
-                <SpotlightCard key={f.title} theme="dark" spotlightColor="rgba(255, 148, 200, 0.22)" className="h-full rounded-2xl p-6">
-                  <IconBadge icon={AI_ICONS[i]} size="sm" tone="dark" />
-                  <h3 className="mt-4 font-semibold">{f.title}</h3>
-                  <p className="mt-2 text-sm text-gray-400">{f.text}</p>
-                </SpotlightCard>
-              ))}
+            {/* Tək panel, daxildə incə ayırıcılarla — 4 ayrı eyni-ölçülü qutu əvəzinə vahid tərkib */}
+            <Appear delay={0.15} className="mt-12">
+              <SpotlightCard theme="dark" spotlightColor="rgba(255, 148, 200, 0.18)" className="grid gap-8 rounded-3xl p-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-0 lg:divide-x lg:divide-white/10">
+                {t.ai.items.map((f, i) => (
+                  <div key={f.title} className="lg:px-8 lg:first:pl-0 lg:last:pr-0">
+                    <IconBadge icon={AI_ICONS[i]} size="sm" tone="dark" />
+                    <h3 className="mt-4 font-semibold">{f.title}</h3>
+                    <p className="mt-2 text-sm text-gray-400">{f.text}</p>
+                  </div>
+                ))}
+              </SpotlightCard>
             </Appear>
           </div>
         </section>

@@ -3,7 +3,7 @@
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Check, FileText, ShoppingBag } from "lucide-react";
+import { BatteryFull, Check, FileText, ShoppingBag, SignalHigh, Wifi } from "lucide-react";
 import { useRef } from "react";
 import { IconBadge } from "./IconBadge";
 
@@ -128,11 +128,24 @@ export function HeroPhone({ t }: { t: PhoneText }) {
 
       <div
         data-phone
-        className="invisible relative rounded-[2.6rem] border-[10px] border-gray-900 bg-white text-gray-900 dark:border-gray-700 shadow-2xl shadow-violet-900/25 [transform-style:preserve-3d]"
+        className="invisible relative rounded-[2.6rem] border-[8px] border-gray-900 bg-gray-900 text-gray-900 shadow-2xl shadow-violet-900/25 [transform-style:preserve-3d] dark:border-gray-700"
       >
-        <div className="absolute left-1/2 top-2 h-5 w-24 -translate-x-1/2 rounded-full bg-gray-900" />
-        <div className="overflow-hidden rounded-[2rem] bg-gradient-to-b from-pink-50 to-white px-5 pb-6 pt-10">
-          <div className="text-center">
+        {/* Həcm düymələri: yan tərəflərdəki kiçik çıxıntılar real cihaz çərçivəsi hissi verir */}
+        <span className="absolute -left-[10px] top-20 h-6 w-[3px] rounded-l-full bg-gray-800 dark:bg-gray-600" aria-hidden />
+        <span className="absolute -left-[10px] top-32 h-10 w-[3px] rounded-l-full bg-gray-800 dark:bg-gray-600" aria-hidden />
+        <span className="absolute -right-[10px] top-28 h-14 w-[3px] rounded-r-full bg-gray-800 dark:bg-gray-600" aria-hidden />
+        <div className="absolute left-1/2 top-2 z-10 h-5 w-24 -translate-x-1/2 rounded-full bg-gray-900" />
+        <div className="overflow-hidden rounded-[2rem] bg-gradient-to-b from-pink-50 to-white px-5 pb-6 text-gray-900">
+          {/* Status bar: ekranın real tətbiq olduğunu dərhal göstərir */}
+          <div className="flex items-center justify-between pb-1 pt-2.5 text-[11px] font-semibold text-gray-900">
+            <span>9:41</span>
+            <span className="flex items-center gap-1 text-gray-900">
+              <SignalHigh size={13} strokeWidth={2.2} aria-hidden />
+              <Wifi size={13} strokeWidth={2.2} aria-hidden />
+              <BatteryFull size={15} strokeWidth={2.2} aria-hidden />
+            </span>
+          </div>
+          <div className="pt-4 text-center">
             <div className="mx-auto h-16 w-16 rounded-full bg-gradient-to-br from-pink-500 to-violet-600 p-0.5">
               <div className="grid h-full w-full place-items-center rounded-full bg-white text-xl font-bold text-pink-600">LH</div>
             </div>

@@ -78,6 +78,7 @@ export const en: typeof az = {
     "Video editors",
     "Translators",
   ],
+  nichesMore: "And many more",
 
   stats: [
     { value: "3 min", label: "to build your page" },
