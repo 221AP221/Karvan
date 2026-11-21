@@ -72,7 +72,7 @@ export function HeroHeadline({ lead, words, className = "" }: { lead: string[]; 
           <span
             key={i}
             data-slot
-            className="col-start-1 row-start-1 whitespace-nowrap bg-gradient-to-r from-violet-600 via-fuchsia-600 to-amber-500 bg-clip-text dark:from-violet-400 dark:via-fuchsia-400 dark:to-amber-300 text-transparent"
+            className="col-start-1 row-start-1 whitespace-nowrap text-[var(--brand)]"
           >
             {word}
           </span>

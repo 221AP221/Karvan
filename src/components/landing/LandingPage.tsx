@@ -335,22 +335,29 @@ export function LandingPage({ locale, t }: { locale: Locale; t: Dict }) {
           </div>
         </section>
 
-        {/* İmkanlar */}
+        {/* İmkanlar: bento qrid — hər cərgədə bir önə çıxan, iki adi kart (eyni ölçülü altı qutu əvəzinə) */}
         <section id="imkanlar" className="mx-auto max-w-6xl px-4 py-28">
           <SectionTitle eyebrow={t.features.eyebrow} title={t.features.title} text={t.features.text} />
-          <Appear stagger={0.08} className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {t.features.items.map((f, i) => (
-              <div
-                key={f.title}
-                className="group h-full rounded-3xl border border-gray-200 bg-white p-7 transition duration-300 hover:-translate-y-1 hover:border-violet-200 hover:shadow-xl hover:shadow-violet-500/10 dark:border-white/10 dark:bg-white/[0.03] dark:hover:border-violet-400/30"
-              >
-                <span className="inline-block transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110">
-                  <IconBadge icon={FEATURE_ICONS[i]} tone="solid" />
-                </span>
-                <h3 className="mt-5 text-lg font-semibold">{f.title}</h3>
-                <p className="mt-2 text-gray-600 dark:text-gray-400">{f.text}</p>
-              </div>
-            ))}
+          <Appear stagger={0.08} className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {t.features.items.map((f, i) => {
+              const lead = i === 0 || i === 3;
+              return (
+                <div
+                  key={f.title}
+                  className={`group h-full rounded-3xl border p-7 transition duration-300 hover:-translate-y-1 hover:shadow-xl ${
+                    lead
+                      ? "border-pink-200/70 bg-gradient-to-br from-pink-50 to-white hover:border-pink-300 hover:shadow-pink-500/10 sm:col-span-2 dark:border-pink-400/20 dark:from-pink-500/[0.07] dark:to-transparent"
+                      : "border-gray-200 bg-white hover:border-violet-200 hover:shadow-violet-500/10 dark:border-white/10 dark:bg-white/[0.03] dark:hover:border-violet-400/30"
+                  }`}
+                >
+                  <span className="inline-block transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110">
+                    <IconBadge icon={FEATURE_ICONS[i]} tone="solid" size={lead ? "lg" : "md"} />
+                  </span>
+                  <h3 className={`mt-5 font-semibold ${lead ? "text-xl" : "text-lg"}`}>{f.title}</h3>
+                  <p className={`mt-2 text-gray-600 dark:text-gray-400 ${lead ? "max-w-md" : ""}`}>{f.text}</p>
+                </div>
+              );
+            })}
           </Appear>
         </section>
 
