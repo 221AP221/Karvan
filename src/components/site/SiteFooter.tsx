@@ -97,11 +97,6 @@ export function SiteFooter({ locale, t }: { locale: Locale; t: Dict }) {
                 {f.city}
               </a>
             </li>
-            <li>
-              <Link href={CATALOG_PATH[locale]} className="transition hover:text-gray-900 dark:hover:text-white">
-                {f.regions}
-              </Link>
-            </li>
           </ul>
         </div>
       </div>

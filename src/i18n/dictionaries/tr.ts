@@ -242,8 +242,8 @@ export const tr: typeof az = {
         features: [
           "Ücretsiz plandaki her şey",
           "Onaylı hesap rozeti",
-          "Ayda 100 fatura",
-          "300 hizmet",
+          "Ayda 300 fatura",
+          "30 hizmet",
           "Karvan yazısı olmadan",
           "Yapay zekâ: ayda 200 istek",
         ],

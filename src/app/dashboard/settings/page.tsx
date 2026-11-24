@@ -42,7 +42,7 @@ export default async function Settings() {
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div>
           <h1 className="text-2xl font-bold">Parametrlər</h1>
-          <p className="text-sm text-gray-500">Hesab, təhlükəsizlik və ödəniş ayarları</p>
+          <p className="text-sm text-gray-500">Hesab, tarif, təhlükəsizlik və ödəniş ayarları</p>
         </div>
 
         {/* Plan: başlığın yanında, yığcam */}
@@ -56,7 +56,7 @@ export default async function Settings() {
               </div>
             </div>
             <a href="/dashboard/billing" className="rounded-full bg-gradient-to-r from-violet-600 to-pink-600 px-3 py-1 text-xs font-semibold text-white">
-              {plan === "FREE" ? "Tarifi yüksəlt" : "Planı idarə et"}
+              Tarifi dəyiş
             </a>
           </div>
           {limits.invoicesPerMonth === Infinity ? (

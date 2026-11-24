@@ -246,8 +246,8 @@ export const az = {
         features: [
           "Pulsuzdakı hər şey",
           "Təsdiqlənmiş hesab nişanı",
-          "Ayda 100 faktura",
-          "300 xidmət",
+          "Ayda 300 faktura",
+          "30 xidmət",
           "Karvan yazısı olmadan",
           "AI: ayda 200 sorğu",
         ],
