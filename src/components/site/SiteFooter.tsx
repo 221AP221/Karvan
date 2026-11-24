@@ -2,11 +2,9 @@ import Link from "next/link";
 import { Logo } from "@/components/Logo";
 import { CATALOG_PATH, HOME_PATH, type Locale } from "@/i18n/config";
 import type { Dict } from "@/i18n/server";
-import { LanguageSwitcher } from "./LanguageSwitcher";
-import { ThemeToggle } from "./ThemeToggle";
 
 // Sayt footeri: ana səhifə və kataloq üçün ortaq
-export function SiteFooter({ locale, t, paths }: { locale: Locale; t: Dict; paths: Record<Locale, string> }) {
+export function SiteFooter({ locale, t }: { locale: Locale; t: Dict }) {
   const f = t.footer;
   const home = HOME_PATH[locale] === "/" ? "" : HOME_PATH[locale];
   const columns = [
@@ -109,14 +107,9 @@ export function SiteFooter({ locale, t, paths }: { locale: Locale; t: Dict; path
       </div>
 
       <div className="border-t border-gray-200 dark:border-white/10">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-6 text-gray-500 sm:flex-row dark:text-gray-400">
-          <p>
-            © 2026 Karvan. {f.rights}
-          </p>
-          <div className="flex items-center gap-1">
-            <LanguageSwitcher locale={locale} paths={paths} label={t.common.language} />
-            <ThemeToggle labels={{ light: t.common.themeLight, dark: t.common.themeDark }} />
-          </div>
+        {/* Dil və tema seçimi yuxarıdakı başlıqdadır: burada təkrarına ehtiyac yoxdur */}
+        <div className="mx-auto max-w-6xl px-4 py-6 text-gray-500 dark:text-gray-400">
+          <p>© 2026 Karvan. {f.rights}</p>
         </div>
       </div>
     </footer>

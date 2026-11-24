@@ -95,7 +95,8 @@ export default async function Dashboard() {
             </Card>
           )}
 
-          <section className="grid grid-cols-2 gap-3 md:grid-cols-4">
+          {/* 4 sütun yalnız çox geniş ekranda: dar sütunda məbləğlər iki sətrə düşürdü */}
+          <section className="grid grid-cols-2 gap-3 2xl:grid-cols-4">
             <Stat label={t.paidThisMonth} value={formatTotals(paidThisMonth)} />
             <Stat label={t.outstanding} value={formatTotals(outstanding)} />
             <Stat label={t.pendingOrders} value={String(pendingOrders)} href={pendingOrders ? "/dashboard/orders" : undefined} />
@@ -118,11 +119,14 @@ export default async function Dashboard() {
               <CopyLink url={pageUrl} />
             </div>
             <p className="mt-2 text-xs text-gray-500">{t.bioHint}</p>
-            <PageQr url={pageUrl} username={profile.username} />
           </Card>
         </div>
 
-        <MonthCalendar year={now.getFullYear()} month={now.getMonth()} load={load} today={now} />
+        {/* Sağ sütun: təqvim öz hündürlüyündə qalır, altındakı boşluğa QR düşür */}
+        <div className="flex flex-col gap-6">
+          <MonthCalendar year={now.getFullYear()} month={now.getMonth()} load={load} today={now} />
+          <PageQr url={pageUrl} username={profile.username} />
+        </div>
       </div>
 
       <div>

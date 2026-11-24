@@ -444,7 +444,7 @@ export async function CatalogPage({ locale, searchParams }: { locale: Locale; se
         </div>
       </main>
 
-      <SiteFooter locale={locale} t={dict} paths={CATALOG_PATH} />
+      <SiteFooter locale={locale} t={dict} />
     </div>
   );
 }

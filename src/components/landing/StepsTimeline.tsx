@@ -51,7 +51,8 @@ export function StepsTimeline({ steps }: { steps: Step[] }) {
       {steps.map((step, i) => (
         <li key={step.title} data-step className="relative flex gap-6 pb-14 last:pb-0">
           <span className="relative z-10 flex flex-col items-center">
-            <span data-icon className="grid h-14 w-14 place-items-center">
+            {/* Fon rəngi xətti ikonun altında kəsir: çərçivə görünmür, xətt ikonun üstündən keçmir */}
+            <span data-icon className="grid h-14 w-14 place-items-center rounded-full bg-white dark:bg-[#111215]">
               {step.icon}
             </span>
             <span data-dot className="absolute -right-1 -top-1 grid h-6 w-6 place-items-center rounded-full bg-gray-900 text-xs font-bold text-white ring-4 ring-white dark:ring-[#111215]">

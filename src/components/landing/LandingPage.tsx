@@ -345,7 +345,11 @@ export function LandingPage({ locale, t }: { locale: Locale; t: Dict }) {
               return (
                 <FeatureCard
                   key={f.title}
-                  icon={<IconBadge icon={FEATURE_ICONS[i]} tone="solid" size={lead ? "lg" : "md"} />}
+                  icon={(() => {
+                    // Çərçivəsiz ikon: kartın öz sərhədi var, ikinci qutu artıq idi
+                    const Icon = FEATURE_ICONS[i];
+                    return <Icon size={lead ? 34 : 30} strokeWidth={1.6} className="text-[var(--brand)]" aria-hidden />;
+                  })()}
                   title={f.title}
                   text={f.text}
                   lead={lead}
@@ -471,7 +475,7 @@ export function LandingPage({ locale, t }: { locale: Locale; t: Dict }) {
           </Appear>
         </section>
 
-        <SiteFooter locale={locale} t={t} paths={HOME_PATH} />
+        <SiteFooter locale={locale} t={t} />
       </div>
     </SmoothScroll>
   );
