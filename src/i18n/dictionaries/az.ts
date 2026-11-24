@@ -247,7 +247,7 @@ export const az = {
           "Pulsuzdakı hər şey",
           "Təsdiqlənmiş hesab nişanı",
           "Ayda 100 faktura",
-          "30 xidmət",
+          "300 xidmət",
           "Karvan yazısı olmadan",
           "AI: ayda 200 sorğu",
         ],

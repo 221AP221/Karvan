@@ -62,6 +62,23 @@ const ServiceInput = z
       .optional()
       .transform((v) => (v && v.trim() ? Number(v) : 24))
       .refine((v) => Number.isInteger(v) && v >= 0 && v <= 720, "Ləğv pəncərəsi 0-720 saat aralığında olmalıdır"),
+    // Məkan: ünvan mətni və xəritə linki
+    address: z.string().trim().max(200).optional().transform((v) => v || null),
+    mapUrl: z
+      .string()
+      .trim()
+      .optional()
+      .transform((v) => v || null)
+      .refine((v) => v === null || /^https:\/\//.test(v), "Xəritə linki https:// ilə başlamalıdır"),
+    // Qalereya: gizli sahədən JSON massiv kimi gəlir
+    gallery: z
+      .string()
+      .optional()
+      .transform((v) => {
+        if (!v) return [] as string[];
+        const parsed = JSON.parse(v) as unknown;
+        return Array.isArray(parsed) ? parsed.filter((u): u is string => typeof u === "string").slice(0, 8) : [];
+      }),
   })
   .transform(({ amount, ...rest }, ctx) => {
     if (rest.category === "other" && !rest.customCategory) {
@@ -85,18 +102,34 @@ export async function saveService(_: FormState, form: FormData): Promise<FormSta
   if (!parsed.success) return { error: firstError(parsed.error) };
 
   // Şəkil yalnız bu satıcının yüklədiyi fayl ola bilər; dəyişəndə köhnəsi silinir
-  const data = { ...parsed.data, imageUrl: await ownedMediaUrl(profile.id, parsed.data.imageUrl) };
+  const { gallery, ...rest } = parsed.data;
+  const data = { ...rest, imageUrl: await ownedMediaUrl(profile.id, parsed.data.imageUrl) };
+  // Qalereya şəkilləri də yalnız bu satıcıya aid ola bilər
+  const galleryUrls = (await Promise.all(gallery.map((url) => ownedMediaUrl(profile.id, url)))).filter((u): u is string => Boolean(u));
   const id = form.get("id");
   if (typeof id === "string" && id) {
-    const before = await db.service.findFirst({ where: { id, profileId: profile.id }, select: { imageUrl: true } });
+    const before = await db.service.findFirst({ where: { id, profileId: profile.id }, select: { imageUrl: true, gallery: { select: { url: true } } } });
     if (before && before.imageUrl !== data.imageUrl) await deleteMediaByUrl(profile.id, before.imageUrl);
+    // Siyahıdan çıxarılan şəkillər saxlamadan da silinir
+    for (const old of before?.gallery ?? []) if (!galleryUrls.includes(old.url)) await deleteMediaByUrl(profile.id, old.url);
     await db.service.updateMany({ where: { id, profileId: profile.id }, data });
+    await db.serviceImage.deleteMany({ where: { serviceId: id } });
+    if (galleryUrls.length) {
+      await db.serviceImage.createMany({ data: galleryUrls.map((url, position) => ({ serviceId: id, url, position })) });
+    }
     await logActivity({ userId: profile.userId, email: profile.user.email, profileId: profile.id, actor: profile.actor, action: "service_update", details: parsed.data.title });
   } else {
     const count = await db.service.count({ where: { profileId: profile.id } });
     const limit = PLAN_LIMITS[profile.user.subscription?.plan ?? "FREE"].services;
     if (count >= limit) return { error: `Planınızda ən çox ${limit} xidmət əlavə etmək olar. Daha çoxu üçün yuxarı plana keçin.` };
-    await db.service.create({ data: { ...data, profileId: profile.id, position: count } });
+    await db.service.create({
+      data: {
+        ...data,
+        profileId: profile.id,
+        position: count,
+        gallery: { create: galleryUrls.map((url, position) => ({ url, position })) },
+      },
+    });
     await logActivity({ userId: profile.userId, email: profile.user.email, profileId: profile.id, actor: profile.actor, action: "service_create", details: parsed.data.title });
   }
   revalidatePath(`/${profile.username}`);

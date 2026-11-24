@@ -1,4 +1,3 @@
-import { Globe2, Mail, MapPin, Phone } from "lucide-react";
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
 import { CATALOG_PATH, HOME_PATH, type Locale } from "@/i18n/config";
@@ -78,22 +77,32 @@ export function SiteFooter({ locale, t, paths }: { locale: Locale; t: Dict; path
 
         <div>
           <p className="font-semibold text-gray-900 dark:text-white">{f.contact}</p>
+          {/* İkonsuz: mətnin özü nə olduğunu deyir. Hər sətir öz yerinə aparır. */}
           <ul className="mt-4 space-y-3 text-gray-600 dark:text-gray-400">
             <li>
-              <a href="tel:*0221" className="inline-flex items-center gap-2 font-semibold text-gray-900 transition hover:text-[var(--brand)] dark:text-white">
-                <Phone size={15} strokeWidth={1.8} aria-hidden /> *0221
+              <a href="tel:*0221" className="font-semibold text-gray-900 transition hover:text-[var(--brand)] dark:text-white">
+                *0221
               </a>
             </li>
             <li>
-              <a href="mailto:hello@karvan.az" className="inline-flex items-center gap-2 transition hover:text-gray-900 dark:hover:text-white">
-                <Mail size={15} strokeWidth={1.8} aria-hidden /> hello@karvan.az
+              <a href="mailto:hello@karvan.az" className="transition hover:text-gray-900 dark:hover:text-white">
+                hello@karvan.az
               </a>
             </li>
-            <li className="inline-flex items-center gap-2">
-              <MapPin size={15} strokeWidth={1.8} aria-hidden /> {f.city}
+            <li>
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(f.city)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition hover:text-gray-900 dark:hover:text-white"
+              >
+                {f.city}
+              </a>
             </li>
-            <li className="flex items-start gap-2">
-              <Globe2 size={15} strokeWidth={1.8} className="mt-0.5 shrink-0" aria-hidden /> {f.regions}
+            <li>
+              <Link href={CATALOG_PATH[locale]} className="transition hover:text-gray-900 dark:hover:text-white">
+                {f.regions}
+              </Link>
             </li>
           </ul>
         </div>

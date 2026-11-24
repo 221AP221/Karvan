@@ -34,23 +34,26 @@ export function Card({ title, children, actions }: { title?: string; children: R
   );
 }
 
+// Səhifələmə: keçid düymələri solda, sayğac sağda; çərçivəsiz, yalnız mətn.
 export function Pager({ page, pages, href }: { page: number; pages: number; href: (n: number) => string }) {
   if (pages <= 1) return null;
   return (
-    <nav className="mt-4 flex items-center justify-end gap-2 text-sm" aria-label="Səhifələr">
-      {page > 1 && (
-        <Link href={href(page - 1)} className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 hover:border-gray-500">
-          Əvvəlki
-        </Link>
-      )}
-      <span className="text-gray-500">
+    <nav className="mt-4 flex items-center justify-between gap-3 text-sm" aria-label="Səhifələr">
+      <span className="flex items-center gap-4">
+        {page > 1 && (
+          <Link href={href(page - 1)} className="font-medium text-[var(--brand)] transition hover:opacity-70">
+            Əvvəlki
+          </Link>
+        )}
+        {page < pages && (
+          <Link href={href(page + 1)} className="font-medium text-[var(--brand)] transition hover:opacity-70">
+            Növbəti
+          </Link>
+        )}
+      </span>
+      <span className="tabular-nums text-gray-500">
         {page} / {pages}
       </span>
-      {page < pages && (
-        <Link href={href(page + 1)} className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 hover:border-gray-500">
-          Növbəti
-        </Link>
-      )}
     </nav>
   );
 }

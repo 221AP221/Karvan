@@ -11,7 +11,7 @@ export const metadata: Metadata = { title: "Abunəlik" };
 
 const PLANS = [
   { key: "FREE", icon: Rocket, tagline: "Yeni başlayanlar üçün", features: ["Ayda 5 faktura", "5 xidmət", "Əsas analitika", "AI: ayda 10 sorğu"] },
-  { key: "PRO", icon: BadgeCheck, tagline: "Aktiv satanlar üçün", features: ["Təsdiqlənmiş hesab nişanı", "Ayda 100 faktura", "30 xidmət", "Karvan yazısı olmadan", "AI: ayda 200 sorğu"] },
+  { key: "PRO", icon: BadgeCheck, tagline: "Aktiv satanlar üçün", features: ["Təsdiqlənmiş hesab nişanı", "Ayda 100 faktura", "300 xidmət", "Karvan yazısı olmadan", "AI: ayda 200 sorğu"] },
   { key: "PRO_MAX", icon: Crown, tagline: "Studiyalar və komandalar üçün", features: ["Limitsiz faktura və xidmət", "Kataloqda önə çıxma", "5 komanda üzvü (sahib daxil)", "Excel hesabat", "Prioritet dəstək", "AI: ayda 1000 sorğu"] },
 ] as const;
 

@@ -325,7 +325,13 @@ export function LandingPage({ locale, t }: { locale: Locale; t: Dict }) {
           <div className="mx-auto max-w-6xl px-4">
             <SectionTitle eyebrow={t.steps.eyebrow} title={t.steps.title} />
             <div className="mt-16">
-              <StepsTimeline steps={t.steps.items.map((s, i) => ({ ...s, icon: <IconBadge icon={STEP_ICONS[i]} size="lg" /> }))} />
+              {/* Çərçivəsiz ikon: addım nömrəsi onsuz da nişan daşıyır, ikinci qutu artıq idi */}
+              <StepsTimeline
+                steps={t.steps.items.map((s, i) => {
+                  const Icon = STEP_ICONS[i];
+                  return { ...s, icon: <Icon size={30} strokeWidth={1.6} className="text-[var(--brand)]" aria-hidden /> };
+                })}
+              />
             </div>
           </div>
         </section>

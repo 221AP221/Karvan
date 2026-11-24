@@ -27,7 +27,11 @@ async function getProfile(username: string) {
     where: { username: username.toLowerCase() },
     include: {
       socialLinks: { orderBy: { position: "asc" } },
-      services: { where: { isActive: true, blocked: false }, orderBy: { position: "asc" } },
+      services: {
+        where: { isActive: true, blocked: false },
+        orderBy: { position: "asc" },
+        include: { gallery: { orderBy: { position: "asc" }, select: { id: true, url: true } } },
+      },
       portfolio: { orderBy: { position: "asc" } },
       reviews: { where: { hidden: false }, orderBy: { createdAt: "desc" }, take: 20, include: { service: { select: { title: true } } } },
       user: { select: { blockedAt: true, subscription: { select: { plan: true } } } },
@@ -363,7 +367,36 @@ export default async function ProfilePage({ params }: Props) {
                           <Clock size={14} strokeWidth={1.75} aria-hidden /> {formatDuration(service, t)}
                         </p>
                       )}
+                      {/* Ünvan: xəritə linki varsa birbaşa naviqasiyaya aparır */}
+                      {service.address && (
+                        <p className="mt-1 text-sm text-gray-500">
+                          {service.mapUrl ? (
+                            <a
+                              href={service.mapUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5 text-[var(--brand)] hover:underline"
+                            >
+                              <MapPin size={14} strokeWidth={1.75} aria-hidden /> {service.address}
+                            </a>
+                          ) : (
+                            <span className="inline-flex items-center gap-1.5">
+                              <MapPin size={14} strokeWidth={1.75} aria-hidden /> {service.address}
+                            </span>
+                          )}
+                        </p>
+                      )}
                       {service.description && <p className="mt-3 flex-1 text-sm text-gray-600">{service.description}</p>}
+                      {service.gallery.length > 0 && (
+                        <ul className="mt-3 flex gap-2 overflow-x-auto pb-1">
+                          {service.gallery.map((img) => (
+                            <li key={img.id} className="shrink-0">
+                              {/* eslint-disable-next-line @next/next/no-img-element -- /api/media-dan gələn şəkil */}
+                              <img src={img.url} alt="" loading="lazy" className="h-20 w-20 rounded-xl border border-gray-200 object-cover" />
+                            </li>
+                          ))}
+                        </ul>
+                      )}
                       <OrderForm
                         serviceId={service.id}
                         serviceTitle={service.title}

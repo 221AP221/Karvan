@@ -246,7 +246,7 @@ export const en: typeof az = {
           "Everything in Free",
           "Verified account badge",
           "100 invoices per month",
-          "30 services",
+          "300 services",
           "No Karvan branding",
           "AI: 200 requests per month",
         ],

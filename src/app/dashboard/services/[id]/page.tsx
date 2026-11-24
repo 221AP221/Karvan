@@ -5,7 +5,10 @@ import { ServiceForm } from "../ServiceForm";
 
 export default async function EditService({ params }: { params: Promise<{ id: string }> }) {
   const profile = await requirePageAccess("services");
-  const service = await db.service.findFirst({ where: { id: (await params).id, profileId: profile.id } });
+  const service = await db.service.findFirst({
+    where: { id: (await params).id, profileId: profile.id },
+    include: { gallery: { orderBy: { position: "asc" }, select: { url: true } } },
+  });
   if (!service) notFound();
 
   return (
@@ -30,6 +33,9 @@ export default async function EditService({ params }: { params: Promise<{ id: st
           location: service.location,
           depositPercent: service.depositPercent ? String(service.depositPercent) : "",
           cancelWindowHours: String(service.cancelWindowHours),
+          address: service.address ?? "",
+          mapUrl: service.mapUrl ?? "",
+          gallery: service.gallery.map((g) => g.url),
         }}
       />
     </div>

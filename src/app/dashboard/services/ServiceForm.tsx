@@ -1,8 +1,9 @@
 "use client";
 
-import { ChevronDown, LoaderCircle, Sparkles } from "lucide-react";
+import { ChevronDown, LoaderCircle, MapPin, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { ActionForm } from "@/components/ActionForm";
+import { GalleryUpload } from "@/components/GalleryUpload";
 import { ImageUpload } from "@/components/ImageUpload";
 import { Card, Field, inputClass } from "@/components/ui";
 import { callAi } from "@/lib/ai-client";
@@ -28,6 +29,9 @@ export type ServiceValues = {
   location: "SELLER" | "CUSTOMER" | "ONLINE";
   depositPercent: string;
   cancelWindowHours: string;
+  address: string;
+  mapUrl: string;
+  gallery: string[];
 };
 
 const LOCATIONS = [
@@ -54,8 +58,11 @@ export function ServiceForm({ service }: { service: ServiceValues }) {
   const [category, setCategory] = useState(service.category);
   const [customCategory, setCustomCategory] = useState(service.customCategory);
   const [image, setImage] = useState(service.imageUrl);
+  const [gallery, setGallery] = useState(service.gallery);
   const [description, setDescription] = useState(service.description);
   const [priceType, setPriceType] = useState(service.priceType);
+  const [location, setLocation] = useState(service.location);
+  const [address, setAddress] = useState(service.address);
   const [variants, setVariants] = useState<string[]>([]);
   const [ai, setAi] = useState<{ busy?: boolean; error?: string }>({});
 
@@ -251,7 +258,7 @@ export function ServiceForm({ service }: { service: ServiceValues }) {
 
             <label className="block">
               <span className="mb-1 block text-sm font-medium text-gray-700">Xidmətin məkanı</span>
-              <Select name="location" defaultValue={service.location}>
+              <Select name="location" value={location} onChange={(e) => setLocation(e.target.value as ServiceValues["location"])}>
                 {LOCATIONS.map((l) => (
                   <option key={l.value} value={l.value}>
                     {l.label}
@@ -260,6 +267,48 @@ export function ServiceForm({ service }: { service: ServiceValues }) {
               </Select>
               <p className="mt-1.5 text-xs text-gray-500">“Müştərinin ünvanında” seçsəniz, sifarişdə ünvan soruşulur və yol buferi tətbiq olunur.</p>
             </label>
+          </div>
+
+          {/* Ünvan yalnız xidmət ustanın məkanında göstəriləndə mənalıdır */}
+          {location === "SELLER" && (
+            <div className="grid gap-4 lg:grid-cols-2">
+              <label className="block">
+                <span className="mb-1 block text-sm font-medium text-gray-700">Ünvan</span>
+                <input
+                  name="address"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  maxLength={200}
+                  placeholder="Nizami küç. 12, Bakı"
+                  className={inputClass}
+                />
+                <span className="mt-1 block text-xs text-gray-500">Müştəri səhifənizdə bu ünvanı görəcək.</span>
+              </label>
+
+              <label className="block">
+                <span className="mb-1 flex items-center justify-between gap-2">
+                  <span className="text-sm font-medium text-gray-700">Xəritə linki</span>
+                  <a
+                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address || "Bakı")}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-xs font-medium text-[var(--brand)] hover:underline"
+                  >
+                    <MapPin size={13} aria-hidden /> Xəritədə seç
+                  </a>
+                </span>
+                <input name="mapUrl" type="url" defaultValue={service.mapUrl} placeholder="https://maps.app.goo.gl/..." className={inputClass} />
+                <span className="mt-1 block text-xs text-gray-500">Xəritədə yeri tapıb linki kopyalayın — müştəri birbaşa naviqasiyaya keçsin.</span>
+              </label>
+            </div>
+          )}
+
+          <div className="border-t border-gray-100 pt-5">
+            <p className="mb-1.5 text-sm font-medium text-gray-700">
+              Qalereya <span className="font-normal text-gray-400">(könüllü)</span>
+            </p>
+            <p className="mb-3 text-xs text-gray-500">İşinizdən bir neçə nümunə: xidmətin səhifəsində slayd kimi göstərilir.</p>
+            <GalleryUpload name="gallery" value={gallery} onChange={setGallery} />
           </div>
 
           <fieldset className="border-t border-gray-100 pt-5">

@@ -9,7 +9,10 @@ import { db } from "@/lib/db";
 import { effectiveStatus } from "@/lib/invoice-status";
 import { formatMoney } from "@/lib/money";
 import { whatsappShareLink } from "@/lib/notify";
+import { Pager, hrefWith } from "@/components/ui";
 import { type SearchParams, dayEnd, dayStart, param } from "@/lib/search-params";
+
+const PAGE_SIZE = 20;
 import { rejectOrder } from "../actions";
 import { ApproveForm } from "./ApproveForm";
 
@@ -36,6 +39,7 @@ export default async function Orders({ searchParams }: { searchParams: SearchPar
   const serviceId = param(sp, "service");
   const from = dayStart(param(sp, "from"));
   const to = dayEnd(param(sp, "to"));
+  const page = Math.max(1, Number(sp.page) || 1);
 
   const where: Prisma.OrderWhereInput = {
     profileId: profile.id,
@@ -55,17 +59,19 @@ export default async function Orders({ searchParams }: { searchParams: SearchPar
   todayStart.setHours(0, 0, 0, 0);
   const todayEnd = new Date(todayStart.getTime() + 86_400_000);
 
-  const [orders, services, counts, todayOrders] = await Promise.all([
-    // Yalnız ekranda işlənən sahələr: 100 sifarişin bütün sütunlarını daşımağa ehtiyac yoxdur
+  const [orders, total, services, counts, todayOrders] = await Promise.all([
+    // Yalnız ekranda işlənən sahələr: bütün sütunları daşımağa ehtiyac yoxdur
     db.order.findMany({
       where,
       orderBy: { createdAt: "desc" },
-      take: 100,
+      skip: (page - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
       include: {
         service: { select: { title: true, amountQepik: true, currency: true } },
         invoice: { select: { id: true, number: true, totalQepik: true, currency: true, status: true, dueAt: true } },
       },
     }),
+    db.order.count({ where }),
     db.service.findMany({ where: { profileId: profile.id }, select: { id: true, title: true }, orderBy: { position: "asc" } }),
     db.order.groupBy({ by: ["status"], where: { profileId: profile.id }, _count: true }),
     // Gündəlik görünüş yalnız təqvim aktiv olanda lazımdır (FR-REZ-09)
@@ -88,6 +94,8 @@ export default async function Orders({ searchParams }: { searchParams: SearchPar
   ]);
   const count = (s: OrderStatus) => counts.find((c) => c.status === s)?._count ?? 0;
   const hhmm = (d: Date) => d.toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" });
+  const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const pageHref = (n: number) => hrefWith("/dashboard/orders", sp, { page: n > 1 ? String(n) : null });
 
   return (
     <div>
@@ -142,7 +150,7 @@ export default async function Orders({ searchParams }: { searchParams: SearchPar
 
       <FilterBar
         labels={dict.common}
-        total={orders.length}
+        total={total}
         fields={[
           { type: "search", name: "q", placeholder: t.search },
           { type: "select", name: "status", label: t.status, options: (Object.keys(ORDER_STYLE) as OrderStatus[]).map((s) => ({ value: s, label: statusLabel(s, t) })) },
@@ -220,6 +228,7 @@ export default async function Orders({ searchParams }: { searchParams: SearchPar
           ))}
         </ul>
       )}
+      <Pager page={page} pages={pages} href={pageHref} />
     </div>
   );
 }

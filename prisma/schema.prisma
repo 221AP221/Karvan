@@ -262,6 +262,11 @@ model Service {
   // müddətidir, bu isə təqvimdə tutulan vaxtdır (FR-REZ-02, FR-REZ-07)
   durationMin    Int?
   location       ServiceLocation @default(ONLINE)
+  // Xidmətin göstərildiyi ünvan və xəritə linki (məkan "ustanın məkanı" olanda göstərilir)
+  address        String?
+  mapUrl         String?
+  // Əsas şəkildən əlavə qalereya; `imageUrl` kart üçün üz şəkli olaraq qalır
+  gallery        ServiceImage[]
   // Beh (FR-BEH-01/02/05): null = beh tələb olunmur. Faiz xidmət səviyyəsində təyin olunur.
   depositPercent    Int?
   cancelWindowHours Int @default(24)
@@ -303,6 +308,17 @@ model Order {
   @@index([profileId, status])
   @@index([profileId, createdAt])
   @@index([profileId, scheduledAt])
+}
+
+// Xidmətin qalereya şəkilləri: bir xidmətə bir neçə nümunə
+model ServiceImage {
+  id        String  @id @default(cuid())
+  serviceId String
+  service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  url       String
+  position  Int     @default(0)
+
+  @@index([serviceId, position])
 }
 
 // Ustanın sifariş olmadan bağladığı vaxt və ya tam gün (FR-REZ-06)
