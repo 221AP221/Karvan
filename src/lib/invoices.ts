@@ -19,6 +19,13 @@ export type NewInvoice = {
   paymentMethod?: PaymentMethod;
   dueAt?: Date | null;
   note?: string | null;
+  /**
+   * Limit dolubsa nə baş versin (FR-FAK-16, BRU-28). "throw" (defolt) — sifariş axını üçün:
+   * sabit qiymətli sifariş sorğuya çevrilsin (FR-SIF-06), müştəriyə göndərilə bilməyən DRAFT
+   * faktura göstərilməsin (/i/ səhifəsi DRAFT-ı 404 verir). "draft" — panelin özündə əl ilə
+   * yaradılan faktura üçün: iş itmir, qaralama kimi saxlanılır və limit sayğacına daxil edilmir.
+   */
+  onLimit?: "throw" | "draft";
 };
 
 export function invoiceUrl(id: string) {
@@ -35,11 +42,13 @@ export async function createInvoice(input: NewInvoice) {
     const subscription = await tx.subscription.findUnique({ where: { userId: profile.userId } });
     const limits = PLAN_LIMITS[subscription?.plan ?? "FREE"];
 
-    // Limit yaradılmış fakturaların sayğacına baxır: faktura silinəndə limit geri qayıtmır
+    // Limit yalnız göndərilmiş fakturaların sayğacına baxır (BRU-01): qaralama sayılmır,
+    // silinmiş faktura isə limiti geri qaytarmır.
     const month = startOfMonth();
     const sameMonth = profile.invoiceQuotaMonth !== null && new Date(profile.invoiceQuotaMonth).getTime() === month.getTime();
     const usedThisMonth = sameMonth ? profile.invoiceQuotaUsed : 0;
-    if (usedThisMonth >= limits.invoicesPerMonth) {
+    const overLimit = usedThisMonth >= limits.invoicesPerMonth;
+    if (overLimit && input.onLimit !== "draft") {
       throw new InvoiceLimitError(
         `Planınızda ayda ${limits.invoicesPerMonth} faktura yaratmaq olar. Daha çoxu üçün yuxarı plana keçin.`,
       );
@@ -49,7 +58,7 @@ export async function createInvoice(input: NewInvoice) {
     const seq = profile.invoiceSeq + 1;
     await tx.profile.update({
       where: { id: profile.id },
-      data: { invoiceSeq: seq, invoiceQuotaMonth: month, invoiceQuotaUsed: usedThisMonth + 1 },
+      data: overLimit ? { invoiceSeq: seq } : { invoiceSeq: seq, invoiceQuotaMonth: month, invoiceQuotaUsed: usedThisMonth + 1 },
     });
 
     return tx.invoice.create({
@@ -66,7 +75,8 @@ export async function createInvoice(input: NewInvoice) {
         currency: input.currency ?? "AZN",
         dueAt: input.dueAt,
         note: input.note,
-        status: "SENT",
+        // Limit dolubsa qaralama kimi qalır (FR-FAK-16); göndərmək üçün bax sendDraftInvoice
+        status: overLimit ? "DRAFT" : "SENT",
         items: { create: input.items.map((item, position) => ({ ...item, position })) },
       },
     });
@@ -91,4 +101,35 @@ export async function invoicesUsedThisMonth(profileId: string) {
   const p = await db.profile.findUnique({ where: { id: profileId }, select: { invoiceQuotaMonth: true, invoiceQuotaUsed: true } });
   if (!p?.invoiceQuotaMonth) return 0;
   return p.invoiceQuotaMonth.getTime() === startOfMonth().getTime() ? p.invoiceQuotaUsed : 0;
+}
+
+/**
+ * Limit dolduğu üçün qaralama qalmış fakturanı göndərməyə çalışır (FR-FAK-17): usta ödənişli
+ * tarifə keçib və ya yeni ay başlayıbsa limitə uyğun gəlir və faktura SENT olur; əks halda
+ * InvoiceLimitError atılır.
+ */
+export async function sendDraftInvoice(profileId: string, invoiceId: string) {
+  return db.$transaction(async (tx) => {
+    const invoice = await tx.invoice.findFirst({ where: { id: invoiceId, profileId, status: "DRAFT" } });
+    if (!invoice) throw new Error("Qaralama faktura tapılmadı");
+
+    const [profile] = await tx.$queryRaw<{ id: string; userId: string; invoiceQuotaMonth: Date | null; invoiceQuotaUsed: number }[]>`
+      SELECT id, "userId", "invoiceQuotaMonth", "invoiceQuotaUsed" FROM "Profile" WHERE id = ${profileId} FOR UPDATE`;
+    if (!profile) throw new Error("Profil tapılmadı");
+
+    const subscription = await tx.subscription.findUnique({ where: { userId: profile.userId } });
+    const limits = PLAN_LIMITS[subscription?.plan ?? "FREE"];
+
+    const month = startOfMonth();
+    const sameMonth = profile.invoiceQuotaMonth !== null && new Date(profile.invoiceQuotaMonth).getTime() === month.getTime();
+    const usedThisMonth = sameMonth ? profile.invoiceQuotaUsed : 0;
+    if (usedThisMonth >= limits.invoicesPerMonth) {
+      throw new InvoiceLimitError(
+        `Planınızda ayda ${limits.invoicesPerMonth} faktura yaratmaq olar. Daha çoxu üçün yuxarı plana keçin.`,
+      );
+    }
+
+    await tx.profile.update({ where: { id: profile.id }, data: { invoiceQuotaMonth: month, invoiceQuotaUsed: usedThisMonth + 1 } });
+    return tx.invoice.update({ where: { id: invoice.id }, data: { status: "SENT" } });
+  });
 }

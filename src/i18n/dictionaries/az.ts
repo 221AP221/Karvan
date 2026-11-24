@@ -232,7 +232,7 @@ export const az = {
         features: [
           "Link-in-bio səhifə",
           "Limitsiz sifariş",
-          "Ayda 5 faktura",
+          "Ayda 25 faktura",
           "5 xidmət",
           "PDF faktura və QR kod",
           "Əsas analitika",
@@ -275,7 +275,7 @@ export const az = {
     items: [
       {
         q: "Karvan pulsuzdurmu?",
-        a: "Bəli. Pulsuz planda səhifə, limitsiz sifariş, ayda 5 faktura və 5 xidmət var. Kart məlumatı tələb olunmur.",
+        a: "Bəli. Pulsuz planda səhifə, limitsiz sifariş, ayda 25 faktura və 5 xidmət var. Kart məlumatı tələb olunmur.",
       },
       {
         q: "Müştəri pulu kimə ödəyir?",
@@ -356,6 +356,8 @@ export const az = {
       pendingOrders: "Təsdiq gözləyən sorğu",
       invoiceLimit: "Faktura limiti",
       unlimited: "Limitsiz",
+      upgradeNudge: "Bu ay {used} / {limit} fakturadan istifadə etmisiniz. Daha çoxu üçün planı yüksəldin.",
+      upgradeCta: "Planı yüksəlt",
       yourPage: "Səhifəniz",
       bioHint: "Bu linki sosial şəbəkə bio-nuza qoyun.",
       recentInvoices: "Son fakturalar",
@@ -746,7 +748,7 @@ export const az = {
     },
     signup: {
       title: "Hesab yaradın",
-      text: "Pulsuz plan: səhifə, limitsiz sifariş və ayda 5 faktura",
+      text: "Pulsuz plan: səhifə, limitsiz sifariş və ayda 25 faktura",
       steps: ["Şəxsi məlumat", "Hesab"],
       firstName: "Ad",
       lastName: "Soyad",

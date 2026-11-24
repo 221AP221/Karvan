@@ -15,7 +15,8 @@ export const PLAN_LIMITS: Record<
     teamMembers: number;
   }
 > = {
-  FREE: { invoicesPerMonth: 5, services: 5, aiRequestsPerMonth: 10, onlinePayments: false, branding: true, verified: false, featured: false, reports: false, teamMembers: 1 },
+  // Limit 5-dən 25-ə qaldırılıb (BRD §31 Q-08) — dolduqda faktura silinmir, qaralama kimi qalır (FR-FAK-16)
+  FREE: { invoicesPerMonth: 25, services: 5, aiRequestsPerMonth: 10, onlinePayments: false, branding: true, verified: false, featured: false, reports: false, teamMembers: 1 },
   PRO: { invoicesPerMonth: 100, services: 30, aiRequestsPerMonth: 200, onlinePayments: true, branding: false, verified: true, featured: false, reports: false, teamMembers: 1 },
   PRO_MAX: { invoicesPerMonth: Infinity, services: Infinity, aiRequestsPerMonth: 1000, onlinePayments: true, branding: false, verified: true, featured: true, reports: true, teamMembers: 5 },
 };

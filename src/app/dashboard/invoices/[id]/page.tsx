@@ -8,7 +8,7 @@ import { effectiveStatus } from "@/lib/invoice-status";
 import { invoiceUrl } from "@/lib/invoices";
 import { formatMoney } from "@/lib/money";
 import { invoiceShareText, whatsappShareLink } from "@/lib/notify";
-import { cancelInvoice, deleteInvoice, markInvoicePaid, reopenInvoice } from "../../actions";
+import { cancelInvoice, deleteInvoice, markInvoicePaid, reopenInvoice, sendDraftInvoiceAction } from "../../actions";
 import { CopyLink, DeleteInvoice, ReminderDraft } from "./client";
 
 const date = (d: Date) => d.toLocaleDateString("az-AZ", { day: "2-digit", month: "2-digit", year: "numeric" });
@@ -39,6 +39,20 @@ export default async function InvoiceDetail({ params }: { params: Promise<{ id: 
           <StatusBadge status={status} />
         </div>
       </div>
+
+      {invoice.status === "DRAFT" && (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4">
+          <p className="text-sm text-amber-900">
+            Bu ay faktura limitiniz dolduğu üçün faktura qaralama olaraq saxlanılıb — silinməyib. Plan yüksəldikdə və ya yeni ay başlayanda göndərə bilərsiniz.
+          </p>
+          <div className="flex gap-2">
+            <form action={sendDraftInvoiceAction.bind(null, invoice.id)}>
+              <button className={buttonClass}>Göndərməyə cəhd et</button>
+            </form>
+            <Link href="/dashboard/settings" className={secondaryButtonClass}>Planı yüksəlt</Link>
+          </div>
+        </div>
+      )}
 
       {invoice.status === "CLAIMED_PAID" && (
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-blue-200 bg-blue-50 p-4">
@@ -90,18 +104,20 @@ export default async function InvoiceDetail({ params }: { params: Promise<{ id: 
         </Card>
 
         <div className="flex flex-col gap-4">
-          <Card title="Göndər">
-            <div className="flex flex-col gap-2">
-              {invoice.customerPhone && (
-                <a href={whatsappShareLink(invoice.customerPhone, shareText)} target="_blank" rel="noopener noreferrer" className={buttonClass}>
-                  WhatsApp ilə göndər
-                </a>
-              )}
-              <CopyLink url={url} />
-              <a href={`/api/invoices/${invoice.publicId}/pdf`} target="_blank" className={secondaryButtonClass}>PDF-ə bax</a>
-              <a href={url} target="_blank" className="text-center text-sm text-gray-500 hover:underline">Müştəri səhifəsi ↗</a>
-            </div>
-          </Card>
+          {invoice.status !== "DRAFT" && (
+            <Card title="Göndər">
+              <div className="flex flex-col gap-2">
+                {invoice.customerPhone && (
+                  <a href={whatsappShareLink(invoice.customerPhone, shareText)} target="_blank" rel="noopener noreferrer" className={buttonClass}>
+                    WhatsApp ilə göndər
+                  </a>
+                )}
+                <CopyLink url={url} />
+                <a href={`/api/invoices/${invoice.publicId}/pdf`} target="_blank" className={secondaryButtonClass}>PDF-ə bax</a>
+                <a href={url} target="_blank" className="text-center text-sm text-gray-500 hover:underline">Müştəri səhifəsi ↗</a>
+              </div>
+            </Card>
+          )}
 
           {open && (
             <Card title="Xatırlatma">

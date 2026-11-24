@@ -11,7 +11,7 @@ import { notify } from "@/lib/notifications";
 import { refreshRating } from "@/lib/reviews";
 import { deleteMediaByUrl, ownedMediaUrl } from "@/lib/media";
 import { PLAN_LIMITS } from "@/lib/plans";
-import { InvoiceLimitError, createInvoice, invoiceUrl } from "@/lib/invoices";
+import { InvoiceLimitError, createInvoice, invoiceUrl, sendDraftInvoice } from "@/lib/invoices";
 import { aznToQepik, formatMoney, isCurrency } from "@/lib/money";
 import { sendEmail } from "@/lib/notify";
 import { SERVICE_CATEGORIES } from "@/lib/services";
@@ -132,6 +132,7 @@ export async function approveOrder(_: FormState, form: FormData): Promise<FormSt
       currency: order.service?.currency ?? "AZN",
       dueAt: new Date(Date.now() + dueDays * 86_400_000),
       note: order.note,
+      onLimit: "draft",
     });
     invoiceId = invoice.id;
   } catch (error) {
@@ -192,20 +193,41 @@ export async function createInvoiceAction(_: FormState, form: FormData): Promise
 
   let invoiceId: string;
   try {
+    // Panelin özündə əl ilə yaradılan faktura: limit dolubsa iş itmir, qaralama kimi saxlanılır (FR-FAK-16)
     const invoice = await createInvoice({
       ...rest,
       profileId: profile.id,
       dueAt: dueDate,
       currency,
       items: items.map((i) => ({ title: i.title, quantity: i.quantity, unitQepik: aznToQepik(i.unitPrice) })),
+      onLimit: "draft",
     });
     invoiceId = invoice.id;
-    await logActivity({ userId: profile.userId, email: profile.user.email, profileId: profile.id, actor: profile.actor, action: "invoice_create", details: `${invoice.number} · ${rest.customerName}` });
+    await logActivity({
+      userId: profile.userId,
+      email: profile.user.email,
+      profileId: profile.id,
+      actor: profile.actor,
+      action: "invoice_create",
+      details: `${invoice.number} · ${rest.customerName}${invoice.status === "DRAFT" ? " · limit dolub, qaralama" : ""}`,
+    });
   } catch (error) {
     if (error instanceof InvoiceLimitError) return { error: error.message };
     throw error;
   }
   redirect(`/dashboard/invoices/${invoiceId}`);
+}
+
+/** FR-FAK-17: qaralama qalmış faktura üçün göndərməyə cəhd (plan yüksəlib və ya yeni ay başlayıbsa). */
+export async function sendDraftInvoiceAction(id: string) {
+  const profile = await requirePermission("invoices");
+  try {
+    await sendDraftInvoice(profile.id, id);
+    await logActivity({ userId: profile.userId, email: profile.user.email, profileId: profile.id, actor: profile.actor, action: "invoice_send_draft", details: id });
+  } catch (error) {
+    if (!(error instanceof InvoiceLimitError)) throw error;
+  }
+  revalidatePath(`/dashboard/invoices/${id}`);
 }
 
 export async function markInvoicePaid(id: string) {

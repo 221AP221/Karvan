@@ -228,7 +228,7 @@ export const tr: typeof az = {
         features: [
           "Link-in-bio sayfası",
           "Sınırsız sipariş",
-          "Ayda 5 fatura",
+          "Ayda 25 fatura",
           "5 hizmet",
           "PDF fatura ve QR kod",
           "Temel analitik",
@@ -271,7 +271,7 @@ export const tr: typeof az = {
     items: [
       {
         q: "Karvan ücretsiz mi?",
-        a: "Evet. Ücretsiz planda sayfa, sınırsız sipariş, ayda 5 fatura ve 5 hizmet var. Kart bilgisi istenmez.",
+        a: "Evet. Ücretsiz planda sayfa, sınırsız sipariş, ayda 25 fatura ve 5 hizmet var. Kart bilgisi istenmez.",
       },
       {
         q: "Müşteri parayı kime öder?",
@@ -352,6 +352,8 @@ export const tr: typeof az = {
       pendingOrders: "Onay bekleyen talep",
       invoiceLimit: "Fatura limiti",
       unlimited: "Limitsiz",
+      upgradeNudge: "Bu ay {used} / {limit} faturayı kullandınız. Daha fazlası için planı yükseltin.",
+      upgradeCta: "Planı yükselt",
       yourPage: "Sayfanız",
       bioHint: "Bu bağlantıyı sosyal medya biyografinize ekleyin.",
       recentInvoices: "Son faturalar",
@@ -743,7 +745,7 @@ export const tr: typeof az = {
     },
     signup: {
       title: "Hesap oluşturun",
-      text: "Ücretsiz plan: sayfa, sınırsız sipariş ve ayda 5 fatura",
+      text: "Ücretsiz plan: sayfa, sınırsız sipariş ve ayda 25 fatura",
       steps: ["Kişisel bilgiler", "Hesap"],
       firstName: "Ad",
       lastName: "Soyad",

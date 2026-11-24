@@ -231,7 +231,7 @@ export const en: typeof az = {
         features: [
           "Link-in-bio page",
           "Unlimited orders",
-          "5 invoices per month",
+          "25 invoices per month",
           "5 services",
           "PDF invoices and QR code",
           "Basic analytics",
@@ -274,7 +274,7 @@ export const en: typeof az = {
     items: [
       {
         q: "Is Karvan free?",
-        a: "Yes. The free plan includes your page, unlimited orders, 5 invoices a month and 5 services. No card required.",
+        a: "Yes. The free plan includes your page, unlimited orders, 25 invoices a month and 5 services. No card required.",
       },
       {
         q: "Who do customers pay?",
@@ -355,6 +355,8 @@ export const en: typeof az = {
       pendingOrders: "Requests awaiting approval",
       invoiceLimit: "Invoice limit",
       unlimited: "Unlimited",
+      upgradeNudge: "You've used {used} of {limit} invoices this month. Upgrade for more.",
+      upgradeCta: "Upgrade plan",
       yourPage: "Your page",
       bioHint: "Put this link in your social media bio.",
       recentInvoices: "Recent invoices",
@@ -745,7 +747,7 @@ export const en: typeof az = {
     },
     signup: {
       title: "Create your account",
-      text: "Free plan: your page, unlimited orders and 5 invoices a month",
+      text: "Free plan: your page, unlimited orders and 25 invoices a month",
       steps: ["Personal details", "Account"],
       firstName: "First name",
       lastName: "Last name",

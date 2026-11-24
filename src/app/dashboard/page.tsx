@@ -67,6 +67,16 @@ export default async function Dashboard() {
         <Stat label={t.invoiceLimit} value={limit === Infinity ? t.unlimited : `${usedThisMonth} / ${limit}`} />
       </section>
 
+      {/* FR-FAK-18: limitin 80%-inə çatanda yüksəltmə təklifi */}
+      {limit !== Infinity && usedThisMonth >= limit * 0.8 && (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[var(--brand)]/30 bg-[var(--brand)]/5 p-4">
+          <p className="text-sm text-gray-700">
+            {t.upgradeNudge.replace("{used}", String(usedThisMonth)).replace("{limit}", String(limit))}
+          </p>
+          <Link href="/dashboard/settings" className={buttonClass}>{t.upgradeCta}</Link>
+        </div>
+      )}
+
       <Card title={t.yourPage}>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <a href={pageUrl} target="_blank" className="font-mono text-sm text-[var(--brand)] hover:underline">{pageUrl}</a>
