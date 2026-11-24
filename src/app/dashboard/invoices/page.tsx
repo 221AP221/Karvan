@@ -94,10 +94,10 @@ export default async function Invoices({ searchParams }: { searchParams: SearchP
             key={k}
             href={status === k ? "/dashboard/invoices" : `/dashboard/invoices?status=${k}`}
             scroll={false}
-            className={`rounded-2xl border bg-white p-4 transition hover:border-[var(--brand)] ${status === k ? "border-[var(--brand)] ring-2 ring-[var(--brand)]/15" : "border-gray-200"}`}
+            className={`flex h-full flex-col rounded-2xl border bg-white p-4 transition hover:border-[var(--brand)] ${status === k ? "border-[var(--brand)] ring-2 ring-[var(--brand)]/15" : "border-gray-200"}`}
           >
-            <p className="text-xs text-gray-500">{STATUS_FILTERS[k].label}</p>
-            <p className={`mt-1 text-2xl font-semibold ${k === "overdue" && counts[k] ? "text-red-600" : ""}`}>{counts[k]}</p>
+            <p className="min-h-[2rem] text-xs leading-4 text-gray-500">{STATUS_FILTERS[k].label}</p>
+            <p className={`mt-auto pt-1 text-2xl font-semibold ${k === "overdue" && counts[k] ? "text-red-600" : ""}`}>{counts[k]}</p>
           </Link>
         ))}
       </div>

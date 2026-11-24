@@ -143,10 +143,11 @@ export default async function Dashboard() {
 function Stat({ label, value, href }: { label: string; value: string; href?: string }) {
   const body = (
     <>
-      <p className="text-xs text-gray-500">{label}</p>
-      <p className="mt-1 text-lg font-semibold">{value}</p>
+      {/* Başlıq iki sətrə düşə bilər: rəqəm aşağı itələnir ki, bütün kartlarda eyni xəttə düşsün */}
+      <p className="min-h-[2rem] text-xs leading-4 text-gray-500">{label}</p>
+      <p className="mt-auto pt-1 text-lg font-semibold">{value}</p>
     </>
   );
-  const className = "rounded-2xl border border-gray-200 bg-white p-4";
+  const className = "flex h-full flex-col rounded-2xl border border-gray-200 bg-white p-4";
   return href ? <Link href={href} className={`${className} hover:border-[var(--brand)]`}>{body}</Link> : <div className={className}>{body}</div>;
 }

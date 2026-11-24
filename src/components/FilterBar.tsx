@@ -9,8 +9,9 @@ export type FilterField =
   | { type: "select"; name: string; label: string; options: { value: string; label: string }[] }
   | { type: "date"; name: string; label: string };
 
+// "Maye şüşə": sərhəd yox, yarımşəffaf fon və blur; fokusda yalnız incə parıltı
 const control =
-  "h-10 rounded-xl border border-gray-200 bg-white text-sm outline-none transition focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/15";
+  "h-10 rounded-xl border-0 bg-white/55 text-sm shadow-[inset_0_1px_0_rgba(255,255,255,0.65)] outline-none backdrop-blur-xl transition hover:bg-white/75 focus:bg-white/85 focus:ring-2 focus:ring-[var(--brand)]/20";
 
 // Filtrlər URL-də saxlanılır: səhifə yenilənəndə və ya link paylaşılanda itmir.
 // `labels` verilməyəndə Azərbaycan dili işlədilir (admin panel hələ AZ-dir)
@@ -43,7 +44,7 @@ export function FilterBar({
   const active = fields.some((f) => params.get(f.name));
 
   return (
-    <div className="mb-5 flex flex-col gap-3 rounded-2xl border border-gray-200 bg-white p-3">
+    <div className="mb-5 flex flex-col gap-3 rounded-2xl bg-gradient-to-b from-white/70 to-white/40 p-3 shadow-[0_1px_0_0_rgba(255,255,255,0.7)_inset,0_10px_30px_-18px_rgba(17,24,39,0.35)] backdrop-blur-xl">
       {search && (
         <label className="relative block">
           <Search size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" aria-hidden />
