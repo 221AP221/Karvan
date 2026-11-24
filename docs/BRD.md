@@ -41,7 +41,8 @@ Bu sənəd **nə** tələb olunduğunu müəyyən edir, **necə** reallaşdırı
 | 1.0 | 2026-08 | PRD — ilkin məhsul konsepti | Məhsul | Əvəzlənib |
 | **2.0** | **2026-11-03** | **BABOK strukturuna keçid: tələb səviyyələri ayrıldı, biznes əsaslandırması, izlənilənlik matrisi, risk reyestri, UAT planı, keçid tələbləri və dəyişiklik idarəetməsi əlavə olundu** | Biznes analitikası | Əvəzlənib |
 | **2.1** | **2026-11-05** | **Rəylər və reytinq (FR-REY), bildirişlər (FR-BLD-05…07), Pro Max komanda üzvləri (FR-KMD) və rol-icazə matrisi əlavə olundu; panel çoxdilli edildi** | Biznes analitikası | Əvəzlənib |
-| **2.2** | **2026-11-19** | **5 sahəli paralel audit (təhlükəsizlik, məlumat modeli, performans, UX/i18n, testlər) və tapılan qüsurların düzəlişi: icazə matrisi API-lərdə, komanda dəvətində yarış şərti, sandbox açarı, hesaba bağlı giriş limiti, ictimai faktura səhifəsinin 4 dildə edilməsi (NFR-SEC-11…15, FR-ODN-07…08)** | **Biznes analitikası** | **Cari baseline** |
+| **2.2** | **2026-11-19** | **5 sahəli paralel audit (təhlükəsizlik, məlumat modeli, performans, UX/i18n, testlər) və tapılan qüsurların düzəlişi: icazə matrisi API-lərdə, komanda dəvətində yarış şərti, sandbox açarı, hesaba bağlı giriş limiti, ictimai faktura səhifəsinin 4 dildə edilməsi (NFR-SEC-11…15, FR-ODN-07…08)** | **Biznes analitikası** | Əvəzlənib |
+| **2.3** | **2026-11-24** | **Rezervasiya/ödəniş/tarifləndirmə üzrə yeni məhsul qərarları təsbit edildi: pulsuz tarif faktura limiti 5→25 və yumşaq blok (FR-FAK-14…17, BRU-01 yeniləndi); usta-merchant ödəniş modeli və Dövlət Vergi Xidməti inteqrasiyası qərarı (FR-ODN-09…17, IR-06); beh mexanizmi (FR-BEH-01…05); rezervasiya və təqvim modulu (FR-REZ-01…11); yeni biznes qaydaları (BRU-24…28) və risklər (RSK-15…19); yol xəritəsi (§29) və açıq suallar/qərar jurnalı (§31) yeniləndi** | **Biznes analitikası** | **Cari baseline** |
 
 ### 0.4 Təsdiq və imza
 
@@ -210,8 +211,10 @@ Mövcud alternativlər bu zəncirin yalnız bir həlqəsini örtür. Linktree ti
 | İ-08 | Monetizasiya və abunəlik | Yoxdur | Freemium + aqreqator | Böyük | FR-ABN-* |
 | İ-09 | Əməliyyat nəzarəti və dəstək | Yoxdur | Admin panel, jurnal, moderasiya | Böyük | FR-ADM-* |
 | İ-10 | Regional genişlənmə hazırlığı | Yoxdur | 4 dil, ölkə kodları, valyutalar | Orta | FR-DIL-* |
-| İ-11 | Müştərinin onlayn kart ödənişi | Yoxdur | Faktura üzrə onlayn ödəniş | **Açıq** | v1.2 (§29) |
+| İ-11 | Müştərinin onlayn kart ödənişi | Yoxdur | Usta-merchant modeli ilə ödəniş linki, avtomatik təsdiq | Qərar verilib — asılı | v1.2 (§29), FR-ODN-09…17 |
 | İ-12 | Avtomatik bildiriş | Yoxdur | E-poçt / SMS / push | **Açıq** | v1.1 (§29) |
+| İ-13 | Rezervasiya və vaxt idarəetməsi | Yoxdur / yazışmada razılaşma | Slot təqvimi + sorğu rejimi, bufer, məkan tipi | Qərar verilib — asılılıq yoxdur | FR-REZ-* |
+| İ-14 | Beh (ilkin ödəniş) tələbi | Yoxdur / "razılaşma ilə" | Xidmət səviyyəsində beh faizi və ləğv pəncərəsi | Qərar verilib — asılı | FR-BEH-*, İ-11-dən asılı |
 
 ### 4.3 Təsirlənən biznes sahələri
 
@@ -386,20 +389,23 @@ Kəsik xətlər iki şeyi bildirir: hələ reallaşdırılmamış axını (e-po�
 | E-12 | Çoxdillilik və görünüş | 4 dil, qaranlıq rejim | FR-DIL |
 | E-13 | SEO | Metadata, strukturlu məlumat, sitemap | FR-SEO |
 | E-14 | Bildirişlər | WhatsApp linki ✅, avtomatik kanallar 🟡 | FR-BLD |
+| E-15 | Rezervasiya və təqvim | Slot hesablaması, usta gündəlik görünüşü, bufer, məkan tipi | FR-REZ |
+| E-16 | Beh (ilkin ödəniş) | Xidmət səviyyəli beh tələbi, qalıq ödəniş, ləğv pəncərəsi | FR-BEH |
 
 ### 7.3 Əhatədən kənar
 
 | # | Mövzu | Səbəb | Nə vaxt |
 |---|---|---|---|
-| X-01 | Müştəri fakturasının onlayn kart ödənişi | Hər satıcı üçün merchant modeli hüquqi qərar tələb edir (§31 S3) | v1.2 |
+| X-01 | Müştəri fakturasının onlayn kart ödənişi | Model qərarı verildi (usta-merchant, §23.1), ekvayrer müqaviləsi gözlənilir | v1.2, FR-ODN-09…17 |
 | X-02 | Avtomatik e-poçt / SMS / push bildirişləri | Provayder müqaviləsi yoxdur | v1.1 |
 | X-03 | Komanda üzvləri (Pro Max-da elan olunub) | Rol modeli genişləndirilməlidir; interfeysdə "tezliklə" | v1.4 |
-| X-04 | VÖEN və e-qaimə inteqrasiyası | Hazırkı modeldə hüquqi tələb yaranmır (§23.2) | v2 |
+| X-04 | VÖEN və e-qaimə inteqrasiyası | Hazırkı modeldə hüquqi tələb yaranmır (§23.2); Dövlət Vergi Xidməti inteqrasiyası qərarı verildi (IR-06) | v2 |
 | ~~X-05~~ | ~~Rəy və reytinq sistemi~~ — reallaşıb | Yalnız ödənişi təsdiqlənmiş müştəri rəy yazır; admin moderasiyası var | ✅ |
 | X-06 | Native mobil tətbiq | Veb tətbiq mobil-uyğundur, dəyər əsaslandırılmır | Qərar yoxdur |
-| X-07 | Təqvim / rezervasiya | Ayrıca məhsul sahəsi | Qərar yoxdur |
+| X-07 | Təqvim / rezervasiya | Model qərarı verildi — slot təqvimi, könüllü aktivləşmə (§13.18) | Baza hazırlığına keçir, FR-REZ-* |
 | X-08 | Çoxvalyutalı konvertasiya və cəmləmə | Məzənnə mənbəyi və məsuliyyət müəyyən deyil (BRU-02) | v2 |
 | X-09 | Abunəliyin avtomatik yenilənməsi | Kart tokenizasiyası aqreqatordan asılıdır | v2 |
+| X-10 | Beh (ilkin ödəniş) | Model qərarı verildi — İ-11 (merchant) reallaşana qədər fakturaya bağlı ikinci ödəniş kimi gözləyir | v1.2, FR-BEH-* |
 
 ### 7.4 Əhatə sərhədləri (boundary)
 
@@ -668,7 +674,7 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 | FR-SIF-03 | Sabit qiymətli xidmətdə faktura dərhal yaranmalı və müştəri faktura səhifəsinə yönləndirilməlidir | M | SH-SAT-04 | T | ✅ |
 | FR-SIF-04 | "Razılaşma ilə" xidmətdə sorğu `PENDING_APPROVAL` statusu ilə satıcıya düşməlidir | M | SH-SAT-03 | T | ✅ |
 | FR-SIF-05 | Satıcı sorğunu qiymət yazaraq təsdiqləməli (faktura yaranır) və ya imtina etməlidir | M | SH-SAT-03 | T | ✅ |
-| FR-SIF-06 | Satıcının aylıq faktura limiti dolubsa, sabit qiymətli sifariş itməməli, sorğuya çevrilməlidir | M | BR-02, BR-07 | T | ✅ |
+| FR-SIF-06 | Satıcının aylıq faktura limiti dolubsa, sabit qiymətli sifariş itməməli, sorğuya çevrilməlidir; limit 25-ə qaldırıldıqdan sonra bu, yalnız limit dəqiqliklə dolduğu an üçün keçid davranışıdır — əsas mexanizm FR-FAK-16-dakı qaralama rejimidir | M | BR-02, BR-07 | T | ✅ |
 | FR-SIF-07 | Sifarişin gəldiyi mənbə (Instagram, TikTok, kataloq, axtarış, birbaşa və s.) qeyd olunmalıdır | S | SH-SAT-07 | T | ✅ |
 | FR-SIF-08 | Panelin sifarişlər siyahısında axtarış, status, xidmət və tarix filtrləri olmalıdır | S | SH-SAT-06 | D | ✅ |
 | FR-SIF-09 | Yeni sifariş barədə satıcıya anlıq bildiriş göndərilməlidir | S | SH-SAT-06 | T | 🟡 Bildiriş yaradılır və növbəyə düşür; çatdırılma e-poçt provayderindən asılıdır (IR-03) |
@@ -690,6 +696,11 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 | FR-FAK-11 | Satıcı fakturanı həmişəlik silə bilməlidir; silinmə iki addımla təsdiqlənməli, ödənilmiş fakturada hesabata təsiri barədə xəbərdarlıq göstərilməlidir | S | SH-SAT-04 | T | ✅ |
 | FR-FAK-12 | Silinmə fakturanın sətirlərini, ödəniş qeydlərini, xatırlatmalarını və rəyini də silməli, reytinq yenidən hesablanmalıdır | M | BRU-04 | T | ✅ |
 | FR-FAK-13 | Aylıq faktura limiti yaradılmış fakturaların sayğacına əsaslanmalıdır: silinmə limiti geri qaytarmamalıdır | M | BRU-09 | T | ✅ |
+| FR-FAK-14 | Pulsuz planda aylıq faktura limiti 25-ə qaldırılmalıdır (əvvəlki dəyər: 5) | M | BRU-01 | T | ⬜ Qərar verilib — §31 Q-08 |
+| FR-FAK-15 | Sayğac paneldə daim görünməli və cari aydakı göndərilmiş faktura sayını göstərməlidir | S | SH-SAT-06 | D | ⬜ |
+| FR-FAK-16 | Limit aşıldıqda faktura yaradılmağa və saxlanmağa davam etməli, lakin `DRAFT` statusunda qalmalı və göndərmə əməliyyatı (FR-FAK-07, FR-SIF-03) deaktiv olmalıdır — faktura itmir, sadəcə göndərilə bilmir | M | BRU-01 | T | ⬜ |
+| FR-FAK-17 | Qaralama halında qalan fakturalar iki haldan birində göndərilə bilən vəziyyətə keçməlidir: satıcı ödənişli tarifə keçdikdə, və ya yeni təqvim ayı başladıqda | M | BRU-01 | T | ⬜ |
+| FR-FAK-18 | 20-ci göndərilmiş fakturada (limitin 80%-i) uğur ekranında ödənişli tarifə keçid təklifi göstərilməlidir | S | BG-05 | D | ⬜ |
 
 ### 13.7 Ödəniş izləmə (müştəri → satıcı) — `FR-ODN`
 
@@ -703,6 +714,18 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 | FR-ODN-06 | Ödəniş qəbzinin şəkli yüklənib avtomatik yoxlanmalıdır | W | SH-SAT-06 | — | ⬜ |
 | FR-ODN-07 | İctimai faktura səhifəsi (kart, "Ödədim" düyməsi, rəy forması) ziyarətçinin dilinə uyğun olmalıdır | M | SH-MUS-02, FR-DIL | T | ✅ 4 dil (`invoicePublic`) |
 | FR-ODN-08 | "Ödədim" bildirişi göndərilə bilməsə, müştəriyə xəta göstərilməli, səssiz uğursuzluq olmamalıdır | M | NFR-REL-03 | T | ✅ |
+
+**Usta-merchant ödəniş modeli (qərar — §23.1, §31 Q-09).** Pul platformanın hesabına deyil, birbaşa ustanın öz hesabına köçür; platforma yalnız ödəniş linkini yaradır və provayderdən gələn təsdiqlə statusu dəyişir. Model BRU-16-nı pozmur (pul yenə platforma hesabında toplanmır), FR-ODN-04-ü genişləndirir. Ön şərt — ustanın Dövlət Vergi Xidmətində rəsmiləşmiş statusu (IR-06); statusu olmayan usta FR-ODN-02-dəki mövcud əl rejimində daimi alt rejim kimi qalır (müvəqqəti keçid deyil).
+
+| FR-ODN-09 | Usta qeydiyyatdan keçdikdə və ya merchant rejimini aktivləşdirmək istədikdə sistem onun vergi ödəyicisi statusunu Dövlət Vergi Xidməti inteqrasiyası ilə yoxlamalıdır | M | IR-06 | İ | ⬜ |
+| FR-ODN-10 | Statusu olmayan usta üçün sistem rəsmiləşmə axını (addım-addım bələdçi) təqdim etməlidir | S | SH-SAT-12 | D | ⬜ |
+| FR-ODN-11 | Statusu təsdiqlənmiş usta ödəniş provayderində fərdi merchant kimi aktivləşdirilməlidir | M | IR-01, IR-06 | T | ⬜ |
+| FR-ODN-12 | Sifariş/faktura yarandıqda merchant statusu aktiv ustalar üçün sistem ödəniş linki yaratmalı və müştəriyə göndərməlidir | M | FR-ODN-09…11 | T | ⬜ |
+| FR-ODN-13 | Ödəniş provayderindən imzalı təsdiq gəldikdə fakturanın ödəniş statusu avtomatik dəyişməlidir; müştəridən əlavə təsdiq (FR-ODN-02) tələb olunmamalıdır | M | IR-01 | T | ⬜ |
+| FR-ODN-14 | Merchant statusu aktiv olan usta üçün "Ödədim" düyməsi (FR-ODN-02) interfeysdən silinməlidir | M | FR-ODN-11 | T | ⬜ |
+| FR-ODN-15 | Hər tamamlanmış avtomatik təsdiqlənmiş ödəniş üçün sistem qəbz və ya elektron qaimə yaratmalıdır | S | IR-06 | D | ⬜ |
+| FR-ODN-16 | Merchant statusu olmayan usta üçün sistem hər sifarişin məbləğinin qəpik hissəsini fərdiləşdirməlidir (uyğunlaşdırma açarı); bu, FR-ODN-02-dəki əl rejimini əvəz etmir, onu dəqiqləşdirir | S | BR-08 | T | ⬜ |
+| FR-ODN-17 | Əl rejimində usta gün sonunda bütün gözləyən sifarişləri vahid üzləşmə ekranında görə və bank çıxarışı ilə bir baxışda tutuşdura bilməlidir | S | FR-ODN-16 | D | ⬜ |
 
 ### 13.16 Rəylər və reytinq — `FR-REY`
 
@@ -871,6 +894,40 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 | FR-KMD-11 | Fəaliyyət jurnalında əməliyyatı kimin etdiyi (sahib yoxsa hansı üzv) yazılmalıdır | S | BR-09 | T | ✅ |
 | FR-KMD-12 | Bloklanmış sahibin iş sahəsi üzvlər üçün də bağlanmalıdır | M | BRU-14 | T | ✅ |
 
+### 13.18 Rezervasiya və təqvim — `FR-REZ`
+
+Qərar — konfiqurasiya edən usta slot əsaslı rezervasiya alır, etməyən sorğu rejimində qalır; təqvim heç bir halda məcburi deyil.
+
+| # | Tələb | Pri | Mənbə | Yox. | Vəz. |
+|---|---|---|---|---|---|
+| FR-REZ-01 | Usta öz panelində iş saatlarını, hər xidmətin müddətini və bufer dəyərini təyin edə bilməlidir | M | SH-SAT-15 | T | ⬜ |
+| FR-REZ-02 | Boş slotlar "xidmət müddəti + bufer" düsturu ilə hesablanmalıdır; bufer usta tərəfindən bir dəfə təyin olunan sabit dəyərdir | M | FR-REZ-01 | T | ⬜ |
+| FR-REZ-03 | Müştəri yalnız boş slotları görməlidir; dolu vaxtlar interfeysdə göstərilməməlidir | M | SH-MUS-05 | T | ⬜ |
+| FR-REZ-04 | Slot seçimi sifarişi dərhal "Təsdiqlənib" statusuna gətirməlidir; ayrıca usta təsdiqi tələb olunmamalıdır | M | BRU-25 | T | ⬜ |
+| FR-REZ-05 | Yeni rezervasiya yarandıqda usta dərhal bildiriş almalıdır | M | IR-03 | T | ⬜ |
+| FR-REZ-06 | Usta təqvimdə sifariş olmadan vaxt və ya tam gün bağlaya bilməlidir | S | SH-SAT-15 | T | ⬜ |
+| FR-REZ-07 | Xidmətin məkan tipi xidmət səviyyəsində təyin olunmalıdır: ustanın məkanı, müştərinin ünvanı, onlayn | M | FR-XID | T | ⬜ |
+| FR-REZ-08 | Məkan tipi "müştərinin ünvanı" olduqda sifarişdə ünvan sahəsi tələb olunmalı və yol buferi tətbiq edilməlidir; digər iki tipdə ünvan tələb olunmamalı və yol buferi tətbiq edilməməlidir | M | FR-REZ-07 | T | ⬜ |
+| FR-REZ-09 | Usta panelində gündəlik görünüş olmalıdır: saat, müştəri, xidmət, ünvan, status və məbləğ bir sətirdə; boş vaxtlar vizual fərqlənməlidir | S | SH-SAT-06 | D | ⬜ |
+| FR-REZ-10 | İki ardıcıl rezervasiya arasında bufer çatmadıqda sətir xəbərdarlıqla işarələnməlidir | S | FR-REZ-02 | T | ⬜ |
+| FR-REZ-11 | Təqvimi aktivləşdirməmiş usta üçün müştəri sərbəst mətn şəklində istədiyi vaxtı göstərməlidir; usta təsdiqləməli və ya alternativ təklif etməlidir | M | FR-SIF-04 | T | ⬜ |
+
+**Əhatədən kənar (bu mərhələdə).** Zona əsaslı bufer, marşrut hesablaması, xarici təqvimlə ikitərəfli sinxronizasiya, təkrarlanan seanslar.
+
+**Bilinən məhdudiyyət (M-08).** Slot ikili (boş/dolu) olduğu üçün qrupla işləyən məşqçi və repetitorda birinci rezervasiya slotu bağlayır, qalan iştirakçılar platformadan kənarda qalır — RSK-19.
+
+### 13.19 Beh (ilkin ödəniş) — `FR-BEH`
+
+Qərar — beh ayrıca mexanizm kimi qurulmur: mövcud faktura obyektinin üzərində işləyən, sifarişə bağlı ikinci ödəniş linkidir. İ-11 (usta-merchant) reallaşana qədər fəal ola bilməz.
+
+| # | Tələb | Pri | Mənbə | Yox. | Vəz. |
+|---|---|---|---|---|---|
+| FR-BEH-01 | Usta hər xidmət üçün beh tələbini ayrıca aktivləşdirə bilməlidir; beh məcburi deyil | S | SH-SAT-16 | T | ⬜ |
+| FR-BEH-02 | Beh faizi usta tərəfindən xidmət səviyyəsində təyin olunmalıdır; defolt dəyər 25%-dir | S | BRU-26 | T | ⬜ |
+| FR-BEH-03 | Beh tələb olunan xidmətlərdə rezervasiya slotu yalnız beh ödənildikdən sonra bağlanmalıdır | M | FR-REZ-04, BRU-26 | T | ⬜ |
+| FR-BEH-04 | Qalıq məbləğ eyni sifarişə bağlı ikinci ödəniş kimi qeydə alınmalıdır | M | FR-BEH-03 | T | ⬜ |
+| FR-BEH-05 | Ləğv pəncərəsi usta tərəfindən təyin olunmalıdır; defolt dəyər 24 saatdır | S | BRU-27 | T | ⬜ |
+
 ### 13.15 Tələblərin əhatə statistikası
 
 | Modul | Cəmi | ✅ | 🟡 | ⬜ |
@@ -880,8 +937,8 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 | FR-XID | 6 | 6 | 0 | 0 |
 | FR-KAT | 9 | 9 | 0 | 0 |
 | FR-SIF | 9 | 8 | 1 | 0 |
-| FR-FAK | 13 | 13 | 0 | 0 |
-| FR-ODN | 8 | 6 | 0 | 2 |
+| FR-FAK | 18 | 13 | 0 | 5 |
+| FR-ODN | 17 | 6 | 0 | 11 |
 | FR-ANL | 10 | 10 | 0 | 0 |
 | FR-AI | 20 | 20 | 0 | 0 |
 | FR-ABN | 15 | 15 | 0 | 0 |
@@ -891,9 +948,11 @@ Təşkilat səviyyəsində, həlldən asılı olmayan tələblər.
 | FR-BLD | 7 | 4 | 2 | 1 |
 | FR-REY | 7 | 7 | 0 | 0 |
 | FR-KMD | 12 | 12 | 0 | 0 |
-| **Cəmi** | **171** | **163 (95%)** | **5 (3%)** | **3 (2%)** |
+| FR-REZ | 11 | 0 | 0 | 11 |
+| FR-BEH | 5 | 0 | 0 | 5 |
+| **Cəmi** | **201** | **163 (81%)** | **5 (2%)** | **33 (17%)** |
 
-Lansı bloklayan `M` prioritetli açıq tələb yoxdur; 🟡 vəziyyətli FR-HES-06 və FR-BLD-02 IR-03-ün (e-poçt provayderi) bağlanması ilə həll olunur.
+Lansı bloklayan `M` prioritetli açıq tələb yoxdur; 🟡 vəziyyətli FR-HES-06 və FR-BLD-02 IR-03-ün (e-poçt provayderi) bağlanması ilə həll olunur. FR-REZ, FR-BEH və FR-FAK-14…18/FR-ODN-09…17-nin ⬜ olması v2.3-də **qərar** kimi təsbit edildiyini, hələ **reallaşmadığını** göstərir — icra §29 yol xəritəsi üzrə gedir (FR-FAK-14…18 və FR-ODN-16…17 istisna, bunlar baseline daxilində dərhal icra oluna bilər).
 
 ---
 
@@ -1018,7 +1077,7 @@ BABOK təsnifatı: **D** = definitiv (strukturu müəyyən edir, pozula bilməz)
 
 | # | Qayda | Növ | Mənbə | Tətbiq yeri | Pozulanda |
 |---|---|---|---|---|---|
-| BRU-01 | Faktura limiti təqvim ayı üzrə sayılır; `CANCELLED` fakturalar da limitə daxildir | B | Biznes (sui-istifadə) | Faktura yaradılması | Sifariş sorğuya çevrilir |
+| BRU-01 | Pulsuz planda aylıq faktura limiti 25-dir (əvvəlki dəyər: 5) və təqvim ayı üzrə sayılır; yalnız göndərilmiş fakturalar sayılır, qaralama və ləğv edilmiş fakturalar limitə daxil deyil; istifadə olunmamış limit növbəti aya keçmir | B | Biznes (sui-istifadə) — §31 Q-08 | Faktura yaradılması | Faktura `DRAFT` qalır (FR-FAK-16) |
 | BRU-02 | Fərqli valyutalardakı məbləğlər toplanmır, hər valyuta ayrıca göstərilir | D | Mühasibat dəqiqliyi | Analitika, panel | Göstərici gizlədilir |
 | BRU-03 | Faktura nömrəsi silinmir və təkrar istifadə olunmur | D | Sənəd bütövlüyü | Nömrələmə | Əməliyyat rədd edilir |
 | BRU-04 | Satıcı yalnız öz məlumatına çıxış əldə edir; müştəri telefonu başqa satıcıya görünmür | D | Məxfilik | Bütün sorğular | 404 / icazə yoxdur |
@@ -1041,6 +1100,11 @@ BABOK təsnifatı: **D** = definitiv (strukturu müəyyən edir, pozula bilməz)
 | BRU-22 | Gizlədilmiş rəy satıcının səhifəsində görünmür və orta reytinqə daxil edilmir | B | Moderasiya | Reytinq hesablaması | Reytinq yenidən hesablanır |
 | BRU-23 | Bildiriş kanalı qoşulmayıbsa, bildiriş silinmir — "kanal qoşulmayıb" kimi jurnalda qalır | B | İtkinin qarşısının alınması | Bildiriş göndərmə | Status SKIPPED |
 | BRU-16 | Pul platformanın hesabında toplanmır | D | Hüquqi model (§23.1) | Ödəniş axını | Dizayn qadağası |
+| BRU-24 | Dövlət Vergi Xidmətində statusu olmayan usta merchant rejimini ala bilməz; əl rejimi (FR-ODN-16…17) müvəqqəti deyil, daimi alt rejimdir | D | Hüquqi model (§23.1, IR-06) | Merchant aktivləşməsi | Əl rejimində qalır |
+| BRU-25 | Rezervasiya slotu ikili vəziyyətdədir — boş və ya dolu; eyni slota birdən çox sifariş qəbul edilmir | D | Məlumat bütövlüyü | Slot seçimi | İkinci seçim rədd edilir |
+| BRU-26 | Beh tələb olunan xidmətdə slot yalnız behin ödənişi təsdiqlənəndə bağlanır | B | FR-BEH-03 | Rezervasiya axını | Slot boş qalır |
+| BRU-27 | Ləğv pəncərəsi daxilində edilən ləğvdə beh qaytarılmır; pul birbaşa ustada olduğu üçün qaytarma öhdəliyini platforma icra etmir, yalnız qeydə alır və ustanın reytinqinə bağlayır | B | FR-BEH-05 | Ləğv əməliyyatı | Qeyd jurnala yazılır |
+| BRU-28 | Faktura limiti aşıldıqda yaradılan faktura silinmir — `DRAFT` statusunda qalır və yalnız tarif dəyişəndə və ya yeni ayda göndərilə bilən vəziyyətə keçir | B | FR-FAK-16…17 | Faktura göndərilməsi | Göndərmə düyməsi deaktiv |
 
 ---
 
@@ -1255,6 +1319,15 @@ Təsnifat ISO/IEC 25010 keyfiyyət modelinə uyğundur. Hər NFR ölçülə bil�
 
 Sitemap, robots, strukturlu məlumat və Open Graph vasitəsilə birtərəfli inteqrasiya (FR-SEO-05…07). Lansdan sonra Search Console-a əlavə edilməlidir (TR-13).
 
+### 18.6 IR-06 — Dövlət Vergi Xidməti (status yoxlaması)
+
+| | |
+|---|---|
+| **Məqsəd** | Ustanın vergi ödəyicisi statusunu yoxlamaq (FR-ODN-09) və rəsmiləşmiş usta üçün elektron qaimə/qəbz yaratmaq (FR-ODN-15) |
+| **Asılılıq** | Üçüncü tərəf platformalar üçün status yoxlaması və qaimə interfeysinin mövcudluğu (§31 S9), hüquqi iş (A-07) |
+| **Qoruma** | Statusu olmayan usta avtomatik əl rejiminə düşür (BRU-24); inteqrasiya olmadan merchant aktivləşməsi mümkün deyil |
+| **Vəziyyət** | ⬜ Hüquqi və texniki araşdırma mərhələsində — RSK-15, RSK-16 |
+
 ---
 
 ## 19. Keçid tələbləri (TR)
@@ -1312,7 +1385,7 @@ Fərziyyə yanlış çıxarsa, göstərilən tələb və ya göstərici yenidən
 |---|---|---|---|---|
 | F-01 | Hədəf auditoriya mobil telefondan istifadə edir (≥ 80%) | NFR-USE-01 | Analitika (cihaz bölgüsü) | Masaüstü interfeysinə investisiya |
 | F-02 | Azərbaycanda sosial şəbəkədə xidmət satan aktiv şəxslərin sayı 20 000-dən çoxdur | BG-01 | Bazar araşdırması | Hədəf və proqnoz azaldılır |
-| F-03 | Satıcı ayda ən azı 5 faktura göndərəcək | FR-ABN plan limitləri | Analitika | Plan limitləri yenidən qiymətləndirilir |
+| F-03 | Satıcı ayda ən azı 25 faktura göndərəcək (əvvəlki fərziyyə: 5 — limit §31 Q-08 ilə qaldırıldı) | FR-FAK-14 | Analitika: limitə çatma faizi və günü | Plan limitləri yenidən qiymətləndirilir |
 | F-04 | Ödəyənlərin 60%-i Pro, 40%-i Pro Max seçəcək | §5.4 ARPPU | Faktiki ödənişlər | Maliyyə modeli yenilənir |
 | F-05 | Ödəyənlərin 20%-i illik ödəyəcək | §5.4 | Faktiki ödənişlər | Pul axını proqnozu dəyişir |
 | F-06 | Aqreqator komissiyası ≈ 2,5% + sabit haqq | §5.4 | Müqavilə | Marja dəyişir |
@@ -1332,8 +1405,9 @@ Fərziyyə yanlış çıxarsa, göstərilən tələb və ya göstərici yenidən
 | M-03 | Kart məlumatı heç vaxt toplanmır | Təhlükəsizlik | Abunəlikdə yönləndirmə modeli məcburidir |
 | M-04 | Komanda kiçikdir, dəstək 24/7 deyil | Resurs | SLA iş günü ilə məhdudlaşır (§19.1) |
 | M-05 | Büdcə pulsuz/aşağı xərcli xarici xidmətləri üstün tutur | Maliyyə | AI keyfiyyət riski (RSK-02) |
-| M-06 | Yerli bank API-ləri fiziki şəxsə açıq deyil | Texniki | Ödənişin avtomatik təsdiqi mümkün deyil |
+| M-06 | Yerli bank API-ləri fiziki şəxsə açıq deyil | Texniki | Ödənişin avtomatik təsdiqi mümkün deyil — usta-merchant modeli tələb olunur (FR-ODN-09…17) |
 | M-07 | Abunəlik avtomatik yenilənmir | Texniki / hüquqi | Saxlanma riski (RSK-06) |
+| M-08 | Rezervasiya slotu ikili (boş/dolu) modelə əsaslanır | Texniki / dizayn | Qrup xidmətləri (məşqçi, repetitor) tam örtülmür — RSK-19 |
 
 ### 21.3 Asılılıqlar
 
@@ -1345,6 +1419,7 @@ Fərziyyə yanlış çıxarsa, göstərilən tələb və ya göstərici yenidən
 | A-04 | Produksiya infrastrukturu və ehtiyat nüsxə | Texniki | Lansdan əvvəl | TR-01…04 |
 | A-05 | AI təminatçısının açarı | Super admin | Lansdan əvvəl | FR-AI |
 | A-06 | Bank rekvizitlərinin təqdim edilməsi | Biznes | Lansdan əvvəl | FR-ABN-02 |
+| A-07 | Dövlət Vergi Xidməti ilə status yoxlaması/qaimə inteqrasiyasının hüquqi və texniki mümkünlüyü | PD-09, Hüquq | İ-11-dən əvvəl | IR-06, FR-ODN-09…17, BRU-24 |
 
 ---
 
@@ -1368,8 +1443,13 @@ Fərziyyə yanlış çıxarsa, göstərilən tələb və ya göstərici yenidən
 | RSK-12 | Satıcı məlumat sızması (müştəri telefonları) | Təhlükəsizlik | 2 | 5 | 10 | Azalt | BRU-04 izolyasiyası, jurnal, ixracda maskalama | Texniki |
 | RSK-13 | Rəqib eyni həlli yerli bazara tez gətirir | Bazar | 2 | 4 | 8 | İzlə | SEO ilə erkən mövqe (BG-06), kataloq şəbəkə effekti | Biznes |
 | RSK-14 | Ödəniş mübahisəsi platformaya qarşı iddiaya çevrilir | Hüquqi | 2 | 4 | 8 | Ötür | İstifadə şərtlərində məsuliyyət bölgüsü (TR-07), §23.1 modeli | Hüquq |
+| RSK-15 | Ustaların böyük hissəsi rəsmiləşməyə hazır deyil, merchant modeli (İ-11) məhdud satıcı qrupu ilə məhdudlaşır | Biznes | 4 | 3 | **12** | Azalt | Əl rejimi (FR-ODN-16…17) daimi alt rejim kimi saxlanılır, məcburi deyil | Məhsul |
+| RSK-16 | Ödəniş aqreqatoru fiziki şəxs/fərdi sahibkar səviyyəsində merchant qeydiyyatı təklif etmir | Texniki / xarici | 3 | 4 | **12** | Araşdır | Alternativ provayderlərin erkən araşdırılması (§31 S1, S9) | Texniki |
+| RSK-17 | Dövlət Vergi Xidməti üçüncü tərəf platformalara status/qaimə interfeysi vermir | Hüquqi / xarici | 3 | 4 | **12** | Araşdır | Hüquq rəyi (A-07); mövcud olmadıqda əl rejimi daimi həll kimi qalır | Hüquq |
+| RSK-18 | Faktura limitinin dolması (FR-FAK-16) ustanı platformadan kənar kanala (yazışma) qaytarır | Məhsul | 2 | 3 | 6 | İzlə | Limitə çatandan sonra platformaya qayıtma tezliyi izlənir (§27 metrikası) | Məhsul |
+| RSK-19 | Qrup xidmətləri (məşqçi, repetitor) ikili slot modelinə (BRU-25) sığmır, qrup üzvlərinin əksəriyyəti platformadan kənarda qalır | Məhsul | 2 | 2 | 4 | Qəbul et | Seqmentin həcmi izlənir; böyüdükdə tutum modeli əlavə edilir (M-08) | Məhsul |
 
-**Yüksək riskli (bal ≥ 12):** RSK-01, RSK-02, RSK-03, RSK-04, RSK-06, RSK-11 — həftəlik izlənməlidir.
+**Yüksək riskli (bal ≥ 12):** RSK-01, RSK-02, RSK-03, RSK-04, RSK-06, RSK-11, RSK-15, RSK-16, RSK-17 — həftəlik izlənməlidir.
 
 ---
 
@@ -1442,7 +1522,11 @@ Faktura **qeyri-rəsmi ödəniş sorğusudur**. PDF-də "Bu sənəd ödəniş so
 | # | Ssenari (Given / When / Then) | Bağlı tələb | Vəz. |
 |---|---|---|---|
 | UAT-01 | **Given** yeni satıcı qeydiyyatdan keçib və 1 sabit qiymətli xidmət əlavə edib, **when** müştəri sifariş verir, **then** faktura avtomatik yaranır, unikal nömrə alır və PDF açılır | FR-SIF-03, FR-FAK-01 | ✅ |
-| UAT-02 | **Given** pulsuz planda 5 faktura var, **when** 6-cı sifariş gəlir, **then** limit mesajı göstərilir və sifariş sorğuya çevrilir (itmir) | FR-SIF-06, BRU-01 | ✅ |
+| UAT-02 | **Given** pulsuz planda 25 faktura göndərilib, **when** 26-cı faktura yaradılır, **then** faktura `DRAFT` statusunda saxlanılır, göndərmə düyməsi deaktiv olur və tarif yüksəltmə təklifi göstərilir | FR-FAK-16…17, BRU-01 | ⬜ |
+| UAT-02a | **Given** usta pulsuz tarifdə 19 faktura göndərib, **when** 20-ci fakturanı göndərir, **then** faktura normal göndərilir və uğur ekranında ödənişli tarif təklifi görünür | FR-FAK-18 | ⬜ |
+| UAT-17 | **Given** usta merchant statusu aktivdir, **when** ödəniş provayderindən təsdiq gəlir, **then** fakturanın ödəniş statusu müştəri təsdiqi tələb olunmadan dəyişir | FR-ODN-13 | ⬜ |
+| UAT-18 | **Given** xidmətdə beh tələbi aktivdir, **when** müştəri slot seçir, lakin behi ödəmir, **then** slot bağlanmır və rezervasiya statusu gözləmədə qalır | FR-BEH-03, BRU-26 | ⬜ |
+| UAT-19 | **Given** usta təqvimi aktivləşdirib və seçilən saat boşdur, **when** müştəri slotu seçir, **then** rezervasiya dərhal təsdiqlənir, usta bildiriş alır və slot digər müştərilərə göstərilmir | FR-REZ-03…05 | ⬜ |
 | UAT-03 | **Given** "razılaşma ilə" sorğu var, **when** satıcı qiymət yazıb təsdiqləyir, **then** faktura yaranır; **when** imtina edir, **then** sorğu bağlanır | FR-SIF-04, FR-SIF-05 | ✅ |
 | UAT-04 | **Given** faktura `SENT`, **when** müştəri "Ödədim" basır və satıcı təsdiqləyir, **then** status `PAID` olur və məbləğ analitikada gəlirə düşür | FR-ODN-02, FR-ANL-02 | ✅ |
 | UAT-05 | **Given** faktura `CLAIMED_PAID`, **when** satıcı "Gəlməyib" seçir, **then** status `SENT`-ə qayıdır və müştəri yenidən bildirə bilir | §14.6 | ✅ |
@@ -1556,10 +1640,14 @@ Versiya 2.0 təsdiqləndikdən sonra (§0.4) bu sənəd **baseline** sayılır. 
 |---|---|---|---|
 | **v1.0 — Lans** | Mövcud əhatə (§7.2) | BG-01…BG-04 | — |
 | **v1.1 — Bildirişlər** | E-poçt provayderi, yeni sifariş və ödəniş bildirişləri, avtomatik xatırlatmalar | Ödənilmə nisbətini artırır (BG-03), reaksiyanı sürətləndirir | X-02, RSK-04 |
-| **v1.2 — Müştəri ödənişi** | Fakturanın kartla onlayn ödənişi (satıcı öz merchant hesabı ilə) | Ödəniş sürəti (BG-04), Pro plana keçid motivi (BG-05) | X-01, İ-11 |
+| **v1.2 — Müştəri ödənişi** | Fakturanın kartla onlayn ödənişi (usta-merchant modeli, FR-ODN-09…17), Dövlət Vergi Xidməti status yoxlaması (IR-06) | Ödəniş sürəti (BG-04), Pro plana keçid motivi (BG-05) | X-01, İ-11, A-07 |
+| **v1.2b — Beh** | Xidmət səviyyəli beh tələbi və qalıq ödənişi (FR-BEH-*) | Gəlin makiyajı/fotosessiya seqmentinin konversiyası | X-10, v1.2-dən asılı |
 | **v1.3 — Kataloqun gücləndirilməsi** | Sahə/şəhər ünvanlarının genişlənməsi, faktura səhifəsi və panelin qalan bölmələrinin çoxdilliliyi | Orqanik trafik (BG-06) | FR-DIL-06 |
 | **v1.4 — Komanda** | Pro Max-da 5 üzv, rol bölgüsü | Studiyalar üçün Pro Max dəyəri | X-03 |
-| **v2 — Rəsmiləşmə və avtomatlaşdırma** | VÖEN/e-qaimə, abunəliyin avtomatik yenilənməsi, obyekt saxlamasına keçid | Böyük satıcılar, saxlanma (BG-07) | X-04, X-09, RSK-05, RSK-06 |
+| **v1.5 — Rezervasiya və təqvim** | Slot təqvimi, usta gündəlik görünüşü, bufer, məkan tipi (FR-REZ-*) — asılılığı yoxdur, paralel icra oluna bilər | Rezervasiya ağrısının həlli (İ-13), aktivləşmə (BG-02) | X-07 |
+| **v2 — Rəsmiləşmə və avtomatlaşdırma** | VÖEN/e-qaimə, Dövlət Vergi Xidməti inteqrasiyası, abunəliyin avtomatik yenilənməsi, obyekt saxlamasına keçid | Böyük satıcılar, saxlanma (BG-07) | X-04, X-09, RSK-05, RSK-06, RSK-17 |
+
+> **Baseline v2.3-də dərhal:** pulsuz faktura limitinin 25-ə qaldırılması (FR-FAK-14…18) və ödəniş izləməsinin əl rejimi dəqiqləşdirməsi (FR-ODN-16…17) xarici asılılığı olmayan tələblərdir və yol xəritəsindən kənar, cari baseline daxilində icra oluna bilər.
 
 ---
 
@@ -1593,6 +1681,12 @@ Versiya 2.0 təsdiqləndikdən sonra (§0.4) bu sənəd **baseline** sayılır. 
 | S6 | Problemin kəmiyyət təsdiqi üçün sorğu nə vaxt aparılır (TR-12)? | §2.2 dəyər fərziyyələri | BA + Məhsul | Lansdan əvvəl |
 | S7 | Məlumatların saxlanma müddətləri (§16.4) hüquqi rəylə təsdiqlənirmi? | TR-07, NFR-PRV-04 | Hüquq | Lansdan əvvəl |
 | S8 | Abunəlikdən imtina və geri qaytarma qaydası necə olacaq? | H-04, müştəri etibarı | Biznes + Hüquq | Lansdan əvvəl |
+| S9 | Ekvayrer fərdi sahibkar səviyyəsində merchant qeydiyyatı təklif edirmi? | İ-11-in reallaşa bilməsi; RSK-16 | Maliyyə / Tərəfdaşlıq | v1.2-dən əvvəl |
+| S10 | Dövlət Vergi Xidməti üçüncü tərəf platformalara status yoxlaması və qaimə üçün interfeys verirmi? | IR-06, A-07; RSK-17 | Hüquq | v1.2-dən əvvəl |
+| S11 | Mövcud satıcıların neçə faizinin vergi ödəyicisi statusu var? | Merchant modelinin real əhatəsi; RSK-15 | Məhsul / Analitika | v1.2-dən əvvəl |
+| S12 | Platformadakı xidmət kateqoriyalarının hansıları sadələşdirilmiş vergi rejiminə düşür? | İ-11 əhatəsi | Hüquq | v1.2-dən əvvəl |
+| S13 | Rəsmiləşmə prosesi nə qədər vaxt aparır və FR-ODN-10 axınının içinə yerləşdirilə bilərmi? | Aktivləşmə təcrübəsi | Hüquq + Məhsul | v1.2-dən əvvəl |
+| S14 | Beh qaytarma mübahisələrində platformanın rolu necə müəyyən edilir? | BRU-27, pul platformadan keçmir | Məhsul / Hüquq | v1.2b-dən əvvəl |
 
 ### 31.2 Qəbul edilmiş qərarlar
 
@@ -1605,6 +1699,10 @@ Versiya 2.0 təsdiqləndikdən sonra (§0.4) bu sənəd **baseline** sayılır. 
 | Q-05 | AI təminatçısı dəyişdirilə bilən saxlanılır | Asılılıq riski (SH-BIZ-04) | v1.0 |
 | Q-06 | Abunəlik avtomatik yenilənmir | Hüquqi sadəlik və istifadəçi etibarı | v1.0 |
 | Q-07 | Kataloqda iştirak defolt olaraq açıqdır, satıcı söndürə bilir | BG-06 və SH-SAT-11 balansı | v1.0 |
+| Q-08 | Pulsuz tarif faktura limiti 5-dən 25-ə qaldırılır; limit aşılanda faktura silinmir, `DRAFT` kimi qalır | Limit aktiv satıcını 2 günə bloklayırdı; platformanın öz paylanma kanalı (faktura) kəsilirdi | v2.3 |
+| Q-09 | Ödəniş modeli: usta-merchant (pul birbaşa ustaya gedir, platforma yalnız linki yaradır və təsdiqi oxuyur) | Platforma ödəniş vasitəçisi statusundan kənarda qalır (§23.1); S3 sualına cavab | v2.3 |
+| Q-10 | Rezervasiya könüllüdür: konfiqurasiya edən usta slot təqvimi alır, etməyən sorğu rejimində qalır | Ustaların bir hissəsi qeyri-formal işləyir, məcburi konfiqurasiya onları çıxarır | v2.3 |
+| Q-11 | Beh ayrıca mexanizm deyil — mövcud faktura obyekti üzərində ikinci ödəniş linkidir | Yeni obyekt növü yaratmadan mövcud status maşınından (FR-FAK-08) istifadə | v2.3 |
 
 ---
 
