@@ -8,7 +8,8 @@ import { effectiveStatus } from "@/lib/invoice-status";
 import { invoiceUrl } from "@/lib/invoices";
 import { formatMoney } from "@/lib/money";
 import { invoiceShareText, whatsappShareLink } from "@/lib/notify";
-import { cancelInvoice, deleteInvoice, markInvoicePaid, reopenInvoice, sendDraftInvoiceAction } from "../../actions";
+import { depositState, insideCancelWindow } from "@/lib/deposit";
+import { cancelInvoice, deleteInvoice, markDepositPaid, markInvoicePaid, reopenInvoice, sendDraftInvoiceAction } from "../../actions";
 import { CopyLink, DeleteInvoice, ReminderDraft } from "./client";
 
 const date = (d: Date) => d.toLocaleDateString("az-AZ", { day: "2-digit", month: "2-digit", year: "numeric" });
@@ -17,9 +18,12 @@ export default async function InvoiceDetail({ params }: { params: Promise<{ id: 
   const profile = await requireProfile();
   const invoice = await db.invoice.findFirst({
     where: { id: (await params).id, profileId: profile.id },
-    include: { items: { orderBy: { position: "asc" } }, payments: { orderBy: { createdAt: "desc" } }, order: { select: { createdAt: true } } },
+    include: { items: { orderBy: { position: "asc" } }, payments: { orderBy: { createdAt: "desc" } }, order: { select: { createdAt: true, scheduledAt: true } } },
   });
   if (!invoice) notFound();
+
+  const deposit = depositState(invoice, invoice.payments);
+  const noRefund = insideCancelWindow(invoice.order?.scheduledAt ?? null, invoice.cancelWindowHours);
 
   const status = effectiveStatus(invoice);
   const url = invoiceUrl(invoice.publicId);
@@ -51,6 +55,30 @@ export default async function InvoiceDetail({ params }: { params: Promise<{ id: 
             </form>
             <Link href="/dashboard/settings" className={secondaryButtonClass}>Planı yüksəlt</Link>
           </div>
+        </div>
+      )}
+
+      {deposit && !deposit.fullyPaid && (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-gray-200 bg-white p-4">
+          <div className="text-sm">
+            <p className="font-semibold">
+              {deposit.depositPaid ? "Beh alınıb" : "Beh gözlənilir"} ·{" "}
+              <span className="font-mono">
+                {formatMoney(deposit.paid, invoice.currency)} / {formatMoney(deposit.required, invoice.currency)}
+              </span>
+            </p>
+            <p className="mt-0.5 text-gray-600">
+              {deposit.depositPaid
+                ? `Rezervasiya təsdiqlənib. Qalıq: ${formatMoney(deposit.remaining, invoice.currency)}.`
+                : "Beh ödənilənə qədər rezervasiya təsdiqlənmiş sayılmır."}
+              {invoice.cancelWindowHours ? ` Ləğv pəncərəsi: ${invoice.cancelWindowHours} saat${noRefund ? " — artıq keçib, beh qaytarılmır" : ""}.` : ""}
+            </p>
+          </div>
+          {!deposit.depositPaid && (
+            <form action={markDepositPaid.bind(null, invoice.id)}>
+              <button className={buttonClass}>Beh alındı</button>
+            </form>
+          )}
         </div>
       )}
 

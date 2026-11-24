@@ -28,6 +28,8 @@ export default async function EditService({ params }: { params: Promise<{ id: st
           legacyDuration: service.duration ?? undefined,
           durationMin: service.durationMin ? String(service.durationMin) : "",
           location: service.location,
+          depositPercent: service.depositPercent ? String(service.depositPercent) : "",
+          cancelWindowHours: String(service.cancelWindowHours),
         }}
       />
     </div>

@@ -26,6 +26,8 @@ export type ServiceValues = {
   legacyDuration?: string;
   durationMin: string;
   location: "SELLER" | "CUSTOMER" | "ONLINE";
+  depositPercent: string;
+  cancelWindowHours: string;
 };
 
 const LOCATIONS = [
@@ -259,6 +261,52 @@ export function ServiceForm({ service }: { service: ServiceValues }) {
               <p className="mt-1.5 text-xs text-gray-500">“Müştərinin ünvanında” seçsəniz, sifarişdə ünvan soruşulur və yol buferi tətbiq olunur.</p>
             </label>
           </div>
+
+          <fieldset className="border-t border-gray-100 pt-5">
+            <legend className="mb-1.5 text-sm font-medium text-gray-700">
+              Beh <span className="font-normal text-gray-400">(könüllü)</span>
+            </legend>
+            <p className="mb-3 text-xs text-gray-500">
+              Beh yazsanız, faktura üzərində ilkin ödəniş kimi göstərilir və rezervasiya beh ödənildikdən sonra təsdiqlənmiş sayılır.
+            </p>
+            <div className="grid gap-4 lg:grid-cols-2">
+              <label className="block">
+                <span className="mb-1 block text-xs font-medium text-gray-600">Beh faizi</span>
+                <span className="flex rounded-lg border border-gray-300 bg-white focus-within:border-[var(--brand)] focus-within:ring-2 focus-within:ring-[var(--brand)]/20">
+                  <input
+                    name="depositPercent"
+                    type="number"
+                    min={1}
+                    max={99}
+                    inputMode="numeric"
+                    defaultValue={service.depositPercent}
+                    placeholder="Beh yoxdur"
+                    className="w-full min-w-0 rounded-l-lg bg-transparent px-3 py-2 text-sm outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none"
+                  />
+                  <span className="grid place-items-center rounded-r-lg border-l border-gray-200 bg-gray-50 px-2.5 text-xs font-medium text-gray-500">%</span>
+                </span>
+                <span className="mt-1 block text-xs text-gray-500">Boş qalsa, beh tələb olunmur. Bazar standartı 20-30%-dir.</span>
+              </label>
+
+              <label className="block">
+                <span className="mb-1 block text-xs font-medium text-gray-600">Ləğv pəncərəsi</span>
+                <span className="flex rounded-lg border border-gray-300 bg-white focus-within:border-[var(--brand)] focus-within:ring-2 focus-within:ring-[var(--brand)]/20">
+                  <input
+                    name="cancelWindowHours"
+                    type="number"
+                    min={0}
+                    max={720}
+                    inputMode="numeric"
+                    defaultValue={service.cancelWindowHours}
+                    placeholder="24"
+                    className="w-full min-w-0 rounded-l-lg bg-transparent px-3 py-2 text-sm outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none"
+                  />
+                  <span className="grid place-items-center rounded-r-lg border-l border-gray-200 bg-gray-50 px-2.5 text-xs font-medium text-gray-500">saat</span>
+                </span>
+                <span className="mt-1 block text-xs text-gray-500">Bu müddətdən az qalmış ləğvdə beh qaytarılmır.</span>
+              </label>
+            </div>
+          </fieldset>
         </div>
       </Card>
     </ActionForm>

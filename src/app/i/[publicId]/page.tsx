@@ -2,6 +2,7 @@ import { HomeButton } from "@/components/HomeButton";
 import { notFound } from "next/navigation";
 import { getDictionary, getLocale } from "@/i18n/server";
 import { db } from "@/lib/db";
+import { depositState } from "@/lib/deposit";
 import { getPublicInvoice } from "@/lib/invoices";
 import { formatMoney } from "@/lib/money";
 import { reviewableInvoice } from "@/lib/reviews";
@@ -22,6 +23,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ public
   const t = getDictionary(locale).invoicePublic;
   const { profile } = invoice;
   const payable = ["SENT", "VIEWED", "OVERDUE"].includes(invoice.status);
+  const deposit = depositState(invoice, invoice.payments);
   // Ödəniş təsdiqləndikdən sonra müştəri bir dəfə rəy yaza bilər (FR-KAT-09)
   const { invoice: reviewable, existing: review } = await reviewableInvoice(invoice);
 
@@ -53,6 +55,19 @@ export default async function InvoicePage({ params }: { params: Promise<{ public
           <span>{t.total}</span>
           <span>{formatMoney(invoice.totalQepik, invoice.currency)}</span>
         </p>
+
+        {deposit && !deposit.fullyPaid && (
+          <div className="mt-4 rounded-xl border border-[var(--brand)]/30 bg-[var(--brand)]/5 p-4 text-sm">
+            <p className="flex justify-between font-semibold text-[var(--brand)]">
+              <span>{deposit.depositPaid ? t.depositPaid : t.depositDue}</span>
+              <span>{formatMoney(deposit.depositPaid ? deposit.remaining : deposit.required - deposit.paid, invoice.currency)}</span>
+            </p>
+            <p className="mt-1 text-gray-600">
+              {deposit.depositPaid ? t.depositRest : t.depositHint}
+              {invoice.cancelWindowHours ? ` ${fill(t.cancelNote, { hours: String(invoice.cancelWindowHours) })}` : ""}
+            </p>
+          </div>
+        )}
 
         {payable && invoice.paymentMethod !== "ONLINE" && (
           <div className="mt-6 rounded-xl bg-gray-50 p-4 text-sm">

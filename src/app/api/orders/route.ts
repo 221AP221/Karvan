@@ -4,6 +4,7 @@ import { z } from "zod";
 import { logActivity } from "@/lib/activity";
 import { db } from "@/lib/db";
 import { DEFAULT_DURATION_MIN, parseDay, slotIsFree, slotRange } from "@/lib/booking";
+import { depositAmount } from "@/lib/deposit";
 import { InvoiceLimitError, createInvoice, invoiceUrl } from "@/lib/invoices";
 import { notify } from "@/lib/notifications";
 import { LIMITS, clientIp, limitByIp, rateLimit, tooMany } from "@/lib/rate-limit";
@@ -137,6 +138,10 @@ export async function POST(request: Request) {
       items: [{ title: service.title, quantity: order.quantity, unitQepik: service.amountQepik! }],
       currency: service.currency,
       dueAt: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+      // Beh tələb olunursa, faktura üzərində göstərilir: slot yalnız beh ödənildikdən
+      // sonra təsdiqlənmiş sayılır (FR-BEH-03, BRU-31)
+      depositQepik: depositAmount(service.amountQepik! * order.quantity, service.depositPercent),
+      cancelWindowHours: service.depositPercent ? service.cancelWindowHours : null,
     });
     return NextResponse.json({ invoiceUrl: invoiceUrl(invoice.publicId) });
   } catch (error) {

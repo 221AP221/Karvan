@@ -19,6 +19,9 @@ export type NewInvoice = {
   paymentMethod?: PaymentMethod;
   dueAt?: Date | null;
   note?: string | null;
+  /** Rezervasiyanı tutmaq üçün tələb olunan beh və onun ləğv pəncərəsi (FR-BEH-03/05) */
+  depositQepik?: number | null;
+  cancelWindowHours?: number | null;
   /**
    * Limit dolubsa nə baş versin (FR-FAK-16, BRU-28). "throw" (defolt) — sifariş axını üçün:
    * sabit qiymətli sifariş sorğuya çevrilsin (FR-SIF-06), müştəriyə göndərilə bilməyən DRAFT
@@ -72,6 +75,8 @@ export async function createInvoice(input: NewInvoice) {
         customerEmail: input.customerEmail,
         paymentMethod,
         totalQepik: input.items.reduce((sum, i) => sum + i.quantity * i.unitQepik, 0),
+        depositQepik: input.depositQepik ?? null,
+        cancelWindowHours: input.cancelWindowHours ?? null,
         currency: input.currency ?? "AZN",
         dueAt: input.dueAt,
         note: input.note,
@@ -89,8 +94,10 @@ export function getPublicInvoice(publicId: string) {
     include: {
       items: { orderBy: { position: "asc" } },
       profile: { include: { user: { select: { subscription: { select: { plan: true } } } } } },
+      // Beh vəziyyəti üçün ödənişlər (FR-BEH-03)
+      payments: { select: { amountQepik: true, status: true, kind: true } },
       // Rəy forması eyni səhifədədir: ikinci dəfə soruşmamaq üçün buradaca gətirilir
-      order: { select: { serviceId: true } },
+      order: { select: { serviceId: true, scheduledAt: true } },
       review: { select: { rating: true, comment: true } },
     },
   });

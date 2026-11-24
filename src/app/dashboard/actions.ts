@@ -12,6 +12,7 @@ import { refreshRating } from "@/lib/reviews";
 import { deleteMediaByUrl, ownedMediaUrl } from "@/lib/media";
 import { PLAN_LIMITS } from "@/lib/plans";
 import { InvoiceLimitError, createInvoice, invoiceUrl, sendDraftInvoice } from "@/lib/invoices";
+import { depositState, paidQepik } from "@/lib/deposit";
 import { aznToQepik, formatMoney, isCurrency } from "@/lib/money";
 import { sendEmail } from "@/lib/notify";
 import { SERVICE_CATEGORIES } from "@/lib/services";
@@ -50,6 +51,17 @@ const ServiceInput = z
       .transform((v) => (v && v.trim() ? Number(v) : null))
       .refine((v) => v === null || (Number.isInteger(v) && v >= 5 && v <= 600), "Seans müddəti 5-600 dəqiqə aralığında olmalıdır"),
     location: z.enum(["SELLER", "CUSTOMER", "ONLINE"]).default("ONLINE"),
+    // Beh (FR-BEH-01/02/05): boş = beh tələb olunmur
+    depositPercent: z
+      .string()
+      .optional()
+      .transform((v) => (v && v.trim() ? Number(v) : null))
+      .refine((v) => v === null || (Number.isInteger(v) && v >= 1 && v <= 99), "Beh faizi 1-99 aralığında olmalıdır"),
+    cancelWindowHours: z
+      .string()
+      .optional()
+      .transform((v) => (v && v.trim() ? Number(v) : 24))
+      .refine((v) => Number.isInteger(v) && v >= 0 && v <= 720, "Ləğv pəncərəsi 0-720 saat aralığında olmalıdır"),
   })
   .transform(({ amount, ...rest }, ctx) => {
     if (rest.category === "other" && !rest.customCategory) {
@@ -237,15 +249,46 @@ export async function sendDraftInvoiceAction(id: string) {
   revalidatePath(`/dashboard/invoices/${id}`);
 }
 
+/** Beh alındı: faktura bağlanmır, yalnız ilkin ödəniş qeydə alınır (FR-BEH-03/04). */
+export async function markDepositPaid(id: string) {
+  const profile = await requirePermission("invoices");
+  const invoice = await db.invoice.findFirst({
+    where: { id, profileId: profile.id },
+    include: { payments: { select: { amountQepik: true, status: true, kind: true } } },
+  });
+  if (!invoice?.depositQepik || invoice.status === "PAID" || invoice.status === "CANCELLED") return;
+  const state = depositState(invoice, invoice.payments);
+  if (!state || state.depositPaid) return;
+
+  await db.payment.create({
+    data: { invoiceId: id, provider: "manual", amountQepik: state.required - state.paid, kind: "DEPOSIT", status: "SUCCEEDED" },
+  });
+  // Müştəri "ödədim" demişdisə, status yenidən gözləməyə qayıdır: qalıq hələ gəlməyib
+  if (invoice.status === "CLAIMED_PAID") await db.invoice.update({ where: { id }, data: { status: "SENT" } });
+  await logActivity({ userId: profile.userId, email: profile.user.email, profileId: profile.id, actor: profile.actor, action: "deposit_paid", details: invoice.number });
+  revalidatePath(`/dashboard/invoices/${id}`);
+  revalidatePath(`/i/${invoice.publicId}`);
+}
+
 export async function markInvoicePaid(id: string) {
   const profile = await requirePermission("invoices");
-  const invoice = await db.invoice.findFirst({ where: { id, profileId: profile.id } });
+  const invoice = await db.invoice.findFirst({
+    where: { id, profileId: profile.id },
+    include: { payments: { select: { amountQepik: true, status: true, kind: true } } },
+  });
   if (!invoice || invoice.status === "PAID" || invoice.status === "CANCELLED") return;
+  // Beh artıq alınıbsa, qalan məbləğ "qalıq" kimi yazılır (FR-BEH-04)
+  const already = paidQepik(invoice.payments);
+  const rest = Math.max(0, invoice.totalQepik - already);
   await db.$transaction([
     db.invoice.update({ where: { id }, data: { status: "PAID", paidAt: new Date() } }),
-    db.payment.create({
-      data: { invoiceId: id, provider: "manual", amountQepik: invoice.totalQepik, status: "SUCCEEDED" },
-    }),
+    ...(rest > 0
+      ? [
+          db.payment.create({
+            data: { invoiceId: id, provider: "manual", amountQepik: rest, kind: already > 0 ? ("BALANCE" as const) : ("FULL" as const), status: "SUCCEEDED" },
+          }),
+        ]
+      : []),
   ]);
   await logActivity({ userId: profile.userId, email: profile.user.email, profileId: profile.id, actor: profile.actor, action: "invoice_paid", details: invoice.number });
 

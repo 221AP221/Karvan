@@ -53,6 +53,13 @@ enum PaymentStatus {
   FAILED
 }
 
+// Beh mexanizmi (FR-BEH): beh ayrıca faktura deyil, eyni fakturaya bağlı ödənişdir
+enum PaymentKind {
+  FULL // tam məbləğ bir dəfəyə
+  DEPOSIT // beh (ilkin ödəniş)
+  BALANCE // qalıq
+}
+
 enum Citizenship {
   AZ // FİN kod
   FOREIGN // pasport nömrəsi
@@ -255,6 +262,9 @@ model Service {
   // müddətidir, bu isə təqvimdə tutulan vaxtdır (FR-REZ-02, FR-REZ-07)
   durationMin    Int?
   location       ServiceLocation @default(ONLINE)
+  // Beh (FR-BEH-01/02/05): null = beh tələb olunmur. Faiz xidmət səviyyəsində təyin olunur.
+  depositPercent    Int?
+  cancelWindowHours Int @default(24)
   isActive       Boolean   @default(true)
   blocked        Boolean   @default(false) // admin moderasiyası: səhifədə və kataloqda görünmür
   position       Int       @default(0)
@@ -322,6 +332,10 @@ model Invoice {
   status        InvoiceStatus @default(DRAFT)
   paymentMethod PaymentMethod @default(MANUAL)
   totalQepik    Int
+  // Rezervasiyanı tutmaq üçün tələb olunan ilkin ödəniş (FR-BEH-03); null = beh yoxdur
+  depositQepik  Int?
+  // Ləğv pəncərəsi: bu saatdan az qalmış ləğvdə beh qaytarılmır (BRU-32)
+  cancelWindowHours Int?
   currency      String        @default("AZN")
   note          String?
   issuedAt      DateTime      @default(now())
@@ -356,6 +370,7 @@ model Payment {
   provider    String // "manual" | gateway adı
   externalId  String?
   amountQepik Int
+  kind        PaymentKind   @default(FULL)
   status      PaymentStatus @default(PENDING)
   receiptUrl  String? // manual ödənişdə müştərinin yüklədiyi qəbz
   createdAt   DateTime      @default(now())
