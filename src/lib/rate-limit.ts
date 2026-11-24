@@ -71,6 +71,7 @@ export const LIMITS = {
   // eyni xidmətə təkrar sifariş limiti dardır (spam məhz orada olur)
   order: { max: 20, windowMs: 10 * 60_000 },
   orderPerService: { max: 4, windowMs: 10 * 60_000 },
+  slots: { max: 120, windowMs: 10 * 60_000 }, // boş saatlar: müştəri bir neçə günə baxır
   claimPaid: { max: 10, windowMs: 10 * 60_000 },
   track: { max: 240, windowMs: 60_000 },
   media: { max: 40, windowMs: 10 * 60_000 },

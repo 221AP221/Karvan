@@ -24,6 +24,13 @@ enum OrderStatus {
   REJECTED
 }
 
+// Xidmətin harada göstərildiyi: yol buferi yalnız müştərinin ünvanında tətbiq olunur (FR-REZ-07/08)
+enum ServiceLocation {
+  SELLER // ustanın məkanı
+  CUSTOMER // müştərinin ünvanı
+  ONLINE
+}
+
 enum InvoiceStatus {
   DRAFT
   SENT
@@ -161,6 +168,15 @@ model Profile {
   bankName    String?
   accountName String?
 
+  // Rezervasiya (FR-REZ): könüllüdür — söndürülübsə sifarişdə vaxt sərbəst mətnlə razılaşdırılır
+  bookingEnabled Boolean @default(false)
+  bufferMin      Int     @default(0) // iki rezervasiya arasındakı sabit ara (dəq)
+  travelBufferMin Int    @default(0) // əlavə yol buferi: yalnız müştərinin ünvanında (FR-REZ-08)
+  workDays       String  @default("1,2,3,4,5") // 1 = bazar ertəsi … 7 = bazar
+  workStart      String  @default("09:00")
+  workEnd        String  @default("18:00")
+  blockedSlots   BlockedSlot[]
+
   socialLinks   SocialLink[]
   portfolio     PortfolioItem[]
   media         Media[]
@@ -235,6 +251,10 @@ model Service {
   durationDays   Int?
   durationWeeks  Int?
   durationMonths Int?
+  // Rezervasiya üçün seans müddəti (dəq) və məkan tipi — yuxarıdakı gün/həftə/ay paketin etibarlılıq
+  // müddətidir, bu isə təqvimdə tutulan vaxtdır (FR-REZ-02, FR-REZ-07)
+  durationMin    Int?
+  location       ServiceLocation @default(ONLINE)
   isActive       Boolean   @default(true)
   blocked        Boolean   @default(false) // admin moderasiyası: səhifədə və kataloqda görünmür
   position       Int       @default(0)
@@ -262,10 +282,30 @@ model Order {
   visitorId     String?
   createdAt     DateTime    @default(now())
 
+  // Rezervasiya (FR-REZ): slot seçiləndə dolur. scheduledEndAt bufer daxil edilmiş bitmə anıdır —
+  // slotun boş olub-olmadığı bir sorğu ilə yoxlansın deyə saxlanılır.
+  scheduledAt    DateTime?
+  scheduledEndAt DateTime?
+  address        String? // yalnız məkan tipi CUSTOMER olanda (FR-REZ-08)
+
   invoice Invoice?
 
   @@index([profileId, status])
   @@index([profileId, createdAt])
+  @@index([profileId, scheduledAt])
+}
+
+// Ustanın sifariş olmadan bağladığı vaxt və ya tam gün (FR-REZ-06)
+model BlockedSlot {
+  id        String   @id @default(cuid())
+  profileId String
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  start     DateTime
+  end       DateTime
+  note      String?
+  createdAt DateTime @default(now())
+
+  @@index([profileId, start])
 }
 
 model Invoice {

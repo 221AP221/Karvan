@@ -19,6 +19,7 @@ const NAV = [
   { href: "/dashboard/orders", key: "orders" },
   { href: "/dashboard/invoices", key: "invoices" },
   { href: "/dashboard/services", key: "services" },
+  { href: "/dashboard/booking", key: "booking" },
   { href: "/dashboard/analytics", key: "analytics" },
   { href: "/dashboard/reviews", key: "reviews" },
   { href: "/dashboard/notifications", key: "notifications" },

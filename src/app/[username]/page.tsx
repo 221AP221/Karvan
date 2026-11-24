@@ -364,7 +364,14 @@ export default async function ProfilePage({ params }: Props) {
                         </p>
                       )}
                       {service.description && <p className="mt-3 flex-1 text-sm text-gray-600">{service.description}</p>}
-                      <OrderForm serviceId={service.id} serviceTitle={service.title} fixedPrice={service.priceType === "FIXED"} t={t} />
+                      <OrderForm
+                        serviceId={service.id}
+                        serviceTitle={service.title}
+                        fixedPrice={service.priceType === "FIXED"}
+                        booking={profile.bookingEnabled}
+                        needsAddress={service.location === "CUSTOMER"}
+                        t={t}
+                      />
                     </li>
                   ))}
                 </ul>

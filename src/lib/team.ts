@@ -52,6 +52,7 @@ export const can = (role: TeamRole, permission: Permission) =>
 /** Paneldəki bölmələr: üzvün rolu görə bilmədiyi bölməni gizlədirik. */
 export const NAV_PERMISSION: Record<string, Permission> = {
   "/dashboard/services": "services",
+  "/dashboard/booking": "services",
   "/dashboard/analytics": "analytics",
   "/dashboard/reviews": "reviews",
   "/dashboard/notifications": "notifications",

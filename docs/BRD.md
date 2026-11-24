@@ -900,17 +900,17 @@ Qərar — konfiqurasiya edən usta slot əsaslı rezervasiya alır, etməyən s
 
 | # | Tələb | Pri | Mənbə | Yox. | Vəz. |
 |---|---|---|---|---|---|
-| FR-REZ-01 | Usta öz panelində iş saatlarını, hər xidmətin müddətini və bufer dəyərini təyin edə bilməlidir | M | SH-SAT-15 | T | ⬜ |
-| FR-REZ-02 | Boş slotlar "xidmət müddəti + bufer" düsturu ilə hesablanmalıdır; bufer usta tərəfindən bir dəfə təyin olunan sabit dəyərdir | M | FR-REZ-01 | T | ⬜ |
-| FR-REZ-03 | Müştəri yalnız boş slotları görməlidir; dolu vaxtlar interfeysdə göstərilməməlidir | M | SH-MUS-05 | T | ⬜ |
-| FR-REZ-04 | Slot seçimi sifarişi dərhal "Təsdiqlənib" statusuna gətirməlidir; ayrıca usta təsdiqi tələb olunmamalıdır | M | BRU-25 | T | ⬜ |
-| FR-REZ-05 | Yeni rezervasiya yarandıqda usta dərhal bildiriş almalıdır | M | IR-03 | T | ⬜ |
-| FR-REZ-06 | Usta təqvimdə sifariş olmadan vaxt və ya tam gün bağlaya bilməlidir | S | SH-SAT-15 | T | ⬜ |
-| FR-REZ-07 | Xidmətin məkan tipi xidmət səviyyəsində təyin olunmalıdır: ustanın məkanı, müştərinin ünvanı, onlayn | M | FR-XID | T | ⬜ |
-| FR-REZ-08 | Məkan tipi "müştərinin ünvanı" olduqda sifarişdə ünvan sahəsi tələb olunmalı və yol buferi tətbiq edilməlidir; digər iki tipdə ünvan tələb olunmamalı və yol buferi tətbiq edilməməlidir | M | FR-REZ-07 | T | ⬜ |
-| FR-REZ-09 | Usta panelində gündəlik görünüş olmalıdır: saat, müştəri, xidmət, ünvan, status və məbləğ bir sətirdə; boş vaxtlar vizual fərqlənməlidir | S | SH-SAT-06 | D | ⬜ |
-| FR-REZ-10 | İki ardıcıl rezervasiya arasında bufer çatmadıqda sətir xəbərdarlıqla işarələnməlidir | S | FR-REZ-02 | T | ⬜ |
-| FR-REZ-11 | Təqvimi aktivləşdirməmiş usta üçün müştəri sərbəst mətn şəklində istədiyi vaxtı göstərməlidir; usta təsdiqləməli və ya alternativ təklif etməlidir | M | FR-SIF-04 | T | ⬜ |
+| FR-REZ-01 | Usta öz panelində iş saatlarını, hər xidmətin müddətini və bufer dəyərini təyin edə bilməlidir | M | SH-SAT-15 | T || ✅ |
+| FR-REZ-02 | Boş slotlar "xidmət müddəti + bufer" düsturu ilə hesablanmalıdır; bufer usta tərəfindən bir dəfə təyin olunan sabit dəyərdir | M | FR-REZ-01 | T || ✅ |
+| FR-REZ-03 | Müştəri yalnız boş slotları görməlidir; dolu vaxtlar interfeysdə göstərilməməlidir | M | SH-MUS-05 | T || ✅ |
+| FR-REZ-04 | Slot seçimi sifarişi dərhal "Təsdiqlənib" statusuna gətirməlidir; ayrıca usta təsdiqi tələb olunmamalıdır | M | BRU-25 | T || ✅ |
+| FR-REZ-05 | Yeni rezervasiya yarandıqda usta dərhal bildiriş almalıdır | M | IR-03 | T || ✅ |
+| FR-REZ-06 | Usta təqvimdə sifariş olmadan vaxt və ya tam gün bağlaya bilməlidir | S | SH-SAT-15 | T || ✅ |
+| FR-REZ-07 | Xidmətin məkan tipi xidmət səviyyəsində təyin olunmalıdır: ustanın məkanı, müştərinin ünvanı, onlayn | M | FR-XID | T || ✅ |
+| FR-REZ-08 | Məkan tipi "müştərinin ünvanı" olduqda sifarişdə ünvan sahəsi tələb olunmalı və yol buferi tətbiq edilməlidir; digər iki tipdə ünvan tələb olunmamalı və yol buferi tətbiq edilməməlidir | M | FR-REZ-07 | T || ✅ |
+| FR-REZ-09 | Usta panelində gündəlik görünüş olmalıdır: saat, müştəri, xidmət, ünvan, status və məbləğ bir sətirdə; boş vaxtlar vizual fərqlənməlidir | S | SH-SAT-06 | D || ✅ |
+| FR-REZ-10 | İki ardıcıl rezervasiya arasında bufer çatmadıqda sətir xəbərdarlıqla işarələnməlidir | S | FR-REZ-02 | T || ✅ |
+| FR-REZ-11 | Təqvimi aktivləşdirməmiş usta üçün müştəri sərbəst mətn şəklində istədiyi vaxtı göstərməlidir; usta təsdiqləməli və ya alternativ təklif etməlidir | M | FR-SIF-04 | T || ✅ |
 
 **Əhatədən kənar (bu mərhələdə).** Zona əsaslı bufer, marşrut hesablaması, xarici təqvimlə ikitərəfli sinxronizasiya, təkrarlanan seanslar.
 
@@ -948,9 +948,9 @@ Qərar — beh ayrıca mexanizm kimi qurulmur: mövcud faktura obyektinin üzər
 | FR-BLD | 7 | 4 | 2 | 1 |
 | FR-REY | 7 | 7 | 0 | 0 |
 | FR-KMD | 12 | 12 | 0 | 0 |
-| FR-REZ | 11 | 0 | 0 | 11 |
+| FR-REZ | 11 | 11 | 0 | 0 |
 | FR-BEH | 5 | 0 | 0 | 5 |
-| **Cəmi** | **201** | **163 (81%)** | **5 (2%)** | **33 (17%)** |
+| **Cəmi** | **201** | **174 (87%)** | **5 (2%)** | **22 (11%)** |
 
 Lansı bloklayan `M` prioritetli açıq tələb yoxdur; 🟡 vəziyyətli FR-HES-06 və FR-BLD-02 IR-03-ün (e-poçt provayderi) bağlanması ilə həll olunur. FR-REZ, FR-BEH və FR-FAK-14…18/FR-ODN-09…17-nin ⬜ olması v2.3-də **qərar** kimi təsbit edildiyini, hələ **reallaşmadığını** göstərir — icra §29 yol xəritəsi üzrə gedir (FR-FAK-14…18 və FR-ODN-16…17 istisna, bunlar baseline daxilində dərhal icra oluna bilər).
 
@@ -1644,7 +1644,7 @@ Versiya 2.0 təsdiqləndikdən sonra (§0.4) bu sənəd **baseline** sayılır. 
 | **v1.2b — Beh** | Xidmət səviyyəli beh tələbi və qalıq ödənişi (FR-BEH-*) | Gəlin makiyajı/fotosessiya seqmentinin konversiyası | X-10, v1.2-dən asılı |
 | **v1.3 — Kataloqun gücləndirilməsi** | Sahə/şəhər ünvanlarının genişlənməsi, faktura səhifəsi və panelin qalan bölmələrinin çoxdilliliyi | Orqanik trafik (BG-06) | FR-DIL-06 |
 | **v1.4 — Komanda** | Pro Max-da 5 üzv, rol bölgüsü | Studiyalar üçün Pro Max dəyəri | X-03 |
-| **v1.5 — Rezervasiya və təqvim** | Slot təqvimi, usta gündəlik görünüşü, bufer, məkan tipi (FR-REZ-*) — asılılığı yoxdur, paralel icra oluna bilər | Rezervasiya ağrısının həlli (İ-13), aktivləşmə (BG-02) | X-07 |
+| ~~v1.5 — Rezervasiya və təqvim~~ ✅ reallaşıb | Slot təqvimi, usta gündəlik görünüşü, bufer, məkan tipi (FR-REZ-01…11); könüllüdür, söndürülmüş halda sorğu rejimi qalır | Rezervasiya ağrısının həlli (İ-13), aktivləşmə (BG-02) | X-07 bağlandı |
 | **v2 — Rəsmiləşmə və avtomatlaşdırma** | VÖEN/e-qaimə, Dövlət Vergi Xidməti inteqrasiyası, abunəliyin avtomatik yenilənməsi, obyekt saxlamasına keçid | Böyük satıcılar, saxlanma (BG-07) | X-04, X-09, RSK-05, RSK-06, RSK-17 |
 
 > **Baseline v2.3-də dərhal:** pulsuz faktura limitinin 25-ə qaldırılması (FR-FAK-14…18) və ödəniş izləməsinin əl rejimi dəqiqləşdirməsi (FR-ODN-16…17) xarici asılılığı olmayan tələblərdir və yol xəritəsindən kənar, cari baseline daxilində icra oluna bilər.

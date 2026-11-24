@@ -3,6 +3,7 @@ import { normalizePhone } from "@/lib/phone";
 import { z } from "zod";
 import { logActivity } from "@/lib/activity";
 import { db } from "@/lib/db";
+import { DEFAULT_DURATION_MIN, parseDay, slotIsFree, slotRange } from "@/lib/booking";
 import { InvoiceLimitError, createInvoice, invoiceUrl } from "@/lib/invoices";
 import { notify } from "@/lib/notifications";
 import { LIMITS, clientIp, limitByIp, rateLimit, tooMany } from "@/lib/rate-limit";
@@ -18,6 +19,10 @@ const OrderInput = z.object({
   note: z.string().max(1000).optional(),
   quantity: z.coerce.number().int().min(1).max(100).default(1),
   visitorId: z.string().regex(/^[A-Za-z0-9_-]{8,64}$/).optional().catch(undefined),
+  // Rezervasiya (FR-REZ-04): təqvim aktiv olanda müştəri gün və saat seçir
+  day: z.string().optional(),
+  slot: z.string().optional(),
+  address: z.string().trim().max(200).optional(),
 });
 
 export async function POST(request: Request) {
@@ -35,9 +40,42 @@ export async function POST(request: Request) {
   const perService = rateLimit(`order:${await clientIp()}:${input.serviceId}`, LIMITS.orderPerService.max, LIMITS.orderPerService.windowMs);
   if (!perService.ok) return tooMany(perService, "Bu xidmət üçün sifariş artıq göndərilib. Satıcı tezliklə əlaqə saxlayacaq.");
 
-  const service = await db.service.findUnique({ where: { id: input.serviceId }, include: { profile: { select: { user: { select: { blockedAt: true } } } } } });
+  const service = await db.service.findUnique({
+    where: { id: input.serviceId },
+    include: {
+      profile: {
+        select: {
+          bookingEnabled: true,
+          bufferMin: true,
+          travelBufferMin: true,
+          workDays: true,
+          workStart: true,
+          workEnd: true,
+          user: { select: { blockedAt: true } },
+        },
+      },
+    },
+  });
   if (!service || !service.isActive || service.blocked || service.profile.user.blockedAt) {
     return NextResponse.json({ error: "Xidmət tapılmadı" }, { status: 404 });
+  }
+
+  // Rezervasiya: slot seçilməlidir, boş olmalıdır və ünvan tələb olunan halda yazılmalıdır
+  let schedule: { start: Date; end: Date } | null = null;
+  if (service.profile.bookingEnabled) {
+    const day = parseDay(input.day ?? "");
+    if (!day || !input.slot) return NextResponse.json({ error: "Vaxt seçin" }, { status: 400 });
+    if (service.location === "CUSTOMER" && !input.address) {
+      return NextResponse.json({ error: "Ünvanı yazın" }, { status: 400 });
+    }
+    schedule = slotRange(service.profile, day, input.slot, service.durationMin ?? DEFAULT_DURATION_MIN, service.location);
+    if (!schedule || schedule.start.getTime() < Date.now()) {
+      return NextResponse.json({ error: "Seçilən vaxt keçərli deyil" }, { status: 400 });
+    }
+    // Seçilən saat hələ də boş olmalıdır: müştəri formanı doldurarkən başqası tuta bilər (BRU-30)
+    if (!(await slotIsFree(service.profileId, schedule.start, schedule.end))) {
+      return NextResponse.json({ error: "Bu vaxt yeni tutulub. Başqa saat seçin.", slotTaken: true }, { status: 409 });
+    }
   }
 
   // Sifarişi gətirən mənbə: bu ziyarətçinin səhifəyə son girişi
@@ -62,7 +100,11 @@ export async function POST(request: Request) {
       quantity: input.quantity,
       source: lastView?.source ?? null,
       visitorId: input.visitorId ?? null,
-      status: autoInvoice ? "APPROVED" : "PENDING_APPROVAL",
+      // Slot seçilibsə sifariş dərhal təsdiqlənmiş sayılır (FR-REZ-04)
+      status: autoInvoice || schedule ? "APPROVED" : "PENDING_APPROVAL",
+      scheduledAt: schedule?.start ?? null,
+      scheduledEndAt: schedule?.end ?? null,
+      address: service.location === "CUSTOMER" ? (input.address ?? null) : null,
     },
   });
 
@@ -74,7 +116,9 @@ export async function POST(request: Request) {
     profileId: service.profileId,
     event: "ORDER_NEW",
     title: `Yeni sifariş: ${service.title}`,
-    body: `${input.customerName} (${input.customerPhone}) “${service.title}” xidmətini sifariş etdi.${input.note ? `\nQeyd: ${input.note}` : ""}`,
+    body: `${input.customerName} (${input.customerPhone}) “${service.title}” xidmətini sifariş etdi.${
+      schedule ? `\nVaxt: ${schedule.start.toLocaleString("az-AZ", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })}` : ""
+    }${input.address ? `\nÜnvan: ${input.address}` : ""}${input.note ? `\nQeyd: ${input.note}` : ""}`,
     linkPath: "/dashboard/orders",
     entityId: order.id,
   });

@@ -43,6 +43,13 @@ const ServiceInput = z
     durationDays: durationPart(31, "Gün"),
     durationWeeks: durationPart(52, "Həftə"),
     durationMonths: durationPart(36, "Ay"),
+    // Rezervasiya: seans müddəti (dəq) və məkan tipi (FR-REZ-02, FR-REZ-07)
+    durationMin: z
+      .string()
+      .optional()
+      .transform((v) => (v && v.trim() ? Number(v) : null))
+      .refine((v) => v === null || (Number.isInteger(v) && v >= 5 && v <= 600), "Seans müddəti 5-600 dəqiqə aralığında olmalıdır"),
+    location: z.enum(["SELLER", "CUSTOMER", "ONLINE"]).default("ONLINE"),
   })
   .transform(({ amount, ...rest }, ctx) => {
     if (rest.category === "other" && !rest.customCategory) {

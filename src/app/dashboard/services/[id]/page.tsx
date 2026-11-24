@@ -26,6 +26,8 @@ export default async function EditService({ params }: { params: Promise<{ id: st
           durationWeeks: service.durationWeeks ? String(service.durationWeeks) : "",
           durationMonths: service.durationMonths ? String(service.durationMonths) : "",
           legacyDuration: service.duration ?? undefined,
+          durationMin: service.durationMin ? String(service.durationMin) : "",
+          location: service.location,
         }}
       />
     </div>

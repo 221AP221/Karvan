@@ -24,7 +24,15 @@ export type ServiceValues = {
   durationWeeks: string;
   durationMonths: string;
   legacyDuration?: string;
+  durationMin: string;
+  location: "SELLER" | "CUSTOMER" | "ONLINE";
 };
+
+const LOCATIONS = [
+  { value: "SELLER", label: "Mənim məkanımda" },
+  { value: "CUSTOMER", label: "Müştərinin ünvanında" },
+  { value: "ONLINE", label: "Onlayn" },
+] as const;
 
 const selectClass = `${inputClass} appearance-none pr-10`;
 
@@ -215,6 +223,41 @@ export function ServiceForm({ service }: { service: ServiceValues }) {
                 <p className="mt-1.5 text-xs text-gray-500">Hazırkı: “{service.legacyDuration}”. Sahələri doldursanız, bu əvəz olunacaq.</p>
               )}
             </div>
+          </div>
+
+          <div className="grid gap-5 border-t border-gray-100 pt-5 lg:grid-cols-2">
+            <div>
+              <span className="mb-1 block text-sm font-medium text-gray-700">
+                Seans müddəti <span className="font-normal text-gray-400">(rezervasiya üçün)</span>
+              </span>
+              <label className="flex rounded-lg border border-gray-300 bg-white focus-within:border-[var(--brand)] focus-within:ring-2 focus-within:ring-[var(--brand)]/20">
+                <input
+                  name="durationMin"
+                  type="number"
+                  min={5}
+                  max={600}
+                  step={5}
+                  inputMode="numeric"
+                  defaultValue={service.durationMin}
+                  placeholder="60"
+                  className="w-full min-w-0 rounded-l-lg bg-transparent px-3 py-2 text-sm outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none"
+                />
+                <span className="grid place-items-center rounded-r-lg border-l border-gray-200 bg-gray-50 px-2.5 text-xs font-medium text-gray-500">dəq</span>
+              </label>
+              <p className="mt-1.5 text-xs text-gray-500">Təqvimdə bu qədər vaxt tutulur. Boş qalsa, 60 dəqiqə sayılır.</p>
+            </div>
+
+            <label className="block">
+              <span className="mb-1 block text-sm font-medium text-gray-700">Xidmətin məkanı</span>
+              <Select name="location" defaultValue={service.location}>
+                {LOCATIONS.map((l) => (
+                  <option key={l.value} value={l.value}>
+                    {l.label}
+                  </option>
+                ))}
+              </Select>
+              <p className="mt-1.5 text-xs text-gray-500">“Müştərinin ünvanında” seçsəniz, sifarişdə ünvan soruşulur və yol buferi tətbiq olunur.</p>
+            </label>
           </div>
         </div>
       </Card>
