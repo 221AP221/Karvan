@@ -113,21 +113,24 @@ export default async function Dashboard() {
             </div>
           )}
 
-          <Card title={t.yourPage}>
-            <div className="flex flex-wrap items-center justify-between gap-3">
+        </div>
+
+        <MonthCalendar year={now.getFullYear()} month={now.getMonth()} load={load} today={now} />
+      </div>
+
+      {/* Səhifə linki və QR bir kartda: ikisi də eyni şeyi paylaşmağın yoludur */}
+      <Card title={t.yourPage}>
+        <div className="flex flex-wrap items-start justify-between gap-6">
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-3">
               <a href={pageUrl} target="_blank" className="font-mono text-sm text-[var(--brand)] hover:underline">{pageUrl}</a>
               <CopyLink url={pageUrl} />
             </div>
             <p className="mt-2 text-xs text-gray-500">{t.bioHint}</p>
-          </Card>
-        </div>
-
-        {/* Sağ sütun: təqvim öz hündürlüyündə qalır, altındakı boşluğa QR düşür */}
-        <div className="flex flex-col gap-6">
-          <MonthCalendar year={now.getFullYear()} month={now.getMonth()} load={load} today={now} />
+          </div>
           <PageQr url={pageUrl} username={profile.username} />
         </div>
-      </div>
+      </Card>
 
       <div>
         <div className="mb-3 flex items-center justify-between">
@@ -143,9 +146,9 @@ export default async function Dashboard() {
 function Stat({ label, value, href }: { label: string; value: string; href?: string }) {
   const body = (
     <>
-      {/* Başlıq iki sətrə düşə bilər: rəqəm aşağı itələnir ki, bütün kartlarda eyni xəttə düşsün */}
+      {/* Başlıq iki sətrə düşə bilər; rəqəm bir sətirdə qalır ki, kartlarda eyni xəttə düşsün */}
       <p className="min-h-[2rem] text-xs leading-4 text-gray-500">{label}</p>
-      <p className="mt-auto pt-1 text-lg font-semibold">{value}</p>
+      <p className="mt-auto truncate pt-1 text-base font-semibold whitespace-nowrap">{value}</p>
     </>
   );
   const className = "flex h-full flex-col rounded-2xl border border-gray-200 bg-white p-4";

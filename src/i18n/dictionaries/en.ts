@@ -419,6 +419,7 @@ export const en: typeof az = {
       text: "Your sales and page audience. Percentages compare with the previous {n} days.",
       period: "Period",
       days: "d",
+      yearly: "Yearly",
       export: "Export to Excel",
       proOnly: "On the Pro Max plan",
       salesTitle: "Sales",

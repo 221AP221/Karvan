@@ -5,6 +5,7 @@ import {
   Clock,
   Eye,
   Lightbulb,
+  ChevronDown,
   Link2,
   Monitor,
   MousePointerClick,
@@ -223,10 +224,12 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Se
               aria-current={p === period ? "page" : undefined}
               className={`rounded-full px-4 py-1.5 font-medium transition ${p === period ? "bg-gray-900 text-white" : "text-gray-600 hover:text-gray-900"}`}
             >
-              {p} {t.days}
+              {p === 365 ? t.yearly : `${p} ${t.days}`}
             </Link>
           ))}
         </nav>
+        {/* AI təhlili düyməsi: nəticə qutusu yalnız basıldıqdan sonra açılır, boş yer tutmur */}
+        {r.hasEvents && <AiInsights period={period} words={t} />}
         </div>
       </div>
 
@@ -235,9 +238,6 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Se
           {t.noEvents}
         </p>
       )}
-
-      {/* AI təhlili: rəqəmləri oxuyub müşahidə, risk və plan verir */}
-      {r.hasEvents && <AiInsights period={period} words={t} />}
 
       {/* Satış */}
       <section>
@@ -418,38 +418,47 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Se
           )}
         </Card>
 
-        <Card title={t.topLinks}>
-          {r.topLinks.length ? (
-            <ul className="flex flex-col gap-3">
-              {r.topLinks.map(([target, count]) => (
-                <HBar key={target} label={PLATFORM_BY_KEY[target as keyof typeof PLATFORM_BY_KEY]?.label ?? target} value={count} max={r.topLinks[0][1]} display={`${count} ${t.clicksUnit}`} />
-              ))}
-            </ul>
-          ) : (
-            <p className="text-sm text-gray-500">{t.noClicks}</p>
-          )}
-        </Card>
+        {/* Sağ sütun: linklər və tövsiyələr yan-yana durur ki, aşağıda boş yer qalmasın */}
+        <div className="flex flex-col gap-3">
+          <Card title={t.topLinks}>
+            {r.topLinks.length ? (
+              <ul className="flex flex-col gap-3">
+                {r.topLinks.map(([target, count]) => (
+                  <HBar key={target} label={PLATFORM_BY_KEY[target as keyof typeof PLATFORM_BY_KEY]?.label ?? target} value={count} max={r.topLinks[0][1]} display={`${count} ${t.clicksUnit}`} />
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-gray-500">{t.noClicks}</p>
+            )}
+          </Card>
+
+          <Insights r={r} t={t} />
+        </div>
       </section>
 
-      <Insights r={r} t={t} />
-
-      <Card title={t.taggedLinks}>
-        <p className="mb-4 flex gap-2 text-sm text-gray-600">
-          <Link2 size={16} className="mt-0.5 shrink-0 text-[var(--brand)]" aria-hidden />
-          {t.taggedHint}
-        </p>
-        <ul className="flex flex-col divide-y divide-gray-100">
-          {TAGGED.map((tag) => (
-            <li key={tag.tag} className="flex flex-wrap items-center justify-between gap-2 py-2.5">
-              <span className="text-sm">
-                <span className="font-medium">{t[tag.key]}</span>
-                <span className="ml-2 font-mono text-xs text-gray-500">{`${pageUrl}?s=${tag.tag}`}</span>
-              </span>
-              <CopyLink url={`${pageUrl}?s=${tag.tag}`} />
-            </li>
-          ))}
-        </ul>
-      </Card>
+      {/* Etiketli linklər akkordeon: lazım olanda açılır, yer tutmur */}
+      <details className="group rounded-2xl border border-gray-200 bg-white">
+        <summary className="flex cursor-pointer items-center justify-between gap-3 p-5 font-semibold">
+          <span className="flex items-center gap-2">
+            <Link2 size={16} className="text-[var(--brand)]" aria-hidden /> {t.taggedLinks}
+          </span>
+          <ChevronDown size={18} className="shrink-0 text-gray-400 transition group-open:rotate-180" aria-hidden />
+        </summary>
+        <div className="px-5 pb-5">
+          <p className="mb-4 text-sm text-gray-600">{t.taggedHint}</p>
+          <ul className="flex flex-col divide-y divide-gray-100">
+            {TAGGED.map((tag) => (
+              <li key={tag.tag} className="flex flex-wrap items-center justify-between gap-2 py-2.5">
+                <span className="text-sm">
+                  <span className="font-medium">{t[tag.key]}</span>
+                  <span className="ml-2 font-mono text-xs text-gray-500">{`${pageUrl}?s=${tag.tag}`}</span>
+                </span>
+                <CopyLink url={`${pageUrl}?s=${tag.tag}`} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      </details>
     </div>
   );
 }

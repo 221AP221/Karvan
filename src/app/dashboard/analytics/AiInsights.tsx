@@ -41,17 +41,20 @@ export function AiInsights({ period, words }: { period: number; words: Words }) 
 
   const { advice } = state;
 
+  // Düymə başlığın yanında durur; nəticə qutusu yalnız təhlil başlayandan sonra açılır
+  const button = (
+    <button type="button" onClick={run} disabled={state.busy} className={`${secondaryButtonClass} gap-2`}>
+      {state.busy ? <LoaderCircle size={15} className="animate-spin" aria-hidden /> : <Sparkles size={15} aria-hidden />}
+      {state.busy ? words.aiLoading : advice ? words.aiAgain : words.aiButton}
+    </button>
+  );
+
+  if (!advice && !state.busy && !state.error) return button;
+
   return (
-    <Card
-      title={words.aiTitle}
-      actions={
-        <button type="button" onClick={run} disabled={state.busy} className={`${secondaryButtonClass} gap-2`}>
-          {state.busy ? <LoaderCircle size={15} className="animate-spin" aria-hidden /> : <Sparkles size={15} aria-hidden />}
-          {state.busy ? words.aiLoading : advice ? words.aiAgain : words.aiButton}
-        </button>
-      }
-    >
-      {!advice && !state.error && !state.busy && <p className="text-sm text-gray-500">{words.aiText}</p>}
+    <div className="w-full">
+      <Card title={words.aiTitle} actions={button}>
+      {state.busy && !advice && <p className="text-sm text-gray-500">{words.aiText}</p>}
       {state.error && (
         <p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-700">
           {state.error}
@@ -120,6 +123,7 @@ export function AiInsights({ period, words }: { period: number; words: Words }) 
           <p className="text-xs text-gray-400">{words.aiNote}</p>
         </div>
       )}
-    </Card>
+      </Card>
+    </div>
   );
 }

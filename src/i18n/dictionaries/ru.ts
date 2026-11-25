@@ -417,6 +417,7 @@ export const ru: typeof az = {
       text: "Ваши продажи и аудитория страницы. Проценты — сравнение с предыдущими {n} днями.",
       period: "Период",
       days: "дн.",
+      yearly: "Год",
       export: "Экспорт в Excel",
       proOnly: "В плане Pro Max",
       salesTitle: "Продажи",

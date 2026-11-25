@@ -420,6 +420,7 @@ export const az = {
       text: "Satışlarınız və səhifənizə gələn auditoriya. Faizlər əvvəlki {n} günlə müqayisədir.",
       period: "Dövr",
       days: "gün",
+      yearly: "İllik",
       export: "Excel-ə ixrac",
       proOnly: "Pro Max planında",
       salesTitle: "Satış",

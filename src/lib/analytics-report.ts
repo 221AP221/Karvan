@@ -4,7 +4,7 @@ import { OPEN_STATUSES } from "@/lib/invoice-status";
 
 // Analitika səhifəsinin bütün göstəriciləri: seçilmiş dövr və ondan əvvəlki eyni uzunluqlu dövr (müqayisə üçün)
 
-export const PERIODS = [7, 30, 90] as const;
+export const PERIODS = [7, 30, 90, 365] as const;
 export type Period = (typeof PERIODS)[number];
 
 const DAY = 86_400_000;

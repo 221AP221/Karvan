@@ -416,6 +416,7 @@ export const tr: typeof az = {
       text: "Satışlarınız ve sayfanıza gelen kitle. Yüzdeler önceki {n} günle karşılaştırmadır.",
       period: "Dönem",
       days: "gün",
+      yearly: "Yıllık",
       export: "Excel'e aktar",
       proOnly: "Pro Max planında",
       salesTitle: "Satış",
