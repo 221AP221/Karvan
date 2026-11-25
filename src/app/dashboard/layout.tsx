@@ -24,7 +24,6 @@ const NAV = [
   { href: "/dashboard/reviews", key: "reviews" },
   { href: "/dashboard/notifications", key: "notifications" },
   { href: "/dashboard/profile", key: "profile" },
-  { href: "/dashboard/team", key: "team" },
 ] as const;
 
 // Parametrlər menyuda yox, yuxarıdakı sətirdə (Çıxışın yanında) durur: menyu bir sətrə sığsın

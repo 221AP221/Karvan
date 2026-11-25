@@ -63,27 +63,25 @@ export default async function Billing() {
             </p>
           </div>
         </div>
-        <Link href="#tariflar" className="rounded-lg border border-gray-300 bg-white px-3.5 py-2 text-sm font-medium transition hover:bg-gray-50">
-          Tarifi dəyiş
-        </Link>
-      </section>
-
-      {/* Ödəniş üsulu */}
-      <section>
-        <h2 className="font-semibold">Ödəniş</h2>
-        <p className="mt-1 text-sm text-gray-500">
-          Kart məlumatlarınız Karvanda saxlanılmır: ödəniş lisenziyalı aqreqatorun səhifəsində aparılır. Bank köçürməsi ilə də ödəyə bilərsiniz.
-        </p>
-        <div className="mt-4 flex flex-wrap items-center gap-3">
-          <Link href={`/dashboard/billing/checkout?plan=${plan === "FREE" ? "PRO" : plan}`} className="rounded-lg border border-gray-300 bg-white px-3.5 py-2 text-sm font-medium transition hover:bg-gray-50">
+        <div className="flex flex-wrap gap-2">
+          <Link
+            href={`/dashboard/billing/checkout?plan=${plan === "FREE" ? "PRO" : plan}`}
+            className="rounded-lg border border-gray-300 bg-white px-3.5 py-2 text-sm font-medium transition hover:bg-gray-50"
+          >
             {plan === "FREE" ? "Ödənişli tarifə keç" : "Müddəti uzat"}
+          </Link>
+          <Link href="#tariflar" className="rounded-lg border border-gray-300 bg-white px-3.5 py-2 text-sm font-medium transition hover:bg-gray-50">
+            Tarifi dəyiş
           </Link>
         </div>
       </section>
 
       {/* Ödəniş tarixçəsi */}
       <section>
-        <h2 className="font-semibold">Ödənişlər</h2>
+        <h2 className="font-semibold">Ödəniş tarixçəsi</h2>
+        <p className="mt-1 text-sm text-gray-500">
+          Kart məlumatlarınız Karvanda saxlanılmır: ödəniş lisenziyalı aqreqatorun səhifəsində aparılır. Bank köçürməsi ilə də ödəyə bilərsiniz.
+        </p>
         {payments.length ? (
           <div className="mt-4 overflow-x-auto rounded-xl border border-gray-200">
             <table className="w-full min-w-[520px] text-sm">

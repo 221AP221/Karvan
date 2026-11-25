@@ -1,4 +1,4 @@
-import { CreditCard, Crown, KeyRound, LayoutGrid, Mail, MonitorSmartphone, ShieldAlert, Timer } from "lucide-react";
+import { CreditCard, Crown, KeyRound, LayoutGrid, Mail, MonitorSmartphone, ShieldAlert, Timer, UsersRound } from "lucide-react";
 import { IconBadge } from "@/components/landing/IconBadge";
 import { requirePageAccess } from "@/lib/auth";
 import { AUTO_DELETE_OPTIONS } from "@/lib/inactivity";
@@ -97,6 +97,14 @@ export default async function Settings() {
             }}
           />
         </Section>
+
+        {profile.isOwner && (
+          <Section icon={UsersRound} title="Komanda" text="İş sahənizə üzv dəvət edin və rollarını təyin edin">
+            <a href="/dashboard/team" className="inline-flex rounded-lg border border-gray-300 bg-white px-3.5 py-2 text-sm font-medium transition hover:bg-gray-50">
+              Komandanı idarə et
+            </a>
+          </Section>
+        )}
 
         <Section icon={LayoutGrid} title="Xidmətlər kataloqu" text="Yeni müştərilər sizi axtarışda tapsın">
           <CatalogForm visible={profile.showInCatalog} featured={limits.featured} />
