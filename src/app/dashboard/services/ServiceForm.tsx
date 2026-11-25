@@ -1,10 +1,11 @@
 "use client";
 
-import { ChevronDown, LoaderCircle, MapPin, Sparkles } from "lucide-react";
+import { LoaderCircle, MapPin, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { ActionForm } from "@/components/ActionForm";
 import { GalleryUpload } from "@/components/GalleryUpload";
 import { ImageUpload } from "@/components/ImageUpload";
+import { Select } from "@/components/Select";
 import { Card, Field, inputClass } from "@/components/ui";
 import { callAi } from "@/lib/ai-client";
 import { CURRENCIES } from "@/lib/money";
@@ -40,18 +41,6 @@ const LOCATIONS = [
   { value: "ONLINE", label: "Onlayn" },
 ] as const;
 
-const selectClass = `${inputClass} appearance-none pr-10`;
-
-function Select({ children, ...props }: React.ComponentProps<"select">) {
-  return (
-    <div className="relative">
-      <select {...props} className={`${selectClass} ${props.className ?? ""}`}>
-        {children}
-      </select>
-      <ChevronDown size={16} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" aria-hidden />
-    </div>
-  );
-}
 
 export function ServiceForm({ service }: { service: ServiceValues }) {
   const [title, setTitle] = useState(service.title);
@@ -63,6 +52,7 @@ export function ServiceForm({ service }: { service: ServiceValues }) {
   const [priceType, setPriceType] = useState(service.priceType);
   const [location, setLocation] = useState(service.location);
   const [address, setAddress] = useState(service.address);
+  const [currency, setCurrency] = useState(service.currency);
   const [variants, setVariants] = useState<string[]>([]);
   const [ai, setAi] = useState<{ busy?: boolean; error?: string }>({});
 
@@ -89,16 +79,15 @@ export function ServiceForm({ service }: { service: ServiceValues }) {
             <Field label="Xidmətin adı" name="title" value={title} onChange={(e) => setTitle(e.target.value)} required placeholder="Fərdi ingilis dili dərsi" />
             <label className="block">
               <span className="mb-1 block text-sm font-medium text-gray-700">Xidmətin növü</span>
-              <Select name="category" value={category} onChange={(e) => setCategory(e.target.value)} required>
-                <option value="" disabled>
-                  Seçin...
-                </option>
-                {SERVICE_CATEGORIES.map((c) => (
-                  <option key={c.key} value={c.key}>
-                    {c.label}
-                  </option>
-                ))}
-              </Select>
+              <Select
+                name="category"
+                value={category}
+                onChange={setCategory}
+                required
+                placeholder="Seçin..."
+                ariaLabel="Xidmətin növü"
+                options={SERVICE_CATEGORIES.map((c) => ({ value: c.key, label: c.label }))}
+              />
               {/* "Digər" seçiləndə növü satıcı özü yazır */}
               {category === "other" && (
                 <input
@@ -190,15 +179,15 @@ export function ServiceForm({ service }: { service: ServiceValues }) {
                   placeholder={priceType === "FIXED" ? "50" : "Könüllü"}
                   className="min-w-0 flex-1 rounded-l-lg bg-transparent px-3 py-2 text-sm outline-none"
                 />
-                <div className="relative border-l border-gray-200">
-                  <select name="currency" aria-label="Valyuta" defaultValue={service.currency} className="h-full appearance-none rounded-r-lg bg-gray-50 py-2 pl-3 pr-8 text-sm font-medium outline-none">
-                    {CURRENCIES.map((c) => (
-                      <option key={c.code} value={c.code}>
-                        {c.label}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown size={14} className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400" aria-hidden />
+                <div className="border-l border-gray-200">
+                  <Select
+                    name="currency"
+                    ariaLabel="Valyuta"
+                    value={currency}
+                    onChange={setCurrency}
+                    className="w-[7.5rem]"
+                    options={CURRENCIES.map((c) => ({ value: c.code, label: c.label }))}
+                  />
                 </div>
               </div>
             </div>
@@ -258,13 +247,13 @@ export function ServiceForm({ service }: { service: ServiceValues }) {
 
             <label className="block">
               <span className="mb-1 block text-sm font-medium text-gray-700">Xidmətin məkanı</span>
-              <Select name="location" value={location} onChange={(e) => setLocation(e.target.value as ServiceValues["location"])}>
-                {LOCATIONS.map((l) => (
-                  <option key={l.value} value={l.value}>
-                    {l.label}
-                  </option>
-                ))}
-              </Select>
+              <Select
+                name="location"
+                ariaLabel="Xidmətin məkanı"
+                value={location}
+                onChange={(v) => setLocation(v as ServiceValues["location"])}
+                options={LOCATIONS.map((l) => ({ value: l.value, label: l.label }))}
+              />
               <p className="mt-1.5 text-xs text-gray-500">“Müştərinin ünvanında” seçsəniz, sifarişdə ünvan soruşulur və yol buferi tətbiq olunur.</p>
             </label>
           </div>

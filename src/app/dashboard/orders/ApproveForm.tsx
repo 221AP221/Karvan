@@ -4,6 +4,7 @@ import { ActionForm } from "@/components/ActionForm";
 import { inputClass } from "@/components/ui";
 import type { Dict } from "@/i18n/server";
 import { approveOrder } from "../actions";
+import { SelectInput } from "@/components/Select";
 
 export function ApproveForm({ orderId, suggestedAmount, currency, t }: { orderId: string; suggestedAmount: string; currency: string; t: Dict["panel"]["orders"] }) {
   return (
@@ -13,11 +14,13 @@ export function ApproveForm({ orderId, suggestedAmount, currency, t }: { orderId
         <input name="amount" inputMode="decimal" required defaultValue={suggestedAmount} placeholder={t.price} aria-label={t.price} className="w-28 rounded-l-lg bg-transparent px-3 py-2 text-sm outline-none" />
         <span className="border-l border-gray-200 px-3 py-2 text-sm font-medium text-gray-500">{currency}</span>
       </div>
-      <select name="dueDays" defaultValue="3" aria-label={t.dueLabel} className={`${inputClass} !w-auto`}>
-        <option value="1">1 {t.day}</option>
-        <option value="3">3 {t.day}</option>
-        <option value="7">7 {t.day}</option>
-      </select>
+      <SelectInput
+        name="dueDays"
+        defaultValue="3"
+        ariaLabel={t.dueLabel}
+        className="w-[7.5rem]"
+        options={[1, 3, 7].map((d) => ({ value: String(d), label: `${d} ${t.day}` }))}
+      />
     </ActionForm>
   );
 }

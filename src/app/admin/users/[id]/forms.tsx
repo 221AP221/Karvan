@@ -8,16 +8,22 @@ import { inputClass } from "@/components/ui";
 const danger = "inline-flex items-center justify-center rounded-full bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-60";
 const dark = "inline-flex items-center justify-center rounded-full bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 disabled:opacity-60";
 import { blockUser, deleteUser, setPlan, setUserPassword, updateUser } from "../../actions";
+import { SelectInput } from "@/components/Select";
 
 export function PlanForm({ userId, plan }: { userId: string; plan: string }) {
   return (
     <ActionForm action={setPlan} submitLabel="Planı dəyiş" successMessage="Plan dəyişdirildi" className="flex flex-col gap-3" buttonClassName={dark}>
       <input type="hidden" name="userId" value={userId} />
-      <select name="plan" defaultValue={plan} className={inputClass} aria-label="Plan">
-        <option value="FREE">Pulsuz</option>
-        <option value="PRO">Pro · 9,99 AZN</option>
-        <option value="PRO_MAX">Pro Max · 29,99 AZN</option>
-      </select>
+      <SelectInput
+        name="plan"
+        defaultValue={plan}
+        ariaLabel="Plan"
+        options={[
+          { value: "FREE", label: "Pulsuz" },
+          { value: "PRO", label: "Pro · 9,99 AZN" },
+          { value: "PRO_MAX", label: "Pro Max · 29,99 AZN" },
+        ]}
+      />
     </ActionForm>
   );
 }

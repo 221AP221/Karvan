@@ -118,17 +118,19 @@ export default async function Dashboard() {
         <MonthCalendar year={now.getFullYear()} month={now.getMonth()} load={load} today={now} />
       </div>
 
-      {/* Səhifə linki və QR bir kartda: ikisi də eyni şeyi paylaşmağın yoludur */}
-      <Card title={t.yourPage}>
-        <div className="flex flex-wrap items-start justify-between gap-6">
+      {/* Səhifə linki və QR bir kartda: ikisi də eyni şeyi paylaşmağın yoludur.
+          Başlıqlar eyni sətirdə dayansın deyə kartın öz başlığı yoxdur. */}
+      <Card>
+        <div className="flex flex-wrap items-start gap-8">
+          <PageQr url={pageUrl} username={profile.username} />
           <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-center gap-3">
+            <h2 className="font-semibold">{t.yourPage}</h2>
+            <div className="mt-3 flex flex-wrap items-center gap-3">
               <a href={pageUrl} target="_blank" className="font-mono text-sm text-[var(--brand)] hover:underline">{pageUrl}</a>
               <CopyLink url={pageUrl} />
             </div>
             <p className="mt-2 text-xs text-gray-500">{t.bioHint}</p>
           </div>
-          <PageQr url={pageUrl} username={profile.username} />
         </div>
       </Card>
 

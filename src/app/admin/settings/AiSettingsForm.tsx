@@ -4,6 +4,7 @@ import { LoaderCircle } from "lucide-react";
 import { useActionState, useState, useTransition } from "react";
 import { inputClass } from "@/components/ui";
 import { saveAiSettings, testAi } from "../actions";
+import { Select } from "@/components/Select";
 
 const PROVIDERS = [
   { id: "groq", label: "Groq: pulsuz, sürətli (tövsiyə)", url: "https://console.groq.com/keys", model: "openai/gpt-oss-120b" },
@@ -25,12 +26,16 @@ export function AiSettingsForm({ provider: initial, model: initialModel, hasKey 
     <form action={action} className="mt-5 flex flex-col gap-4">
       <label className="block">
         <span className="mb-1 block text-sm font-medium text-gray-700">Təminatçı</span>
-        <select name="provider" value={provider} onChange={(e) => setProvider(e.target.value)} className={inputClass}>
-          {PROVIDERS.map((p) => (
-            <option key={p.id} value={p.id}>{p.label}</option>
-          ))}
-          <option value="off">Söndür (yalnız .env istifadə olunsun)</option>
-        </select>
+        <Select
+          name="provider"
+          value={provider}
+          onChange={setProvider}
+          ariaLabel="Təminatçı"
+          options={[
+            ...PROVIDERS.map((p) => ({ value: p.id, label: p.label })),
+            { value: "off", label: "Söndür (yalnız .env istifadə olunsun)" },
+          ]}
+        />
       </label>
       {provider !== "off" && provider !== "ollama" && (
         <label className="block">

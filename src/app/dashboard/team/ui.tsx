@@ -5,6 +5,7 @@ import { startTransition, useActionState, useState } from "react";
 import { ActionForm } from "@/components/ActionForm";
 import type { MemberStatus, TeamRole } from "@/generated/prisma/client";
 import { changeMemberRole, inviteMember, removeMember } from "./actions";
+import { SelectInput } from "@/components/Select";
 
 const field =
   "h-10 w-full rounded-lg border border-gray-300 px-3 text-sm outline-none focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/20";
@@ -29,10 +30,15 @@ export function InviteForm() {
         </label>
         <label className="block sm:w-48">
           <span className="mb-1 block text-xs font-medium text-gray-600">Rol</span>
-          <select name="role" defaultValue="STAFF" className={field}>
-            <option value="MANAGER">Menecer</option>
-            <option value="STAFF">İşçi</option>
-          </select>
+          <SelectInput
+            name="role"
+            defaultValue="STAFF"
+            ariaLabel="Rol"
+            options={[
+              { value: "MANAGER", label: "Menecer" },
+              { value: "STAFF", label: "İşçi" },
+            ]}
+          />
         </label>
         <button
           disabled={pending}
@@ -124,16 +130,17 @@ export function MemberRow({
         <div className="flex shrink-0 items-center gap-2">
           <ActionForm action={changeMemberRole} submitLabel="" className="contents" buttonClassName="hidden">
             <input type="hidden" name="id" value={member.id} />
-            <select
+            <SelectInput
               name="role"
               defaultValue={member.role}
-              onChange={(e) => e.currentTarget.form?.requestSubmit()}
-              aria-label={`${member.email} üçün rol`}
-              className="h-9 rounded-lg border border-gray-300 px-2 text-sm outline-none focus:border-[var(--brand)]"
-            >
-              <option value="MANAGER">{roleLabels.MANAGER}</option>
-              <option value="STAFF">{roleLabels.STAFF}</option>
-            </select>
+              autoSubmit
+              ariaLabel={`${member.email} üçün rol`}
+              className="w-[8.5rem]"
+              options={[
+                { value: "MANAGER", label: roleLabels.MANAGER },
+                { value: "STAFF", label: roleLabels.STAFF },
+              ]}
+            />
           </ActionForm>
 
           {confirming ? (
