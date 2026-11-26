@@ -74,7 +74,7 @@ export default async function AdminInvoices({ searchParams }: { searchParams: Se
           <tbody className="tabular-nums">
             {invoices.map((i) => (
               <tr key={i.id} className="border-t border-gray-100 hover:bg-gray-50">
-                <td className={`${td} font-mono text-xs`}>
+                <td className={`${td} tabular-nums text-xs`}>
                   <Link href={`/i/${i.publicId}`} target="_blank" className="hover:underline">
                     {i.number}
                   </Link>

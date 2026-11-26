@@ -177,7 +177,7 @@ export function HeroPhone({ t }: { t: PhoneText }) {
             {card.icon}
             <span className="text-left">
               <span className={`block text-xs ${card.labelClass ?? "text-gray-500"}`}>{card.label}</span>
-              <span className={`block text-sm font-semibold ${card.mono ? "font-mono" : ""}`}>{card.value}</span>
+              <span className={`block text-sm font-semibold ${card.mono ? "tabular-nums" : ""}`}>{card.value}</span>
             </span>
           </div>
         </div>

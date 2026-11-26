@@ -60,7 +60,7 @@ export function CouponForm({ editing }: { editing: Coupon | null }) {
             defaultValue={editing?.code ?? ""}
             placeholder="YAZ2026"
             maxLength={24}
-            className={`${field} font-mono uppercase`}
+            className={`${field} uppercase tabular-nums`}
             onChange={(e) => (e.target.value = e.target.value.toUpperCase())}
           />
         </label>
@@ -176,7 +176,7 @@ export function CouponRow({ coupon: c }: { coupon: Coupon }) {
     <li className="flex flex-wrap items-center justify-between gap-3 px-5 py-4">
       <div className="min-w-0">
         <p className="flex flex-wrap items-center gap-2">
-          <span className="font-mono text-sm font-semibold">{c.code}</span>
+          <span className="text-sm font-semibold tabular-nums">{c.code}</span>
           <Pill tone="gray">{c.type === "PERCENT" ? `${c.value}%` : `${(c.value / 100).toFixed(2)} AZN`}</Pill>
           <Pill tone={state[1] as "green"}>{state[0]}</Pill>
         </p>

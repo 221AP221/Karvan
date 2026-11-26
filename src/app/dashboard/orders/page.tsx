@@ -120,7 +120,7 @@ export default async function Orders({ searchParams }: { searchParams: SearchPar
                 const amount = o.invoice ?? (o.service?.amountQepik ? { totalQepik: o.service.amountQepik, currency: o.service.currency } : null);
                 return (
                   <li key={o.id} className={`flex flex-wrap items-center gap-x-4 gap-y-1 py-2.5 text-sm ${tight ? "bg-amber-50" : ""}`}>
-                    <span className="font-mono font-semibold tabular-nums">{o.scheduledAt ? hhmm(o.scheduledAt) : "—"}</span>
+                    <span className="font-semibold tabular-nums">{o.scheduledAt ? hhmm(o.scheduledAt) : "—"}</span>
                     <span className="font-medium text-gray-800">{o.customerName}</span>
                     <span className="text-gray-600">{o.service?.title ?? t.service}</span>
                     {o.address && <span className="text-gray-500">{t.address}: {o.address}</span>}
@@ -204,7 +204,7 @@ export default async function Orders({ searchParams }: { searchParams: SearchPar
                 </div>
                 {order.invoice && (
                   <Link href={`/dashboard/invoices/${order.invoice.id}`} prefetch={false} className="flex flex-col items-end gap-1 rounded-xl px-3 py-2 text-right hover:bg-gray-50">
-                    <span className="font-mono text-xs text-gray-500">{order.invoice.number}</span>
+                    <span className="tabular-nums text-xs text-gray-500">{order.invoice.number}</span>
                     <span className="font-semibold">{formatMoney(order.invoice.totalQepik, order.invoice.currency)}</span>
                     <StatusBadge status={effectiveStatus(order.invoice)} words={dict.common} />
                   </Link>

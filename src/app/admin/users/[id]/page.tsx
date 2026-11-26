@@ -109,7 +109,7 @@ export default async function AdminUser({ params }: { params: Promise<{ id: stri
               <Row label="Telefon">{user.phone ? formatPhone(user.phone) : "—"}</Row>
               <Row label="Vətəndaşlıq">{user.citizenship === "AZ" ? "Azərbaycan" : user.citizenship === "FOREIGN" ? "Xarici" : "—"}</Row>
               <Row label={user.citizenship === "FOREIGN" ? "Pasport" : "FİN kod"}>
-                <span className="font-mono">{maskDocument(user.finCode ?? user.passportNumber)}</span>
+                <span className="tabular-nums">{maskDocument(user.finCode ?? user.passportNumber)}</span>
               </Row>
               <Row label="Səhifə">{p ? `@${p.username} · ${p.displayName}` : "Profil yoxdur"}</Row>
               <Row label="Kataloqda">{p ? (p.showInCatalog ? "Görünür" : "Gizlədib") : "—"}</Row>
@@ -201,7 +201,7 @@ export default async function AdminUser({ params }: { params: Promise<{ id: stri
                   <tbody className="tabular-nums">
                     {p.invoices.map((i) => (
                       <tr key={i.id} className="border-t border-gray-100">
-                        <td className={`${td} font-mono text-xs`}>{i.number}</td>
+                        <td className={`${td} tabular-nums text-xs`}>{i.number}</td>
                         <td className={td}>{i.customerName}</td>
                         <td className={`${td} text-right`}>{formatMoney(i.totalQepik, i.currency)}</td>
                         <td className={td}>

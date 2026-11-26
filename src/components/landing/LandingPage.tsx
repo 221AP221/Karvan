@@ -165,7 +165,7 @@ function InvoiceMock({ t }: { t: Dict["compare"] }) {
       <div className="flex items-start justify-between border-b border-gray-200 pb-4 dark:border-white/10">
         <div>
           <p className="text-xs uppercase tracking-wider text-gray-400">{t.invoice.label}</p>
-          <p className="font-mono text-sm font-semibold">LEY-2026-0042</p>
+          <p className="text-sm font-semibold tabular-nums">LEY-2026-0042</p>
         </div>
         <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold text-emerald-700">
           <CheckCheck size={13} strokeWidth={2.5} aria-hidden /> {t.invoice.status}

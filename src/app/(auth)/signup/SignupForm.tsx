@@ -174,7 +174,7 @@ export function SignupForm({ t, password: pw, plan }: { t: Dict["auth"]["signup"
               pattern="^[A-Za-z0-9]{7}$"
               autoComplete="off"
               placeholder="5ABCDE1"
-              className="font-mono uppercase tracking-[0.2em]"
+              className="uppercase tracking-[0.2em] tabular-nums"
               hint={t.finHint}
             />
           ) : (
@@ -189,7 +189,7 @@ export function SignupForm({ t, password: pw, plan }: { t: Dict["auth"]["signup"
               pattern="^[A-Za-z0-9 ]{5,20}$"
               autoComplete="off"
               placeholder="C01234567"
-              className="font-mono uppercase tracking-wider"
+              className="uppercase tracking-wider tabular-nums"
             />
           )}
 

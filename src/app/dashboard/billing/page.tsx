@@ -102,7 +102,7 @@ export default async function Billing() {
                       <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS[p.status].cls}`}>{STATUS[p.status].label}</span>
                     </td>
                     <td className="px-4 py-3 text-xs text-gray-500">
-                      {PLAN_NAMES[p.plan]} · {p.months === 12 ? "illik" : "aylıq"} · <span className="font-mono">{p.reference}</span>
+                      {PLAN_NAMES[p.plan]} · {p.months === 12 ? "illik" : "aylıq"} · <span className="tabular-nums">{p.reference}</span>
                     </td>
                   </tr>
                 ))}

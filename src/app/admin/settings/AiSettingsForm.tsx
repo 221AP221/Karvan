@@ -40,7 +40,7 @@ export function AiSettingsForm({ provider: initial, model: initialModel, hasKey 
       {provider !== "off" && provider !== "ollama" && (
         <label className="block">
           <span className="mb-1 block text-sm font-medium text-gray-700">API açarı</span>
-          <input name="apiKey" type="password" autoComplete="off" placeholder={hasKey && initial === provider ? "•••••••• (saxlanılıb, dəyişmək üçün yeni açar yazın)" : "Açarı yapışdırın"} className={`${inputClass} font-mono`} />
+          <input name="apiKey" type="password" autoComplete="off" placeholder={hasKey && initial === provider ? "•••••••• (saxlanılıb, dəyişmək üçün yeni açar yazın)" : "Açarı yapışdırın"} className={`${inputClass} tabular-nums`} />
           <span className="mt-1 block text-xs text-gray-500">
             Açarı buradan pulsuz alın: <a href={current.url} target="_blank" rel="noopener noreferrer" className="underline">{current.url}</a>. Bazada şifrələnmiş saxlanılır.
           </span>
@@ -49,7 +49,7 @@ export function AiSettingsForm({ provider: initial, model: initialModel, hasKey 
       {provider !== "off" && (
         <label className="block">
           <span className="mb-1 block text-sm font-medium text-gray-700">Model <span className="font-normal text-gray-400">(könüllü)</span></span>
-          <input name="model" defaultValue={initialModel} key={provider} placeholder={current.model || "defolt"} className={`${inputClass} font-mono`} />
+          <input name="model" defaultValue={initialModel} key={provider} placeholder={current.model || "defolt"} className={`${inputClass} tabular-nums`} />
           <span className="mt-1 block text-xs text-gray-500">Boş qalsa, defolt model işləyir. Pulsuz modellərin adları tez-tez dəyişir: ad köhnəlibsə, təminatçının cari siyahısından yazın.</span>
         </label>
       )}

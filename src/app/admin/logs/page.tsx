@@ -108,7 +108,7 @@ export default async function AdminLogs({ searchParams }: { searchParams: Search
                   <td className={`${td} max-w-xs truncate text-gray-600`} title={a.details ?? undefined}>
                     {a.details ?? "—"}
                   </td>
-                  <td className={`${td} font-mono text-xs text-gray-500`}>{a.ip ?? "—"}</td>
+                  <td className={`${td} tabular-nums text-xs text-gray-500`}>{a.ip ?? "—"}</td>
                 </tr>
               ))}
             </tbody>

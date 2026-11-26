@@ -11,7 +11,7 @@ export function SocialsForm({ values }: { values: Record<string, string> }) {
     <ActionForm action={saveSocials} submitLabel="Yadda saxla" successMessage="Sosial hesablar yadda saxlanıldı">
       <Card title="Sosial şəbəkələr">
         <p className="-mt-2 mb-5 text-sm text-gray-500">
-          İstifadəçi adınızı (məs. <span className="font-mono">@leyla.makeup</span>) və ya tam linki yazın. Boş qalanlar səhifədə görünmür.
+          İstifadəçi adınızı (məs. <span className="tabular-nums">@leyla.makeup</span>) və ya tam linki yazın. Boş qalanlar səhifədə görünmür.
         </p>
         <div className="grid gap-3 md:grid-cols-2">
           {PLATFORMS.map((p) => (

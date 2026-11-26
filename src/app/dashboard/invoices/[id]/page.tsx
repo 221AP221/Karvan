@@ -39,7 +39,7 @@ export default async function InvoiceDetail({ params }: { params: Promise<{ id: 
     <div className="flex flex-col gap-6">
       <div>
         <div className="flex flex-wrap items-center gap-3">
-          <h1 className="font-mono text-2xl font-bold">{invoice.number}</h1>
+          <h1 className="text-2xl font-bold tabular-nums">{invoice.number}</h1>
           <StatusBadge status={status} />
         </div>
       </div>
@@ -63,7 +63,7 @@ export default async function InvoiceDetail({ params }: { params: Promise<{ id: 
           <div className="text-sm">
             <p className="font-semibold">
               {deposit.depositPaid ? "Beh alınıb" : "Beh gözlənilir"} ·{" "}
-              <span className="font-mono">
+              <span className="tabular-nums">
                 {formatMoney(deposit.paid, invoice.currency)} / {formatMoney(deposit.required, invoice.currency)}
               </span>
             </p>

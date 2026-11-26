@@ -74,7 +74,7 @@ export function CopyValue({ label, value, words }: { label: string; value: strin
   const [copied, setCopied] = useState(false);
   return (
     <p className="flex items-center justify-between gap-2">
-      <span className="font-mono">
+      <span className="tabular-nums">
         {label}: {value}
       </span>
       <button

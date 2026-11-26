@@ -18,7 +18,9 @@ import { maskName } from "@/lib/reviews";
 import { absoluteUrl, breadcrumbs, clamp, fill, jsonLdScript } from "@/lib/seo";
 import { categoryLabel, formatDuration } from "@/lib/services";
 import { PLATFORM_BY_KEY } from "@/lib/social";
+import { Lightbox } from "./Lightbox";
 import { OrderForm } from "./OrderForm";
+import { StickyProfile } from "./StickyProfile";
 
 type Props = { params: Promise<{ username: string }> };
 
@@ -198,6 +200,7 @@ export default async function ProfilePage({ params }: Props) {
   return (
     <div className="min-h-screen bg-gray-50" style={{ "--brand": brand } as React.CSSProperties}>
       <PageTracker username={profile.username} />
+      <Lightbox />
       {!profile.user.blockedAt && profile.showInCatalog && <SellerJsonLd profile={profile} />}
       {/* Üz qabığı */}
       <div className="relative h-40 overflow-hidden sm:h-56">
@@ -220,15 +223,16 @@ export default async function ProfilePage({ params }: Props) {
       <div className="mx-auto grid max-w-6xl gap-6 px-4 pb-16 lg:grid-cols-[340px_1fr] lg:gap-8">
         {/* Sol: profil kartı */}
         <aside className="relative z-10 -mt-16 lg:sticky lg:top-6 lg:-mt-24 lg:self-start">
-          <div className="rounded-3xl border border-gray-200 bg-white p-6 text-center shadow-xl shadow-gray-900/5 lg:text-left">
+         <StickyProfile>
+          <div className="rounded-3xl border border-gray-200 bg-white p-6 text-center shadow-xl shadow-gray-900/5 transition-[padding] duration-300 lg:text-left lg:group-data-[compact=true]/profile:p-4">
             {profile.avatarUrl ? (
-              <img src={profile.avatarUrl} alt={profile.displayName} className="mx-auto h-28 w-28 rounded-full object-cover ring-4 ring-white shadow-lg lg:mx-0" />
+              <img src={profile.avatarUrl} alt={profile.displayName} className="mx-auto h-28 w-28 rounded-full object-cover ring-4 ring-white shadow-lg transition-all duration-300 lg:mx-0 lg:group-data-[compact=true]/profile:h-14 lg:group-data-[compact=true]/profile:w-14" />
             ) : (
-              <span className="mx-auto grid h-28 w-28 place-items-center rounded-full bg-[var(--brand)] text-3xl font-bold text-white ring-4 ring-white shadow-lg lg:mx-0">
+              <span className="mx-auto grid h-28 w-28 place-items-center rounded-full bg-[var(--brand)] text-3xl font-bold text-white ring-4 ring-white shadow-lg transition-all duration-300 lg:mx-0 lg:group-data-[compact=true]/profile:h-14 lg:group-data-[compact=true]/profile:w-14 lg:group-data-[compact=true]/profile:text-lg">
                 {initials(profile.displayName)}
               </span>
             )}
-            <h1 className="mt-4 inline-flex items-center gap-1.5 text-2xl font-bold">
+            <h1 className="mt-4 inline-flex items-center gap-1.5 text-2xl font-bold transition-all duration-300 lg:group-data-[compact=true]/profile:mt-2 lg:group-data-[compact=true]/profile:text-base">
               {profile.displayName}
               {limits.verified && (
                 <BadgeCheck size={22} strokeWidth={2.25} className="shrink-0 fill-sky-500 text-white" aria-label={t.verified}>
@@ -240,13 +244,13 @@ export default async function ProfilePage({ params }: Props) {
             {profile.ratingAvg !== null && profile.ratingCount > 0 && (
               <a
                 href="#reyler"
-                className="mt-2 inline-flex rounded-lg transition hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
+                className="mt-2 inline-flex rounded-lg transition hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)] lg:group-data-[compact=true]/profile:hidden"
               >
                 <RatingBadge value={profile.ratingAvg} count={profile.ratingCount} label={t.ratingLabel} className="justify-center lg:justify-start" />
               </a>
             )}
             {(profile.profession || profile.city) && (
-              <p className="mt-1 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm text-gray-500 lg:justify-start">
+              <p className="mt-1 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm text-gray-500 lg:justify-start lg:group-data-[compact=true]/profile:text-xs">
                 {/* Peşə: kataloqda eyni sahədəki digər satıcılar */}
                 {profile.profession && (
                   <Link
@@ -263,13 +267,13 @@ export default async function ProfilePage({ params }: Props) {
                 )}
               </p>
             )}
-            {profile.bio && <p className="mt-3 text-pretty text-gray-600">{profile.bio}</p>}
+            {profile.bio && <p className="mt-3 text-pretty text-gray-600 lg:group-data-[compact=true]/profile:hidden">{profile.bio}</p>}
 
             {/* Böyük ekranda nömrə sağ yuxarıdadır, kiçikdə burada */}
             {profile.phone && <CallButton phone={profile.phone} label={t.call} className="mt-5 inline-flex lg:hidden" />}
 
             {socials.length > 0 && (
-              <ul className="mt-5 flex flex-wrap justify-center gap-2 lg:justify-start">
+              <ul className="mt-5 flex flex-wrap justify-center gap-2 lg:justify-start lg:group-data-[compact=true]/profile:hidden">
                 {socials.map((link) => (
                   <li key={link.id}>
                     <a
@@ -290,7 +294,7 @@ export default async function ProfilePage({ params }: Props) {
             )}
 
             {links.length > 0 && (
-              <ul className="mt-5 flex flex-col gap-2">
+              <ul className="mt-5 flex flex-col gap-2 lg:group-data-[compact=true]/profile:hidden">
                 {links.map((link) => (
                   <li key={link.id}>
                     <a
@@ -309,6 +313,7 @@ export default async function ProfilePage({ params }: Props) {
               </ul>
             )}
           </div>
+         </StickyProfile>
         </aside>
 
         {/* Sağ: məzmun */}
@@ -354,8 +359,8 @@ export default async function ProfilePage({ params }: Props) {
                 <SectionHeading id="xidmetler" icon={ShoppingBag} title={t.services} />
                 <ul className="grid gap-3 md:grid-cols-2">
                   {profile.services.map((service) => (
-                    <li key={service.id} className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 transition hover:shadow-lg hover:shadow-gray-900/5">
-                      {service.imageUrl && <img src={service.imageUrl} alt={service.title} loading="lazy" className="-mx-5 -mt-5 mb-4 aspect-[16/9] w-[calc(100%+2.5rem)] max-w-none object-cover" />}
+                    <li key={service.id} data-lightbox-group className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 transition hover:shadow-lg hover:shadow-gray-900/5">
+                      {service.imageUrl && <img src={service.imageUrl} alt={service.title} loading="lazy" data-lightbox className="-mx-5 -mt-5 mb-4 aspect-[16/9] w-[calc(100%+2.5rem)] max-w-none cursor-zoom-in object-cover" />}
                       <div className="flex items-start justify-between gap-4">
                         <h3 className="font-semibold">{service.title}</h3>
                         <span className="shrink-0 rounded-full bg-[var(--brand)]/10 px-3 py-1 text-sm font-semibold text-[var(--brand)]">
@@ -392,7 +397,7 @@ export default async function ProfilePage({ params }: Props) {
                           {service.gallery.map((img) => (
                             <li key={img.id} className="shrink-0">
                               {/* eslint-disable-next-line @next/next/no-img-element -- /api/media-dan gələn şəkil */}
-                              <img src={img.url} alt="" loading="lazy" className="h-20 w-20 rounded-xl border border-gray-200 object-cover" />
+                              <img src={img.url} alt={service.title} loading="lazy" data-lightbox className="h-20 w-20 cursor-zoom-in rounded-xl border border-gray-200 object-cover transition hover:brightness-95" />
                             </li>
                           ))}
                         </ul>
@@ -414,13 +419,13 @@ export default async function ProfilePage({ params }: Props) {
             {profile.portfolio.length > 0 && (
               <section>
                 <SectionHeading id="isler" icon={Briefcase} title={t.portfolio} count={profile.portfolio.length} />
-                <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                <ul data-lightbox-group className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                   {profile.portfolio.map((item) => {
                     const body = (
                       <>
                         <div className="aspect-[4/3] overflow-hidden bg-gray-100">
                           {item.imageUrl ? (
-                            <img src={item.imageUrl} alt={item.title} loading="lazy" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                            <img src={item.imageUrl} alt={item.title} loading="lazy" {...(item.linkUrl ? {} : { "data-lightbox": true })} className={`h-full w-full object-cover transition duration-500 group-hover:scale-105 ${item.linkUrl ? "" : "cursor-zoom-in"}`} />
                           ) : (
                             <div className="grid h-full place-items-center bg-gradient-to-br from-[var(--brand)]/15 to-gray-100 text-[var(--brand)]">
                               <Briefcase size={30} strokeWidth={1.5} aria-hidden />
