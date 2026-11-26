@@ -45,20 +45,16 @@ export function PaymentForm({ values }: { values: Record<"invoicePrefix" | "acco
   );
 }
 
-export function CatalogForm({ visible, featured }: { visible: boolean; featured: boolean }) {
+/**
+ * Kataloq açarı sətrin özündədir (SettingsList-də); burada yalnız onun izahı qalır,
+ * çünki satıcı nəyin dəyişdiyini bilməlidir.
+ */
+export function CatalogHint({ featured }: { featured: boolean }) {
   return (
-    <ActionForm action={setCatalogVisibility} submitLabel="Yadda saxla" successMessage="Yadda saxlanıldı">
-      <label className="flex cursor-pointer items-start gap-3">
-        <input type="checkbox" name="showInCatalog" defaultChecked={visible} className="mt-1 h-4 w-4 accent-[var(--brand)]" />
-        <span>
-          <span className="block text-sm font-medium text-gray-800">Xidmətlərimi kataloqda göstər</span>
-          <span className="block text-sm text-gray-500">
-            Aktiv xidmətləriniz karvan.az/xidmetler səhifəsində axtarışda çıxır, müştəri sizi bio linkiniz olmadan da tapır.
-            {featured ? " Pro Max planında xidmətləriniz yuxarıda “Seçilmiş” nişanı ilə göstərilir." : ""}
-          </span>
-        </span>
-      </label>
-    </ActionForm>
+    <p className="border-t border-gray-100 px-4 pb-3.5 pt-3 pl-[3.75rem] text-sm text-gray-500">
+      Aktiv xidmətləriniz karvan.az/xidmetler səhifəsində axtarışda çıxır, müştəri sizi bio linkiniz olmadan da tapır.
+      {featured ? " Pro Max planında xidmətləriniz yuxarıda “Seçilmiş” nişanı ilə göstərilir." : ""}
+    </p>
   );
 }
 
@@ -114,21 +110,10 @@ export function SessionsButton({ count }: { count: number }) {
 }
 
 export function DangerZone({ username }: { username: string }) {
-  const [open, setOpen] = useState(false);
-  if (!open) {
-    return (
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-sm text-gray-600">Səhifəniz, xidmətlər, fakturalar və şəkillər geri qaytarılmadan silinəcək.</p>
-        <button type="button" onClick={() => setOpen(true)} className="rounded-full border border-red-200 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50">
-          Hesabı sil
-        </button>
-      </div>
-    );
-  }
   return (
     <ActionForm action={deleteAccount} submitLabel="Hesabı birdəfəlik sil">
       <p className="rounded-lg bg-red-50 p-3 text-sm text-red-700">
-        Bu əməliyyat geri qaytarılmır. Təsdiq üçün istifadəçi adınızı (<b>{username}</b>) və şifrənizi yazın.
+        Səhifəniz, xidmətlər, fakturalar və şəkillər geri qaytarılmadan silinəcək. Təsdiq üçün istifadəçi adınızı (<b>{username}</b>) və şifrənizi yazın.
       </p>
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="İstifadəçi adı" name="confirmUsername" required autoComplete="off" />
