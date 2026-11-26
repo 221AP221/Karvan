@@ -1,6 +1,4 @@
 import "@fontsource-variable/ibm-plex-sans";
-import "@fontsource/ibm-plex-mono/400.css";
-import "@fontsource/ibm-plex-mono/500.css";
 import { Settings } from "lucide-react";
 import Link from "next/link";
 import { isImpersonating, requireProfile } from "@/lib/auth";

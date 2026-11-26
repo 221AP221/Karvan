@@ -41,7 +41,7 @@ export default async function Success({ searchParams }: { searchParams: SearchPa
               : "Ödənişiniz qəbul edildi. 15 dəqiqə ərzində hesabınız abunəliyinizə uyğun formalaşdırılacaq."}
       </p>
       <dl className="mx-auto mt-6 max-w-sm rounded-2xl border border-gray-200 bg-white p-4 text-left text-sm">
-        <div className="flex justify-between py-1"><dt className="text-gray-500">Ödəniş kodu</dt><dd className="font-mono font-medium">{payment.reference}</dd></div>
+        <div className="flex justify-between py-1"><dt className="text-gray-500">Ödəniş kodu</dt><dd className="font-medium">{payment.reference}</dd></div>
         <div className="flex justify-between py-1"><dt className="text-gray-500">Tarif</dt><dd className="font-medium">{PLAN_NAMES[payment.plan]} · {payment.months === 12 ? "illik" : "aylıq"}</dd></div>
         <div className="flex justify-between py-1"><dt className="text-gray-500">Məbləğ</dt><dd className="font-medium">{formatMoney(payment.amountQepik, "AZN")}</dd></div>
         <div className="flex justify-between py-1"><dt className="text-gray-500">Status</dt><dd className="font-medium">{active ? "Aktivləşdirildi" : failed ? "Alınmadı" : transfer ? "Yoxlanılır" : "Gözlənilir"}</dd></div>

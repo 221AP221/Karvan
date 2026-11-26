@@ -77,7 +77,7 @@ export default async function AdminPayments({ searchParams }: { searchParams: Se
           <tbody className="tabular-nums">
             {rows.map((p) => (
               <tr key={p.id} className={`border-t border-gray-100 ${p.status === "PENDING" ? "bg-amber-50/40" : ""}`}>
-                <td className={`${td} font-mono text-xs`}>{p.reference}</td>
+                <td className={`${td} tabular-nums text-xs`}>{p.reference}</td>
                 <td className={td}>
                   <Link href={`/admin/users/${p.user.id}`} className="hover:underline">{p.user.profile?.displayName ?? p.user.email}</Link>
                   <span className="block text-xs text-gray-500">{p.user.email}</span>

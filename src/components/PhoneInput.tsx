@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { Check, ChevronDown } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 // Ölkə prefiksi seçilən telefon sahəsi. Forma tam beynəlxalq nömrəni (+994501234567) gizli sahədə göndərir.
 export const COUNTRIES = [
@@ -81,19 +82,12 @@ export function PhoneInput({
   }
 
   return (
-    <span className={`flex items-stretch overflow-hidden transition ${TONES[tone]}`}>
-      <select
-        value={shown.country.code + shown.country.name}
-        onChange={(e) => update(COUNTRIES.find((c) => c.code + c.name === e.target.value) ?? COUNTRIES[0], shown.local)}
-        aria-label="Ölkə kodu"
-        className="shrink-0 cursor-pointer border-r border-gray-200 bg-transparent pl-3 pr-1 font-medium text-gray-700 outline-none dark:border-white/10 dark:text-gray-200"
-      >
-        {COUNTRIES.map((c) => (
-          <option key={c.code + c.name} value={c.code + c.name}>
-            {c.flag} {c.code}
-          </option>
-        ))}
-      </select>
+    <span className={`flex items-stretch transition ${TONES[tone]}`}>
+      <CountryPicker
+        value={shown.country}
+        onChange={(c) => update(c, shown.local)}
+        tone={tone}
+      />
       <input
         type="tel"
         inputMode="numeric"
@@ -108,6 +102,84 @@ export function PhoneInput({
         className="min-w-0 flex-1 bg-transparent px-3 tabular-nums outline-none placeholder:text-gray-400"
       />
       <input type="hidden" name={name} value={full} />
+    </span>
+  );
+}
+
+/**
+ * Ölkə kodu seçicisi. Brauzerin öz <select> siyahısı OS tərəfindən çəkilir və
+ * appin dizaynını qəbul etmir, ona görə siyahını özümüz çəkirik.
+ */
+function CountryPicker({ value, onChange, tone }: { value: Country; onChange: (c: Country) => void; tone: keyof typeof TONES }) {
+  const [open, setOpen] = useState(false);
+  const root = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: MouseEvent) => {
+      if (!root.current?.contains(e.target as Node)) setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  return (
+    <span ref={root} className="relative flex shrink-0 items-stretch">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        aria-label="Ölkə kodu"
+        className={`flex items-center gap-1.5 rounded-l-[inherit] border-r pl-3 pr-2 font-medium outline-none transition ${
+          tone === "auth"
+            ? "border-gray-200 text-gray-700 hover:bg-gray-50 dark:border-white/10 dark:text-gray-200 dark:hover:bg-white/5"
+            : "border-gray-200 text-gray-700 hover:bg-gray-50"
+        }`}
+      >
+        <span aria-hidden>{value.flag}</span>
+        <span className="tabular-nums">{value.code}</span>
+        <ChevronDown size={14} className={`text-gray-400 transition ${open ? "rotate-180" : ""}`} aria-hidden />
+      </button>
+
+      {open && (
+        <ul
+          role="listbox"
+          className="absolute left-0 top-full z-30 mt-1.5 max-h-72 w-60 overflow-auto rounded-xl border border-gray-100 bg-white p-1 shadow-xl shadow-black/10 dark:border-white/10 dark:bg-[#16171a]"
+        >
+          {COUNTRIES.map((c) => {
+            const isSelected = c.code === value.code && c.name === value.name;
+            return (
+              <li key={c.code + c.name}>
+                <button
+                  type="button"
+                  role="option"
+                  aria-selected={isSelected}
+                  onClick={() => {
+                    onChange(c);
+                    setOpen(false);
+                  }}
+                  className={`flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-sm transition ${
+                    isSelected
+                      ? "bg-[var(--brand)]/10 font-medium text-[var(--brand)]"
+                      : "text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-white/10"
+                  }`}
+                >
+                  <span aria-hidden>{c.flag}</span>
+                  <span className="min-w-0 flex-1 truncate">{c.name}</span>
+                  <span className="shrink-0 tabular-nums text-gray-400">{c.code}</span>
+                  {isSelected && <Check size={14} className="shrink-0" aria-hidden />}
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </span>
   );
 }

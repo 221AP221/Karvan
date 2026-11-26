@@ -31,7 +31,7 @@ export function InvoiceTable({ invoices, emptyText = "Hələ faktura yoxdur.", w
             <Link href={`/dashboard/invoices/${invoice.id}`} prefetch={false} className="flex items-center justify-between gap-3 px-4 py-3 hover:bg-gray-50">
               <span className="min-w-0">
                 <span className="block truncate font-medium">{invoice.customerName}</span>
-                <span className="font-mono text-xs text-gray-500">
+                <span className="tabular-nums text-xs text-gray-500">
                   {invoice.number} · {invoice.issuedAt.toLocaleDateString(locale)}
                 </span>
               </span>

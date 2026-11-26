@@ -97,7 +97,7 @@ export function PasswordAdminForm({ userId }: { userId: string }) {
         <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
           <p className="font-medium">Müvəqqəti şifrə (yalnız indi görünür):</p>
           <div className="mt-2 flex items-center gap-2">
-            <code className="rounded bg-white px-2 py-1 font-mono text-base">{state.temp}</code>
+            <code className="rounded bg-white px-2 py-1 tabular-nums text-base">{state.temp}</code>
             <button type="button" onClick={() => { navigator.clipboard.writeText(state.temp!); setCopied(true); }} className="text-xs font-medium underline">
               {copied ? "Kopyalandı" : "Kopyala"}
             </button>

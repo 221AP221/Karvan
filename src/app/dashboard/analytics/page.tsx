@@ -451,7 +451,7 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Se
               <li key={tag.tag} className="flex flex-wrap items-center justify-between gap-2 py-2.5">
                 <span className="text-sm">
                   <span className="font-medium">{t[tag.key]}</span>
-                  <span className="ml-2 font-mono text-xs text-gray-500">{`${pageUrl}?s=${tag.tag}`}</span>
+                  <span className="ml-2 tabular-nums text-xs text-gray-500">{`${pageUrl}?s=${tag.tag}`}</span>
                 </span>
                 <CopyLink url={`${pageUrl}?s=${tag.tag}`} />
               </li>

@@ -22,21 +22,21 @@ export function SandboxForm({ reference, amount, plan }: { reference: string; am
           <p className="text-sm text-gray-500">Karvan · {plan}</p>
           <p className="text-3xl font-bold tabular-nums">{amount}</p>
         </div>
-        <p className="font-mono text-xs text-gray-400">{reference}</p>
+        <p className="tabular-nums text-xs text-gray-400">{reference}</p>
       </div>
       <form action={action} className="mt-5 flex flex-col gap-3">
         <label className="block">
           <span className="mb-1 block text-xs font-medium text-gray-600">Kart nömrəsi</span>
-          <input name="number" required inputMode="numeric" autoComplete="off" placeholder="4242 4242 4242 4242" value={number} onChange={(e) => setNumber(e.target.value.replace(/\D/g, "").slice(0, 19).replace(/(\d{4})(?=\d)/g, "$1 "))} className={`${input} font-mono tracking-wider`} />
+          <input name="number" required inputMode="numeric" autoComplete="off" placeholder="4242 4242 4242 4242" value={number} onChange={(e) => setNumber(e.target.value.replace(/\D/g, "").slice(0, 19).replace(/(\d{4})(?=\d)/g, "$1 "))} className={`${input} tabular-nums tracking-wider`} />
         </label>
         <div className="grid grid-cols-2 gap-3">
           <label className="block">
             <span className="mb-1 block text-xs font-medium text-gray-600">Bitmə tarixi</span>
-            <input name="expiry" required inputMode="numeric" autoComplete="off" placeholder="AA/İİ" value={expiry} onChange={(e) => { const v = e.target.value.replace(/\D/g, "").slice(0, 4); setExpiry(v.length > 2 ? `${v.slice(0, 2)}/${v.slice(2)}` : v); }} className={`${input} font-mono`} />
+            <input name="expiry" required inputMode="numeric" autoComplete="off" placeholder="AA/İİ" value={expiry} onChange={(e) => { const v = e.target.value.replace(/\D/g, "").slice(0, 4); setExpiry(v.length > 2 ? `${v.slice(0, 2)}/${v.slice(2)}` : v); }} className={`${input} tabular-nums`} />
           </label>
           <label className="block">
             <span className="mb-1 block text-xs font-medium text-gray-600">CVC</span>
-            <input name="cvc" required type="password" inputMode="numeric" autoComplete="off" maxLength={4} placeholder="123" value={cvc} onChange={(e) => setCvc(e.target.value.replace(/\D/g, ""))} className={`${input} font-mono`} />
+            <input name="cvc" required type="password" inputMode="numeric" autoComplete="off" maxLength={4} placeholder="123" value={cvc} onChange={(e) => setCvc(e.target.value.replace(/\D/g, ""))} className={`${input} tabular-nums`} />
           </label>
         </div>
         <label className="block">
@@ -53,7 +53,7 @@ export function SandboxForm({ reference, amount, plan }: { reference: string; am
       </form>
       <details className="mt-5 rounded-lg bg-gray-50 p-3 text-xs text-gray-600">
         <summary className="cursor-pointer font-medium">Test kartları</summary>
-        <ul className="mt-2 space-y-1 font-mono">
+        <ul className="mt-2 space-y-1 tabular-nums">
           <li>4242 4242 4242 4242 · uğurlu</li>
           <li>5555 5555 5555 4444 · uğurlu</li>
           <li>4000 0000 0000 0002 · bank rədd edir</li>

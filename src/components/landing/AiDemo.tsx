@@ -65,7 +65,7 @@ export function AiDemo({ t }: { t: AiDemoText }) {
     <div ref={ref} className="grid gap-4 md:grid-cols-2">
       <div className="rounded-3xl border border-white/10 bg-white/5 p-5">
         <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-violet-300">{t.you}</p>
-        <p className="min-h-[96px] font-mono text-sm leading-relaxed text-white sm:text-base">
+        <p className="min-h-[96px] tabular-nums text-sm leading-relaxed text-white sm:text-base">
           {PROMPT.slice(0, typed)}
           {phase === "typing" && <span className="animate-caret ml-0.5 inline-block h-4 w-0.5 translate-y-0.5 bg-violet-300" />}
         </p>

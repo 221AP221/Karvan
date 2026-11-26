@@ -25,7 +25,7 @@ function CopyRow({ label, value }: { label: string; value: string }) {
     <div className="flex items-center justify-between gap-3 border-t border-gray-100 py-2.5 text-sm first:border-0">
       <span className="text-gray-500">{label}</span>
       <span className="flex items-center gap-2 font-medium">
-        <span className="font-mono">{value}</span>
+        <span className="tabular-nums">{value}</span>
         <button type="button" onClick={() => { navigator.clipboard.writeText(value.replace(/\s/g, label === "IBAN" ? "" : " ")); setDone(true); setTimeout(() => setDone(false), 1500); }} className="text-gray-400 hover:text-gray-900" aria-label={`${label} kopyala`}>
           {done ? <Check size={15} className="text-emerald-600" aria-hidden /> : <Copy size={15} aria-hidden />}
         </button>
