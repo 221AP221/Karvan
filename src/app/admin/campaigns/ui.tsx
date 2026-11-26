@@ -6,6 +6,8 @@ import { useState } from "react";
 import { ActionForm } from "@/components/ActionForm";
 import type { DiscountType, Plan } from "@/generated/prisma/client";
 import { createCoupon, deleteCoupon, toggleCoupon, updateCoupon } from "../actions";
+import { DateFieldInput } from "@/components/DateField";
+import { Select, SelectInput } from "@/components/Select";
 
 type Coupon = {
   id: string;
@@ -66,10 +68,16 @@ export function CouponForm({ editing }: { editing: Coupon | null }) {
         <div className="grid grid-cols-2 gap-3">
           <label className="block">
             <span className={label}>Endirim növü</span>
-            <select name="type" value={type} onChange={(e) => setType(e.target.value as DiscountType)} className={field}>
-              <option value="PERCENT">Faizlə</option>
-              <option value="FIXED">Sabit məbləğ</option>
-            </select>
+            <Select
+              name="type"
+              value={type}
+              onChange={(v) => setType(v as DiscountType)}
+              ariaLabel="Endirim növü"
+              options={[
+                { value: "PERCENT", label: "Faizlə" },
+                { value: "FIXED", label: "Sabit məbləğ" },
+              ]}
+            />
           </label>
           <label className="block">
             <span className={label}>{type === "PERCENT" ? "Faiz (1-100)" : "Məbləğ (AZN)"}</span>
@@ -102,11 +110,16 @@ export function CouponForm({ editing }: { editing: Coupon | null }) {
         <div className="grid grid-cols-2 gap-3">
           <label className="block">
             <span className={label}>Müddət məhdudiyyəti</span>
-            <select name="months" defaultValue={editing?.months ? String(editing.months) : ""} className={field}>
-              <option value="">Hamısı</option>
-              <option value="1">Yalnız aylıq</option>
-              <option value="12">Yalnız illik</option>
-            </select>
+            <SelectInput
+              name="months"
+              defaultValue={editing?.months ? String(editing.months) : ""}
+              ariaLabel="Müddət məhdudiyyəti"
+              options={[
+                { value: "", label: "Hamısı" },
+                { value: "1", label: "Yalnız aylıq" },
+                { value: "12", label: "Yalnız illik" },
+              ]}
+            />
           </label>
           <label className="block">
             <span className={label}>Ümumi istifadə limiti</span>
@@ -125,11 +138,11 @@ export function CouponForm({ editing }: { editing: Coupon | null }) {
         <div className="grid grid-cols-2 gap-3">
           <label className="block">
             <span className={label}>Başlama tarixi</span>
-            <input name="startsAt" type="date" defaultValue={day(editing?.startsAt ?? null)} className={field} />
+            <DateFieldInput name="startsAt" defaultValue={day(editing?.startsAt ?? null)} ariaLabel="Başlama tarixi" />
           </label>
           <label className="block">
             <span className={label}>Bitmə tarixi</span>
-            <input name="endsAt" type="date" defaultValue={day(editing?.endsAt ?? null)} className={field} />
+            <DateFieldInput name="endsAt" defaultValue={day(editing?.endsAt ?? null)} ariaLabel="Bitmə tarixi" />
           </label>
         </div>
 

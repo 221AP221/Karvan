@@ -1,8 +1,10 @@
 "use client";
 
-import { ChevronDown, LoaderCircle, Search, X } from "lucide-react";
+import { LoaderCircle, Search, X } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState, useTransition } from "react";
+import { DateField } from "@/components/DateField";
+import { Select } from "@/components/Select";
 
 export type FilterField =
   | { type: "search"; name: string; placeholder: string }
@@ -65,22 +67,18 @@ export function FilterBar({
       <div className="flex flex-wrap items-center gap-2">
         {fields.map((f) =>
           f.type === "select" ? (
-            <label key={f.name} className="relative">
-              <span className="sr-only">{f.label}</span>
-              <select value={params.get(f.name) ?? ""} onChange={(e) => apply(f.name, e.target.value)} className={`${control} appearance-none pl-3 pr-9`}>
-                <option value="">{f.label}: {labels.all}</option>
-                {f.options.map((o) => (
-                  <option key={o.value} value={o.value}>
-                    {o.label}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown size={15} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" aria-hidden />
-            </label>
+            <Select
+              key={f.name}
+              className="w-auto min-w-[9rem]"
+              ariaLabel={f.label}
+              value={params.get(f.name) ?? ""}
+              onChange={(v) => apply(f.name, v)}
+              options={[{ value: "", label: `${f.label}: ${labels.all}` }, ...f.options]}
+            />
           ) : f.type === "date" ? (
             <label key={f.name} className="flex items-center gap-2 text-sm text-gray-500">
               {f.label}
-              <input type="date" value={params.get(f.name) ?? ""} onChange={(e) => apply(f.name, e.target.value)} className={`${control} px-3 text-gray-700`} />
+              <DateField className="w-[10.5rem]" ariaLabel={f.label} value={params.get(f.name) ?? ""} onChange={(v) => apply(f.name, v)} />
             </label>
           ) : null,
         )}

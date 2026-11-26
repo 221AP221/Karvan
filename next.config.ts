@@ -12,6 +12,8 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: { "/api/invoices/*": ["./assets/fonts/*.ttf"] },
   turbopack: { root },
   experimental: {
+    // Next.js-in təhlükəsizlik yeniləmələri bu bayraqla izlənir.
+    agentUpgrade: "security",
     // Panel səhifələri dinamikdir: standart olaraq hər keçid serverə gedir.
     // 30 saniyəlik müştəri keşi "geri/irəli" və menyu arasında gedib-gəlməni ani edir.
     // Dəyişiklik edən əməliyyatlar revalidatePath çağırdığı üçün köhnə məlumat qalmır.

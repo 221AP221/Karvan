@@ -3,6 +3,8 @@
 import { PhoneInput } from "@/components/PhoneInput";
 import { useState } from "react";
 import { ActionForm } from "@/components/ActionForm";
+import { DateField } from "@/components/DateField";
+import { Select } from "@/components/Select";
 import { Card, Field, inputClass, secondaryButtonClass } from "@/components/ui";
 import type { ParsedInvoice } from "@/lib/ai";
 import { callAi } from "@/lib/ai-client";
@@ -98,7 +100,10 @@ export function InvoiceEditor({ services }: { services: PickableService[] }) {
               <span className="mb-1 block text-sm font-medium text-gray-700">Telefon</span>
               <PhoneInput name="customerPhone" value={customer.phone} onChange={(v) => setCustomerField("phone", v)} />
             </label>
-            <Field label="Son ödəniş tarixi" name="dueDate" type="date" value={customer.dueDate} onChange={(e) => setCustomerField("dueDate", e.target.value)} />
+            <label className="block">
+              <span className="mb-1 block text-sm font-medium text-gray-700">Son ödəniş tarixi</span>
+              <DateField name="dueDate" ariaLabel="Son ödəniş tarixi" value={customer.dueDate} onChange={(v) => setCustomerField("dueDate", v)} />
+            </label>
             <Field label="Qeyd" name="note" value={customer.note} onChange={(e) => setCustomerField("note", e.target.value)} />
           </div>
         </Card>
@@ -140,13 +145,14 @@ export function InvoiceEditor({ services }: { services: PickableService[] }) {
               + Sətir əlavə et
             </button>
             <div className="flex items-center gap-3">
-              <select name="currency" value={currency} onChange={(e) => setCurrency(e.target.value)} aria-label="Valyuta" className={`${inputClass} !w-auto`}>
-                {CURRENCIES.map((c) => (
-                  <option key={c.code} value={c.code}>
-                    {c.label}
-                  </option>
-                ))}
-              </select>
+              <Select
+                name="currency"
+                ariaLabel="Valyuta"
+                value={currency}
+                onChange={setCurrency}
+                className="w-[7.5rem]"
+                options={CURRENCIES.map((c) => ({ value: c.code, label: c.label }))}
+              />
               <p className="font-semibold">Ümumi: {formatMoney(Math.round(total * 100), currency)}</p>
             </div>
           </div>

@@ -4,6 +4,7 @@ import { useActionState, useState } from "react";
 import { ActionForm } from "@/components/ActionForm";
 import { Field, secondaryButtonClass } from "@/components/ui";
 import { changeEmail, changePassword, deleteAccount, setAutoDelete, setCatalogVisibility, signOutOtherDevices, updatePaymentSettings } from "./actions";
+import { SelectInput } from "@/components/Select";
 
 export function EmailForm({ email }: { email: string }) {
   return (
@@ -78,13 +79,13 @@ export function AutoDeleteForm({ enabled, days, lastSeen, options }: { enabled: 
 
       <label className="block max-w-xs">
         <span className="mb-1 block text-xs font-medium text-gray-600">Passivlik müddəti</span>
-        <select name="days" defaultValue={String(days)} disabled={!on} className="h-10 w-full rounded-lg border border-gray-300 px-3 text-sm outline-none focus:border-[var(--brand)] disabled:bg-gray-50 disabled:text-gray-400">
-          {options.map((d) => (
-            <option key={d} value={d}>
-              {d} gün
-            </option>
-          ))}
-        </select>
+        <SelectInput
+          name="days"
+          defaultValue={String(days)}
+          disabled={!on}
+          ariaLabel="Passivlik müddəti"
+          options={options.map((d) => ({ value: String(d), label: `${d} gün` }))}
+        />
       </label>
 
       {lastSeen && <p className="text-xs text-gray-500">Son girişiniz: {lastSeen}</p>}

@@ -5,6 +5,7 @@ import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { Dict } from "@/i18n/server";
 import { track, visitorId } from "@/lib/track";
+import { DateField } from "@/components/DateField";
 
 type Result = { invoiceUrl: string } | { pending: true } | { error: string; slotTaken?: boolean };
 
@@ -139,7 +140,7 @@ export function OrderForm({
         <>
           <label className="block">
             <span className="mb-1 block text-sm font-medium text-gray-700">{t.pickDate}</span>
-            <input type="date" value={day} min={today()} onChange={(e) => setDay(e.target.value)} className={`${input} w-full`} />
+            <DateField value={day} min={today()} onChange={setDay} ariaLabel={t.pickDate} />
           </label>
           <div>
             <span className="mb-1.5 block text-sm font-medium text-gray-700">{t.pickSlot}</span>

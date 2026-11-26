@@ -15,6 +15,7 @@ import { absoluteUrl, breadcrumbs, clamp, fill, jsonLdScript } from "@/lib/seo";
 import { type SearchParams, param } from "@/lib/search-params";
 import { SERVICE_CATEGORIES, localizedCategory } from "@/lib/services";
 import { AutoSubmit } from "./AutoSubmit";
+import { SelectInput } from "@/components/Select";
 
 const PAGE_SIZE = 24;
 const SORTS = ["recommended", "rating", "new", "priceAsc", "priceDesc"] as const;
@@ -215,43 +216,50 @@ export async function CatalogPage({ locale, searchParams }: { locale: Locale; se
               <div className="grid grid-cols-2 gap-2 px-1 pb-1 lg:grid-cols-4">
                 <label>
                   <span className="mb-1 block text-xs font-medium text-gray-500">{t.category}</span>
-                  <select name="category" defaultValue={category} className={control} data-autosubmit>
-                    <option value="">{t.allCategories}</option>
-                    {SERVICE_CATEGORIES.map((c) => (
-                      <option key={c.key} value={c.key}>
-                        {localizedCategory(c.key, locale)}
-                      </option>
-                    ))}
-                  </select>
+                  <SelectInput
+                    name="category"
+                    defaultValue={category}
+                    autoSubmit
+                    ariaLabel={t.category}
+                    options={[
+                      { value: "", label: t.allCategories },
+                      ...SERVICE_CATEGORIES.map((c) => ({ value: c.key, label: localizedCategory(c.key, locale) ?? c.key })),
+                    ]}
+                  />
                 </label>
                 <label>
                   <span className="mb-1 block text-xs font-medium text-gray-500">{t.city}</span>
-                  <select name="city" defaultValue={city} className={control} data-autosubmit>
-                    <option value="">{t.allCities}</option>
-                    {cities.map((c) => (
-                      <option key={c} value={c}>
-                        {c}
-                      </option>
-                    ))}
-                  </select>
+                  <SelectInput
+                    name="city"
+                    defaultValue={city}
+                    autoSubmit
+                    ariaLabel={t.city}
+                    options={[{ value: "", label: t.allCities }, ...cities.map((c) => ({ value: c, label: c }))]}
+                  />
                 </label>
                 <label>
                   <span className="mb-1 block text-xs font-medium text-gray-500">{t.priceType}</span>
-                  <select name="price" defaultValue={price} className={control} data-autosubmit>
-                    <option value="">{t.anyPrice}</option>
-                    <option value="fixed">{t.fixed}</option>
-                    <option value="negotiable">{t.negotiable}</option>
-                  </select>
+                  <SelectInput
+                    name="price"
+                    defaultValue={price}
+                    autoSubmit
+                    ariaLabel={t.priceType}
+                    options={[
+                      { value: "", label: t.anyPrice },
+                      { value: "fixed", label: t.fixed },
+                      { value: "negotiable", label: t.negotiable },
+                    ]}
+                  />
                 </label>
                 <label>
                   <span className="mb-1 block text-xs font-medium text-gray-500">{t.sort}</span>
-                  <select name="sort" defaultValue={sort} className={control} data-autosubmit>
-                    {SORTS.map((s) => (
-                      <option key={s} value={s}>
-                        {t.sorts[s]}
-                      </option>
-                    ))}
-                  </select>
+                  <SelectInput
+                    name="sort"
+                    defaultValue={sort}
+                    autoSubmit
+                    ariaLabel={t.sort}
+                    options={SORTS.map((s) => ({ value: s, label: t.sorts[s] }))}
+                  />
                 </label>
                 <div className="col-span-2 grid grid-cols-[1fr_1fr_1.2fr] gap-2">
                   <label>
@@ -264,14 +272,13 @@ export async function CatalogPage({ locale, searchParams }: { locale: Locale; se
                   </label>
                   <label>
                     <span className="mb-1 block text-xs font-medium text-gray-500">{t.currency}</span>
-                    <select name="currency" defaultValue={currency} className={control} data-autosubmit>
-                      <option value="">—</option>
-                      {CURRENCIES.map((c) => (
-                        <option key={c.code} value={c.code}>
-                          {c.label}
-                        </option>
-                      ))}
-                    </select>
+                    <SelectInput
+                      name="currency"
+                      defaultValue={currency}
+                      autoSubmit
+                      ariaLabel={t.currency}
+                      options={[{ value: "", label: "—" }, ...CURRENCIES.map((c) => ({ value: c.code, label: c.label }))]}
+                    />
                   </label>
                 </div>
                 <div className="col-span-2 flex items-end justify-between gap-3">

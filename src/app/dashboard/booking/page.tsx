@@ -1,5 +1,6 @@
 import { CalendarOff } from "lucide-react";
 import { ActionForm } from "@/components/ActionForm";
+import { DateFieldInput } from "@/components/DateField";
 import { Card, inputClass } from "@/components/ui";
 import { requirePageAccess } from "@/lib/auth";
 import { parseWorkDays } from "@/lib/booking";
@@ -47,7 +48,7 @@ export default async function BookingPage() {
           <div className="grid gap-3 sm:grid-cols-[1fr_auto_auto_1.2fr]">
             <label className="block">
               <span className="mb-1 block text-xs font-medium text-gray-600">Tarix</span>
-              <input name="day" type="date" required className={inputClass} />
+              <DateFieldInput name="day" required ariaLabel="Tarix" />
             </label>
             <label className="block">
               <span className="mb-1 block text-xs font-medium text-gray-600">Başlama</span>

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { buttonClass, inputClass, secondaryButtonClass } from "@/components/ui";
 import { callAi } from "@/lib/ai-client";
 import { whatsappShareLink } from "@/lib/notify";
+import { Select } from "@/components/Select";
 
 export function CopyLink({ url }: { url: string }) {
   const [copied, setCopied] = useState(false);
@@ -40,11 +41,16 @@ export function ReminderDraft({ invoiceId, phone }: { invoiceId: string; phone: 
 
   return (
     <div className="flex flex-col gap-2">
-      <select value={tone} onChange={(e) => setTone(e.target.value as typeof tone)} className={inputClass}>
-        <option value="friendly">Dostcasına</option>
-        <option value="neutral">İşgüzar</option>
-        <option value="firm">Qətiyyətli</option>
-      </select>
+      <Select
+        value={tone}
+        onChange={(v) => setTone(v as typeof tone)}
+        ariaLabel="Üslub"
+        options={[
+          { value: "friendly", label: "Dostcasına" },
+          { value: "neutral", label: "İşgüzar" },
+          { value: "firm", label: "Qətiyyətli" },
+        ]}
+      />
       <button type="button" onClick={draft} disabled={state.busy} className={secondaryButtonClass}>
         {state.busy ? "Yazır..." : "✨ AI ilə mətn yaz"}
       </button>
